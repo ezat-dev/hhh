@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.tkheat.domain.Monitoring;
+import com.tkheat.domain.Temp;
 
 @Repository
 public class MonitoringDaoImpl implements MonitoringDao{
@@ -19,5 +20,10 @@ public class MonitoringDaoImpl implements MonitoringDao{
     public List<Monitoring> getMonitoringList() {
 		return sqlSession.selectList("monitoring.getMonitoringList");
     }
+
+	@Override
+	public List<Temp> getTrendList(Temp temp) {
+		return sqlSession.selectList("monitoring.getTrendList",temp);
+	}
 
 }

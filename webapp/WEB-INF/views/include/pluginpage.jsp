@@ -105,6 +105,16 @@ function nowTimeAfterOne(){
 	return h+":"+m+":"+s; 
 }
 
+//현재시간 -4
+function nowTimeBeforefour(){
+	var now = new Date();
+	var h = paddingZero(now.getHours()-4);
+	var m = paddingZero(now.getMinutes());
+	var s = paddingZero(now.getSeconds());
+		
+	return h+":"+m+":"+s; 
+}
+
 //왼쪽 0채우기
 function paddingZero(value){
 	var rtn = "";

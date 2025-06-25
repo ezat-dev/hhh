@@ -4,11 +4,19 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="monitoring">
 		
-		<select id="getMonitoringList" parameterType="monitoring" resultType="monitoring">
-			SELECT *
-			FROM v_monitoring
-		</select>
-	
+	<select id="getMonitoringList" parameterType="monitoring" resultType="monitoring">
+		SELECT *
+		FROM v_monitoring
+	</select>
 
+	<select id="getTrendList" parameterType="temp" resultType="temp">
+		SELECT *,
+			DATEDIFF(second, '19700101', DATEADD(HOUR,-9,tdatetime)) AS unixtime
+		FROM tb_temp
+		WHERE 1=1
+		AND tdatetime <![CDATA[>=]]> #{startDate}
+		AND tdatetime <![CDATA[<=]]> #{endDate}
+	</select>
+		
 
 </mapper>

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.tkheat.dao.MonitoringDao;
 import com.tkheat.domain.Monitoring;
+import com.tkheat.domain.Temp;
 
 @Service
 public class MonitoringServiceImpl implements MonitoringService{
@@ -19,6 +20,11 @@ public class MonitoringServiceImpl implements MonitoringService{
 	    public List<Monitoring> getMonitoringList() {
 	        return monitoringDao.getMonitoringList();
 	    }
+
+	@Override
+	public List<Temp> getTrendList(Temp temp) {
+		return monitoringDao.getTrendList(temp);
+	}
 	
 
 }

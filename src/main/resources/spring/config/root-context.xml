@@ -24,7 +24,7 @@
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
 		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" /> 
-		<property name="url" value="jdbc:sqlserver://192.168.1.59:1433;DataBaseName=HEATDB;" /> 
+		<property name="url" value="jdbc:sqlserver://127.0.0.1:1433;DataBaseName=HEATDB;" /> 
 		<property name="username" value="sa" /> 
 		<property name="password" value="ezat6695"/>
 	</bean>
