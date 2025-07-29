@@ -20,6 +20,18 @@ public class QualityDaoImpl implements QualityDao{
 		return sqlSession.selectList("suip.getSuipList",suip);
 	}
 	
+	@Override
+	public Suip suipDetail(Suip suip) {
+		return sqlSession.selectOne("suip.suipDetail",suip);
+	}
+	
+	@Override
+	 public void suipUdateSave(Suip suip) {
+		 sqlSession.update("suip.suipUdateSave", suip);
+	 }
+	
+	
+	
 	
 	
 	

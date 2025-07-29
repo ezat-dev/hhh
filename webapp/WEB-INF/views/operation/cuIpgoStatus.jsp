@@ -108,65 +108,65 @@
 	//이벤트
 	//함수
 	function getCuIpgoStatusList(){
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/operation/cuIpgoStatus/getCuIpgoStatusList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	"sdate": $("#sdate").val(),
-                "edate": $("#edate").val(),
-			    },
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		    	{title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},
-		        {title:"입고일", field:"ord_date", sorter:"string", width:240,
-			        hozAlign:"center", headerFilter:"input"},
-				{title:"거래처명", field:"corp_name", sorter:"string", width:240,
-				    hozAlign:"center", headerFilter:"input"}, 
-				{title:"수주금액", field:"ord_mon", sorter:"string", width:190,
-				    hozAlign:"center", headerFilter:"input"},
-				    
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+	userTable = new Tabulator("#tab1", {
+	    height: "750px",
+	    layout: "fitColumns",
+	    selectable: true,
+	    tooltips: true,
+	    selectableRangeMode: "click",
+	    reactiveData: true,
+	    headerHozAlign: "center",
+	    ajaxConfig: "POST",
+	    ajaxLoader: false,
+	    ajaxURL: "/tkheat/operation/cuIpgoStatus/getCuIpgoStatusList",
+	    ajaxProgressiveLoad: "scroll",
+	    ajaxParams: {
+	    	"sdate": $("#sdate").val(),
+            "edate": $("#edate").val(),
+	    },
+	    placeholder: "조회된 데이터가 없습니다.",
+	    paginationSize: 20,
+	    ajaxResponse: function (url, params, response) {
+			$("#tab1 .tabulator-col.tabulator-sortable").css("height", "55px");
+	        return response;
+	    },
+	    columns: [
+	    	{ title: "NO", field: "idx", sorter: "int", width: 130, hozAlign: "center" },
+	        { title: "입고일", field: "ord_date", sorter: "string", width: 340, hozAlign: "center", headerFilter: "input" },
+			{ title: "거래처명", field: "corp_name", sorter: "string", width: 340, hozAlign: "center", headerFilter: "input" },
+			{
+				title: "수주금액",
+				field: "ord_mon",
+				sorter: "number",
+				width: 340,
+				hozAlign: "center",
+				headerFilter: "input",
+				formatter: "money",
+				formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+				bottomCalc: "sum",
+				bottomCalcFormatter: "money",
+				bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
 			},
-			rowClick:function(e, row){
+	    ],
+	    rowFormatter: function (row) {
+	        row.getElement().style.fontWeight = "700";
+			row.getElement().style.backgroundColor = "#FFFFFF";
+		},
+		rowClick: function (e, row) {
+			$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function (index, item) {
+				if ($(this).hasClass("row_select")) {
+					$(this).removeClass('row_select');
+					row.getElement().className += " row_select";
+				} else {
+					$("#tab1 div.row_select").removeClass("row_select");
+					row.getElement().className += " row_select";
+				}
+			});
+			var rowData = row.getData();
+		},
+	});
+}
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
-
-				var rowData = row.getData();
-				
-			},
-		});		
-	}
-	
 
     </script>
 

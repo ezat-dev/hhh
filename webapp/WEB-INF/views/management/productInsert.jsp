@@ -8,6 +8,7 @@
     <title>제품등록</title>
     <link rel="stylesheet" href="/tkheat/css/management/productInsert.css">
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
 .main {
@@ -63,15 +64,7 @@
 	margin-right: 0; /* 마지막 입력 박스의 여백 제거 */
 }
 
-.btnSearchCorp, .btn1T {
-	background: #007bff; /* 버튼 배경색 */
-	color: white; /* 버튼 글자색 */
-	border: none; /* 경계선 없음 */
-	padding: 5px 10px; /* 내부 여백 */
-	cursor: pointer; /* 커서 변경 */
-	border-radius: 3px; /* 모서리 둥글게 */
-	margin-top: 5px; /* 위쪽 여백 */
-}
+
 
 .btnSearchCorp:hover, .btn1T:hover {
 	background: #0056b3; /* 호버 시 색상 변경 */
@@ -102,9 +95,11 @@
 }
 
 .thSub2 {
-	width: 150px; /* 서브 헤더 너비 */
+	width: 100px; /* 서브 헤더 너비 */
 }
-
+.thSub {
+	width: 100px; /* 서브 헤더 너비 */
+}
 .valClean {
 	margin-left: 5px; /* 여백 */
 }
@@ -374,7 +369,8 @@ textarea {
               <td>
                   <input id="corp_name" name="corp_name"class="basic valClean" type="text" style="width:60%;"  readonly="readonly">
                   <input id="corp_code" name="corp_code" class="basic valPost valClean" type="hidden" style="width:50%;"  readonly="readonly">
-                <input class="btnSearchCorp" name="" type="button" title="거래처선택" onclick="openCutumModal();"  >
+                <input class="btnSearchCorp" name="" type="button" title="거래처선택" value="검색" onclick="openCutumModal();">
+
               </td>
               <th>관리번호</th>
               <td><input id="prod_cno" name="prod_cno" class="basic valPost valClean" type="text" style="width:90%;" value=""></td>
@@ -423,23 +419,23 @@ textarea {
                 <table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
                   <tbody><tr>
                   <th>치수1</th>
-                  <td><input id="prod_chisu1n" name="prod_chisu1n" class="basic valPost valClean" type="text" value="">-<input id="prod_chisu1s" name="prod_chisu1s" class="basic valPost valClean" type="text" value=""></td>
+                  <td><input id="prod_chisu1n" name="prod_chisu1n"  type="text" value="">-<input id="prod_chisu1s" name="prod_chisu1s"  type="text" value=""></td>
                     </tr>
                     <tr>
                   <th>치수2</th>
-                  <td><input id="prod_chisu2n" name="prod_chisu2n" class="basic valPost valClean" type="text" value="">-<input id="prod_chisu2s" name="prod_chisu2s" class="basic valPost valClean" type="text" value=""></td>
+                  <td><input id="prod_chisu2n" name="prod_chisu2n"  type="text" value="">-<input id="prod_chisu2s" name="prod_chisu2s" type="text" value=""></td>
                     </tr>
                     <tr>
                   <th>치수3</th>
-                  <td><input id="prod_chisu3n" name="prod_chisu3n" class="basic valPost valClean" type="text" value="">-<input id="prod_chisu3s" name="prod_chisu3s" class="basic valPost valClean" type="text" value=""></td>
+                  <td><input id="prod_chisu3n" name="prod_chisu3n" type="text" value="">-<input id="prod_chisu3s" name="prod_chisu3s" type="text" value=""></td>
                     </tr>
                     <tr>
                   <th>치수4</th>
-                  <td><input id="prod_chisu4n" name="prod_chisu4n" class="basic valPost valClean" type="text" value="">-<input id="prod_chisu4s" name="prod_chisu4s" class="basic valPost valClean" type="text" value=""></td>
+                  <td><input id="prod_chisu4n" name="prod_chisu4n"  type="text" value="">-<input id="prod_chisu4s" name="prod_chisu4s" type="text" value=""></td>
                     </tr>
                     <tr>
                   <th>치수5</th>
-                  <td><input id="prod_chisu5n" name="prod_chisu5n" class="basic valPost valClean" type="text" value="">-<input id="prod_chisu5s" name="prod_chisu5s" class="basic valPost valClean" type="text" value=""></td>
+                  <td><input id="prod_chisu5n" name="prod_chisu5n"  type="text" value="">-<input id="prod_chisu5s" name="prod_chisu5s" type="text" value=""></td>
                     </tr>
                 </tbody></table>
               </td>
@@ -619,140 +615,92 @@ textarea {
               </td>
             </tr>									
             <tr>
-              <th class="left">SPEC</th>
-              <td style="vertical-align: top;">
-                <table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-                  <tbody><tr>
-                    <th class="thSub2">표면경도</th>
-                    <th class="thSub">
-                      <select id="prod_pg" name="prod_pg" class="basic valPost valClean">
-                        <option>HRC</option>
-                        <option>HV</option>
-                        <option>HS</option>
-                        <option>HRA</option>
-                        <option>HRB</option>
-                        <option>HB</option>
-                        <option>HR15N</option>
-                        <option>HR30N</option>
-                        <option>HR45N</option>
-                      </select>
-                    </th>
-                    <td class="tdRight">
-                      <input id="prod_pg1" name="prod_pg1" class="basic valPost valClean" type="text" style="width:70px;" value=""> 
-                      ~ <input id="prod_pg2" name="prod_pg2" class="basic valPost valClean" type="text" style="width:70px;" value="">
-                    </td>
-                  </tr>												
-                  <tr>
-                    <th class="thSub2">소입경도</th>
-                    <th class="thSub">
-                      <select id="prod_si" name="prod_si" class="basic valPost valClean">
-                        <option>HRC</option>
-                        <option>HV</option>
-                        <option>HS</option>
-                        <option>HRA</option>
-                        <option>HRB</option>
-                        <option>HB</option>
-                        <option>HR15N</option>
-                        <option>HR30N</option>
-                        <option>HR45N</option>
-                      </select>
-                    </th>
-                    <td class="tdRight">
-                      <input id="prod_si1" name="prod_si1" class="basic valPost valClean" type="text" style="width:70px;" value="">
-                      ~ <input id="prod_si2" name="prod_si2" class="basic valPost valClean" type="text" style="width:70px;" value="">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="thSub2">소려경도</th>
-                    <th class="thSub">
-                      <select id="prod_sr" name="prod_sr" class="basic valPost valClean">
-                        <option>HRC</option>
-                        <option>HV</option>
-                        <option>HS</option>
-                        <option>HRA</option>
-                        <option>HRB</option>
-                        <option>HB</option>
-                        <option>HR15N</option>
-                        <option>HR30N</option>
-                        <option>HR45N</option>
-                      </select>
-                    </th>
-                    <td class="tdRight">
-                      <input id="prod_sr1" name="prod_sr1" class="basic valPost valClean" type="text" style="width:70px;" value="">
-                      ~ <input id="prod_sr2" name="prod_sr2" class="basic valPost valClean" type="text" style="width:70px;" value="">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="thSub2">심부경도</th>
-                    <th class="thSub">
-                      <select id="prod_sg" name="prod_sg" class="basic valPost valClean">
-                        <option>HRC</option>
-                        <option>HV</option>
-                        <option>HRA</option>
-                        <option>HRB</option>
-                        <option>HB</option>
-                      </select>
-                    </th>
-                    <td class="tdRight">
-                      <input id="prod_sg1" name="prod_sg1" class="basic valPost valClean" type="text" style="width:70px;" value=""> 
-                      ~ <input id="prod_sg2" name="prod_sg2" class="basic valPost valClean" type="text" style="width:70px;" value="">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th rowspan="2" class="thSub2">경화깊이</th>
-                    <th class="thSub">
-                      <select id="prod_gd1" name="prod_gd1" class="basic valPost valClean">
-                        <option>유효경화</option>
-                        <option>전경화</option>
-                      </select>
-                    </th>
-                    <td class="tdRight">
-                       <select id="prod_gd3" name="prod_gd3"  class="basic valPost valClean">
-                        <option>HV</option>
-                        <option>HRC</option>
-                      </select>
-                      <input id="prod_gd2" name="prod_gd2" class="basic valPost valClean" type="text" style="width:70px;" value=""> 
-                      기준
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="thSub">
-                    </th>
-                    <td class="tdRight">
-                      <input id="prod_gd4" name="prod_gd4" class="basic valPost valClean" type="text" style="width:70px;" value=""> 
-                      ~ <input id="prod_gd5" name="prod_gd5" class="basic valPost valClean" type="text" style="width:70px;" value="">
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="thSub2">화합물층 깊이</th>
-                    <th class="thSub">
-                      <select id="prod_whadeep" name="prod_whadeep" class="basic valPost valClean">
-                        <option>㎛</option>
-                        <option>㎜</option>
-                      </select>
-                    </th>
-                    <td class="tdRight">
-                      <input id="prod_e1" name="prod_e1" class="basic valPost valClean" type="text" style="width:70px;" value=""> 
-                      ~ <input id="prod_e2" name="prod_e2" class="basic valPost valClean" type="text" style="width:70px;" value="">
-                    </td>
-                  </tr>
-                  <tr>
-                  </tr><tr>
-                  <th>금속조직</th>
-                  <td><input id="prod_gj" name="prod_gj" class="basic valPost valClean" type="text" value=""></td>
-                    </tr>
-                    <tr>
-                  <th>변형량</th>
-                  <td><input id="prod_bh" name="prod_bh" class="basic valPost valClean" type="text" value=""></td>
-                    </tr>
-                  <tr>
-                    <th>비고</th>
-                    <td colspan="3">
-                      <textarea id="prod_note" name="prod_note" class="basic valPost valClean" style="width:90%;"></textarea>
-                    </td>
-                  </tr>																								
-                </tbody></table>
-              </td>
+  <th class="left">SPEC</th>
+  <td colspan="3">
+    <table class="insideTable w-100">
+      <tbody>
+        <!-- 경도 정보 영역 -->
+        <tr>
+          <th class="thSub2">표면경도</th>
+          <td>
+            <select id="prod_pg" name="prod_pg">
+              <option>HRC</option><option>HV</option><option>HS</option><option>HRA</option><option>HRB</option><option>HB</option><option>HR15N</option><option>HR30N</option><option>HR45N</option>
+            </select>
+            <input id="prod_pg1" name="prod_pg1" type="text" style="width:60px;"> ~ 
+            <input id="prod_pg2" name="prod_pg2" type="text" style="width:60px;">
+          </td>
+
+          <th class="thSub2">소입경도</th>
+          <td>
+            <select id="prod_si" name="prod_si">
+              <option>HRC</option><option>HV</option><option>HS</option><option>HRA</option><option>HRB</option><option>HB</option><option>HR15N</option><option>HR30N</option><option>HR45N</option>
+            </select>
+            <input id="prod_si1" name="prod_si1" type="text" style="width:60px;"> ~ 
+            <input id="prod_si2" name="prod_si2" type="text" style="width:60px;">
+          </td>
+        </tr>
+
+        <tr>
+          <th class="thSub2">소려경도</th>
+          <td>
+            <select id="prod_sr" name="prod_sr">
+              <option>HRC</option><option>HV</option><option>HS</option><option>HRA</option><option>HRB</option><option>HB</option><option>HR15N</option><option>HR30N</option><option>HR45N</option>
+            </select>
+            <input id="prod_sr1" name="prod_sr1" type="text" style="width:60px;"> ~ 
+            <input id="prod_sr2" name="prod_sr2" type="text" style="width:60px;">
+          </td>
+
+          <th class="thSub2">심부경도</th>
+          <td>
+            <select id="prod_sg" name="prod_sg">
+              <option>HRC</option><option>HV</option><option>HRA</option><option>HRB</option><option>HB</option>
+            </select>
+            <input id="prod_sg1" name="prod_sg1" type="text" style="width:60px;"> ~ 
+            <input id="prod_sg2" name="prod_sg2" type="text" style="width:60px;">
+          </td>
+        </tr>
+
+        <!-- 경화 깊이 -->
+        <tr>
+          <th class="thSub2">경화깊이</th>
+          <td colspan="3">
+            <select id="prod_gd1" name="prod_gd1">
+              <option>유효경화</option><option>전경화</option>
+            </select>
+            <select id="prod_gd3" name="prod_gd3">
+              <option>HV</option><option>HRC</option>
+            </select>
+            <input id="prod_gd2" name="prod_gd2" type="text" style="width:60px;"> 기준,
+            <input id="prod_gd4" name="prod_gd4" type="text" style="width:60px;"> ~ 
+            <input id="prod_gd5" name="prod_gd5" type="text" style="width:60px;">
+          </td>
+        </tr>
+
+        <!-- 화합물층, 금속조직, 변형량, 비고 -->
+        <tr>
+          <th class="thSub2">화합물층 깊이</th>
+          <td>
+            <select id="prod_whadeep" name="prod_whadeep">
+              <option>㎛</option><option>㎜</option>
+            </select>
+            <input id="prod_e1" name="prod_e1" type="text" style="width:60px;"> ~ 
+            <input id="prod_e2" name="prod_e2" type="text" style="width:60px;">
+          </td>
+
+          <th class="thSub2">금속조직</th>
+          <td><input id="prod_gj" name="prod_gj" type="text" style="width:95%;"></td>
+        </tr>
+
+        <tr>
+          <th class="thSub2">변형량</th>
+          <td><input id="prod_bh" name="prod_bh" type="text" style="width:95%;"></td>
+          <th class="thSub2">비고</th>
+          <td><textarea id="prod_note" name="prod_note" style="width:95%; height: 50px;"></textarea></td>
+        </tr>
+      </tbody>
+    </table>
+  </td>
+</tr>
               
               <th rowspan="3">사진</th>
               <td rowspan="3">
@@ -762,8 +710,9 @@ textarea {
                       <th class="thSub2">제품</th>
                       <td class="tdRight">
                         <div>
-                              <input id="imgInput0" class="imgInputClass valClean" type="file" title="이미지 찾기">
-                              <input type="button" value="X" onclick="$('#img0').attr('src', '/resources/images/noimage_01.gif'); $('#imgInput0').val('');">
+                              <input id="imgInput0" class="imgInputClass valClean" type="file" name="product_file_url" title="이미지 찾기" onchange="rpReadImageURL(this); $(this).parent().find('img').removeClass('rp-file-del');">
+                              <!-- <input type="button" value="X" name="product_file_url" onclick="$('#img0').attr('src', '/resources/images/noimage_01.gif'); $('#imgInput0').val('');"> -->
+                          <!-- <input type="text" name="product_file_name">  -->
                           <a href="" class="form-control aphoto" download="">다운로드</a>
                         </div>
                         <div class="imgArea" style="width:200px; height:150px; border:1px solid #ddd;">
@@ -775,7 +724,7 @@ textarea {
                       <th class="thSub2">외형사진<br>및<br>분석위치</th>
                       <td class="tdRight">
                         <div>
-                              <input id="imgInput1" class="imgInputClass valClean" type="file" title="이미지 찾기">
+                              <input id="imgInput1" class="imgInputClass valClean" type="file" name="apperance_file_url" title="이미지 찾기">
                               <input type="button" value="X" onclick="$('#img1').attr('src', '/resources/images/noimage_01.gif'); $('#imgInput1').val('');">
                           <a href="" class="form-control bphoto" download="">다운로드</a>
                           </div>
@@ -788,7 +737,7 @@ textarea {
                       <th class="thSub2">열처리공정</th>
                       <td class="tdRight">
                         <div>
-                              <input id="imgInput2" class="imgInputClass valClean" type="file" title="이미지 찾기">
+                              <input id="imgInput2" class="imgInputClass valClean" type="file" name="heat_file_url" title="이미지 찾기">
                               <input type="button" value="X" onclick="$('#img2').attr('src', '/resources/images/noimage_01.gif'); $('#imgInput2').val('');">
                           <a href="" class="form-control cphoto" download="">다운로드</a>
                           </div>
@@ -918,6 +867,20 @@ textarea {
 
 	    
 <script>
+
+
+$('.imgInputClass').change(function(event){
+    var selectedFile = event.target.files[0];
+    var reader = new FileReader();
+    var img = $(this).parent().parent().find('img')[0];
+    img.title = selectedFile.name;
+
+    reader.onload = function(event) {
+        img.src = event.target.result; // base64 URI로 넣기 때문에 file:// 아님
+    };
+    reader.readAsDataURL(selectedFile);
+});
+
 	//전역변수
     var productTable;	
     var isEditMode = false; //수정,최초저장 구분값
@@ -961,7 +924,16 @@ textarea {
 		        return response; //return the response data to tabulator
 		    },
 		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:80,
+		    	{title:"제품", field:"product_file_name", width:70,
+					hozAlign:"center", formatter:"image",
+				    cssClass:"rp-img-popup",
+			      	formatterParams:{
+				      	height:"30px", width:"30px",
+				      	urlPrefix:"/excelTest/태경출력파일/사진/제품등록/"
+				      	}, 
+				    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+				    },
+		        {title:"NO", field:"idx", sorter:"int", width:50,
 		        	hozAlign:"center"},
 		        {title:"코드", field:"prod_code", sorter:"string", width:120,
 			        hozAlign:"center", headerFilter:"input", visible:false},	
@@ -980,9 +952,9 @@ textarea {
 		        {title:"공정", field:"tech_te", sorter:"string", width:100,
 			        hozAlign:"center", editor:"list", editorParams:{values:{"male":"Male", "female":"Female", clearable:true}}, 
 			        headerFilter:true, headerFilterParams:{values:{"male":"Male", "female":"Female", "":""}, clearable:true}},	
-		        {title:"단중", field:"prod_danj", sorter:"int", width:100,
+		        {title:"단중", field:"prod_danj", sorter:"int", width:70,
 		        	hozAlign:"center", headerFilter:"input"},  	
-		        {title:"단위", field:"prod_danw", sorter:"int", width:100,
+		        {title:"단위", field:"prod_danw", sorter:"int", width:70,
 			        hozAlign:"center", headerFilter:"input"},	
 			    {title:"단가(EA)", field:"prod_dang", sorter:"int", width:100,
 				    hozAlign:"center", headerFilter:"input"},	
@@ -994,6 +966,25 @@ textarea {
 					hozAlign:"center", headerFilter:"input"},
  			    {title:"심부경도", field:"prod_sg", sorter:"int", width:100,
 					hozAlign:"center", headerFilter:"input"},
+				/* 
+					{title:"외형사진 및 분석위치", field:"apperance_file_name", width:100,
+						hozAlign:"center", formatter:"image",
+					    cssClass:"rp-img-popup",
+				      	formatterParams:{
+					      	height:"30px", width:"30px",
+					      	urlPrefix:"/excelTest/태경출력파일/사진/제품등록/"
+					      	}, 
+					    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+					    },
+						{title:"열처리공정", field:"heat_file_name", width:100,
+							hozAlign:"center", formatter:"image",
+						    cssClass:"rp-img-popup",
+					      	formatterParams:{
+						      	height:"30px", width:"30px",
+						      	urlPrefix:"/excelTest/태경출력파일/사진/제품등록/"
+						      	}, 
+						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+						    }, */
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
@@ -1019,7 +1010,7 @@ textarea {
 			},
 			rowDblClick:function(e, row){
 
-				var data = row.getData();
+ 				var data = row.getData();
 				selectedRowData = data;
 				isEditMode = true;
 				$('#productInsertForm')[0].reset();
@@ -1027,39 +1018,85 @@ textarea {
 
 				console.log(data);
 				
-				productInsertDetail(data.prod_code);	
-				 $('.delete').show();
+/* 				productInsertDetail(data.prod_code);	
+				 $('.delete').show();  */
+
+				    const d = row.getData();
+				    selectedRowData = d;
+				    $('#productInsertForm')[0].reset();
+				    
+				    // 상세조회 Ajax 요청 실행
+				    productInsertDetail(d.prod_code);
+
+				    
+
+				    $('.delete').show();  // 필요 시
 			},
 		});		
 	}
 
 
-	function productInsertDetail(prod_code){
-		$.ajax({
-			url:"/tkheat/management/productInsert/productInsertDetail",
-			type:"post",
-			dataType:"json",
-			data:{
-				"prod_code":prod_code
-			},
-			success:function(result){
-				console.log(result);
-				var allData = result.data;
-				
-				for(let key in allData){
-//					console.log(allData, key);	
-					if(key == "prod_date"){
-						$("[name='"+key+"']").val(allData[key].substring(0,10));
-					}else{
-						$("[name='"+key+"']").val(allData[key]);
-					}
-					
-				}
+	// 상세 조회
+	function productInsertDetail(prod_code) {
+    $.ajax({
+        url: "/tkheat/management/productInsert/productInsertDetail",
+        type: "post",
+        dataType: "json",
+        data: { "prod_code": prod_code },
+        success: function (result) {
+            console.log("result", result);
+            const d = result.data;
 
-				$('.productModal').show().addClass('show');
+            // 폼 초기화
+            $('#productInsertForm')[0].reset();
+
+            // 기본 데이터 바인딩
+           for (let key in d) {
+			    if (key === "prod_date") {
+			        $("[name='" + key + "']").val(d[key].substring(0, 10));
+			    } else if (key.startsWith("prod_fac")) {
+			        const checkbox = $("#" + key);
+			        if (checkbox.length) {
+			            const val = d[key] || "";
+			            checkbox.prop("checked", val.includes("Y"));
+			        }
+			    } else {
+			        $("[name='" + key + "']").val(d[key]);
+			    }
 			}
-		});
-	}
+            // 이미지 초기화
+            $("#img0, #img1, #img2").attr("src", "/resources/images/noimage_01.gif");
+            $(".aphoto, .bphoto, .cphoto").attr("href", "").text("");
+
+            // 제품 사진
+            if (d.product_file_name) {
+                const path = "/excelTest/태경출력파일/사진/제품등록/" + d.product_file_name;
+                $("#img0").attr("src", path);
+                $(".aphoto").attr("href", path).text(d.product_file_name);
+            }
+
+            // 외형 사진
+            if (d.apperance_file_name) {
+                const path = "/excelTest/태경출력파일/사진/제품등록/" + d.apperance_file_name;
+                $("#img1").attr("src", path);
+                $(".bphoto").attr("href", path).text(d.apperance_file_name);
+            }
+
+            // 열처리 사진
+            if (d.heat_file_name) {
+                const path = "/excelTest/태경출력파일/사진/제품등록/" + d.heat_file_name;
+                $("#img2").attr("src", path);
+                $(".cphoto").attr("href", path).text(d.heat_file_name);
+            }
+
+            // 모달 열기
+            $('.productModal').show().addClass('show');
+        },
+        error: function (xhr, status, error) {
+            console.error("제품 상세 조회 오류:", error);
+        }
+    });
+}
 
 </script>
     
@@ -1104,6 +1141,11 @@ textarea {
 	insertButton.addEventListener('click', function() {
 		isEditMode = false;  // 추가 모드
 	    $('#productInsertForm')[0].reset(); // 폼 초기화
+
+		// 이미지 초기화
+		$("#img0, #img1, #img2").attr("src", "/resources/images/noimage_01.gif");
+		$(".aphoto, .bphoto, .cphoto").attr("href", "").text("");
+		
 	    productModal.style.display = 'block'; // 모달 표시
 
 		$('.delete').hide();
@@ -1166,42 +1208,58 @@ textarea {
 
 
   //제품등록 저장
-    function save() {
-        var formData = new FormData($("#productInsertForm")[0]); 
+   function save() {
+    // 체크박스 처리: 체크 안된 것도 'N'으로 강제로 값 지정
+    const checkboxFields = ["prod_fac1", "prod_fac2", "prod_fac3", "prod_fac4", "prod_fac5", "prod_fac6", "prod_fac7", "prod_fac8"];
+    checkboxFields.forEach(field => {
+        const checked = $("#" + field).is(":checked");
+        // 존재하는 hidden input이 있으면 set, 없으면 추가
+        if ($("#hidden_" + field).length === 0) {
+            $("<input>").attr({
+                type: "hidden",
+                id: "hidden_" + field,
+                name: field,
+                value: checked ? "Y" : "N"
+            }).appendTo("#productInsertForm");
+        } else {
+            $("#hidden_" + field).val(checked ? "Y" : "N");
+        }
+    });
 
-        let confirmMsg = "";
+    var formData = new FormData($("#productInsertForm")[0]);
 
-	    if (isEditMode && selectedRowData && selectedRowData.prod_code) {
-	        formData.append("mode", "update");
-	        formData.append("prod_code", selectedRowData.prod_code);
-	        confirmMsg = "수정하시겠습니까?";
-	    } else {
-	        formData.append("mode", "insert");
-	        confirmMsg = "저장하시겠습니까?";
-	    }
-
-	    if (!confirm(confirmMsg)) {
-	        return;
-	    }
-        $.ajax({
-            url: "/tkheat/management/productInsert/productInsertSave",
-            type: "POST",
-            data: formData,
-            contentType: false,    
-            processData: false,   
-            dataType: "json",      
-            success: function(result) {
-                console.log(result);
-                alert("저장 되었습니다.");
-                $(".productModal").hide();
-                getProductList();
-                
-            },
-            error: function(xhr, status, error) {
-                console.error("저장 오류:", error);
-            }
-        });
+    let confirmMsg = "";
+    if (isEditMode && selectedRowData && selectedRowData.prod_code) {
+        formData.append("mode", "update");
+        formData.append("prod_code", selectedRowData.prod_code);
+        confirmMsg = "수정하시겠습니까?";
+    } else {
+        formData.append("mode", "insert");
+        confirmMsg = "저장하시겠습니까?";
     }
+
+    if (!confirm(confirmMsg)) {
+        return;
+    }
+
+    $.ajax({
+        url: "/tkheat/management/productInsert/productInsertSave",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "json",
+        success: function (result) {
+            console.log(result);
+            alert("저장 되었습니다.");
+            $(".productModal").hide();
+            getProductList();
+        },
+        error: function (xhr, status, error) {
+            console.error("저장 오류:", error);
+        }
+    });
+}
 
 
     function deleteProduct() {
@@ -1236,7 +1294,16 @@ textarea {
 	        }
 	    });
 	}
+    //엑셀 다운로드
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "제품등록_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "제품등록" });
+	});
 
+
+
+	
 	
 
     </script>

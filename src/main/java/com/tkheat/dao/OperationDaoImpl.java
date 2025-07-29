@@ -58,14 +58,60 @@ public class OperationDaoImpl implements OperationDao{
 	}
 	
 	@Override
+	public List<Chulgo> getYearData(Chulgo chulgo) {
+		return sqlSession.selectList("chulgo.getYearData",chulgo);
+	}
+	
+	@Override
 	public List<Chulgo> getMonthSaleList(Chulgo chulgo) {
 		return sqlSession.selectList("chulgo.getMonthSaleList",chulgo);
 	}
+	
+	
+	
+	
+	
 	
 	@Override
 	public List<Work> getMonthBulList(Work work) {
 		return sqlSession.selectList("work.getMonthBulList",work);
 	}
+	
+	@Override
+	public List<Work> getMonthBulSubList(Work work) {
+		return sqlSession.selectList("work.getMonthBulSubList",work);
+	}
+	
+	@Override
+	public List<Work> getMonthBulChartData(Work work) {
+		return sqlSession.selectList("work.getMonthBulChartData",work);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	@Override
+	public List<Work> getCuMonthBulList(Work work) {
+		return sqlSession.selectList("work.getCuMonthBulList",work);
+	}
+	
+	@Override
+	public List<Work> getCuBulSubList(Work work) {
+		return sqlSession.selectList("work.getCuBulSubList",work);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 

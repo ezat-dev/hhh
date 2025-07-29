@@ -373,14 +373,12 @@ public class ProductController {
 		@RequestMapping(value = "/product/pjaegoStatus/getPJaegoStatusList", method = RequestMethod.POST) 
 		@ResponseBody 
 		public Map<String, Object> getPJaegoStatusList(
-				@RequestParam String sdate,
-				@RequestParam String edate
+				@RequestParam String sdate
 				) {
 			Map<String, Object> rtnMap = new HashMap<String, Object>();
 			
 			Jaego jaego = new Jaego();
 			jaego.setSdate(sdate);
-			jaego.setEdate(edate);
 
 			List<Jaego> pJaegoList = productService.getPJaegoStatusList(jaego);
 
@@ -408,6 +406,7 @@ public class ProductController {
 				rowMap.put("pjai_real", pJaegoList.get(i).getPjai_real());
 				rowMap.put("pjai_real_j", pJaegoList.get(i).getPjai_real_j());
 				rowMap.put("pjai_real_mon", pJaegoList.get(i).getPjai_real_mon());
+				rowMap.put("pjai_mnth", pJaegoList.get(i).getPjai_mnth());
 				rowMap.put("och_bigo", pJaegoList.get(i).getOch_bigo());
 				rowMap.put("corp_business", pJaegoList.get(i).getCorp_business());
 

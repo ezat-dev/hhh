@@ -13,21 +13,29 @@
 	
 	<!-- 전체 사용자 목록 조회 -->
 	<select id="getUserList" parameterType="users" resultType="users">
-        SELECT *
-	    FROM USERT
-	    WHERE 1=1
-	    <if test="user_buso != null and user_buso != ''">
-	        AND user_buso = #{user_buso}
-	    </if>
-	    <if test="user_jick != null and user_jick != ''">
-	        AND user_jick = #{user_jick}
-	    </if>
-	    <if test="user_name != null and user_name != ''">
-	        AND user_name LIKE CONCAT('%', #{user_name}, '%')
-	    </if>
-	    <if test="user_ret != null and user_ret != ''">
-	        AND user_ret = #{user_ret}
-	    </if>
+       SELECT *
+		FROM USERT
+		WHERE 1=1
+		<if test="user_buso != null and user_buso != ''">
+		    AND user_buso = #{user_buso}
+		</if>
+		<if test="user_jick != null and user_jick != ''">
+		    AND user_jick = #{user_jick}
+		</if>
+		<if test="user_name != null and user_name != ''">
+		    AND user_name LIKE CONCAT('%', #{user_name}, '%')
+		</if>
+		
+		
+		<choose>
+		    <when test="user_ret != null and user_ret != ''">
+		        AND user_ret = #{user_ret}
+		    </when>
+		    <otherwise>
+		        AND user_ret = 0
+		    </otherwise>
+</choose>
+
     </select>
     
     

@@ -26,9 +26,38 @@ public interface OperationDao {
 
 	List<Chulgo> getYearSaleList(Chulgo chulgo);
 	
+	List<Chulgo> getYearData(Chulgo chulgo);
+	
 	List<Chulgo> getMonthSaleList(Chulgo chulgo);
 	
+	
+	
+	
+	
+	
+	
 	List<Work> getMonthBulList(Work work);
+	
+	List<Work> getMonthBulSubList(Work work);
+	
+	List<Work> getMonthBulChartData(Work work);
+	
+	
+	
+	
+	
+	
+	List<Work> getCuMonthBulList(Work work);
+	
+	List<Work> getCuBulSubList(Work work);
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

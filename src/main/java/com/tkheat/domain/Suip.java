@@ -16,23 +16,521 @@ public class Suip {
 	private String prod_danj;			//단중
 	private String prod_danw;			//단위
 	private String prod_dang;			//단가
+	
+	
+	
 
-
+	private String ord_date; //입고일
+	private int ord_su;
+	private String ord_lot;
 
 	//TECH 테이블
 	private String tech_no;					//공정
 
 	
 	// 수입검사
-	private String itst_date; //검사일
-	private String ord_date; //입고일
+	private Integer itst_code;
+	private String itst_date; //검검사일
+	private String itst_p;
+	private String itst_bigo;
+	private String itst_su;
+	private String itst_test;
 	private String itst_poor; //불량수
 	private String itst_wp; //판정
+	private String itst_wn;
+	private String itst_ws;
+	private String itst_w1;
+	private String itst_w2;
+	private String itst_w3;
+	private String itst_w4;
+	private String itst_w5;
+	private String itst_05n;
+	private String itst_05s;
+	private String itst_051;
+	private String itst_052;
+	private String itst_053;
+	private String itst_054;
+	private String itst_055;
+	private String itst_03n;
+	private String itst_03s;
+	private String itst_031;
+	private String itst_032;
+	private String itst_033;
+	private String itst_034;
+	private String itst_035;
+	private String itst_01n;
+	private String itst_01s;
+	private String itst_011;
+	private String itst_012;
+	private String itst_013;
+	private String itst_014;
+	private String itst_015;
+	private String itst_06n;
+	private String itst_06s;
+	private String itst_061;
+	private String itst_062;
+	private String itst_063;
+	private String itst_064;
+	private String itst_065;
+	private String itst_07n;
+	private String itst_07s;
+	private String itst_071;
+	private String itst_072;
+	private String itst_073;
+	private String itst_074;
+	private String itst_075;
+	private String itst_08n;
+	private String itst_08s;
+	private String itst_081;
+	private String itst_082;
+	private String itst_083;
+	private String itst_084;
+	private String itst_085;
+	private String itst_04n;
+	private String itst_04s;
+	private String itst_041;
+	private String itst_042;
+	private String itst_043;
+	private String itst_044;
+	private String itst_045;
+	private String itst_02n;
+	private String itst_02s;
+	private String itst_021;
+	private String itst_022;
+	private String itst_023;
+	private String itst_024;
+	private String itst_025;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
-	
-	
-	
-
+	public int getOrd_su() {
+		return ord_su;
+	}
+	public void setOrd_su(int ord_su) {
+		this.ord_su = ord_su;
+	}
+	public String getOrd_lot() {
+		return ord_lot;
+	}
+	public void setOrd_lot(String ord_lot) {
+		this.ord_lot = ord_lot;
+	}
+	public String getItst_p() {
+		return itst_p;
+	}
+	public void setItst_p(String itst_p) {
+		this.itst_p = itst_p;
+	}
+	public String getItst_bigo() {
+		return itst_bigo;
+	}
+	public void setItst_bigo(String itst_bigo) {
+		this.itst_bigo = itst_bigo;
+	}
+	public String getItst_su() {
+		return itst_su;
+	}
+	public void setItst_su(String itst_su) {
+		this.itst_su = itst_su;
+	}
+	public String getItst_test() {
+		return itst_test;
+	}
+	public void setItst_test(String itst_test) {
+		this.itst_test = itst_test;
+	}
+	public String getItst_wn() {
+		return itst_wn;
+	}
+	public void setItst_wn(String itst_wn) {
+		this.itst_wn = itst_wn;
+	}
+	public String getItst_ws() {
+		return itst_ws;
+	}
+	public void setItst_ws(String itst_ws) {
+		this.itst_ws = itst_ws;
+	}
+	public String getItst_w1() {
+		return itst_w1;
+	}
+	public void setItst_w1(String itst_w1) {
+		this.itst_w1 = itst_w1;
+	}
+	public String getItst_w2() {
+		return itst_w2;
+	}
+	public void setItst_w2(String itst_w2) {
+		this.itst_w2 = itst_w2;
+	}
+	public String getItst_w3() {
+		return itst_w3;
+	}
+	public void setItst_w3(String itst_w3) {
+		this.itst_w3 = itst_w3;
+	}
+	public String getItst_w4() {
+		return itst_w4;
+	}
+	public void setItst_w4(String itst_w4) {
+		this.itst_w4 = itst_w4;
+	}
+	public String getItst_w5() {
+		return itst_w5;
+	}
+	public void setItst_w5(String itst_w5) {
+		this.itst_w5 = itst_w5;
+	}
+	public String getItst_05n() {
+		return itst_05n;
+	}
+	public void setItst_05n(String itst_05n) {
+		this.itst_05n = itst_05n;
+	}
+	public String getItst_05s() {
+		return itst_05s;
+	}
+	public void setItst_05s(String itst_05s) {
+		this.itst_05s = itst_05s;
+	}
+	public String getItst_051() {
+		return itst_051;
+	}
+	public void setItst_051(String itst_051) {
+		this.itst_051 = itst_051;
+	}
+	public String getItst_052() {
+		return itst_052;
+	}
+	public void setItst_052(String itst_052) {
+		this.itst_052 = itst_052;
+	}
+	public String getItst_053() {
+		return itst_053;
+	}
+	public void setItst_053(String itst_053) {
+		this.itst_053 = itst_053;
+	}
+	public String getItst_054() {
+		return itst_054;
+	}
+	public void setItst_054(String itst_054) {
+		this.itst_054 = itst_054;
+	}
+	public String getItst_055() {
+		return itst_055;
+	}
+	public void setItst_055(String itst_055) {
+		this.itst_055 = itst_055;
+	}
+	public String getItst_03n() {
+		return itst_03n;
+	}
+	public void setItst_03n(String itst_03n) {
+		this.itst_03n = itst_03n;
+	}
+	public String getItst_03s() {
+		return itst_03s;
+	}
+	public void setItst_03s(String itst_03s) {
+		this.itst_03s = itst_03s;
+	}
+	public String getItst_031() {
+		return itst_031;
+	}
+	public void setItst_031(String itst_031) {
+		this.itst_031 = itst_031;
+	}
+	public String getItst_032() {
+		return itst_032;
+	}
+	public void setItst_032(String itst_032) {
+		this.itst_032 = itst_032;
+	}
+	public String getItst_033() {
+		return itst_033;
+	}
+	public void setItst_033(String itst_033) {
+		this.itst_033 = itst_033;
+	}
+	public String getItst_034() {
+		return itst_034;
+	}
+	public void setItst_034(String itst_034) {
+		this.itst_034 = itst_034;
+	}
+	public String getItst_035() {
+		return itst_035;
+	}
+	public void setItst_035(String itst_035) {
+		this.itst_035 = itst_035;
+	}
+	public String getItst_01n() {
+		return itst_01n;
+	}
+	public void setItst_01n(String itst_01n) {
+		this.itst_01n = itst_01n;
+	}
+	public String getItst_01s() {
+		return itst_01s;
+	}
+	public void setItst_01s(String itst_01s) {
+		this.itst_01s = itst_01s;
+	}
+	public String getItst_011() {
+		return itst_011;
+	}
+	public void setItst_011(String itst_011) {
+		this.itst_011 = itst_011;
+	}
+	public String getItst_012() {
+		return itst_012;
+	}
+	public void setItst_012(String itst_012) {
+		this.itst_012 = itst_012;
+	}
+	public String getItst_013() {
+		return itst_013;
+	}
+	public void setItst_013(String itst_013) {
+		this.itst_013 = itst_013;
+	}
+	public String getItst_014() {
+		return itst_014;
+	}
+	public void setItst_014(String itst_014) {
+		this.itst_014 = itst_014;
+	}
+	public String getItst_015() {
+		return itst_015;
+	}
+	public void setItst_015(String itst_015) {
+		this.itst_015 = itst_015;
+	}
+	public String getItst_06n() {
+		return itst_06n;
+	}
+	public void setItst_06n(String itst_06n) {
+		this.itst_06n = itst_06n;
+	}
+	public String getItst_06s() {
+		return itst_06s;
+	}
+	public void setItst_06s(String itst_06s) {
+		this.itst_06s = itst_06s;
+	}
+	public String getItst_061() {
+		return itst_061;
+	}
+	public void setItst_061(String itst_061) {
+		this.itst_061 = itst_061;
+	}
+	public String getItst_062() {
+		return itst_062;
+	}
+	public void setItst_062(String itst_062) {
+		this.itst_062 = itst_062;
+	}
+	public String getItst_063() {
+		return itst_063;
+	}
+	public void setItst_063(String itst_063) {
+		this.itst_063 = itst_063;
+	}
+	public String getItst_064() {
+		return itst_064;
+	}
+	public void setItst_064(String itst_064) {
+		this.itst_064 = itst_064;
+	}
+	public String getItst_065() {
+		return itst_065;
+	}
+	public void setItst_065(String itst_065) {
+		this.itst_065 = itst_065;
+	}
+	public String getItst_07n() {
+		return itst_07n;
+	}
+	public void setItst_07n(String itst_07n) {
+		this.itst_07n = itst_07n;
+	}
+	public String getItst_07s() {
+		return itst_07s;
+	}
+	public void setItst_07s(String itst_07s) {
+		this.itst_07s = itst_07s;
+	}
+	public String getItst_071() {
+		return itst_071;
+	}
+	public void setItst_071(String itst_071) {
+		this.itst_071 = itst_071;
+	}
+	public String getItst_072() {
+		return itst_072;
+	}
+	public void setItst_072(String itst_072) {
+		this.itst_072 = itst_072;
+	}
+	public String getItst_073() {
+		return itst_073;
+	}
+	public void setItst_073(String itst_073) {
+		this.itst_073 = itst_073;
+	}
+	public String getItst_074() {
+		return itst_074;
+	}
+	public void setItst_074(String itst_074) {
+		this.itst_074 = itst_074;
+	}
+	public String getItst_075() {
+		return itst_075;
+	}
+	public void setItst_075(String itst_075) {
+		this.itst_075 = itst_075;
+	}
+	public String getItst_08n() {
+		return itst_08n;
+	}
+	public void setItst_08n(String itst_08n) {
+		this.itst_08n = itst_08n;
+	}
+	public String getItst_08s() {
+		return itst_08s;
+	}
+	public void setItst_08s(String itst_08s) {
+		this.itst_08s = itst_08s;
+	}
+	public String getItst_081() {
+		return itst_081;
+	}
+	public void setItst_081(String itst_081) {
+		this.itst_081 = itst_081;
+	}
+	public String getItst_082() {
+		return itst_082;
+	}
+	public void setItst_082(String itst_082) {
+		this.itst_082 = itst_082;
+	}
+	public String getItst_083() {
+		return itst_083;
+	}
+	public void setItst_083(String itst_083) {
+		this.itst_083 = itst_083;
+	}
+	public String getItst_084() {
+		return itst_084;
+	}
+	public void setItst_084(String itst_084) {
+		this.itst_084 = itst_084;
+	}
+	public String getItst_085() {
+		return itst_085;
+	}
+	public void setItst_085(String itst_085) {
+		this.itst_085 = itst_085;
+	}
+	public String getItst_04n() {
+		return itst_04n;
+	}
+	public void setItst_04n(String itst_04n) {
+		this.itst_04n = itst_04n;
+	}
+	public String getItst_04s() {
+		return itst_04s;
+	}
+	public void setItst_04s(String itst_04s) {
+		this.itst_04s = itst_04s;
+	}
+	public String getItst_041() {
+		return itst_041;
+	}
+	public void setItst_041(String itst_041) {
+		this.itst_041 = itst_041;
+	}
+	public String getItst_042() {
+		return itst_042;
+	}
+	public void setItst_042(String itst_042) {
+		this.itst_042 = itst_042;
+	}
+	public String getItst_043() {
+		return itst_043;
+	}
+	public void setItst_043(String itst_043) {
+		this.itst_043 = itst_043;
+	}
+	public String getItst_044() {
+		return itst_044;
+	}
+	public void setItst_044(String itst_044) {
+		this.itst_044 = itst_044;
+	}
+	public String getItst_045() {
+		return itst_045;
+	}
+	public void setItst_045(String itst_045) {
+		this.itst_045 = itst_045;
+	}
+	public String getItst_02n() {
+		return itst_02n;
+	}
+	public void setItst_02n(String itst_02n) {
+		this.itst_02n = itst_02n;
+	}
+	public String getItst_02s() {
+		return itst_02s;
+	}
+	public void setItst_02s(String itst_02s) {
+		this.itst_02s = itst_02s;
+	}
+	public String getItst_021() {
+		return itst_021;
+	}
+	public void setItst_021(String itst_021) {
+		this.itst_021 = itst_021;
+	}
+	public String getItst_022() {
+		return itst_022;
+	}
+	public void setItst_022(String itst_022) {
+		this.itst_022 = itst_022;
+	}
+	public String getItst_023() {
+		return itst_023;
+	}
+	public void setItst_023(String itst_023) {
+		this.itst_023 = itst_023;
+	}
+	public String getItst_024() {
+		return itst_024;
+	}
+	public void setItst_024(String itst_024) {
+		this.itst_024 = itst_024;
+	}
+	public String getItst_025() {
+		return itst_025;
+	}
+	public void setItst_025(String itst_025) {
+		this.itst_025 = itst_025;
+	}
 	public int getProd_code() {
 		return prod_code;
 	}
@@ -134,6 +632,12 @@ public class Suip {
 	}
 	public void setEdate(String edate) {
 		this.edate = edate;
+	}
+	public Integer getItst_code() {
+		return itst_code;
+	}
+	public void setItst_code(Integer itst_code) {
+		this.itst_code = itst_code;
 	}
 
 }

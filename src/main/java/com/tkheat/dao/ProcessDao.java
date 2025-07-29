@@ -18,6 +18,8 @@ public interface ProcessDao {
 	
 	List<Siljuk> getReadySiljukList(Siljuk siljuk);
 	
+	void deleteSiljuk(Siljuk siljuk);
+	
 	List<Siljuk> getFacSiljukList(Siljuk siljuk);
 
 }

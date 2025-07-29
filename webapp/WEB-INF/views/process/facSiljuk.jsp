@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/tkheat/css/management/productInsert.css">
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
 <%@include file="../include/pluginpage.jsp" %> 
+<script src="https://unpkg.com/tabulator-tables@5.4.4/dist/js/tabulator.min.js"></script>
     <style>
     
 .main{
@@ -188,86 +189,81 @@
 
 	//이벤트
 	//함수
-	function getFacSiljukList(){
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		     ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/process/facSiljuk/getFacSiljukList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{"sdate": $("#sdate").val(),
-                "edate": $("#edate").val(),
-                },
-	        placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","29px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		        {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:220,
-			        hozAlign:"center"},	
-			    {title:"작업코드", field:"ilbo_code", sorter:"string", width:120,
-				    hozAlign:"center"},     
-				{title:"설비명", field:"fac_name", sorter:"string", width:120,
-				    hozAlign:"center"}, 
-				{title:"거래처", field:"corp_name", sorter:"string", width:120,
-				    hozAlign:"center"}, 
-		        {title:"품명", field:"prod_name", sorter:"string", width:120,
-		        	hozAlign:"center"},		        
-		        {title:"품번", field:"prod_no", sorter:"string", width:200,
-		        	hozAlign:"center"},
-		        {title:"시작", field:"ilbo_strt", sorter:"string", width:200,
-		        	hozAlign:"center"},
-		        {title:"종료", field:"ilbo_end", sorter:"string", width:250,
-			        hozAlign:"center"},	
-		        {title:"소요시간(분)", field:"time", sorter:"string", width:200,
-		        	hozAlign:"center"},  	
-		        {title:"입고LOT", field:"ord_lot", sorter:"string", width:200,
-			        hozAlign:"center"},	
-			    {title:"작업수량", field:"ilbo_su", sorter:"string", width:150,
-				    hozAlign:"center"},	
-				{title:"중량", field:"ilbo_jung", sorter:"string", width:100,
-				    hozAlign:"center"},
-				{title:"단위", field:"ord_danw", sorter:"string", width:150,
-					hozAlign:"center"},
-			    {title:"단가", field:"ord_dang", sorter:"string", width:150,
-					hozAlign:"center"},
- 			    {title:"금액", field:"mon", sorter:"string", width:100,
-					hozAlign:"center"},
-				    
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
+	function getFacSiljukList() {
+    userTable = new Tabulator("#tab1", {
+        height: "750px", // 전체 높이 스크롤 가능
+        layout: "fitColumns",
+        selectable: true,
+        tooltips: true,
+        selectableRangeMode: "click",
+        reactiveData: true,
+        headerHozAlign: "center",
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+        // ✅ AJAX 설정
+        ajaxURL: "/tkheat/process/facSiljuk/getFacSiljukList",
+        ajaxConfig: "POST",
+        ajaxParams: {
+            sdate: $("#sdate").val(),
+            edate: $("#edate").val()
+        },
+        ajaxLoader: false,
+        placeholder: "조회된 데이터가 없습니다.",
 
-				var rowData = row.getData();
-				
-			},
-		});		
-	}
+        // ✅ 응답에서 실제 데이터 배열만 반환
+        ajaxResponse: function(url, params, response){
+            return response.data;
+        },
+
+        pagination: false,  // ✅ 페이지네이션 해제 (스크롤로 전체 보기)
+        movableColumns: true,
+
+        // ✅ 2단 그룹핑: 설비명 → 생산LOT
+        groupBy: ["fac_name", "ilbo_lot"],
+        groupStartOpen: [true, true],  // 모두 펼쳐진 상태로 시작
+        groupHeader: [
+            function(value, count, data, group){
+                return `<span style='font-weight:bold; font-size:14px;'>${value}</span>`;  // 설비명만 표시
+            },
+            function(value, count, data, group){
+                return `<span style='color:#444;'>LOT: ${value}</span>`;  // 생산 LOT만 표시
+            }
+        ],
+
+        columns: [
+            {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:100, hozAlign:"center"},	
+            {title:"작업코드", field:"ilbo_code", sorter:"string", width:90, hozAlign:"center"},     
+            {title:"설비명", field:"fac_name", sorter:"string", width:110, hozAlign:"center"}, 
+            {title:"거래처", field:"corp_name", sorter:"string", width:120, hozAlign:"center"}, 
+            {title:"품명", field:"prod_name", sorter:"string", width:180, hozAlign:"center"},		        
+            {title:"품번", field:"prod_no", sorter:"string", width:120, hozAlign:"center"},
+            {title:"시작", field:"ilbo_strt", sorter:"string", width:100, hozAlign:"center"},
+            {title:"종료", field:"ilbo_end", sorter:"string", width:100, hozAlign:"center"},	
+            {title:"소요시간(분)", field:"time", sorter:"string", width:120, hozAlign:"center"},	
+            {title:"작업수량", field:"ilbo_su", sorter:"string", width:150, hozAlign:"center"},	
+            {title:"중량", field:"ilbo_jung", sorter:"string", width:100, hozAlign:"center"},
+            {title:"단위", field:"ord_danw", sorter:"string", width:70, hozAlign:"center"},
+            {title:"단가", field:"ord_dang", sorter:"string", width:150, hozAlign:"center"},
+            {title:"금액", field:"mon", sorter:"string", width:100, hozAlign:"center"},
+        ],
+
+        rowFormatter: function(row){
+            row.getElement().style.fontWeight = "700";
+            row.getElement().style.backgroundColor = "#FFFFFF";
+        },
+
+        rowClick: function(e, row){
+            $("#tab1 .tabulator-row").removeClass("row_select");
+            row.getElement().classList.add("row_select");
+
+            const rowData = row.getData();
+            // rowData 처리 가능
+        }
+    });
+}
+
+
+
+
 	
 
     </script>

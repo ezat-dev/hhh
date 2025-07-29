@@ -108,73 +108,103 @@
 
 	//이벤트
 	//함수
-	function getPChulgoStatusList(){
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/operation/pChulgoStatus/getPChulgoStatusList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	"sdate": $("#sdate").val(),
-                "edate": $("#edate").val(),
-			    },
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		    	{title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},
-		        {title:"출고일", field:"och_date", sorter:"string", width:170,
-			        hozAlign:"center", headerFilter:"input"},
-				{title:"거래처명", field:"corp_name", sorter:"string", width:180,
-				    hozAlign:"center", headerFilter:"input"}, 
-				{title:"품명", field:"prod_name", sorter:"string", width:270,
-				    hozAlign:"center", headerFilter:"input"}, 
-		        {title:"품번", field:"prod_no", sorter:"string", width:240,
-		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"수량", field:"och_su", sorter:"int", width:200,
-		        	hozAlign:"center"},
-		        {title:"중량", field:"och_amnt", sorter:"int", width:200,
-		        	hozAlign:"center"},
-		        {title:"금액", field:"och_mon", sorter:"int", width:200,
-			        hozAlign:"center"},
-				    
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
+	function getPChulgoStatusList() {
+    userTable = new Tabulator("#tab1", {
+        height: "750px",
+        layout: "fitColumns",
+        selectable: true,
+        tooltips: true,
+        selectableRangeMode: "click",
+        reactiveData: true,
+        headerHozAlign: "center",
+        ajaxConfig: "POST",
+        ajaxLoader: false,
+        ajaxURL: "/tkheat/operation/pChulgoStatus/getPChulgoStatusList",
+        ajaxProgressiveLoad: "scroll",
+        ajaxParams: {
+            "sdate": $("#sdate").val(),
+            "edate": $("#edate").val(),
+        },
+        placeholder: "조회된 데이터가 없습니다.",
+        paginationSize: 20,
+        ajaxResponse: function (url, params, response) {
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height", "55px");
+            return response;
+        },
+        columns: [
+            { title: "NO", field: "idx", sorter: "int", width: 80, hozAlign: "center" },
+            { title: "출고일", field: "och_date", sorter: "string", width: 170, hozAlign: "center", headerFilter: "input" },
+            { title: "거래처명", field: "corp_name", sorter: "string", width: 180, hozAlign: "center", headerFilter: "input" },
+            { title: "품명", field: "prod_name", sorter: "string", width: 270, hozAlign: "center", headerFilter: "input" },
+            { title: "품번", field: "prod_no", sorter: "string", width: 240, hozAlign: "center", headerFilter: "input" },
+            { 
+                title: "수량", 
+                field: "och_su", 
+                sorter: "number", 
+                width: 200, 
+                hozAlign: "center",
+                bottomCalc: "sum",
+                bottomCalcFormatter: "money",
+                bottomCalcFormatterParams: {
+                    precision: 0,
+                    thousand: ","
+                }
+            },
+            { 
+                title: "중량", 
+                field: "och_amnt", 
+                sorter: "number", 
+                width: 200, 
+                hozAlign: "center",
+                bottomCalc: "sum",
+                bottomCalcFormatter: "money",
+                bottomCalcFormatterParams: {
+                    precision: 1,
+                    thousand: ","
+                }
+            },
+            { 
+                title: "금액", 
+                field: "och_mon", 
+                sorter: "number", 
+                width: 200, 
+                hozAlign: "center",
+                formatter: "money",
+                formatterParams: {
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 0
+                },
+                bottomCalc: "sum",
+                bottomCalcFormatter: "money",
+                bottomCalcFormatterParams: {
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 0
+                }
+            },
+        ],
+        rowFormatter: function (row) {
+            row.getElement().style.fontWeight = "700";
+            row.getElement().style.backgroundColor = "#FFFFFF";
+        },
+        rowClick: function (e, row) {
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function (index, item) {
+                if ($(this).hasClass("row_select")) {
+                    $(this).removeClass('row_select');
+                    row.getElement().className += " row_select";
+                } else {
+                    $("#tab1 div.row_select").removeClass("row_select");
+                    row.getElement().className += " row_select";
+                }
+            });
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+            var rowData = row.getData();
+        },
+    });
+}
 
-				var rowData = row.getData();
-				
-			},
-		});		
-	}
+
 	
 
     </script>

@@ -37,7 +37,7 @@ public class Chulgo {
 	private int och_mon_tax; //부가세
 	private int och_mon_total; //합계금액
 	
-	
+	private int mm_total;
 	
 	
 	private int mm1;
@@ -507,5 +507,11 @@ public class Chulgo {
 	}
 	public void setOch_mon_total(int och_mon_total) {
 		this.och_mon_total = och_mon_total;
+	}
+	public int getMm_total() {
+		return mm_total;
+	}
+	public void setMm_total(int mm_total) {
+		this.mm_total = mm_total;
 	}
 }

@@ -25,8 +25,8 @@ public class PreservationServiceImpl implements PreservationService{
 	}
 	
 	@Override
-	public List<SparePart> getSpareSubList(int spp_idx){
-		return preservationDao.getSpareSubList(spp_idx);
+	public List<SparePart> getSpareSubList(SparePart sparePart){
+		return preservationDao.getSpareSubList(sparePart);
 	}
 	
 	@Override
@@ -45,11 +45,19 @@ public class PreservationServiceImpl implements PreservationService{
 	}
 	
 	@Override
-	public void deleteSparePart(int spp_idx) {
+	public void deleteSparePart(Integer spp_idx) {
 		preservationDao.deleteSparePart(spp_idx);
 	}
 	
+	@Override
+	public void insertSpareSub(SparePart sparePart) {
+		preservationDao.insertSpareSub(sparePart);
+	}
 	
+	@Override
+	public void updateSpareSub(SparePart sparePart) {
+		preservationDao.updateSpareSub(sparePart);
+	}
 	
 	
 	@Override
@@ -145,6 +153,31 @@ public class PreservationServiceImpl implements PreservationService{
 	@Override
 	public void jeomgeomDelete(int chs_code) {
 		preservationDao.jeomgeomDelete(chs_code);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	@Override
+	public List<Jeomgeom> getDayJeomgeomList(Jeomgeom jeomgeom){
+		return preservationDao.getDayJeomgeomList(jeomgeom);
+	}
+	
+	@Override
+	public List<Jeomgeom> dayJeomgeomSubList(Jeomgeom jeomgeom){
+		return preservationDao.dayJeomgeomSubList(jeomgeom);
+	}
+	
+	
+	
+	
+	@Override
+	public List<Jeomgeom> getMonthJeomgeomList(Jeomgeom jeomgeom){
+		return preservationDao.getMonthJeomgeomList(jeomgeom);
 	}
 	
 	

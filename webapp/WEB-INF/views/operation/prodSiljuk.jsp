@@ -107,74 +107,111 @@
 
 	//이벤트
 	//함수
-	function getProdSiljukList(){
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/operation/prodSiljuk/getProdSiljukList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	"sdate": $("#sdate").val(),
-                "edate": $("#edate").val(),
-			    },
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},    
-				{title:"거래처명", field:"corp_name", sorter:"string", width:170,
-				    hozAlign:"center", headerFilter:"input"}, 
-				{title:"품명", field:"prod_name", sorter:"string", width:270,
-				    hozAlign:"center", headerFilter:"input"}, 
-		        {title:"품번", field:"prod_no", sorter:"string", width:240,
-		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"수량", field:"ilbo_su", sorter:"int", width:200,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"중량", field:"ilbo_jung", sorter:"string", width:200,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"단가", field:"ord_dang", sorter:"string", width:200,
-			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"금액", field:"ilbo_mon", sorter:"int", width:200,
-		        	hozAlign:"center", headerFilter:"input"},
-				    
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
+	function getProdSiljukList() {
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+    userTable = new Tabulator("#tab1", {
+        height: "750px",
+        layout: "fitColumns",
+        selectable: true,
+        tooltips: true,
+        selectableRangeMode: "click",
+        reactiveData: true,
+        headerHozAlign: "center",
+        ajaxConfig: "POST",
+        ajaxLoader: false,
+        ajaxURL: "/tkheat/operation/prodSiljuk/getProdSiljukList",
+        ajaxProgressiveLoad: "scroll",
+        ajaxParams: {
+            "sdate": $("#sdate").val(),
+            "edate": $("#edate").val(),
+        },
+        placeholder: "조회된 데이터가 없습니다.",
+        paginationSize: 20,
+        ajaxResponse: function (url, params, response) {
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height", "55px");
+            return response;
+        },
+        columns: [
+            { title: "NO", field: "idx", sorter: "int", width: 80, hozAlign: "center" },
+            { title: "거래처명", field: "corp_name", sorter: "string", width: 170, hozAlign: "center", headerFilter: "input" },
+            { title: "품명", field: "prod_name", sorter: "string", width: 270, hozAlign: "center", headerFilter: "input" },
+            { title: "품번", field: "prod_no", sorter: "string", width: 240, hozAlign: "center", headerFilter: "input" },
+            {
+                title: "수량",
+                field: "ilbo_su",
+                sorter: "number",
+                width: 200,
+                hozAlign: "center",
+                headerFilter: "input",
+                bottomCalc: "sum",
+                formatter: "money",
+                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                bottomCalcFormatter: "money",
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+            },
+            {
+                title: "중량",
+                field: "ilbo_jung",
+                sorter: "number",
+                width: 200,
+                hozAlign: "center",
+                headerFilter: "input",
+                bottomCalc: "sum",
+                formatter: "money",
+                formatterParams: { decimal: ".", thousand: ",", precision: 2 },
+                bottomCalcFormatter: "money",
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 2 }
+            },
+            {
+                title: "단가",
+                field: "ord_dang",
+                sorter: "number",
+                width: 200,
+                hozAlign: "center",
+                headerFilter: "input",
+                formatter: "money",
+                formatterParams: { decimal: ".", thousand: ",", precision: 0 }
+            },
+            {
+                title: "금액",
+                field: "ilbo_mon",
+                sorter: "number",
+                width: 200,
+                hozAlign: "center",
+                headerFilter: "input",
+                bottomCalc: "sum",
+                formatter: "money",
+                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                bottomCalcFormatter: "money",
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+            },
+        ],
+        rowFormatter: function (row) {
+            row.getElement().style.fontWeight = "700";
+            row.getElement().style.backgroundColor = "#FFFFFF";
+        },
+        rowClick: function (e, row) {
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function (index, item) {
+                if ($(this).hasClass("row_select")) {
+                    $(this).removeClass('row_select');
+                    row.getElement().className += " row_select";
+                } else {
+                    $("#tab1 div.row_select").removeClass("row_select");
+                    row.getElement().className += " row_select";
+                }
+            });
 
-				var rowData = row.getData();
-				
-			},
-		});		
-	}
-	
+            var rowData = row.getData();
+        },
+    });
+}
+
+	 //엑셀 다운로드
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "제품별작업실적_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "제품별작업실적" });
+	});
 
     </script>
 

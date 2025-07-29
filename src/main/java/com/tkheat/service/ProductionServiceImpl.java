@@ -101,5 +101,70 @@ public class ProductionServiceImpl implements ProductionService{
 	public void setWorkJSave(Work work) {
 		productionDao.setWorkJSave(work);
 	}
-
+	
+	
+	
+	
+	
+	
+	
+	@Override
+	public List<Work> getLotIpgoList(Work work) {
+		return productionDao.getLotIpgoList(work);
+	}
+	
+	@Override
+	public List<Work> getLotIpgoReadyList(Integer ord_code){
+		return productionDao.getLotIpgoReadyList(ord_code);
+	}
+	
+	@Override
+	public List<Work> getLotIpgoChimList(Integer ord_code){
+		return productionDao.getLotIpgoChimList(ord_code);
+	}
+	
+	@Override
+	public List<Work> getLotIpgoTemList(Integer ord_code){
+		return productionDao.getLotIpgoTemList(ord_code);
+	}
+	
+	@Override
+	public List<Work> getLotIpgoChulList(Integer ord_code){
+		return productionDao.getLotIpgoChulList(ord_code);
+	}
+	
+	
+	
+	
+	
+	
+	
+	@Override
+	public List<Work> getLotHeatList(Work work) {
+		return productionDao.getLotHeatList(work);
+	}
+	
+	@Override
+	public List<Work> getLotHeatIpgoList(Integer ord_code){
+		return productionDao.getLotHeatIpgoList(ord_code);
+	}
+	
+	@Override
+	public List<Work> getLotHeatJuckList(String ilbo_pc){
+		return productionDao.getLotHeatJuckList(ilbo_pc);
+	}
+	
+	@Override
+	public List<Work> getLotHeatChimList(String ilbo_pc){
+		return productionDao.getLotHeatChimList(ilbo_pc);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

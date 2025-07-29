@@ -127,97 +127,122 @@
 	//함수
 	function getJaegoStatusList(){
 		
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/product/jaegoStatus/getJaegoStatusList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	"sdate": $("#sdate").val(),
-		    	"edate": $("#edate").val(),
-			    },
-     	    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:50,
-		        	hozAlign:"center"},
-		        {title:"수주NO", field:"ord_code", sorter:"string", width:120,
-			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"입고일", field:"ord_date", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"},     
-				{title:"거래처", field:"corp_name", sorter:"string", width:150,
-				    hozAlign:"center", headerFilter:"input"}, 
-				{title:"품명", field:"prod_name", sorter:"string", width:200,
-				    hozAlign:"center", headerFilter:"input"}, 
-		        {title:"품번", field:"prod_no", sorter:"string", width:150,
-		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"재질", field:"prod_jai", sorter:"string", width:140,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"규격", field:"prod_gyu", sorter:"string", width:200,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"공정", field:"tech_te", sorter:"string", width:100,
-			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"입고/타각LOT", field:"ord_lot", sorter:"int", width:100,
-		        	hozAlign:"center", headerFilter:"input"},  	
-		        {title:"단가", field:"ord_dang", sorter:"int", width:100,
-			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"단중", field:"ord_danj", sorter:"int", width:100,
-				    hozAlign:"center", headerFilter:"input"},	
-				{title:"입고수", field:"ord_su", sorter:"int", width:100,
-				    hozAlign:"center", headerFilter:"input"},
-				{title:"입고중량", field:"ord_amnt", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},
-			    {title:"재고수", field:"jaigo_su", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},
- 			    {title:"재고중량", field:"jaigo_amnt", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"입고비고", field:"ord_bigo", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"입고담당자", field:"ord_name", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"단위", field:"ord_danw", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"금액", field:"och_mon", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"출고비고", field:"och_bigo", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},
-				    
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
+	userTable = new Tabulator("#tab1", {
+	    height: "750px",
+	    layout: "fitColumns",
+	    selectable: true,
+	    tooltips: true,
+	    selectableRangeMode: "click",
+	    reactiveData: true,
+	    headerHozAlign: "center",
+	    ajaxConfig: "POST",
+	    ajaxLoader: false,
+	    ajaxURL: "/tkheat/product/jaegoStatus/getJaegoStatusList",
+	    ajaxProgressiveLoad: "scroll",
+	    ajaxParams: {
+	        "sdate": $("#sdate").val(),
+	        "edate": $("#edate").val(),
+	    },
+	    placeholder: "조회된 데이터가 없습니다.",
+	    paginationSize: 20,
+	    ajaxResponse: function(url, params, response){
+	        $("#tab1 .tabulator-col.tabulator-sortable").css("height", "55px");
+	        return response;
+	    },
+	    columns: [
+	        {title: "NO", field: "idx", sorter: "int", width: 40, hozAlign: "center"},
+	        {title: "수주NO", field: "ord_code", sorter: "string", width: 100, hozAlign: "center", headerFilter: "input"},
+	        {title: "입고일", field: "ord_date", sorter: "string", width: 120, hozAlign: "center", headerFilter: "input"},
+	        {title: "거래처", field: "corp_name", sorter: "string", width: 100, hozAlign: "center", headerFilter: "input"},
+	        {title: "품명", field: "prod_name", sorter: "string", width: 160, hozAlign: "center", headerFilter: "input"},
+	        {title: "품번", field: "prod_no", sorter: "string", width: 120, hozAlign: "center", headerFilter: "input"},
+	        {title: "재질", field: "prod_jai", sorter: "string", width: 110, hozAlign: "center", headerFilter: "input"},
+	        {title: "규격", field: "prod_gyu", sorter: "string", width: 110, hozAlign: "center", headerFilter: "input"},
+	        {title: "공정", field: "tech_te", sorter: "string", width: 80, hozAlign: "center", headerFilter: "input"},
+	        {title: "입고/타각LOT", field: "ord_lot", sorter: "int", width: 80, hozAlign: "center", headerFilter: "input"},
+	        
+	        {
+	            title: "단가", field: "ord_dang", sorter: "int", width: 80, hozAlign: "center", headerFilter: "input",
+	            formatter: "money",
+	            formatterParams: {thousand: ",", precision: 0},
+	            bottomCalc: "sum",
+	            bottomCalcFormatter: "money",
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	        },
+	        {
+	            title: "단중", field: "ord_danj", sorter: "int", width: 80, hozAlign: "center", headerFilter: "input",
+	            formatter: "money",
+	            formatterParams: {thousand: ",", precision: 0},
+	            bottomCalc: "sum",
+	            bottomCalcFormatter: "money",
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	        },
+	        {
+	            title: "입고수", field: "ord_su", sorter: "int", width: 80, hozAlign: "center", headerFilter: "input",
+	            formatter: "money",
+	            formatterParams: {thousand: ",", precision: 0},
+	            bottomCalc: "sum",
+	            bottomCalcFormatter: "money",
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	        },
+	        {
+	            title: "입고중량", field: "ord_amnt", sorter: "int", width: 80, hozAlign: "center", headerFilter: "input",
+	            formatter: "money",
+	            formatterParams: {thousand: ",", precision: 0},
+	            bottomCalc: "sum",
+	            bottomCalcFormatter: "money",
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	        },
+	        {
+	            title: "재고수", field: "jaigo_su", sorter: "int", width: 80, hozAlign: "center", headerFilter: "input",
+	            formatter: "money",
+	            formatterParams: {thousand: ",", precision: 0},
+	            bottomCalc: "sum",
+	            bottomCalcFormatter: "money",
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	        },
+	        {
+	            title: "재고중량", field: "jaigo_amnt", sorter: "int", width: 80, hozAlign: "center", headerFilter: "input",
+	            formatter: "money",
+	            formatterParams: {thousand: ",", precision: 0},
+	            bottomCalc: "sum",
+	            bottomCalcFormatter: "money",
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	        },
+	        
+	        {title: "입고비고", field: "ord_bigo", sorter: "int", width: 80, hozAlign: "center", headerFilter: "input"},
+	        {title: "입고담당자", field: "ord_name", sorter: "int", width: 80, hozAlign: "center", headerFilter: "input"},
+	        {title: "단위", field: "ord_danw", sorter: "int", width: 80, hozAlign: "center", headerFilter: "input"},
+	        
+	        {
+	            title: "금액", field: "och_mon", sorter: "int", width: 80, hozAlign: "center", headerFilter: "input",
+	            formatter: "money",
+	            formatterParams: {thousand: ",", precision: 0},
+	            bottomCalc: "sum",
+	            bottomCalcFormatter: "money",
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	        },
+	        {title: "출고비고", field: "och_bigo", sorter: "int", width: 80, hozAlign: "center", headerFilter: "input"},
+	    ],
+	    rowFormatter: function(row){
+	        row.getElement().style.fontWeight = "700";
+	        row.getElement().style.backgroundColor = "#FFFFFF";
+	    },
+	    rowClick: function(e, row){
+	        $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
+	            if($(this).hasClass("row_select")){
+	                $(this).removeClass('row_select');
+	                row.getElement().className += " row_select";
+	            } else {
+	                $("#tab1 div.row_select").removeClass("row_select");
+	                row.getElement().className += " row_select";	
+	            }
+	        });
+	        var rowData = row.getData();
+	    },
+	});		
+}
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
-
-				var rowData = row.getData();
-				
-			},
-		});		
-	}
 	
 
     </script>

@@ -22,7 +22,8 @@
 		SPAREPART.SPP_YONG,
 		SPAREPART.SPP_PROPER,
 		SPAREPART.SPP_IMAGE,
-		SPAREPART.SPP_BIGO
+		SPAREPART.SPP_BIGO,
+		SPAREPART.FILE_NAME 
 		FROM SPAREHISTORY WITH(NOLOCK)
 		RIGHT OUTER JOIN SPAREPART WITH(NOLOCK) ON SPAREHISTORY.SPP_IDX =
 		SPAREPART.SPP_IDX
@@ -35,7 +36,8 @@
 		SPAREPART.SPP_YONG,
 		SPAREPART.SPP_PROPER,
 		SPAREPART.SPP_IMAGE,
-		SPAREPART.SPP_BIGO
+		SPAREPART.SPP_BIGO,
+		SPAREPART.FILE_NAME
 		)
 
 		SELECT
@@ -79,6 +81,7 @@
            ,SPP_PROPER
            ,SPP_IMAGE
            ,SPP_BIGO
+           ,FILE_NAME
            )
      VALUES
            (
@@ -90,6 +93,7 @@
            ,#{spp_proper}
            ,#{spp_image}
            ,#{spp_bigo}
+           ,#{file_name}
            )
 	</insert>
 	
@@ -104,7 +108,10 @@
 			,[SPP_YONG]		= #{spp_yong}		
 			,[SPP_PROPER]	= #{spp_proper}		
 			,[SPP_IMAGE]	= #{spp_image}
-			,[SPP_BIGO]		= #{spp_bigo}		
+			,[SPP_BIGO]		= #{spp_bigo}	
+			<if test="file_name != null and file_name != ''">
+            ,[FILE_NAME] = #{file_name}
+        </if>		
 	    WHERE SPP_IDX = #{spp_idx}
   	</update>
 	
@@ -121,6 +128,7 @@
 		SP.SPP_PROPER              AS spp_proper,
 		SP.SPP_IMAGE               AS spp_image,
 		SP.SPP_BIGO                AS spp_bigo,
+		SP.FILE_NAME               AS file_name,
 
 		ISNULL(SUM(SH.SPH_INPUT), 0)       AS sph_input,
 		ISNULL(SUM(SH.SPH_SURIOUT), 0)     AS sph_suriout,
@@ -132,7 +140,7 @@
 	WHERE SP.SPP_IDX = #{spp_idx}
 	GROUP BY 
 		SP.SPP_IDX, SP.SPP_PURCHASE, SP.SPP_NO, SP.SPP_NAME,
-		SP.SPP_GYU, SP.SPP_YONG, SP.SPP_PROPER, SP.SPP_IMAGE, SP.SPP_BIGO
+		SP.SPP_GYU, SP.SPP_YONG, SP.SPP_PROPER, SP.SPP_IMAGE, SP.SPP_BIGO, SP.FILE_NAME
 	
 	</select>
 	
@@ -142,6 +150,70 @@
 	    DELETE FROM SPAREPART
 	    WHERE SPP_IDX = #{spp_idx}
   </delete>
+  
+  
+  
+  
+  
+  
+   <insert id="insertSpareSub" parameterType="sparePart">
+    INSERT INTO [dbo].[SPAREHISTORY]
+       (
+        [SPH_IDX],
+        [SPP_IDX],
+        [SPH_INPUT],
+        [SPH_TIME],
+        [SPH_SURIOUT],
+        [SPH_JASANOUT],
+        [SPH_BIGO],
+        [SPH_USER]
+       )
+SELECT 
+       ISNULL(MAX(SPH_IDX), 0) + 1,
+       #{spp_idx},
+       #{sph_input},
+       #{sph_time},
+       #{sph_suriout},
+       #{sph_jasanout},
+       #{sph_bigo},
+       #{sph_user}
+FROM [dbo].[SPAREHISTORY];
+
+</insert>
+
+
+  <update id="updateSpareSub" parameterType="sparePart">
+		SET LOCK_TIMEOUT 10000;
+    UPDATE [dbo].[SPAREHISTORY]
+      SET SPH_TIME = #{sph_time}    --SPH_TIME, datetime
+       ,SPH_INPUT = #{sph_input}  --SPH_INPUT, int
+       ,SPH_SURIOUT = #{sph_suriout}  --SPH_SURIOUT, int
+       ,SPH_JASANOUT = #{sph_jasanout}  --SPH_JASANOUT, int
+       ,SPH_BIGO = #{sph_bigo}    --SPH_BIGO, nvarchar(100)
+       ,SPH_USER = #{sph_user}    --SPH_USER, nvarchar(20)
+    WHERE SPH_IDX = #{sph_idx}
+  </update>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 
 </mapper>

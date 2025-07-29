@@ -59,6 +59,8 @@ public class QualityController {
 			rowMap.put("prod_jai", suipList.get(i).getProd_jai());
 			rowMap.put("itst_poor", suipList.get(i).getItst_poor());
 			rowMap.put("itst_wp", suipList.get(i).getItst_wp());
+			rowMap.put("itst_code", suipList.get(i).getItst_code());
+			rowMap.put("corp_code", suipList.get(i).getCorp_code());
 
 			rtnList.add(rowMap);
 		}
@@ -68,6 +70,61 @@ public class QualityController {
 
 		return rtnMap; 
 	}
+	
+	
+	//수입검사 - insert,update
+	@RequestMapping(value = "/quality/suip/suipSave", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> suipSave(
+			@ModelAttribute Suip suip,
+			@RequestParam("mode") String mode) { 
+
+		System.out.println("mode = " + mode);
+		System.out.println("werr_code = " + suip.getItst_code());
+		Map<String, Object> result = new HashMap<>();
+
+		try {
+			if ("update".equalsIgnoreCase(mode)) {
+				qualityService.suipUdateSave(suip);  
+			} else {
+				throw new IllegalArgumentException("Invalid mode: " + mode);
+			}
+
+			result.put("status", "success");
+			result.put("message", "OK");
+
+		} catch (Exception e) {
+			result.put("status", "error");
+			result.put("message", e.getMessage());
+		}
+
+		System.out.println(result.get("status"));
+		System.out.println(result.get("message"));
+
+
+		return result;
+	} 
+
+
+	//수입검사 더블클릭조회
+	@RequestMapping(value = "/quality/suip/suipDetail", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> suipDetail(
+			@RequestParam Integer itst_code) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Suip suip = new Suip();
+		suip.setItst_code(itst_code);
+		Suip suipList = qualityService.suipDetail(suip);
+
+		rtnMap.put("data",suipList);
+
+		return rtnMap; 
+	}  
+	
+	
+	
+	
 
 	//부적합등록 - 화면로드
 	@RequestMapping(value = "/quality/nonInsert", method = RequestMethod.GET)

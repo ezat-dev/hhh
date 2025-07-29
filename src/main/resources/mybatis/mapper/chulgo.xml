@@ -244,56 +244,101 @@
 	<!-- 년간매출현황 조회 -->
 	<select id="getYearSaleList" parameterType="chulgo"
 	resultType="chulgo">
-	SELECT CORP_NAME, isnull([1],0) as MM1,
-					  isnull([2],0) as MM2, 
-					  isnull([3],0) as MM3, 
-					  isnull([4],0) as MM4,
-                 	  isnull([5],0) as MM5,
-                 	  isnull([6],0) as MM6, 
-                 	  isnull([7],0) as MM7, 
-                 	  isnull([8],0) as MM8,
-				  	  isnull([9],0) as MM9,
-				  	  isnull([10],0) as MM10,
-				  	  isnull([11],0) as MM11 ,
-				  	  isnull([12],0) as MM12
-	FROM   
-    	 ( SELECT CORP_NAME,
-	         	 DATEPART(mm, OCH_DATE) AS OCH_DATE_MM,  
-			  	SUM(OCH_MON) AS OCH_MON_SUM
-     		FROM OCHULGO
-				 INNER JOIN ORDERT ON OCHULGO.ORD_CODE = ORDERT.ORD_CODE
-			 	INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
-				INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE 
-		group by DATEPART(mm, OCH_DATE),CORP_NAME ) AS  A
-	PIVOT
-	(SUM(OCH_MON_SUM) FOR OCH_DATE_MM IN ([1], [2], [3], [4],[5],[6],[7],[8],[9],[10],[11],[12]) )   AS P
-	ORDER BY CORP_NAME;
+			SELECT 
+			CORP_NAME, 
+			ISNULL([1],0) AS MM1,
+			ISNULL([2],0) AS MM2, 
+			ISNULL([3],0) AS MM3, 
+			ISNULL([4],0) AS MM4,
+			ISNULL([5],0) AS MM5,
+			ISNULL([6],0) AS MM6, 
+			ISNULL([7],0) AS MM7, 
+			ISNULL([8],0) AS MM8,
+			ISNULL([9],0) AS MM9,
+			ISNULL([10],0) AS MM10,
+			ISNULL([11],0) AS MM11,
+			ISNULL([12],0) AS MM12,
+			ISNULL([1],0) + ISNULL([2],0) + ISNULL([3],0) + ISNULL([4],0) + ISNULL([5],0) +
+			ISNULL([6],0) + ISNULL([7],0) + ISNULL([8],0) + ISNULL([9],0) + ISNULL([10],0) +
+			ISNULL([11],0) + ISNULL([12],0) AS mm_total
+		FROM (
+			SELECT 
+				CORP_NAME,
+				DATEPART(MM, OCH_DATE) AS OCH_DATE_MM,  
+				SUM(OCH_MON) AS OCH_MON_SUM
+			FROM OCHULGO
+			INNER JOIN ORDERT ON OCHULGO.ORD_CODE = ORDERT.ORD_CODE
+			INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+			INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE 
+			WHERE DATEPART(YEAR, OCH_DATE) = #{sdate}
+			GROUP BY DATEPART(MM, OCH_DATE), CORP_NAME
+		) AS A
+		PIVOT (
+			SUM(OCH_MON_SUM) 
+			FOR OCH_DATE_MM IN ([1], [2], [3], [4], [5], [6], [7], [8], [9], [10], [11], [12])
+		) AS och_mon_sum
+		ORDER BY CORP_NAME;
+
+	</select>
+	
+	
+	<select id="getYearData" parameterType="chulgo"
+	resultType="chulgo">
+			SELECT CORP_NAME, 
+		       ISNULL([1],0) AS MM1, ISNULL([2],0) AS MM2, ISNULL([3],0) AS MM3, 
+		       ISNULL([4],0) AS MM4, ISNULL([5],0) AS MM5, ISNULL([6],0) AS MM6,
+		       ISNULL([7],0) AS MM7, ISNULL([8],0) AS MM8, ISNULL([9],0) AS MM9,
+		       ISNULL([10],0) AS MM10, ISNULL([11],0) AS MM11, ISNULL([12],0) AS MM12
+		FROM (
+		    SELECT CORP_NAME,
+		           DATEPART(mm, OCH_DATE) AS OCH_DATE_MM,  
+		           SUM(OCH_MON) AS OCH_MON_SUM
+		    FROM OCHULGO
+		         INNER JOIN ORDERT ON OCHULGO.ORD_CODE = ORDERT.ORD_CODE
+		         INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+		         INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE 
+		    WHERE DATEPART(year, OCH_DATE) = #{sdate}
+		      AND CORP_NAME = #{corp_name} 
+		    GROUP BY DATEPART(mm, OCH_DATE), CORP_NAME
+		) AS A
+		PIVOT (
+		    SUM(OCH_MON_SUM) 
+		    FOR OCH_DATE_MM IN ([1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12])
+		) AS och_mon_sum
+
 	</select>
 	
 	<!-- 월매출현황(마감) 조회 -->
 	<select id="getMonthSaleList" parameterType="chulgo"
 	resultType="chulgo">
-	SELECT OCHULGO.OCH_MA, 
-		       CORP.CORP_NAME, 
-		       LEFT(CONVERT(NVARCHAR,OCHULGO.OCH_DATE, 120), 10) AS OCH_DATE, 
-		       PRODUCT.PROD_NAME, 
-		       PRODUCT.PROD_NO, 
-		       OCHULGO.OCH_LOT, 
-		       OCHULGO.OCH_SU, 
-		       OCHULGO.OCH_DANG, 
-		       OCHULGO.OCH_MON,
-		       FLOOR(OCHULGO.OCH_MON * 0.1) as OCH_MON_TAX,
-		       (OCHULGO.OCH_MON + FLOOR(OCHULGO.OCH_MON * 0.1)) as OCH_MON_TOTAL ,
-		       OCHULGO.OCH_AMNT 
-		  FROM OCHULGO 
-		   INNER JOIN ORDERT 
-		       ON OCHULGO.ORD_CODE = ORDERT.ORD_CODE 
-		   INNER JOIN PRODUCT 
-		       ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE 
-		   INNER JOIN CORP 
-		       ON PRODUCT.CORP_CODE = CORP.CORP_CODE  
-		ORDER BY CORP.CORP_NAME, 
-		       OCHULGO.OCH_DATE            			
+		SELECT OCHULGO.OCH_MA, 
+	       CORP.CORP_NAME, 
+	       LEFT(CONVERT(NVARCHAR, OCHULGO.OCH_DATE, 120), 10) AS OCH_DATE, 
+	       PRODUCT.PROD_NAME, 
+	       PRODUCT.PROD_NO, 
+	       OCHULGO.OCH_LOT, 
+	       OCHULGO.OCH_SU, 
+	       OCHULGO.OCH_DANG, 
+	       OCHULGO.OCH_MON,
+	       FLOOR(OCHULGO.OCH_MON * 0.1) AS OCH_MON_TAX,
+	       (OCHULGO.OCH_MON + FLOOR(OCHULGO.OCH_MON * 0.1)) AS OCH_MON_TOTAL,
+	       OCHULGO.OCH_AMNT 
+	FROM OCHULGO 
+	INNER JOIN ORDERT 
+		ON OCHULGO.ORD_CODE = ORDERT.ORD_CODE 
+	INNER JOIN PRODUCT 
+		ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE 
+	INNER JOIN CORP 
+		ON PRODUCT.CORP_CODE = CORP.CORP_CODE  
+	<where>
+		<if test="sdate != null and sdate != ''">
+			AND CONVERT(VARCHAR(7), OCHULGO.OCH_DATE, 120) = #{sdate}
+		</if>
+		<if test="corp_name != null and corp_name != ''">
+			AND CORP.CORP_NAME LIKE '%' + #{corp_name} + '%'
+		</if>		
+	</where>
+	ORDER BY CORP.CORP_NAME, OCHULGO.OCH_DATE
 	</select>
 	
 	

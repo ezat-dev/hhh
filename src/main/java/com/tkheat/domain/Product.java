@@ -100,6 +100,29 @@ public class Product {
 	private String prod_img2;				//외형사진 및 분석위치
 	private String prod_img3;				//열처리공정
 	
+	private String product_file_name;	//제품 사진
+	private String apperance_file_name;	//외형 사진
+	private String heat_file_name;		//열처리 사진
+	
+	
+	public String getProduct_file_name() {
+		return product_file_name;
+	}
+	public void setProduct_file_name(String product_file_name) {
+		this.product_file_name = product_file_name;
+	}
+	public String getApperance_file_name() {
+		return apperance_file_name;
+	}
+	public void setApperance_file_name(String appereance_file_name) {
+		this.apperance_file_name = appereance_file_name;
+	}
+	public String getHeat_file_name() {
+		return heat_file_name;
+	}
+	public void setHeat_file_name(String heat_file_name) {
+		this.heat_file_name = heat_file_name;
+	}
 	public int getProd_code() {
 		return prod_code;
 	}

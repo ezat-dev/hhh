@@ -1,19 +1,27 @@
 package com.tkheat.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import com.tkheat.domain.Corp;
 import com.tkheat.domain.Fac;
@@ -29,6 +37,36 @@ public class ManagementController {
 
 	@Autowired
 	private ManagementService managementService;
+	
+	//파일 업로드
+	private String saveFiles(MultipartFile[] files, String uploadDir) throws IOException {
+		if (files == null || files.length == 0) return null;
+
+		File directory = new File(uploadDir);
+		if (!directory.exists()) directory.mkdirs();
+
+		for (MultipartFile file : files) {
+			if (!file.isEmpty()) {
+				String originalFilename = file.getOriginalFilename();
+				String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+				String ext = "";
+				int dotIndex = originalFilename.lastIndexOf('.');
+				if (dotIndex > 0) {
+					ext = originalFilename.substring(dotIndex);
+					originalFilename = originalFilename.substring(0, dotIndex);
+				}
+
+				String savedFilename = originalFilename + "_" + timestamp + ext;
+				File destination = new File(uploadDir + "/" + savedFilename);
+				file.transferTo(destination);
+
+				return savedFilename; //
+			}
+		}
+		return null;
+	}
+
 
 	@RequestMapping(value = "/management/login", method = RequestMethod.GET)
 	public String login(Users users) {
@@ -48,20 +86,38 @@ public class ManagementController {
 
 		return "/management/productInsert.jsp";
 	}	 
-	
-	
+
+
 	//제품등록, 수정 - insert,update
 	@RequestMapping(value = "/management/productInsert/productInsertSave", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> productInsertSave(
 			@ModelAttribute Product product,
-			@RequestParam("mode") String mode) { 
+			@RequestParam("mode") String mode,
+			@RequestParam(value = "product_file_url", required = false) MultipartFile[] files1,
+			@RequestParam(value = "apperance_file_url", required = false) MultipartFile[] files2,
+			@RequestParam(value = "heat_file_url", required = false) MultipartFile[] files3) { 
+		
+		System.out.println("저장 컨트롤러 도착");
+
 		Map<String, Object> result = new HashMap<>();
 
 		System.out.println(product.getProd_code());
 		System.out.println(product.getProd_date());
-		
+
 		try {
+
+			String path = "D:/엑셀테스트/태경출력파일/사진/제품등록";
+
+			String productFileName = saveFiles(files1, path);
+			if (productFileName != null) product.setProduct_file_name(productFileName);
+
+			String appearanceFileName = saveFiles(files2, path);
+			if (appearanceFileName != null) product.setApperance_file_name(appearanceFileName);
+
+			String heatFileName = saveFiles(files3, path);
+			if (heatFileName != null) product.setHeat_file_name(heatFileName);
+
 			if ("insert".equalsIgnoreCase(mode)) {
 				managementService.productInsertSave(product);
 			} else if ("update".equalsIgnoreCase(mode)) {
@@ -76,6 +132,7 @@ public class ManagementController {
 		} catch (Exception e) {
 			result.put("status", "error");
 			result.put("message", e.getMessage());
+			e.printStackTrace();
 		}
 
 		System.out.println(result.get("status"));
@@ -83,8 +140,8 @@ public class ManagementController {
 
 		return result;
 	}
-	
-	
+
+
 	//제품 삭제 - delete
 	@RequestMapping(value = "/management/productInsert/productDelete", method = RequestMethod.POST)
 	@ResponseBody
@@ -111,11 +168,11 @@ public class ManagementController {
 	@RequestMapping(value = "/management/productInsert/productList", method = RequestMethod.POST) 
 	@ResponseBody 
 	public Map<String, Object> getProductList(
-	) {
+			) {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 
 		Product product = new Product();
-		
+
 
 
 		List<Product> productList = managementService.getProductList(product);
@@ -152,6 +209,17 @@ public class ManagementController {
 			rowMap.put("prod_khecd", productList.get(i).getProd_khecd());
 			rowMap.put("prod_khtcd", productList.get(i).getProd_khtcd());
 			rowMap.put("prod_gd5", productList.get(i).getProd_gd5());
+			rowMap.put("product_file_name", productList.get(i).getProduct_file_name());
+			rowMap.put("apperance_file_name", productList.get(i).getApperance_file_name());
+			rowMap.put("heat_file_name", productList.get(i).getHeat_file_name());
+			rowMap.put("prod_fac1", productList.get(i).getProd_fac1());
+			rowMap.put("prod_fac2", productList.get(i).getProd_fac2());
+			rowMap.put("prod_fac3", productList.get(i).getProd_fac3());
+			rowMap.put("prod_fac4", productList.get(i).getProd_fac4());
+			rowMap.put("prod_fac5", productList.get(i).getProd_fac5());
+			rowMap.put("prod_fac6", productList.get(i).getProd_fac6());
+			rowMap.put("prod_fac7", productList.get(i).getProd_fac7());
+			rowMap.put("prod_fac8", productList.get(i).getProd_fac8());
 
 			rtnList.add(rowMap);
 		}
@@ -161,13 +229,14 @@ public class ManagementController {
 
 		return rtnMap; 
 	}	 
-	
-	
+
+
 	//제품 더블클릭조회
 	@RequestMapping(value = "/management/productInsert/productInsertDetail", method = RequestMethod.POST) 
 	@ResponseBody 
 	public Map<String, Object> productInsertDetail(
 			@RequestParam int prod_code) {
+		System.out.println("더블클릭 로그");
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 
 		Product product = new Product();
@@ -179,6 +248,27 @@ public class ManagementController {
 
 		return rtnMap; 
 	}
+	
+	//모달창에 사진 출력
+	@RequestMapping(value = "/management/image/product/{filename:.+}", method = RequestMethod.GET)
+    public void serveProductImage(@PathVariable String filename, HttpServletResponse response) throws IOException {
+		System.out.println("사진 출력 컨트롤러 도착");
+        String baseDir = "D:/엑셀테스트/태경출력파일/사진/제품등록/";
+        File file = new File(baseDir + filename);
+
+        if (!file.exists()) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        String mimeType = Files.probeContentType(file.toPath());
+        if (mimeType == null) mimeType = "application/octet-stream";
+
+        response.setContentType(mimeType);
+        response.setContentLengthLong(file.length());
+
+        Files.copy(file.toPath(), response.getOutputStream());
+    }
 
 	//거래처등록 - 화면로드
 	@RequestMapping(value = "/management/cutumInsert", method = RequestMethod.GET)
@@ -229,7 +319,7 @@ public class ManagementController {
 
 		return rtnMap; 
 	}
-	
+
 	//거래처등록 더블클릭조회
 	@RequestMapping(value = "/management/cutumInsert/cutumInsertDetail", method = RequestMethod.POST) 
 	@ResponseBody 
@@ -252,72 +342,72 @@ public class ManagementController {
 
 		return rtnMap; 
 	}
-	
+
 	//거래처 등록 and 수정
 	@RequestMapping(value = "/management/cutumInsert/cutumInsertSave", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> cutumInsertSave(
-	        @ModelAttribute Corp corp,
-	        @RequestParam("mode") String mode) { 
-	    Map<String, Object> result = new HashMap<>();
+			@ModelAttribute Corp corp,
+			@RequestParam("mode") String mode) { 
+		Map<String, Object> result = new HashMap<>();
 
-	    System.out.println("1");
-	    System.out.println(corp.getCorp_gyul1());
-	    System.out.println("2");
-	    
-	    
-	   if(corp.getCorp_gyul1() == null) {
-		   corp.setCorp_gyul1("0");
-	   }else if("on".equals(corp.getCorp_gyul1())) {
-		   corp.setCorp_gyul1("1");
-	   }
-	    
-	    try {
-	        if ("insert".equalsIgnoreCase(mode)) {
-	            managementService.cutumInsertSave(corp);
-	        } else if ("update".equalsIgnoreCase(mode)) {
-	            managementService.cutumUpdateSave(corp);  
-	        } else {
-	            throw new IllegalArgumentException("Invalid mode: " + mode);
-	        }
+		System.out.println("1");
+		System.out.println(corp.getCorp_gyul1());
+		System.out.println("2");
 
-	        result.put("status", "success");
-	        result.put("message", "OK");
 
-	    } catch (Exception e) {
-	        result.put("status", "error");
-	        result.put("message", e.getMessage());
-	    }
+		if(corp.getCorp_gyul1() == null) {
+			corp.setCorp_gyul1("0");
+		}else if("on".equals(corp.getCorp_gyul1())) {
+			corp.setCorp_gyul1("1");
+		}
 
-	    System.out.println(result.get("status"));
-	    System.out.println(result.get("message"));
+		try {
+			if ("insert".equalsIgnoreCase(mode)) {
+				managementService.cutumInsertSave(corp);
+			} else if ("update".equalsIgnoreCase(mode)) {
+				managementService.cutumUpdateSave(corp);  
+			} else {
+				throw new IllegalArgumentException("Invalid mode: " + mode);
+			}
 
-	    return result;
+			result.put("status", "success");
+			result.put("message", "OK");
+
+		} catch (Exception e) {
+			result.put("status", "error");
+			result.put("message", e.getMessage());
+		}
+
+		System.out.println(result.get("status"));
+		System.out.println(result.get("message"));
+
+		return result;
 	}
-	
+
 	//거래처 삭제 - delete
 	@RequestMapping(value = "/management/cutumInsert/cutumDelete", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> cutumDelete(@RequestParam("corp_code") int corp_code) {
-	    Map<String, Object> result = new HashMap<>();
+		Map<String, Object> result = new HashMap<>();
 
-	    try {
-	        managementService.cutumDelete(corp_code);
-	        result.put("status", "success");
-	        result.put("message", "삭제 완료");
-	    } catch (Exception e) {
-	        result.put("status", "error");
-	        result.put("message", e.getMessage());
-	    }
+		try {
+			managementService.cutumDelete(corp_code);
+			result.put("status", "success");
+			result.put("message", "삭제 완료");
+		} catch (Exception e) {
+			result.put("status", "error");
+			result.put("message", e.getMessage());
+		}
 
-	    System.out.println(result.get("status"));
-	    System.out.println(result.get("message"));
+		System.out.println(result.get("status"));
+		System.out.println(result.get("message"));
 
-	    return result;
+		return result;
 	}
 
-	
-	
+
+
 
 
 	//설비등록 - 화면로드
@@ -355,6 +445,7 @@ public class ManagementController {
 			rowMap.put("fac_make", facList.get(i).getFac_make());
 			rowMap.put("fac_cbuy", facList.get(i).getFac_cbuy());
 			rowMap.put("fac_code", facList.get(i).getFac_code());
+			rowMap.put("fac_file_name", facList.get(i).getFac_file_name());
 
 			rtnList.add(rowMap);
 		}
@@ -364,7 +455,7 @@ public class ManagementController {
 
 		return rtnMap; 
 	}
-	
+
 	//설비 더블클릭조회
 	@RequestMapping(value = "/management/facInsert/facInsertDetail", method = RequestMethod.POST) 
 	@ResponseBody 
@@ -381,19 +472,47 @@ public class ManagementController {
 
 		return rtnMap; 
 	}
-		
 	
-	
-	
+	//모달창에 이미지 출력
+	@RequestMapping(value = "/management/image/fac/{filename:.+}", method = RequestMethod.GET)
+    public void serveeProductImage(@PathVariable String filename, HttpServletResponse response) throws IOException {
+		System.out.println("사진 출력 컨트롤러 도착");
+        String baseDir = "D:/엑셀테스트/설비등록/";
+        File file = new File(baseDir + filename);
+
+        if (!file.exists()) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        String mimeType = Files.probeContentType(file.toPath());
+        if (mimeType == null) mimeType = "application/octet-stream";
+
+        response.setContentType(mimeType);
+        response.setContentLengthLong(file.length());
+
+        Files.copy(file.toPath(), response.getOutputStream());
+    }
+
+
+
+
 	//설비 등록 and 수정
 	@RequestMapping(value = "/management/facInsert/facInsertSave", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> facInsertSave(
 			@ModelAttribute Fac fac,
-			@RequestParam("mode") String mode) { 
+			@RequestParam("mode") String mode,
+			@RequestParam(value = "fac_file_url", required = false) MultipartFile[] files1) { 
 		Map<String, Object> result = new HashMap<>();
 
 		try {
+			
+			String path = "D:/엑셀테스트/태경출력파일/사진/설비등록";
+
+			String productFileName = saveFiles(files1, path);
+			if (productFileName != null) fac.setFac_file_name(productFileName);
+			
 			if ("insert".equalsIgnoreCase(mode)) {
 				managementService.facInsertSave(fac);
 			} else if ("update".equalsIgnoreCase(mode)) {
@@ -415,8 +534,8 @@ public class ManagementController {
 
 		return result;
 	}
-	
-	
+
+
 	//설비 삭제 - delete
 	@RequestMapping(value = "/management/facInsert/facDelete", method = RequestMethod.POST)
 	@ResponseBody
@@ -450,15 +569,15 @@ public class ManagementController {
 	@RequestMapping(value = "/management/chimStandardInsert/getChimStandardList", method = RequestMethod.POST) 
 	@ResponseBody 
 	public Map<String, Object> getChimStandardList(
-	/*
-	 * @RequestParam String corp_name,
-	 * 
-	 * @RequestParam String prod_name,
-	 * 
-	 * @RequestParam String prod_no,
-	 * 
-	 * @RequestParam String fac_name
-	 */
+			/*
+			 * @RequestParam String corp_name,
+			 * 
+			 * @RequestParam String prod_name,
+			 * 
+			 * @RequestParam String prod_no,
+			 * 
+			 * @RequestParam String fac_name
+			 */
 			) {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 
@@ -488,7 +607,9 @@ public class ManagementController {
 			rowMap.put("prod_code", chimStandardList.get(i).getProd_code());
 			rowMap.put("fac_name", chimStandardList.get(i).getFac_name());
 			rowMap.put("wstd_code", chimStandardList.get(i).getWstd_code());
-			
+			rowMap.put("wstd_chim_file_name1", chimStandardList.get(i).getWstd_chim_file_name1());
+			rowMap.put("wstd_chim_file_name2", chimStandardList.get(i).getWstd_chim_file_name2());
+
 
 			rtnList.add(rowMap);
 		}
@@ -504,34 +625,68 @@ public class ManagementController {
 	public Map<String, Object> getChimStandardDetail(
 			@RequestParam int wstd_code) {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
-		
+
 		Standard standard = new Standard();
 		standard.setWstd_code(wstd_code);
-		
+
 		/*
 		 * standard.setCorp_name(corp_name); standard.setProd_name(prod_name);
 		 * standard.setProd_no(prod_no); standard.setFac_name(fac_name);
 		 */
-		
-		
+
+
 		Standard chimStandardList = managementService.getChimStandardDetail(standard);
-		
+
 		rtnMap.put("data",chimStandardList);
-		
+
 		return rtnMap; 
 	}
 	
-		
-	
+	//모달창에 침탄로 이미지 출력
+	@RequestMapping(value = "/management/image/chim/{filename:.+}", method = RequestMethod.GET)
+    public void serveeeProductImage(@PathVariable String filename, HttpServletResponse response) throws IOException {
+		System.out.println("사진 출력 컨트롤러 도착");
+        String baseDir = "D:/엑셀테스트/태경출력파일/사진/침탄로작업표준/";
+        File file = new File(baseDir + filename);
+
+        if (!file.exists()) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        String mimeType = Files.probeContentType(file.toPath());
+        if (mimeType == null) mimeType = "application/octet-stream";
+
+        response.setContentType(mimeType);
+        response.setContentLengthLong(file.length());
+
+        Files.copy(file.toPath(), response.getOutputStream());
+    }
+
+
+
 	//침탄표준 등록 and 수정
 	@RequestMapping(value = "/management/chimStandardInsert/chimStandardInsertSave", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> chimStandardSave(
 			@ModelAttribute Standard standard,
-			@RequestParam("mode") String mode) { 
+			@RequestParam("mode") String mode,
+			@RequestParam(value = "wstd_chim_file_url1", required = false) MultipartFile[] files1,
+			@RequestParam(value = "wstd_chim_file_url2", required = false) MultipartFile[] files2) { 
 		Map<String, Object> result = new HashMap<>();
 
 		try {
+			
+			String path = "D:/엑셀테스트/태경출력파일/사진/침탄로작업표준";
+
+			String productFileName1 = saveFiles(files1, path);
+			System.out.println("productFileName1"+productFileName1);
+			if (productFileName1 != null) standard.setWstd_chim_file_name1(productFileName1);
+			
+			String productFileName2 = saveFiles(files2, path);
+			System.out.println("productFileName2"+productFileName2);
+			if (productFileName2 != null) standard.setWstd_chim_file_name2(productFileName2);
+			
 			if ("insert".equalsIgnoreCase(mode)) {
 				managementService.chimStandardInsertSave(standard);
 			} else if ("update".equalsIgnoreCase(mode)) {
@@ -575,8 +730,8 @@ public class ManagementController {
 
 		return result;
 	}
-	
-	
+
+
 
 
 	//작업자등록 - 화면로드
@@ -708,7 +863,7 @@ public class ManagementController {
 			@RequestParam String user_name,
 			@RequestParam String user_ret) {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
-		
+
 		Users user = new Users();
 		user.setUser_buso(user_buso);
 		user.setUser_jick(user_jick);
@@ -717,7 +872,7 @@ public class ManagementController {
 
 		List<Users> userList = managementService.getUserList(user);
 
-		
+
 		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
 		for(int i=0; i<userList.size(); i++) {
 			HashMap<String, Object> rowMap = new HashMap<String, Object>();
@@ -799,6 +954,7 @@ public class ManagementController {
 			rowMap.put("ter_buy", measureList.get(i).getTer_buy());
 			rowMap.put("ter_bdate", measureList.get(i).getTer_bdate());
 			rowMap.put("ter_bmon", measureList.get(i).getTer_bmon());
+			rowMap.put("file_name", measureList.get(i).getFile_name());
 
 			rtnList.add(rowMap);
 		}
@@ -809,16 +965,23 @@ public class ManagementController {
 		return rtnMap; 
 	}	
 
-	
+
 	//측정기기 등록 and 수정
 	@RequestMapping(value = "/management/measurement/measureInsertSave", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> measureInsertSave(
 			@ModelAttribute Measure measure,
-			@RequestParam("mode") String mode) { 
+			@RequestParam("mode") String mode,
+			@RequestParam(value = "file_url", required = false) MultipartFile[] files1) { 
 		Map<String, Object> result = new HashMap<>();
 
 		try {
+			
+			String path = "D:/엑셀테스트/태경출력파일/사진/측정기기관리";
+
+			String productFileName = saveFiles(files1, path);
+			if (productFileName != null) measure.setFile_name(productFileName);
+			
 			if ("insert".equalsIgnoreCase(mode)) {
 				managementService.measureInsertSave(measure);
 			} else if ("update".equalsIgnoreCase(mode)) {
@@ -840,6 +1003,27 @@ public class ManagementController {
 
 		return result;
 	}
+	
+	//모달창에 측정기기 이미지 출력
+	@RequestMapping(value = "/management/measure/image/{filename:.+}", method = RequestMethod.GET)
+    public void measureImage(@PathVariable String filename, HttpServletResponse response) throws IOException {
+		System.out.println("사진 출력 컨트롤러 도착");
+        String baseDir = "D:/엑셀테스트/태경출력파일/사진/측정기기관리/";
+        File file = new File(baseDir + filename);
+
+        if (!file.exists()) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        String mimeType = Files.probeContentType(file.toPath());
+        if (mimeType == null) mimeType = "application/octet-stream";
+
+        response.setContentType(mimeType);
+        response.setContentLengthLong(file.length());
+
+        Files.copy(file.toPath(), response.getOutputStream());
+    }
 
 
 	//측정기기 삭제 - delete
@@ -861,6 +1045,33 @@ public class ManagementController {
 		System.out.println(result.get("message"));
 
 		return result;
+	}
+	
+	//측정기기관리 더블클릭조회
+	@RequestMapping(value = "/management/getMeasurmentDetail", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getMeasureDetail(
+			@RequestParam int ter_code) {
+		System.out.println("측정기기관리 더블클릭조회");
+		System.out.println("ter_code: "+ter_code);
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Measure measure = new Measure();
+		measure.setTer_code(ter_code);
+		System.out.println("measure.getTer_code(): "+measure.getTer_code());
+
+		/*
+		 * standard.setCorp_name(corp_name); standard.setProd_name(prod_name);
+		 * standard.setProd_no(prod_no); standard.setFac_name(fac_name);
+		 */
+
+
+		measure = managementService.getMeasurmentDetail(measure);
+		System.out.println(measure);
+
+		rtnMap.put("data",measure);
+
+		return rtnMap; 
 	}
 
 

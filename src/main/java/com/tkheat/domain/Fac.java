@@ -35,7 +35,15 @@ public class Fac {
 	private String fac_state;
 	
 	private String tech_no;			//설비종료
+	private String fac_file_name;	//설비 이미지 이름
 	
+	
+	public String getFac_file_name() {
+		return fac_file_name;
+	}
+	public void setFac_file_name(String fac_file_name) {
+		this.fac_file_name = fac_file_name;
+	}
 	public int getFac_code() {
 		return fac_code;
 	}

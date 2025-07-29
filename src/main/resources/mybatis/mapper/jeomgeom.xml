@@ -13,7 +13,7 @@
 		FROM     CHEKSTD WITH(NOLOCK) INNER JOIN
 		FACILITY WITH(NOLOCK) ON CHEKSTD.FAC_CODE = FACILITY.FAC_CODE INNER JOIN
 		TECHIN WITH(NOLOCK) ON TECHIN.TECH_NO = FACILITY.TECH_NO
- 		ORDER BY FAC_NAME,CHS_GUBN,CHS_SORT, CHS_NO, FAC_CODE
+ 		ORDER BY CHS_NO,FAC_NAME,CHS_GUBN,CHS_SORT, FAC_CODE
 	</select>
 	
 	
@@ -90,10 +90,142 @@
     
     
     
+    <!-- 설비점검현황(일별) -->
+    <select id="getDayJeomgeomList" parameterType="jeomgeom" resultType="jeomgeom">
+		SELECT  CHEKSTD.CHS_CODE, DAILY_CHECK.CHE_CODE, CHEKSTD.CHS_SORT, CHEKSTD.FAC_CODE, CHEKSTD.CHS_HANG, DAILY_CHECK.CHE_PAN, DAILY_CHECK.CHE_REQ,
+			DAILY_CHECK.CHE_FIN, DAILY_CHECK.CHE_BIGO, CHEKSTD.CHS_IMG, DAILY_CHECK.CHE_X1, DAILY_CHECK.CHE_DATE,
+			CHEKSTD.CHS_KIJUN,		CHEKSTD.CHS_MIN,		CHEKSTD.CHS_MAX,		CHEKSTD.CHS_DANW,
+			ISNULL(DAILY_CHECK.CHE_CHECK,0) AS CHE_CHECK,	DAILY_CHECK.CHE_RX1,	DAILY_CHECK.CHE_RE_PAN,	 DAILY_CHECK.CHE_JOCHI_CONTENTS,
+			CHEKSTD.CHS_GUBN, CHEKSTD.CHS_GUBN_DETAIL, DAILY_CHECK.CHE_GUBN_DETAIL,
+			FAC_NO, FAC_NAME, CHS_CHKMETHOD, CHS_STEPMETHOD
+			FROM     CHEKSTD WITH(NOLOCK) INNER JOIN
+			DAILY_CHECK WITH(NOLOCK) ON CHEKSTD.CHS_CODE = DAILY_CHECK.CHS_CODE INNER JOIN
+			FACILITY WITH(NOLOCK) ON CHEKSTD.FAC_CODE = FACILITY.FAC_CODE
+			WHERE 1=1
+			<if test="sdate != null and sdate != ''">
+				AND CONVERT(CHAR(10), DAILY_CHECK.CHE_DATE, 23) = #{sdate}
+			</if>
+			
+
+    </select>
     
     
     
     
+    <!-- 설비점검현황(일별) 서브조회 -->
+    <select id="dayJeomgeomSubList" parameterType="jeomgeom" resultType="jeomgeom">
+		SET LOCK_TIMEOUT 10000;
+
+	WITH CROSSCHEKSTD AS (
+	SELECT CHEKSTD.CHS_CODE AS CHS_STD_CODE, CHEKSTD.CHS_CODE as CHS_STD_NO, CHEKSTD.CHS_SORT as CHS_SORT,  CHEKSTD.CHS_HANG,
+			CHEKSTD.CHS_IMG,
+			CHEKSTD.CHS_KIJUN,		CHEKSTD.CHS_MIN,		CHEKSTD.CHS_MAX,		CHEKSTD.CHS_DANW,
+			CHEKSTD.CHS_GUBN,
+			CHEKSTD.CHS_CHKMETHOD,
+			CHEKSTD.CHS_STEPMETHOD,
+            CHEKSTD.CHS_GUBN_DETAIL,
+            CHEKSTD.FAC_CODE AS CSTD_FAC_CODE,
+            FAC_NO,
+            FAC_NAME
+    FROM CHEKSTD WITH(NOLOCK) INNER JOIN FACILITY WITH (NOLOCK) ON CHEKSTD.FAC_CODE = FACILITY.FAC_CODE
+	WHERE 1=1
+	AND CHEKSTD.FAC_CODE = #{fac_code}
+	AND CHEKSTD.CHS_GUBN = #{chs_gubn}
+	)--주야간 강제 생성
+	,
+	JONJAE AS (
+	SELECT CROSSCHEKSTD.*,
+			DAILY_CHECK.*
+	FROM CROSSCHEKSTD
+			INNER JOIN FACILITY WITH (NOLOCK) ON CROSSCHEKSTD.CSTD_FAC_CODE = FACILITY.FAC_CODE
+			LEFT OUTER JOIN DAILY_CHECK WITH (NOLOCK) ON DAILY_CHECK.FAC_CODE = CROSSCHEKSTD.CSTD_FAC_CODE AND
+														DAILY_CHECK.CHS_CODE = CROSSCHEKSTD.CHS_STD_CODE AND
+														DAILY_CHECK.CHE_GUBN = CROSSCHEKSTD.CHS_GUBN AND
+														DAILY_CHECK.CHE_GUBN_DETAIL = CROSSCHEKSTD.CHS_GUBN_DETAIL
+	WHERE 1 = 1
+	AND DAILY_CHECK.CHE_DATE BETWEEN substring(#{sdate}, 1, 10) + ' 00:09:00' AND dateadd(day,1,substring(#{sdate}, 1, 10) + ' 00:09:00')
+	)--해당 일자에 존재리스트
+
+	SELECT CROSSCHEKSTD.*
+		FROM CROSSCHEKSTD LEFT OUTER JOIN JONJAE ON CROSSCHEKSTD.CHS_STD_CODE = JONJAE.CHS_CODE AND CROSSCHEKSTD.CHS_GUBN = JONJAE.CHS_GUBN AND CROSSCHEKSTD.CHS_GUBN_DETAIL = JONJAE.CHE_GUBN_DETAIL
+	    where 1=1
+			<if test="chs_sort != ''">
+			AND CROSSCHEKSTD.CHS_SORT = #{chs_sort}
+			</if>
+	    AND JONJAE.CHS_CODE IS NULL
+		AND crossCHEKSTD.CHS_GUBN_DETAIL = #{chs_gubn_detail}
+    </select>
+    
+    
+    
+    
+    
+    
+    
+    
+    <!--설비점검현황(월별) 조회-->
+	<select id="getMonthJeomgeomList" parameterType="jeomgeom" resultType="jeomgeom">
+		SET LOCK_TIMEOUT 10000;
+		SELECT CHS_SORT, CHS_GUBN, CHS_GUBN_DETAIL, CHE_GUBN_DETAIL, CHS_HANG, CHS_KIJUN, CHE_BIGO, CHS_IMG, FAC_NAME, TECH_NO, TECH_HT,
+		isnull([1],'') as mm1,
+		isnull([2],'') as mm2,
+		isnull([3],'') as mm3,
+		isnull([4],'') as mm4,
+		isnull([5],'') as mm5,
+		isnull([6],'') as mm6,
+		isnull([7],'') as mm7,
+		isnull([8],'') as mm8,
+		isnull([9],'') as mm9,
+		isnull([10],'') as mm10,
+		isnull([11],'') as mm11,
+		isnull([12],'') as mm12,
+		isnull([13],'') as mm13,
+		isnull([14],'') as mm14,
+		isnull([15],'') as mm15,
+		isnull([16],'') as mm16,
+		isnull([17],'') as mm17,
+		isnull([18],'') as mm18,
+		isnull([19],'') as mm19,
+		isnull([20],'') as mm20,
+		isnull([21],'') as mm21,
+		isnull([22],'') as mm22,
+		isnull([23],'') as mm23,
+		isnull([24],'') as mm24,
+		isnull([25],'') as mm25,
+		isnull([26],'') as mm26,
+		isnull([27],'') as mm27,
+		isnull([28],'') as mm28,
+		isnull([29],'') as mm29,
+		isnull([30],'') as mm30,
+		isnull([31],'') as mm31,
+		CHS_CODE,
+		CHS_IMG
+		FROM
+		( SELECT CHS_SORT,CHEKSTD.CHS_GUBN, CHEKSTD.CHS_GUBN_DETAIL, DAILY_CHECK.CHE_GUBN_DETAIL,
+		DATEPART(dd, CHE_DATE) AS CHE_DATE_MM,
+		CHS_KIJUN,FAC_NAME, FACILITY.TECH_NO, TECHIN.TECH_HT,
+		CHS_HANG, CHE_BIGO, CHS_IMG, DAILY_CHECK.CHS_CODE,
+		CASE WHEN CHE_PAN = '양호' THEN '●'
+		WHEN CHE_PAN = '주의' THEN '△'
+		WHEN CHE_PAN = '수리' THEN 'X' ELSE CHE_PAN END +' '+CHE_X1 AS CHE_VALUE
+		FROM CHEKSTD WITH(NOLOCK) INNER JOIN
+		DAILY_CHECK WITH(NOLOCK) ON CHEKSTD.CHS_CODE = DAILY_CHECK.CHS_CODE INNER JOIN
+		FACILITY WITH(NOLOCK) ON CHEKSTD.FAC_CODE = FACILITY.FAC_CODE INNER JOIN
+		TECHIN WITH(NOLOCK) ON TECHIN.TECH_NO = FACILITY.TECH_NO
+		<where>
+			<if test="sdate == null">
+				LEFT(CONVERT(nvarchar, CHE_DATE, 120), 7) =  LEFT(CONVERT(nvarchar, getdate(), 120), 7)
+			</if>
+			<if test="sdate != null and sdate != ''">
+				LEFT(CONVERT(nvarchar, CHE_DATE, 120), 7) = #{sdate}
+			</if>
+		</where>
+		group by CHEKSTD.CHS_GUBN, CHEKSTD.CHS_GUBN_DETAIL, DAILY_CHECK.CHE_GUBN_DETAIL, DATEPART(dd, CHE_DATE), CHS_KIJUN, CHE_PAN, CHS_HANG, CHS_SORT, CHE_BIGO, CHS_IMG, DAILY_CHECK.CHS_CODE,FAC_NAME, CHE_X1, FACILITY.TECH_NO, TECHIN.TECH_HT
+		) AS  A
+		PIVOT
+		(MIN(CHE_VALUE) FOR CHE_DATE_MM IN ([1], [2], [3], [4],[5],[6],[7],[8],[9],[10],[11],[12],[13],[14],[15],[16],[17],[18],[19],[20],[21],[22],[23],[24],[25],[26],[27],[28],[29],[30],[31]) )   AS P
+		ORDER BY FAC_NAME
+	</select>
     
     
     

@@ -9,6 +9,9 @@ public interface QualityDao {
 	
 	List<Suip> getSuipList(Suip suip);
 	
+	Suip suipDetail(Suip suip);
+	
+	void suipUdateSave(Suip suip);
 	
 	
 	

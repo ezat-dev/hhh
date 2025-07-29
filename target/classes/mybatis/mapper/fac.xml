@@ -18,7 +18,8 @@
            FAC_ABLE, 
            FAC_MAKE, 
            FAC_CBUY,
-           FAC_DAN 
+           FAC_DAN,
+           FAC_FILE_NAME 
 		    FROM FACILITY 
 		    WHERE 1=1
     <!-- <if test="fac_no != null and fac_no != ''">
@@ -36,7 +37,7 @@
        SELECT FAC_CODE, FAC_NO,  FAC_NAME, FAC_GYU, FAC_HYUN,  FAC_YONG,  TECH_NO, FAC_MAN1, 
 		       FAC_MAN2,  FAC_LOT, FAC_E1,  FAC_PLC, FAC_E2, FAC_MAKE, FAC_CBUY,  FAC_E3, 
 		       FAC_BUY, FAC_MDAY, FAC_MON, FAC_ABLE, FAC_TIME, FAC_TEST,  FAC_E4, FAC_BIGO, FAC_DAN,
-		       FAC_CAU, FAC_UNUS
+		       FAC_CAU, FAC_UNUS, FAC_FILE_NAME
 		  FROM FACILITY 
 		 WHERE FAC_CODE = #{fac_code};
     </select>
@@ -72,7 +73,8 @@
 		           FAC_GUBN,
 		           FAC_DAN,
 		           FAC_CAU,
-		           FAC_UNUS
+		           FAC_UNUS,
+		           FAC_FILE_NAME
 		       ) 
 		       VALUES 
 		       (
@@ -105,7 +107,8 @@
 		              '1',
 		              #{fac_dan},
 		              #{fac_cau},
-		              #{fac_unus}
+		              #{fac_unus},
+		              #{fac_file_name}
 		          )
 	</insert>
 
@@ -136,7 +139,8 @@
 		       FAC_BIGO = #{fac_bigo}, 
 		       FAC_DAN = #{fac_dan}, 
 		       FAC_CAU = #{fac_cau}, 
-		       FAC_UNUS = #{fac_unus}
+		       FAC_UNUS = #{fac_unus},
+		       FAC_FILE_NAME = #{fac_file_name}
 		 WHERE FAC_CODE = #{fac_code}
 	</update>
     

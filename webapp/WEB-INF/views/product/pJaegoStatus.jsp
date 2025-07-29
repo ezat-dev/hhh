@@ -34,18 +34,17 @@
 .row_select{
 	background-color:#9ABCEA !important;
 }
-.box1 {
+ .box1 {
 	display: flex;
 	justify-content: right;
 	align-items: center;
 	width: 1500px;
-	margin-left: -1050px;
+	margin-left: -960px;
 }
-
-.box1 select{
+.box1 input{
 	width: 5%
 }  
-.box1 input[type="date"] {
+.box1 input{
 	width: 150px;
 	padding: 5px 10px;
 	font-size: 16px;
@@ -57,14 +56,14 @@
 	transition: border 0.3s ease;
 }
 
-.box1 input[type="date"]:focus {
+.box1 input:focus {
 	border: 1px solid #007bff;
 	background-color: #fff;
 }  
 .box1 label,
 .box1 input {
 	margin-right: 10px; /* 요소 사이 간격 */
-}
+}   
      
     
     </style>
@@ -76,8 +75,7 @@
     <div class="box1">
          <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>
 		<label class="daylabel">일자 : </label>
-		<input type="date" class="sdate" id="sdate" style="font-size: 16px;" autocomplete="off">~ 
-		<input type="date" class="edate" id="edate" style="font-size: 16px;" autocomplete="off">
+		<input type="month" class="sdate" id="sdate" style="font-size: 16px;" autocomplete="off">
 	</div>
     
     <div class="button-container">
@@ -113,14 +111,9 @@
 
 	//전역변수
     var cutumTable;	
-
+    var sdate = $("#sdate").val();
 	//로드
 	$(function(){
-		var tdate = todayDate();
-		var ydate = yesterDate();
-		
-		$("#sdate").val(ydate);
-		$("#edate").val(tdate);
 		getPJaegoStatusList();
 	});
 
@@ -142,7 +135,6 @@
 		    ajaxProgressiveLoad:"scroll",
 		    ajaxParams:{
 		    	"sdate": $("#sdate").val(),
-		    	"edate": $("#edate").val(),
 			    },
 		    placeholder:"조회된 데이터가 없습니다.",
 		    paginationSize:20,
@@ -196,7 +188,9 @@
 				{title:"비고", field:"och_bigo", sorter:"int", width:100,
 					hozAlign:"center", headerFilter:"input"},
 				{title:"영업담당자", field:"corp_business", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},				
+					hozAlign:"center", headerFilter:"input"},	
+					{title:"날짜", field:"pjai_mnth", sorter:"String", width:100,
+						hozAlign:"center", headerFilter:"input"},					
 				    
 		    ],
 		    rowFormatter:function(row){

@@ -16,7 +16,9 @@
 		       FAC_FIX.FFX_MAN, 
 		       FAC_FIX.FFX_WRK, 
 		       REPLACE(CONVERT(VARCHAR,CONVERT(MONEY,FAC_FIX.FFX_COST),1),'.00','') AS FFX_COST, 
-		       FAC_FIX.FFX_NOTE 
+		       FAC_FIX.FFX_NOTE,
+		       FAC_FIX.FILE_NAME1,   
+			   FAC_FIX.FILE_NAME2        
 		       <!-- SPR_NAME --> 
 		  FROM FAC_FIX 
 		   INNER JOIN FACILITY 
@@ -39,17 +41,19 @@
 		       FFX_MAN ,
 		       FFX_TIME ,
 		       LEFT(CONVERT(VARCHAR, CONVERT(DATETIME, FAC_FIX.FFX_NEXT, 120), 120), 10) AS FFX_NEXT,
-		       FFX_END
+		       FFX_END,
+		       FILE_NAME1,
+		       FILE_NAME2
 		  FROM FAC_FIX
 		 WHERE FFX_NO = #{ffx_no}
 	</select>
 	
 	<insert id="suriHistoryInsertSave" parameterType="suri">
 		insert into FAC_FIX (FFX_NO ,FAC_CODE, FFX_DATE, FFX_NOTE, FFX_WRK,
-		FFX_COST, FFX_MAN , FFX_EVT , FFX_TIME, FFX_NEXT, FFX_END)
+		FFX_COST, FFX_MAN , FFX_EVT , FFX_TIME, FFX_NEXT, FFX_END, FILE_NAME1,FILE_NAME2)
 		values ((select isnull(max(FFX_NO), 0)+1 as "FFX_NO" from
 		FAC_FIX),#{fac_code}, #{ffx_date}, #{ffx_note}, #{ffx_wrk},
-		#{ffx_cost}, #{ffx_man}, #{ffx_evt} ,#{ffx_time}, #{ffx_next},#{ffx_end})
+		#{ffx_cost}, #{ffx_man}, #{ffx_evt} ,#{ffx_time}, #{ffx_next},#{ffx_end},#{file_name1},#{file_name2})
 	</insert>
 	
 	<update id="suriHistoryUpdateSave" parameterType="suri">
@@ -57,6 +61,12 @@
 		=#{ffx_prt} --> , FFX_WRK =#{ffx_wrk} , FFX_EVT =#{ffx_evt} ,
 		FFX_NOTE =#{ffx_note} , FFX_COST =#{ffx_cost} , FFX_MAN =#{ffx_man} , FFX_TIME
 		=#{ffx_time} , FFX_NEXT =#{ffx_next} , FFX_END =#{ffx_end}
+		<if test="file_name1 != null and file_name1 != ''">
+            , FILE_NAME1 = #{file_name1}
+        </if>
+        <if test="file_name2 != null and file_name2 != ''">
+            , FILE_NAME2 = #{file_name2}
+        </if>
 		where FFX_NO = #{ffx_no}
 	</update>
 	

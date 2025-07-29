@@ -67,6 +67,7 @@ public class Jaego {
 	private String pjai_bigo;		//재고 비고
 	private float pjai_jo;			//조정 수량
 	private float pjai_jo_j;		//조정 중량
+	private String pjai_mnth;
 	
 	public int getOrd_code() {
 		return ord_code;
@@ -349,5 +350,11 @@ public class Jaego {
 	}
 	public void setEdate(String edate) {
 		this.edate = edate;
+	}
+	public String getPjai_mnth() {
+		return pjai_mnth;
+	}
+	public void setPjai_mnth(String pjai_mnth) {
+		this.pjai_mnth = pjai_mnth;
 	}
 }

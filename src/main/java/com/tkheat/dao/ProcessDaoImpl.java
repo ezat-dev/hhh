@@ -46,6 +46,11 @@ public class ProcessDaoImpl implements ProcessDao {
 	 }
 	 
 	 @Override
+	 public void deleteSiljuk(Siljuk siljuk) {
+		 sqlSession.delete("siljuk.deleteSiljuk", siljuk);
+	 }
+	 
+	 @Override
 	 public List<Siljuk> getFacSiljukList(Siljuk siljuk) {
 		 return sqlSession.selectList("siljuk.getFacSiljukList", siljuk);
 	 }

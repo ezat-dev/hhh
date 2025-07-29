@@ -110,7 +110,36 @@
       left: 0;
       line-height: 19px;
     }
-    
+ .box1 {
+	display: flex;
+	justify-content: right;
+	align-items: center;
+	width: 1500px;
+	margin-left: -960px;
+}
+.box1 input{
+	width: 5%
+}  
+.box1 input{
+	width: 150px;
+	padding: 5px 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	color: #333;
+	outline: none;
+	transition: border 0.3s ease;
+}
+
+.box1 input:focus {
+	border: 1px solid #007bff;
+	background-color: #fff;
+}  
+.box1 label,
+.box1 input {
+	margin-right: 10px; /* 요소 사이 간격 */
+}         
     
     </style>
     
@@ -122,8 +151,11 @@
          <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>
         
         
-		<label class="daylabel">년도 : </label>
-		<input type="date" class="sdate" id="sdate" style="font-size: 16px;" autocomplete="off">
+		<label class="daylabel">입출고기간 : </label>
+		<input type="month" class="sdate" id="sdate" style="font-size: 16px;" autocomplete="off">
+		
+		<label class="daylabel">거래처 :</label>
+		<input type="text" class="corp_name" id="corp_name" style="font-size: 16px;" autocomplete="off">
 		
 			
 	</div>
@@ -156,7 +188,7 @@
 <script>
 	//전역변수
     var cutumTable;	
-
+    var sdate = $("#sdate").val();
 	//로드
 	$(function(){
 		//전체 거래처목록 조회
@@ -205,7 +237,7 @@
     	  };
 		
 		userTable = new Tabulator("#tab1", {
-		    height:"750px",
+		    height:"650px",
 		    layout:"fitColumns",
 		    selectable:true,	//로우 선택설정
 		    tooltips:true,
@@ -216,40 +248,64 @@
 		    ajaxLoader:false,
 		    ajaxURL:"/tkheat/operation/monthSale/getMonthSaleList",
 		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{"sdate": $("#sdate").val(),},
+		    ajaxParams:{"sdate": $("#sdate").val(),
+		    	"corp_name": $("#corp_name").val(),
+		    	"prod_name": $("#prod_name").val(),
+		    	"prod_no": $("#prod_no").val(),
+		    	"prod_gubn": $("#prod_gubn").val(),
+			    },
 		    placeholder:"조회된 데이터가 없습니다.",
 		    paginationSize:20,
 		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","29px");
+				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
 		        return response; //return the response data to tabulator
 		    },
 		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},
-		        {title:"마감월", field:"och_ma", sorter:"string", width:120,
-			        hozAlign:"center"},	
-			    {title:"출고일", field:"och_date", sorter:"string", width:120,
-				    hozAlign:"center"},     
-				{title:"거래처", field:"corp_name", sorter:"string", width:140,
-				    hozAlign:"center"}, 
-				{title:"품명", field:"prod_name", sorter:"string", width:160,
-				    hozAlign:"center"}, 
-		        {title:"품번", field:"prod_no", sorter:"string", width:160,
-		        	hozAlign:"center"},		        
-		        {title:"LOT NO", field:"och_lot", sorter:"string", width:100,
-		        	hozAlign:"center"},
-		        {title:"수량", field:"och_su", sorter:"int", width:110,
-		        	hozAlign:"center"},
-		        {title:"단가", field:"och_dang", sorter:"int", width:110,
-			        hozAlign:"center"},	
-		        {title:"공급가액", field:"och_mon", sorter:"int", width:130,
-		        	hozAlign:"center"},  	
-		        {title:"부가세", field:"och_mon_tax", sorter:"int", width:130,
-			        hozAlign:"center"},	
-			    {title:"합계금액", field:"och_mon_total", sorter:"int", width:130,
-				    hozAlign:"center"},
-				{title:"합계금액", field:"och_mon_total", formatter: percentFormatter, sorter:"int", width:150,
-					    hozAlign:"center"},    
+		    	{title:"NO", field:"idx", sorter:"int", width:80, hozAlign:"center"},
+		        {title:"마감월", field:"och_ma", sorter:"string", width:120, hozAlign:"center"},	
+		        {title:"출고일", field:"och_date", sorter:"string", width:120, hozAlign:"center"},     
+		        {title:"거래처", field:"corp_name", sorter:"string", width:140, hozAlign:"center", headerFilter:"input"}, 
+		        {title:"품명", field:"prod_name", sorter:"string", width:160, hozAlign:"center", headerFilter:"input"}, 
+		        {title:"품번", field:"prod_no", sorter:"string", width:160, hozAlign:"center", headerFilter:"input"},		        
+		        {title:"LOT NO", field:"och_lot", sorter:"string", width:100, hozAlign:"center"},
+		        
+		        {title:"수량", field:"och_su", sorter:"int", width:110, hozAlign:"center",
+		            formatter: "money", 
+		            formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+		            bottomCalc:"sum", 
+		            bottomCalcFormatter:"money", 
+		            bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+		        },
+
+		        {title:"단가", field:"och_dang", sorter:"int", width:110, hozAlign:"center",
+		            formatter: "money", 
+		            formatterParams: { decimal: ".", thousand: ",", precision: 0 }
+		        },
+
+		        {title:"공급가액", field:"och_mon", sorter:"int", width:130, hozAlign:"center",
+		            formatter: "money", 
+		            formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+		            bottomCalc:"sum", 
+		            bottomCalcFormatter:"money", 
+		            bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+		        },  	
+
+		        {title:"부가세", field:"och_mon_tax", sorter:"int", width:130, hozAlign:"center",
+		            formatter: "money", 
+		            formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+		            bottomCalc:"sum", 
+		            bottomCalcFormatter:"money", 
+		            bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+		        },
+
+		        {title:"합계금액", field:"och_mon_total", sorter:"int", width:130, hozAlign:"center",
+		            formatter: "money", 
+		            formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+		            bottomCalc:"sum", 
+		            bottomCalcFormatter:"money", 
+		            bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+		        },
+				
 				    
 		    ],
 		    rowFormatter:function(row){

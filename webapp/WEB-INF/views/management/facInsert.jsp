@@ -8,6 +8,7 @@
     <title>설비등록</title>
     <link rel="stylesheet" href="/tkheat/css/management/facInsert.css">
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 	<%@include file="../include/pluginpage.jsp" %>    
 <style>
 .main {
@@ -136,6 +137,42 @@ textarea {
 	font-size: 20px; /* 글자 크기 */
 	text-align: center; /* 텍스트 정렬 */
 }
+
+.box1 {
+	display: flex;
+	justify-content: right;
+	align-items: center;
+	width: 1500px;
+	margin-left: -1050px;
+}
+
+.box1 select{
+	width: 5%
+}  
+.box1 input[type="date"] {
+	width: 150px;
+	padding: 5px 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	color: #333;
+	outline: none;
+	transition: border 0.3s ease;
+}
+
+.box1 input[type="date"]:focus {
+	border: 1px solid #007bff;
+	background-color: #fff;
+}  
+.box1 label,
+.box1 input {
+	margin-right: 10px; /* 요소 사이 간격 */
+}  
+th{
+	font-size : 14px;
+}
+    
 .btnSaveClose {
 	display: flex;
 	justify-content: center; /* 가운데 정렬 */
@@ -177,41 +214,6 @@ textarea {
 	background-color: #808080;
 	transform: scale(1.05);
 }
-.box1 {
-	display: flex;
-	justify-content: right;
-	align-items: center;
-	width: 1500px;
-	margin-left: -1050px;
-}
-
-.box1 select{
-	width: 5%
-}  
-.box1 input[type="date"] {
-	width: 150px;
-	padding: 5px 10px;
-	font-size: 16px;
-	border: 1px solid #ccc;
-	border-radius: 6px;
-	background-color: #f9f9f9;
-	color: #333;
-	outline: none;
-	transition: border 0.3s ease;
-}
-
-.box1 input[type="date"]:focus {
-	border: 1px solid #007bff;
-	background-color: #fff;
-}  
-.box1 label,
-.box1 input {
-	margin-right: 10px; /* 요소 사이 간격 */
-}  
-th{
-	font-size : 14px;
-}
-    
     </style>
     
     
@@ -426,11 +428,11 @@ th{
 									<tr>
 										<th class="">도입시기</th>
 										<td class="">
-											<input id="fac_buy" class="date js-datepicker" type="text" style="width:100px;" value="2025-04-21" maxlength="20" size="20" name="fac_buy" />
+											<input id="fac_buy" class="date js-datepicker" type="text" style="width:100px;"  maxlength="20" size="20" name="fac_buy" />
 										</td>
 										<th class="">제조일자</th>
 										<td class="">
-											<input id="fac_mday" class="date js-datepicker" type="text" style="width:100px;" value="2025-04-21" maxlength="20" size="20" name="fac_mday" />
+											<input id="fac_mday" class="date js-datepicker" type="text" style="width:100px;"  maxlength="20" size="20" name="fac_mday" />
 										</td>
 									</tr>
 									<tr>
@@ -501,9 +503,9 @@ th{
 										<th class="">이미지</th>
 										<td class="findImage">
 											<input type="hidden" name="type" value="facility" />
-											<input type="file" name="imageFile" title="이미지 찾기" onchange="previewImage(this,'previewId')">
+											<input id="imgInput0" class="imgInputClass" type="file" name="fac_file_url" title="이미지 찾기" onchange="previewImage(this,'previewId')">
 											<div class="imgArea" id='previewId' style="height:200px;border:1px solid #ddd;">
-												<img id="prev_previewId" src="/resources/images/noimage_01.gif" width="100%" height="100%" />
+												<img id="img0" src="/resources/images/noimage_01.gif" width="100%" height="100%" />
 											</div>
 										</td>
 									</tr>
@@ -545,6 +547,23 @@ th{
 		//전체 거래처목록 조회
 		getFacList();
 	});
+
+    $(function(){	
+        // 파일 선택시 이미지 띄우기
+      $('.imgInputClass').change(function(event){
+        var selectedFile = event.target.files[0];
+      var reader = new FileReader();
+      
+      var img = $(this).parent().parent().find('img')[0];
+      img.title = selectedFile.name;
+      
+      reader.onload = function(event) {
+        img.src = event.target.result;
+      };
+      
+      reader.readAsDataURL(selectedFile);
+      });
+    });
 
 	//이벤트
 	//함수
@@ -594,7 +613,16 @@ th{
 				{title:"제작사", field:"fac_make", sorter:"int", width:150,
 					hozAlign:"center", headerFilter:"input"},
 				{title:"구매처", field:"fac_cbuy", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},      		
+					hozAlign:"center", headerFilter:"input"},   
+					{title:"이미지", field:"fac_file_name", width:100,
+						hozAlign:"center", formatter:"image",
+					    cssClass:"rp-img-popup",
+				      	formatterParams:{
+					      	height:"30px", width:"30px",
+					      	urlPrefix:"/excelTest/태경출력파일/사진/설비등록/"
+					      	},   
+						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+				    },		
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
@@ -656,6 +684,19 @@ th{
 				for(let key in allData){
 //					console.log(allData, key);	
 					$("#facInsertForm [name='"+key+"']").val(allData[key]);
+				}
+
+				// 이미지 초기화
+				$("#img0").attr("src", "/resources/images/noimage_01.gif");
+
+				// 이미지
+				if (allData.fac_file_name) {
+					console.log("원본 파일명:", allData.fac_file_name);
+					console.log("인코딩된 경로:", encodeURIComponent(allData.fac_file_name));
+					const path = "/excelTest/태경출력파일/사진/설비등록/" + allData.fac_file_name;
+					console.log("path: ", path);
+					$("#img0").attr("src", path);
+					//$(".aphoto").attr("href", path).text(d.product_file_name);
 				}
 
 				$('.facModal').show().addClass('show');
@@ -785,7 +826,12 @@ th{
 	    });
 	}
 
-
+    //엑셀 다운로드
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "설비등록_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "설비등록" });
+	});
 
 
 	

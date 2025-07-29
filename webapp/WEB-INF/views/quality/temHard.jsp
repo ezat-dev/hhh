@@ -131,40 +131,58 @@
 		        return response; //return the response data to tabulator
 		    },
 		    columns:[
-		    	{title:"준비코드", field:"juckjaecode", sorter:"string", width:120,
+		    	{title:"준비코드", field:"juckjaecode", sorter:"string", width:90,
 			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"작업일", field:"ilbo_strt", sorter:"string", width:220,
+			    {title:"작업일", field:"ilbo_strt", sorter:"string", width:120,
 				    hozAlign:"center", headerFilter:"input"},     
-				{title:"시작", field:"ilbo_strt", sorter:"string", width:220,
+				{title:"시작", field:"ilbo_strt", sorter:"string", width:120,
 				    hozAlign:"center", headerFilter:"input"}, 
-				{title:"종료", field:"ilbo_end", sorter:"string", width:220,
+				{title:"종료", field:"ilbo_end", sorter:"string", width:120,
 				    hozAlign:"center", headerFilter:"input"}, 
-		        {title:"LOTNO", field:"ilbo_lot", sorter:"string", width:180,
+		        {title:"LOTNO", field:"ilbo_lot", sorter:"string", width:110,
 		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"작업자", field:"user_name", sorter:"string", width:100,
+		        {title:"작업자", field:"user_name", sorter:"string", width:80,
 		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"품명", field:"prod_name", sorter:"string", width:200,
+		        {title:"품명", field:"prod_name", sorter:"string", width:170,
 		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"품번", field:"prod_no", sorter:"string", width:200,
+		        {title:"품번", field:"prod_no", sorter:"string", width:110,
 			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"규격", field:"prod_gyu", sorter:"string", width:160,
+		        {title:"규격", field:"prod_gyu", sorter:"string", width:90,
 		        	hozAlign:"center", headerFilter:"input"},  	
-		        {title:"재질", field:"prod_jai", sorter:"string", width:160,
+		        {title:"재질", field:"prod_jai", sorter:"string", width:90,
 			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"표면경도", field:"prod_pg", sorter:"string", width:130,
+			        { 
+			        	  title: "표면경도", field: "prod_pg", sorter: "string", width: 90,
+			        	  hozAlign: "center", headerFilter: "input",
+			        	  formatter: function(cell) {
+			        	    const el = cell.getElement();
+			        	    el.style.backgroundColor = "#fff599"; // 연노랑
+			        	    el.style.fontWeight = "bold";
+			        	    return cell.getValue();
+			        	  }
+			        	},
+			        	{ 
+			        		  title: "판정", field: "ilbo_okng", sorter: "string", width: 80,
+			        		  hozAlign: "center", headerFilter: "input",
+			        		  formatter: function(cell) {
+			        		    const el = cell.getElement();
+			        		    el.style.backgroundColor = "#3498db"; // 파란색
+			        		    el.style.color = "#fff"; // 흰색 글자
+			        		    el.style.fontWeight = "bold";
+			        		    return cell.getValue();
+			        		  }
+			        		},
+
+				{title:"x1", field:"ilbo_pg1", sorter:"String", width:70,
+					hozAlign:"center", headerFilter:"input"},
+			    {title:"x2", field:"ilbo_pg2", sorter:"String", width:70,
+					hozAlign:"center", headerFilter:"input"},
+ 			    {title:"x3", field:"ilbo_pg3", sorter:"String", width:70,
+					hozAlign:"center", headerFilter:"input"},
+				{title:"x4", field:"ilbo_pg4", sorter:"String", width:70,
+					hozAlign:"center", headerFilter:"input"},
+	 			{title:"x5", field:"ilbo_pg5", sorter:"String", width:70,
 				    hozAlign:"center", headerFilter:"input"},	
-				{title:"판정", field:"ilbo_okng", sorter:"string", width:100,
-				    hozAlign:"center", headerFilter:"input"},
-				{title:"x1", field:"ilbo_pg1", sorter:"String", width:100,
-					hozAlign:"center", headerFilter:"input"},
-			    {title:"x2", field:"ilbo_pg2", sorter:"String", width:100,
-					hozAlign:"center", headerFilter:"input"},
- 			    {title:"x3", field:"ilbo_pg3", sorter:"String", width:100,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"x4", field:"ilbo_pg4", sorter:"String", width:100,
-					hozAlign:"center", headerFilter:"input"},
-	 			{title:"x5", field:"ilbo_pg5", sorter:"String", width:100,
-				    hozAlign:"center", headerFilter:"input"},
 				    
 		    ],
 		    rowFormatter:function(row){

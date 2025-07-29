@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>거래처등록</title>
+    <title>비가동율분석</title>
     <link rel="stylesheet" href="/tkheat/css/management/productInsert.css">
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
 <%@include file="../include/pluginpage.jsp" %> 
@@ -34,7 +34,37 @@
 .row_select{
 	background-color:#9ABCEA !important;
 }
-    
+.box1 {
+	display: flex;
+	justify-content: right;
+	align-items: center;
+	width: 1500px;
+	margin-left: -760px;
+}
+
+.box1 select{
+	width: 5%
+}  
+.box1 input[type="date"] {
+	width: 150px;
+	padding: 5px 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	color: #333;
+	outline: none;
+	transition: border 0.3s ease;
+}
+
+.box1 input[type="date"]:focus {
+	border: 1px solid #007bff;
+	background-color: #fff;
+}  
+.box1 label,
+.box1 input {
+	margin-right: 10px; /* 요소 사이 간격 */
+}    
     
     </style>
     
@@ -133,14 +163,12 @@
 		        	hozAlign:"center"},
 		        {title:"설비", field:"fac_name", sorter:"string", width:120,
 			        hozAlign:"center"},	
-			    {title:"가동시간(분)", field:"fstp_sil", sorter:"int", width:120,
+			    {title:"가동시간(분)", field:"fstp_tu", sorter:"int", width:120,
 				    hozAlign:"center"},     
-				{title:"비가동시간(분)", field:"fstp_tu", sorter:"int", width:120,
+				{title:"비가동시간(분)", field:"fstp_10", sorter:"int", width:120,
 				    hozAlign:"center"}, 
 				{title:"가동율(%)", field:"RunRate", sorter:"int", width:150,
-				    hozAlign:"center"},
-				    {title:"가동율(%)", field:"fstp_10", sorter:"int", width:150,
-					    hozAlign:"center", visible:false},   
+				    hozAlign:"center"},  
 					    
 				    
 		    ],

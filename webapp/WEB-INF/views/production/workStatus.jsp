@@ -163,9 +163,9 @@
 		        return response; //return the response data to tabulator
 		    },
 		    columns:[
-		        {title:"NO", field:"plnp_no", sorter:"int", width:80,
+		        {title:"NO", field:"idx", sorter:"int", width:80,
 		        	hozAlign:"center"},
-		        {title:"일자", field:"prod_code", sorter:"string", width:120,
+		        {title:"일자", field:"ilbo_date", sorter:"string", width:120,
 			        hozAlign:"center", headerFilter:"input"},	
 			    {title:"수주NO", field:"ord_code", sorter:"string", width:120,
 				    hozAlign:"center", headerFilter:"input"},     
@@ -175,18 +175,34 @@
 				    hozAlign:"center", headerFilter:"input"}, 
 		        {title:"설비", field:"fac_name", sorter:"string", width:120,
 		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"거래처", field:"corp_name", sorter:"string", width:100,
+		        {title:"거래처", field:"corp_name", sorter:"string", width:140,
 		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"품명", field:"prod_name", sorter:"string", width:100,
+		        {title:"품명", field:"prod_name", sorter:"string", width:170,
 		        	hozAlign:"center", headerFilter:"input"},
 		        {title:"품번", field:"prod_no", sorter:"string", width:100,
 			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"규격", field:"prod_gyu", sorter:"int", width:100,
+		        {title:"규격", field:"prod_gyu", sorter:"int", width:140,
 		        	hozAlign:"center", headerFilter:"input"},  	
-		        {title:"재질", field:"prod_jai", sorter:"int", width:100,
+		        {title:"재질", field:"prod_jai", sorter:"int", width:140,
 			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"수량", field:"plnp_dsu", sorter:"int", width:100,
-				    hozAlign:"center", headerFilter:"input"},
+			        {
+			        	  title: "수량",
+			        	  field: "ilbo_su",
+			        	  sorter: "number",
+			        	  width: 100,
+			        	  hozAlign: "center",
+			        	  headerFilter: "input",
+			        	  bottomCalc: "sum",
+			        	  formatter: "money",
+			        	  formatterParams: {
+			        	    thousand: ",",
+			        	    precision: 0
+			        	    
+			        	  },
+			        	  bottomCalcFormatter: "money",
+							bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+			        	}
+
 				    
 		    ],
 		    rowFormatter:function(row){

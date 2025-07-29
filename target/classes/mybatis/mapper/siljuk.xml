@@ -148,7 +148,10 @@
 	</select>
 	
 	
-	
+	<delete id="deleteSiljuk" parameterType="Siljuk">
+    DELETE FROM workilbo
+    WHERE ilbo_code = #{ilbo_code} AND ilbo_no = #{ilbo_no}
+	</delete>
 	
 	
 	

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>침탄로작업표준</title>
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %>     
     
     <style>
@@ -280,7 +281,7 @@ body{
           <tbody><tr>
             <th class="left">고객명<input id="prod_code" name="prod_code" type="hidden" value=""></th>
             <td class=""><input id="corp_name" name="corp_name" class="basic" type="text" style="width:70%;" value="" readonly="">
-            <input class="" type="button" title="제품선택" onclick="openProductListModal();"></td>
+            <input class="" type="button" title="제품선택" onclick="openProductListModal();" value="검색"></td>
             <th class="">단중(g)</th>
             <td class=""><input id="prod_danj" name="prod_danj" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
             <th class="">도번/품번</th>
@@ -356,9 +357,9 @@ body{
                   </tr>
                   <tr>
                     <th class="" hidden="">표면경도 비고</th>
-                    <td class="" hidden=""><input id="prodPg3" name="prod_pg3" class="basic" type="text" style="width:90%; display:none;" value="" readonly=""></td>
+                    <td class="" hidden=""><input id="prod_pg3" name="prod_pg3" class="basic" type="text" style="width:90%; display:none;" value="" readonly=""></td>
                     <th class="" hidden="">심부경도 비고</th>
-                    <td class="" hidden=""><input id="prodSg3" name="prod_sg3" class="basic" type="text" style="width:90%; display:none;" value="" readonly=""></td>
+                    <td class="" hidden=""><input id="prod_sg3" name="prod_sg3" class="basic" type="text" style="width:90%; display:none;" value="" readonly=""></td>
                     <!-- <th class="">표면경도 (실측치)</th>
                     <td class=""><input id="prodPgs" name="prodPgs" class="basic" type="text" style="width:100%;" value="" readonly/></td> -->
                     <!-- <th class="">경화거리(ECD)</th>
@@ -748,13 +749,13 @@ body{
               <legend>단취사진</legend>
               <div class="findImage">
                 <input type="hidden" name="type" value="standard">
-                  <input type="file" name="imageFile1" title="이미지 찾기" onchange="previewImage(this,'previewId1')">
+                  <input type="file" id="imgInput0" class="imgInputClass" name=wstd_chim_file_url1 title="이미지 찾기" onchange="previewImage(this,'previewId1')">
                   <!--<input type="button" value="X" title="삭제" class="btnFT" /> -->
                 <div class="imgArea" id="previewId1" style="height:90px;border:1px solid #ddd;"><img id="prev_previewId1"  width="100%" height="100%"></div>
               </div>
             </fieldset>
             <fieldset class="popField">
-              <legend>작업표준서</legend>
+              <legend>도면</legend>
               <input type="hidden" name="type" value="pdffile">
               <input type="file" name="wstdfile" title="" onchange="" style=" width: 140px;" accept=".pdf">
             </fieldset>
@@ -762,7 +763,7 @@ body{
               <legend>사진-3</legend>
               <div class="findImage">
               <input type="hidden" name="type" value="standard">
-                  <input type="file" name="imageFile3" title="이미지 찾기" onchange="previewImage(this,'previewId3')"><!-- <input type="button" value="X" title="삭제" class="btnFT" /> -->
+                  <input type="file" id="imgInput1" class="imgInputClass" name=wstd_chim_file_url2 title="이미지 찾기" onchange="previewImage(this,'previewId3')"><!-- <input type="button" value="X" title="삭제" class="btnFT" /> -->
                 <div class="imgArea" id="previewId3" style="height:91px;border:1px solid #ddd;"><img id="prev_previewId3"  width="100%" height="100%"></div>
               </div>
             </fieldset>
@@ -780,43 +781,63 @@ body{
                 </colgroup>
                 <tbody><tr>
                   <td class="top">EA/줄(판)</td>
-                  <td class="top2" colspan="2"><input type="text" id="wstd_t32" name="wstd_t32" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()"></td>
-                  <td class="top2">이하</td>
-                </tr>
-                <tr>
-                  <td class="left">줄(판)/단</td>
-                  <td colspan="3"><input type="text" id="wstd_t33" name="wstd_t33" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()"></td>
-                  <td colspan="2" hidden=""><input type="text" id="wstd_t34" name="wstd_t34" value="" class="basic" style="width:90%; display:none;"></td>
-                </tr>
-                <tr>
-                  <td class="left">단/Tray</td>
-                  <td><input type="text" id="wstd_t41" name="wstd_t41" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()"></td>
-                  <td>Tray차지</td>
-                  <td><input type="text" id="wstd_t42" name="wstd_t42" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()"></td>
-                </tr>
-                <tr>
-                  <td class="left">추가수량</td>
-                  <td colspan="3"><input type="text" id="wstd_t87" name="wstd_t87" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()"></td>
-                </tr>
-                <tr>
-                  <td class="left">단취수량</td>
-                  <td colspan="2"><input type="text" id="wstd_t43" name="wstd_t43" value="" class="basic" style="width:90%; text-align: right;" readonly=""></td>
-                  <td>EA/CH</td>
-                </tr>
-                <tr>
-                  <td class="left">Jig무게</td>
-                  <td colspan="2"><input type="text" id="wstd_t44" name="wstd_t44" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()"></td>
-                  <td>kg</td>
-                </tr>
-                <tr>
-                  <td class="left">제품무게/ch</td>
-                  <td colspan="2"><input type="text" id="wstd_t51" name="wstd_t51" value="" class="basic" style="width:90%; text-align: right;" readonly=""></td>
-                  <td>kg</td>
-                </tr>
-                <tr>
-                  <td class="left">총단중/ch</td>
-                  <td colspan="2"><input type="text" id="wstd_t52" name="wstd_t52" value="" class="basic" style="width:90%; text-align: right;" readonly=""></td>
-                  <td>kg</td>
+          <td class="top2" colspan="2">
+            <input type="text" id="wstd_t32" name="wstd_t32" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()">
+          </td>
+          <td class="top2">이하</td>
+        </tr>
+        <tr>
+          <td class="left">줄(판)/단</td>
+          <td colspan="3">
+            <input type="text" id="wstd_t33" name="wstd_t33" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()">
+          </td>
+          <td colspan="2" hidden="">
+            <input type="text" id="wstd_t34" name="wstd_t34" value="" class="basic" style="width:90%; display:none;">
+          </td>
+        </tr>
+        <tr>
+          <td class="left">단/Tray</td>
+          <td>
+            <input type="text" id="wstd_t41" name="wstd_t41" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()">
+          </td>
+          <td>Tray차지</td>
+          <td>
+            <input type="text" id="wstd_t42" name="wstd_t42" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()">
+          </td>
+        </tr>
+        <tr>
+          <td class="left">추가수량</td>
+          <td colspan="3">
+            <input type="text" id="wstd_t87" name="wstd_t87" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()">
+          </td>
+        </tr>
+        <tr>
+          <td class="left">단취수량</td>
+          <td colspan="2">
+            <input type="text" id="wstd_t43" name="wstd_t43" value="" class="basic" style="width:90%; text-align: right;" readonly>
+          </td>
+          <td>EA/CH</td>
+        </tr>
+        <tr>
+          <td class="left">Jig무게</td>
+          <td colspan="2">
+            <input type="text" id="wstd_t44" name="wstd_t44" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()">
+          </td>
+          <td>kg</td>
+        </tr>
+        <tr>
+          <td class="left">제품무게/ch</td>
+          <td colspan="2">
+            <input type="text" id="wstd_t51" name="wstd_t51" value="" class="basic" style="width:90%; text-align: right;" readonly>
+          </td>
+          <td>kg</td>
+        </tr>
+        <tr>
+          <td class="left">총단중/ch</td>
+          <td colspan="2">
+            <input type="text" id="wstd_t52" name="wstd_t52" value="" class="basic" style="width:90%; text-align: right;" readonly>
+          </td>
+          <td>kg</td>
                 </tr>
 
                 <tr height="5px"></tr>
@@ -841,7 +862,7 @@ body{
                 </tr>
                 <tr>
                   <td class="left">단중</td>
-                  <td colspan="2"><input type="text" id="wstd_t40" name="wstd_t40" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()"></td>
+                  <td colspan="2"><input type="text" id="wstd_t40" name="wstd_t40" value="1" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()"></td>
                   <td>kg</td>
                 </tr>
                 <tr>
@@ -985,6 +1006,23 @@ body{
 		getChimStandardList();
 	});
 
+    $(function(){	
+        // 파일 선택시 이미지 띄우기
+      $('.imgInputClass').change(function(event){
+        var selectedFile = event.target.files[0];
+      var reader = new FileReader();
+      
+      var img = $(this).parent().parent().find('img')[0];
+      img.title = selectedFile.name;
+      
+      reader.onload = function(event) {
+        img.src = event.target.result;
+      };
+      
+      reader.readAsDataURL(selectedFile);
+      });
+    });
+
 	//이벤트
 	//함수
 	function getChimStandardList(){
@@ -1032,7 +1070,25 @@ body{
 				    hozAlign:"center", headerFilter:"input"},
 				{title:"공정", field:"tech_te", sorter:"int", width:150,
 					hozAlign:"center", headerFilter:"input"},
-					{title:"", field:"wstd_code", visible:false}
+					{title:"", field:"wstd_code", visible:false},
+					/* {title:"단취사진", field:"wstd_chim_file_name1", width:100,
+						hozAlign:"center", formatter:"image",
+					    cssClass:"rp-img-popup",
+				      	formatterParams:{
+					      	height:"30px", width:"30px",
+					      	urlPrefix:"/excelTest/태경출력파일/사진/침탄로작업표준/"
+					      	}, 
+					    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+					    },
+						{title:"사진-3", field:"wstd_chim_file_name2", width:100,
+							hozAlign:"center", formatter:"image",
+						    cssClass:"rp-img-popup",
+					      	formatterParams:{
+						      	height:"30px", width:"30px",
+						      	urlPrefix:"/excelTest/태경출력파일/사진/침탄로작업표준/"
+						      	}, 
+						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+						    }, */
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
@@ -1090,12 +1146,35 @@ function getChimStandardDetail(wstd_code){
 			"wstd_code":wstd_code
 		},
 		success:function(result){
-//			console.log(result);
+			console.log(result);
 			var allData = result.data;
 			
 			for(let key in allData){
 //				console.log(allData, key);	
 				$("[name='"+key+"']").val(allData[key]);
+			}
+
+			// 이미지 초기화
+			$("#prev_previewId1, #prev_previewId3, #prev_previewId7").attr("src", "/resources/images/noimage_01.gif");
+
+			// 단취사진
+			if (allData.wstd_chim_file_name1) {
+				console.log("원본 파일명:", allData.wstd_chim_file_name1);
+				console.log("인코딩된 경로:", encodeURIComponent(allData.wstd_chim_file_name1));
+				const path = "/excelTest/태경출력파일/사진/침탄로작업표준/" + allData.wstd_chim_file_name1;
+				console.log("path: ", path);
+				$("#prev_previewId1").attr("src", path);
+				//$(".aphoto").attr("href", path).text(d.product_file_name);
+			}
+			// 사진-3
+			if (allData.wstd_chim_file_name2) {
+				console.log("원본 파일명:", allData.wstd_chim_file_name2);
+				console.log("인코딩된 경로:", encodeURIComponent(allData.wstd_chim_file_name2));
+				const path = "/excelTest/태경출력파일/사진/침탄로작업표준/" + allData.wstd_chim_file_name2;
+				console.log("path: ", path);
+				$("#prev_previewId3").attr("src", path);
+				$("#prev_previewId7").attr("src", path);
+				//$(".aphoto").attr("href", path).text(d.product_file_name);
 			}
 
 			$('.chimStandardModal').show().addClass('show');
@@ -1220,6 +1299,9 @@ function getChimStandardDetail(wstd_code){
                 document.getElementById('prod_gd1').value = data.prod_gd1;
                 document.getElementById('prod_gd2').value = data.prod_gd2;
                 document.getElementById('prod_gd5').value = data.prod_gd5;
+
+
+                
                 document.getElementById('productListModal').style.display = 'none';
             }
         });
@@ -1301,9 +1383,87 @@ function getChimStandardDetail(wstd_code){
 	    });
 	}
 
-    
-		
+    //엑셀 다운로드
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "침탄로작업표준_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "침탄로작업표준" });
+	});
 
+
+	document.addEventListener("DOMContentLoaded", function() {
+		console.log({
+			  t32: wstd_t32.value,
+			  t33: wstd_t33.value,
+			  t41: wstd_t41.value,
+			  t42: wstd_t42.value,
+			  t44: wstd_t44.value,
+			  t40: wstd_t40 ? wstd_t40.value : "없음",
+			  t87: wstd_t87.value
+			});
+		  window.fn_Calc = function() {
+		    var wstd_t32 = document.getElementById("wstd_t32");
+		    var wstd_t33 = document.getElementById("wstd_t33");
+		    var wstd_t41 = document.getElementById("wstd_t41");
+		    var wstd_t42 = document.getElementById("wstd_t42");
+		    var wstd_t44 = document.getElementById("wstd_t44");
+		    var wstd_t40 = document.getElementById("wstd_t40"); 
+		    var wstd_t43 = document.getElementById("wstd_t43");
+		    var wstd_t51 = document.getElementById("wstd_t51");
+		    var wstd_t52 = document.getElementById("wstd_t52");
+		    var wstd_t87 = document.getElementById("wstd_t87");
+
+		    // wstd_t40이 없으면 1로 기본처리 (옵션)
+		    var wstd_t40_val = wstd_t40 ? Number(fn_rtnnumber(wstd_t40.value)) : 1;
+
+		    if (
+		      wstd_t32.value !== "" && wstd_t33.value !== "" &&
+		      wstd_t41.value !== "" && wstd_t42.value !== "" &&
+		      wstd_t44.value !== "" &&
+		      wstd_t87.value !== ""
+		    ) {
+		      // 단취수량 계산
+		      var calc_t43 = 
+		        Number(fn_rtnnumber(wstd_t32.value)) *
+		        Number(fn_rtnnumber(wstd_t33.value)) *
+		        Number(fn_rtnnumber(wstd_t41.value)) *
+		        Number(fn_rtnnumber(wstd_t42.value)) +
+		        Number(fn_rtnnumber(wstd_t87.value));
+
+		      wstd_t43.value = fn_addComma(calc_t43);
+
+		      // 제품무게/ch 계산
+		      var calc_t51 = calc_t43 * wstd_t40_val;
+		      wstd_t51.value = fn_addComma(calc_t51.toFixed(2));
+
+		      // 총단중/ch 계산
+		      var calc_t52 = Number(fn_rtnnumber(wstd_t44.value)) + calc_t51;
+		      wstd_t52.value = fn_addComma(calc_t52.toFixed(1));
+		    } else {
+		      // 입력값 부족 시 결과 초기화
+		      wstd_t43.value = "";
+		      wstd_t51.value = "";
+		      wstd_t52.value = "";
+		    }
+		  };
+
+		  window.fn_addComma = function(n) {
+		    if (isNaN(n)) return 0;
+		    var reg = /(^[+-]?\d+)(\d{3})/;
+		    n = n.toString();
+		    while (reg.test(n)) {
+		      n = n.replace(reg, '$1' + ',' + '$2');
+		    }
+		    return n;
+		  };
+
+		  window.fn_rtnnumber = function(n) {
+		    if (typeof n !== "string") return n;
+		    return n.replace(/,/g, "");
+		  };
+		});
+
+	
 
     </script>
 

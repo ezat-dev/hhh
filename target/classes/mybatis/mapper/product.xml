@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="product">
-
+	
 	<insert id="productInsertSave" parameterType="product">
     	INSERT 
 		  INTO PRODUCT 
@@ -68,7 +68,10 @@
 		           PROD_SR1,
 		           PROD_SR2,
 		           PROD_GJ,
-		           PROD_BH
+		           PROD_BH,
+		           product_file_name,
+		           apperance_file_name,
+		           heat_file_name
 
 		       )
 		       VALUES 
@@ -135,7 +138,10 @@
 					#{prod_sr1},
 					#{prod_sr2},
 					#{prod_gj},
-					#{prod_bh}
+					#{prod_bh},
+					#{product_file_name},
+					#{apperance_file_name},
+					#{heat_file_name}
 	          )
 	</insert>
 	
@@ -152,7 +158,7 @@
 				PROD_GUBN, PROD_E1, PROD_E2, PROD_NOTE, PROD_MODEL, PROD_DANCH, PROD_PLT, PROD_BOX,
 				PROD_SNP, PROD_BANGCH, PROD_VNYL, PROD_PAD, PROD_REALJAI, TECH_PATTERN, TECH_SEQ, PROD_CD, PROD_KIJONG, PROD_E3,
 				PROD_E4, PROD_PGS, PROD_PGS1, PROD_PGS2, PROD_E5, PROD_DO, PROD_RA, PROD_UPJONG, PROD_APPEAR, PROD_TRANSFORM,
-				PROD_REFNO, PROD_PWSNO, PROD_WHADEEP, PROD_FILE, PROD_FAC1, PROD_FAC2, PROD_FAC3, PROD_FAC4, PROD_FAC5,
+				PROD_REFNO, PROD_PWSNO, PROD_WHADEEP, PROD_FILE, PROD_FAC1, PROD_FAC2, PROD_FAC3, PROD_FAC4, PROD_FAC5, product_file_name, apperance_file_name, heat_file_name,
 				PROD_FAC6, PROD_FAC7, PROD_FAC8, PROD_GJ, PROD_BH, PROD_CHISU1N, PROD_CHISU2N, PROD_CHISU3N, PROD_CHISU4N,
 				PROD_CHISU5N, PROD_CHISU1S, PROD_CHISU2S, PROD_CHISU3S, PROD_CHISU4S, PROD_CHISU5S, PROD_POLISH, PROD_SI,
 				PROD_SI1, PROD_SI2, PROD_SR, PROD_SR1, PROD_SR2, PROD_BOXSU, CORP_NAME2, CORP_NO,
@@ -317,6 +323,7 @@
 	
 	<update id="productUpdateSave" parameterType="product">
 		UPDATE PRODUCT 
+				    <trim suffixOverrides=",">
 		    SET prod_date       = #{prod_date},
 		    prod_gubn       = #{prod_gubn},
 		    corp_code       = #{corp_code},
@@ -382,7 +389,17 @@
 		    prod_sr1        = #{prod_sr1},
 		    prod_sr2        = #{prod_sr2},
 		    prod_gj         = #{prod_gj},
-		    prod_bh         = #{prod_bh}
+		    prod_bh         = #{prod_bh},
+    <if test="product_file_name != null">
+      product_file_name = #{product_file_name},
+    </if>
+    <if test="apperance_file_name != null">
+      apperance_file_name = #{apperance_file_name},
+    </if>
+    <if test="heat_file_name != null">
+      heat_file_name = #{heat_file_name},
+    </if>
+    </trim>
 		 WHERE PROD_CODE = #{prod_code}
 	</update>
 	

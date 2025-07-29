@@ -18,13 +18,14 @@
 	justify-content: space-between;
 }
 .nonModal {
-    position: fixed; /* 화면에 고정 */
-    top: 50%; /* 수직 중앙 */
-    left: 50%; /* 수평 중앙 */
-    display : none;
-    transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-    z-index: 1000; /* 다른 요소 위에 표시 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    display: none;
+    z-index: 1000;
 }
+
 .header {
     display: flex; /* 플렉스 박스 사용 */
     justify-content: center; /* 중앙 정렬 */
@@ -38,14 +39,13 @@
 }
 #editPop {
     background: #ffffff;
-    border: 1px solid #000000;
-    width: 1300px; /* 가로 길이 고정 */
-    height: 720px; /* 세로 길이 고정 */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-    margin: 20px auto; /* 중앙 정렬 */
-    padding: 20px;
-    border-radius: 5px; /* 모서리 둥글게 */
-    overflow-y: auto; /* 세로 스크롤 추가 */
+    border: 1px solid #000;
+    width: 1000px;  /* 줄임 */
+    height: 600px;  /* 줄임 */
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
 }
 
 .insideTable {
@@ -55,13 +55,18 @@
 
 .insideTable th,
 .insideTable td {
-    padding: 8px; /* 셀 패딩 */
-    border: 1px solid #ccc; /* 셀 경계선 */
-    vertical-align: middle; /* 수직 정렬 */
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    vertical-align: top;
+    line-height: 1.2;
+    font-size: 13px;
 }
 
 .insideTable th {
-    background: #f0f0f0; /* 헤더 배경색 */
+    background: #f4f4f4;
+    white-space: nowrap;
+    text-align: center;        /* 가로 중앙 정렬 */
+    vertical-align: middle;    /* 세로 중앙 정렬 */
 }
 
 .basic, .rp-input, .form-control {
@@ -76,17 +81,15 @@
 }
 
 textarea {
-    width: 100%; /* 너비 100% */
-    padding: 5px; /* 내부 여백 */
-    border: 1px solid #949494; /* 경계선 색상 */
-    border-radius: 3px; /* 둥근 모서리 */
+    width: 100%;
+    height: 60px !important; /* 기본 높이 줄이기 */
+    padding: 4px;
 }
 
 .findImage {
-    display: flex; /* 플렉스 박스 사용 */
-    align-items: center; /* 수직 정렬 */
+    flex-direction: column;
+    align-items: flex-start;
 }
-
 .findImage input[type="file"] {
     margin-right: 10px; /* 오른쪽 여백 */
 }
@@ -103,9 +106,9 @@ textarea {
 }
 
 .imgArea img {
-    width: 100%; /* 이미지 너비 */
-    height: 100%; /* 이미지 높이 */
-    object-fit: cover; /* 이미지 비율 유지 */
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* cover → contain으로 여백 줄임 */
 }
 
 .btnSaveClose button {
@@ -431,8 +434,8 @@ textarea {
                                         </td>
                                         <th rowspan="3" class="">개선전</th>
                                         <td rowspan="3" class="findImage"><input type="hidden" name="type" value="error">
-                                            <!-- <input type="file" name="imageFile1" title="이미지 찾기" onchange="previewImage(this,'previewId1')"> -->
-                                            <input type="text" name="imageFile1" title="이미지 찾기" onchange="previewImage(this,'previewId1')">
+                                            <input type="file" name="imageFile1" title="이미지 찾기" onchange="previewImage(this,'previewId1')">
+                                            <!-- <input type="text" name="imageFile1" title="이미지 찾기" onchange="previewImage(this,'previewId1')"> -->
                                             <div class="imgArea" id="previewId1" style="height:168px;"><img id="prev_previewId1" src="/resources/images/noimage_01.gif" width="100%" height="100%"></div>
                                         </td>
                                     </tr>
@@ -457,8 +460,8 @@ textarea {
                                         </td>
                                         <th rowspan="3" class="">개선후</th>
                                         <td rowspan="3" class="findImage"><input type="hidden" name="type" value="error">
-<!--                                              <input type="file" name="imageFile2" title="이미지 찾기" onchange="previewImage(this,'previewId2')">-->
-                                            <input type="text" name="imageFile2" title="이미지 찾기" onchange="previewImage(this,'previewId2')">
+										<input type="file" name="imageFile2" title="이미지 찾기" onchange="previewImage(this,'previewId2')">
+                                            <!-- <input type="text" name="imageFile2" title="이미지 찾기" onchange="previewImage(this,'previewId2')"> -->
                                             <div class="imgArea" id="previewId2" style="height:168px;"><img id="prev_previewId2" src="/resources/images/noimage_01.gif" width="100%" height="100%"></div>
                                         </td>
                                         </tr>
@@ -466,8 +469,8 @@ textarea {
                                         <th class="">대책수립 및<br>
                                            	 대책실시</th>
                                         <td class=""><textarea name="werr_jnote" id="werr_jnote" class="basic" style="width:90%; height:200px;"></textarea>
-<!--                                          <input type="file" name="werr_fname" id="werr_fname" title="파일 첨부" onchange="">-->
-                                        <input type="text" name="werr_fname" title="이미지 찾기" onchange="previewImage(this,'werr_fname')">
+										<input type="file" name="werr_fname" id="werr_fname" title="파일 첨부" onchange="">
+                                        <!-- <input type="text" name="werr_fname" title="이미지 찾기" onchange="previewImage(this,'werr_fname')"> -->
                                         <!-- <input type="button" value="X" onclick=""> -->
                                         </td>
                                         </tr>
@@ -492,7 +495,7 @@ textarea {
                                     <tr>
                                         <th>유효성점검1차</th>
                                         <td class="">
-                                            <input id="check_date_a"  type="date" style="width:100px;" value="2025-03-25" maxlength="20" size="20" name="check_date_a" >
+                                            <input id="check_date_a"  type="date" style="width:100px;" maxlength="20" size="20" name="check_date_a" >
                                             <input id="werr_user1" name="werr_user1" class="basic" type="text" style="width:100px;" value="">
                                             <input id="werr_note1" name="werr_note1" class="basic" type="text" style="width:200px;" value="">
                                             <input id="werr_bigo1" name="werr_bigo1" class="basic" type="text" style="width:100px;" value="">
@@ -501,7 +504,7 @@ textarea {
                                     <tr>
                                         <th class="">유효성점검2차</th>
                                         <td class="">
-                                            <input id="check_date_b" type="date" style="width:100px;" value="2025-03-25" maxlength="20" size="20" name="check_date_b">
+                                            <input id="check_date_b" type="date" style="width:100px;" maxlength="20" size="20" name="check_date_b">
                                             <input id="werr_user2" name="werr_user2" class="basic" type="text" style="width:100px;" value="">
                                             <input id="werr_note2" name="werr_note2" class="basic" type="text" style="width:200px;" value="">
                                             <input id="werr_bigo2" name="werr_bigo2" class="basic" type="text" style="width:100px;" value="">
@@ -510,7 +513,7 @@ textarea {
                                     <tr>
                                         <th class="">유효성점검3차</th>
                                         <td class="">
-                                            <input id="check_date_c" type="date" style="width:100px;" value="2025-03-25" maxlength="20" size="20" name="check_date_c">
+                                            <input id="check_date_c" type="date" style="width:100px;" maxlength="20" size="20" name="check_date_c">
                                             <input id="werr_user3" name="werr_user3" class="basic" type="text" style="width:100px;" value="">
                                             <input id="werr_note3" name="werr_note3" class="basic" type="text" style="width:200px;" value="">
                                             <input id="werr_bigo3" name="werr_bigo3" class="basic" type="text" style="width:100px;" value="">

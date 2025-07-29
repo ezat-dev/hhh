@@ -152,6 +152,37 @@ textarea {
 	background-color: #808080;
 	transform: scale(1.05);
 }
+.box1 {
+	display: flex;
+	justify-content: right;
+	align-items: center;
+	width: 1500px;
+	margin-left: -1270px;
+}
+
+.box1 select{
+	width: 5%
+}  
+.box1 select{
+	width: 150px;
+	padding: 5px 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	color: #333;
+	outline: none;
+	transition: border 0.3s ease;
+}
+
+.box1 select:focus {
+	border: 1px solid #007bff;
+	background-color: #fff;
+}  
+.box1 label,
+.box1 input {
+	margin-right: 10px; /* 요소 사이 간격 */
+}  
     
     </style>
     
@@ -164,12 +195,51 @@ textarea {
         
         
 		<label class="daylabel">년도 : </label>
-		<input type="date" class="sdate" id="sdate" style="font-size: 16px;" autocomplete="off">
+		<select id="sdate" class="sdate" style="font-size: 16px;">
+		  <option value="2013">2013</option>
+		  <option value="2014">2014</option>
+		  <option value="2015">2015</option>
+		  <option value="2016">2016</option>
+		  <option value="2017">2017</option>
+		  <option value="2018">2018</option>
+		  <option value="2019">2019</option>
+		  <option value="2020">2020</option>
+		  <option value="2021">2021</option>
+		  <option value="2022">2022</option>
+		  <option value="2023">2023</option>
+		  <option value="2024">2024</option>
+		  <option value="2025">2025</option>
+		  <option value="2026">2026</option>
+		  <option value="2027">2027</option>
+		  <option value="2028">2028</option>
+		  <option value="2029">2029</option>
+		  <option value="2030">2030</option>
+		  <option value="2031">2031</option>
+		  <option value="2032">2032</option>
+		  <option value="2033">2033</option>
+		  <option value="2034">2034</option>
+		  <option value="2035">2035</option>
+		  <option value="2036">2036</option>
+		  <option value="2037">2037</option>
+		  <option value="2038">2038</option>
+		  <option value="2039">2039</option>
+		  <option value="2040">2040</option>
+		  <option value="2041">2041</option>
+		  <option value="2042">2042</option>
+		  <option value="2043">2043</option>
+		  <option value="2044">2044</option>
+		  <option value="2045">2045</option>
+		  <option value="2046">2046</option>
+		  <option value="2047">2047</option>
+		  <option value="2048">2048</option>
+		  <option value="2049">2049</option>
+		  <option value="2050">2050</option>
+		</select>
 		
 			
 	</div>
     <div class="button-container">
-        <button class="select-button">
+        <button class="select-button" onclick="getMonthBulList(); getMonthBulSubList(); loadMonthBulChart();">
             <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
            
         </button>
@@ -188,9 +258,12 @@ textarea {
     </div>
 </div>
     <main class="main">
+    <div id="monthBulChart" style="width: 100%; height: 400px; margin-top: 20px;"></div>
+    	<h4>불량유형별</h4>
 		<div class="container">
 			<div id="tab1" class="tabulator"></div>
 		</div>
+		<h4>항목</h4>
 		<div class="container2">
 			<div id="sub" class="tabulator"></div>
 		</div>
@@ -208,173 +281,371 @@ textarea {
 <script>
 	//전역변수
     var cutumTable;	
-
-	//로드
-	$(function(){
-		//전체 거래처목록 조회
+    var sdate = $("#sdate").val();
+    $(function() {
+    	 var sdate = $("#sdate").val();
 		getMonthBulList();
 		getMonthBulSubList();
+		/* getMonthBulSubList(); */
 	});
 
+	
+	
 	//이벤트
 	//함수
-	function getMonthBulList(){
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"330px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/operation/monthBul/getMonthBulList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{},
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},
-		        {title:"불량항목", field:"werr_gubn", sorter:"string", width:120,
-			        hozAlign:"center", headerFilter:"input"},	
-			        {title:"1월", field:"m1", sorter:"int", width:120,
-					    hozAlign:"center"},     
-					{title:"2월", field:"m2", sorter:"int", width:120,
-					    hozAlign:"center"}, 
-					{title:"3월", field:"m3", sorter:"int", width:150,
-					    hozAlign:"center"}, 
-			        {title:"4월", field:"m4", sorter:"int", width:120,
-			        	hozAlign:"center"},		        
-			        {title:"5월", field:"m5", sorter:"int", width:100,
-			        	hozAlign:"center"},
-			        {title:"6월", field:"m6", sorter:"int", width:100,
-			        	hozAlign:"center"},
-			        {title:"7월", field:"m7", sorter:"int", width:100,
-				        hozAlign:"center"},	
-			        {title:"8월", field:"m8", sorter:"int", width:100,
-			        	hozAlign:"center"},  	
-			        {title:"9월", field:"m9", sorter:"int", width:100,
-				        hozAlign:"center"},	
-				    {title:"10월", field:"m10", sorter:"int", width:100,
-					    hozAlign:"center"},	
-					{title:"11월", field:"m11", sorter:"int", width:100,
-					    hozAlign:"center"},
-					{title:"12월", field:"m12", sorter:"int", width:100,
-						hozAlign:"center"},
-					{title:"평균", field:"average_SUM", sorter:"int", width:100,
-						hozAlign:"center"},
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+function getMonthBulList(){
+	userTable = new Tabulator("#tab1", {
+	    height:"180px",
+	    layout:"fitColumns",
+	    selectable:true,
+	    tooltips:true,
+	    selectableRangeMode:"click",
+	    reactiveData:true,
+	    headerHozAlign:"center",
+	    ajaxConfig:"POST",
+	    ajaxLoader:false,
+	    ajaxURL:"/tkheat/operation/monthBul/getMonthBulList",
+	    ajaxProgressiveLoad:"scroll",
+	    ajaxParams:{"sdate": $("#sdate").val()},
+	    placeholder:"조회된 데이터가 없습니다.",
+	    paginationSize:20,
+	    ajaxResponse:function(url, params, response){
+			$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
+	        return response;
+	    },
+	    columns:[
+	        {title:"NO", field:"idx", sorter:"int", width:80, hozAlign:"center"},
+	        {title:"불량항목", field:"werr_gubn", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},	
+	        {title:"1월", field:"m1", sorter:"int", width:120, hozAlign:"center", bottomCalc:"sum"},     
+			{title:"2월", field:"m2", sorter:"int", width:120, hozAlign:"center", bottomCalc:"sum"}, 
+			{title:"3월", field:"m3", sorter:"int", width:150, hozAlign:"center", bottomCalc:"sum"}, 
+	        {title:"4월", field:"m4", sorter:"int", width:120, hozAlign:"center", bottomCalc:"sum"},		        
+	        {title:"5월", field:"m5", sorter:"int", width:100, hozAlign:"center", bottomCalc:"sum"},
+	        {title:"6월", field:"m6", sorter:"int", width:100, hozAlign:"center", bottomCalc:"sum"},
+	        {title:"7월", field:"m7", sorter:"int", width:100, hozAlign:"center", bottomCalc:"sum"},	
+	        {title:"8월", field:"m8", sorter:"int", width:100, hozAlign:"center", bottomCalc:"sum"},  	
+	        {title:"9월", field:"m9", sorter:"int", width:100, hozAlign:"center", bottomCalc:"sum"},	
+		    {title:"10월", field:"m10", sorter:"int", width:100, hozAlign:"center", bottomCalc:"sum"},	
+			{title:"11월", field:"m11", sorter:"int", width:100, hozAlign:"center", bottomCalc:"sum"},
+			{title:"12월", field:"m12", sorter:"int", width:100, hozAlign:"center", bottomCalc:"sum"},
+			{
+				title:"평균", field:"average_SUM", sorter:"number", width:100, hozAlign:"center",
+				bottomCalc:"sum",
+				bottomCalcFormatter:function(cell){
+					const value = cell.getValue();
+					return value ? Math.round(value) : 0;
+				}
 			},
-			rowClick:function(e, row){
+	    ],
+	    rowFormatter:function(row){
+		    row.getElement().style.fontWeight = "700";
+			row.getElement().style.backgroundColor = "#FFFFFF";
+		},
+		rowClick:function(e, row){
+			$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(){
+				if($(this).hasClass("row_select")){							
+					$(this).removeClass('row_select');
+					row.getElement().className += " row_select";
+				}else{
+					$("#tab1 div.row_select").removeClass("row_select");
+					row.getElement().className += " row_select";	
+				}
+			});
+		},
+	});		
+}
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
 
-				var rowData = row.getData();
-				
+
+
+
+
+
+
+
+	
+
+function getMonthBulSubList(){
+	subTable = new Tabulator("#sub", {
+	    height:"165px",
+	    layout:"fitColumns",
+	    selectable:true,
+	    tooltips:true,
+	    selectableRangeMode:"click",
+	    reactiveData:true,
+	    headerHozAlign:"center",
+	    ajaxConfig:"POST",
+	    ajaxLoader:false,
+	    ajaxURL:"/tkheat/operation/monthBul/getMonthBulSubList",
+	    ajaxProgressiveLoad:"scroll",
+	    ajaxParams:{"sdate": $("#sdate").val()},
+	    placeholder:"조회된 데이터가 없습니다.",
+	    paginationSize:20,
+	    ajaxResponse:function(url, params, response){
+			$("#sub .tabulator-col.tabulator-sortable").css("height","55px");
+	        return response;
+	    },
+	    columns:[
+	        {title:"항목", field:"quantityItem", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
+	        
+	        {title:"1월", field:"m1", sorter:"number", width:100, hozAlign:"right",
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				bottomCalc:"sum", bottomCalcFormatter:"money",
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
 			},
-		});		
+	        {title:"2월", field:"m2", sorter:"number", width:100, hozAlign:"right",
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				bottomCalc:"sum", bottomCalcFormatter:"money",
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+			},
+	        {title:"3월", field:"m3", sorter:"number", width:100, hozAlign:"right",
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				bottomCalc:"sum", bottomCalcFormatter:"money",
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+			},
+	        {title:"4월", field:"m4", sorter:"number", width:100, hozAlign:"right",
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				bottomCalc:"sum", bottomCalcFormatter:"money",
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+			},
+	        {title:"5월", field:"m5", sorter:"number", width:100, hozAlign:"right",
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				bottomCalc:"sum", bottomCalcFormatter:"money",
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+			},
+	        {title:"6월", field:"m6", sorter:"number", width:100, hozAlign:"right",
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				bottomCalc:"sum", bottomCalcFormatter:"money",
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+			},
+	        {title:"7월", field:"m7", sorter:"number", width:100, hozAlign:"right",
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				bottomCalc:"sum", bottomCalcFormatter:"money",
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+			},
+	        {title:"8월", field:"m8", sorter:"number", width:100, hozAlign:"right",
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				bottomCalc:"sum", bottomCalcFormatter:"money",
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+			},
+	        {title:"9월", field:"m9", sorter:"number", width:100, hozAlign:"right",
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				bottomCalc:"sum", bottomCalcFormatter:"money",
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+			},
+	        {title:"10월", field:"m10", sorter:"number", width:100, hozAlign:"right",
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				bottomCalc:"sum", bottomCalcFormatter:"money",
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+			},
+	        {title:"11월", field:"m11", sorter:"number", width:100, hozAlign:"right",
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				bottomCalc:"sum", bottomCalcFormatter:"money",
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+			},
+	        {title:"12월", field:"m12", sorter:"number", width:100, hozAlign:"right",
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				bottomCalc:"sum", bottomCalcFormatter:"money",
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+			},
+	        {title:"평균", field:"average_SUM", sorter:"number", width:100, hozAlign:"right",
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				bottomCalc:"sum", bottomCalcFormatter:"money",
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+			},
+	    ],
+	    rowFormatter:function(row){
+		    row.getElement().style.fontWeight = "700";
+			row.getElement().style.backgroundColor = "#FFFFFF";
+		},
+		rowClick:function(e, row){
+			$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(){
+				if($(this).hasClass("row_select")){							
+					$(this).removeClass('row_select');
+					row.getElement().className += " row_select";
+				}else{
+					$("#tab1 div.row_select").removeClass("row_select");
+					row.getElement().className += " row_select";	
+				}
+			});
+		},
+	});		
+}
+
+
+	function loadMonthBulChart() {
+	    $.ajax({
+	        type: "POST",
+	        url: "/tkheat/operation/monthBul/getMonthBulChartData",
+	        data: { sdate: $("#sdate").val() },
+	        success: function (result) {
+	            if (!result || result.length === 0) {
+	                Highcharts.chart('monthBulChart', {
+	                    title: { text: '데이터가 없습니다.' }
+	                });
+	                return;
+	            }
+
+	            // 여러 불량항목을 각각의 시리즈로 표시
+	            const categories = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+	            const seriesData = result.map(item => {
+	                return {
+	                    name: item.werr_gubn,
+	                    data: [
+	                        item.m1 || 0, item.m2 || 0, item.m3 || 0, item.m4 || 0,
+	                        item.m5 || 0, item.m6 || 0, item.m7 || 0, item.m8 || 0,
+	                        item.m9 || 0, item.m10 || 0, item.m11 || 0, item.m12 || 0
+	                    ]
+	                };
+	            });
+
+	            Highcharts.chart('monthBulChart', {
+	                chart: {
+	                    type: 'column'
+	                },
+	                title: {
+	                    text: '월별 불량현황'
+	                },
+	                xAxis: {
+	                    categories: categories,
+	                    title: { text: '월' }
+	                },
+	                yAxis: {
+	                    title: { text: '불량 건수' }
+	                },
+	                tooltip: {
+	                    shared: true,
+	                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>'
+	                },
+	                series: seriesData
+	            });
+	        },
+	        error: function (xhr, status, error) {
+	            console.error("차트 데이터를 불러오는 중 오류 발생:", error);
+	        }
+	    });
 	}
-
-
-
-	function getMonthBulSubList(){
 		
-		subTable = new Tabulator("#sub", {
-		    height:"330px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/operation/monthBul/getMonthBulSubList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{},
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#sub .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		    	{title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},
-		        {title:"항목", field:"quantityItem", sorter:"string", width:120,
-			        hozAlign:"center", headerFilter:"input"},	
-			        {title:"1월", field:"m1", sorter:"int", width:120,
-					    hozAlign:"center"},     
-					{title:"2월", field:"m2", sorter:"int", width:120,
-					    hozAlign:"center"}, 
-					{title:"3월", field:"m3", sorter:"int", width:150,
-					    hozAlign:"center"}, 
-			        {title:"4월", field:"m4", sorter:"int", width:120,
-			        	hozAlign:"center"},		        
-			        {title:"5월", field:"m5", sorter:"int", width:100,
-			        	hozAlign:"center"},
-			        {title:"6월", field:"m6", sorter:"int", width:100,
-			        	hozAlign:"center"},
-			        {title:"7월", field:"m7", sorter:"int", width:100,
-				        hozAlign:"center"},	
-			        {title:"8월", field:"m8", sorter:"int", width:100,
-			        	hozAlign:"center"},  	
-			        {title:"9월", field:"m9", sorter:"int", width:100,
-				        hozAlign:"center"},	
-				    {title:"10월", field:"m10", sorter:"int", width:100,
-					    hozAlign:"center"},	
-					{title:"11월", field:"m11", sorter:"int", width:100,
-					    hozAlign:"center"},
-					{title:"12월", field:"m12", sorter:"int", width:100,
-						hozAlign:"center"},
-					{title:"평균", field:"average_SUM", sorter:"int", width:100,
-						hozAlign:"center"},
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
 
-				var rowData = row.getData();
-				
-			},
-		});		
-	}
+	 /* Highcharts.chart('monthBulChart', {
+	    chart: {
+	        type: 'column'
+	    },
+	    title: {
+	        text: '월별불량현황 그래프'
+	    },
+	    accessibility: {
+	        announceNewData: {
+	            enabled: true
+	        }
+	    },
+	    xAxis: {
+	        type: 'category'
+	    },
+	    yAxis: {
+	        title: {
+	            text: 'Total percent market share'
+	        }
+
+	    },
+	    legend: {
+	        enabled: false
+	    },
+	    plotOptions: {
+	        series: {
+	            borderWidth: 0,
+	            dataLabels: {
+	                enabled: true,
+	                format: '{point.y:.1f}%'
+	            }
+	        }
+	    },
+	    tooltip: {
+	        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+	        pointFormat: '<span style="color:{point.color}">{point.name}</span>: ' +
+	            '<b>{point.y:.2f}%</b> of total<br/>'
+	    },
+	    series: [
+	        {
+	            name: 'Browsers',
+	            colorByPoint: true,
+	            data: [
+	                {
+	                    name: '1월',
+	                    y: 63.06,
+	                    drilldown: 'Chrome'
+	                },
+	                {
+	                    name: '2월',
+	                    y: 19.84,
+	                    drilldown: 'Safari'
+	                },
+	                {
+	                    name: '3월',
+	                    y: 4.18,
+	                    drilldown: 'Firefox'
+	                },
+	                {
+	                    name: '4월',
+	                    y: 4.12,
+	                    drilldown: 'Edge'
+	                },
+	                {
+	                    name: '5월',
+	                    y: 2.33,
+	                    drilldown: 'Opera'
+	                },
+	                {
+	                    name: '6월',
+	                    y: 0.45,
+	                    drilldown: 'Internet Explorer'
+	                },
+	                {
+	                    name: '7월',
+	                    y: 1.582,
+	                    drilldown: null
+	                },
+	                {
+	                    name: '8월',
+	                    y: 1.582,
+	                    drilldown: null
+	                },
+	                {
+	                    name: '9월',
+	                    y: 1.582,
+	                    drilldown: null
+	                },
+	                {
+	                    name: '10월',
+	                    y: 1.582,
+	                    drilldown: null
+	                },
+	                {
+	                    name: '11월',
+	                    y: 1.582,
+	                    drilldown: null
+	                },
+	                {
+	                    name: '12월',
+	                    y: 1.582,
+	                    drilldown: null
+	                },
+	            ]
+	        }
+	    ],
+	    drilldown: {
+	        breadcrumbs: {
+	            position: {
+	                align: 'right'
+	            }
+	        },
+	        series: [
+	            
+	        ]
+	    }
+	}); */
+
 	
 
     </script>
@@ -393,53 +664,7 @@ textarea {
     
     
     
-    <script>
-		
- 	// 드래그 기능 추가
-	const modal = document.querySelector('.spareModal');
-	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
-
-	header.addEventListener('mousedown', function(e) {
-		// transform 제거를 위한 초기 위치 설정
-		const rect = modal.getBoundingClientRect();
-		modal.style.left = rect.left + 'px';
-		modal.style.top = rect.top + 'px';
-		modal.style.transform = 'none'; // 중앙 정렬 해제
-
-		let offsetX = e.clientX - rect.left;
-		let offsetY = e.clientY - rect.top;
-
-		function moveModal(e) {
-			modal.style.left = (e.clientX - offsetX) + 'px';
-			modal.style.top = (e.clientY - offsetY) + 'px';
-		}
-
-		function stopMove() {
-			window.removeEventListener('mousemove', moveModal);
-			window.removeEventListener('mouseup', stopMove);
-		}
-
-		window.addEventListener('mousemove', moveModal);
-		window.addEventListener('mouseup', stopMove);
-	});
-		
-
-	// 모달 열기
-	const insertButton = document.querySelector('.insert-button');
-	const spareModal = document.querySelector('.spareModal');
-	const closeButton = document.querySelector('.close');
-
-	insertButton.addEventListener('click', function() {
-		spareModal.style.display = 'block'; // 모달 표시
-	});
-
-	closeButton.addEventListener('click', function() {
-		spareModal.style.display = 'none'; // 모달 숨김
-	});
-		
-
-
-    </script>
+    
 
 	</body>
 </html>

@@ -14,7 +14,7 @@ public interface PreservationDao {
 	
 	List<SparePart> getSparePartList();
 	
-	List<SparePart> getSpareSubList(int spp_idx);
+	List<SparePart> getSpareSubList(SparePart sparePart);
 	
 	SparePart sparePartDetail(SparePart sparePart);
 	
@@ -22,7 +22,11 @@ public interface PreservationDao {
 	
 	void sparePartUpdateSave(SparePart sparePart);
 	
-	void deleteSparePart(int spp_idx);
+	void deleteSparePart(Integer spp_idx);
+	
+	void insertSpareSub(SparePart sparePart);
+	
+	void updateSpareSub(SparePart sparePart);
 	
 	
 	
@@ -68,6 +72,18 @@ public interface PreservationDao {
 	
 	
 	
+	List<Jeomgeom> getDayJeomgeomList(Jeomgeom jeomgeom);
+	
+	List<Jeomgeom> dayJeomgeomSubList(Jeomgeom jeomgeom);
+	
+	
+	
+	
+	
+	List<Jeomgeom> getMonthJeomgeomList(Jeomgeom jeomgeom);
+	
+	
+	
 	List<Measure> getGigiGojangList(Measure measure);
 	
 	Measure gigiGojangtDetail(Measure measure);
@@ -89,4 +105,5 @@ public interface PreservationDao {
 	void gigiJeomgeomUpdateSave(Measure measure);
 	
 	void gigiJeomgeomDelete(int ter_code);
+
 }

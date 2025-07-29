@@ -12,7 +12,7 @@ public interface PreservationService {
 	
 	List<SparePart> getSparePartList();
 	
-	List<SparePart> getSpareSubList(int spp_idx);
+	List<SparePart> getSpareSubList(SparePart sparePart);
 	
 	SparePart sparePartDetail(SparePart sparePart);
 	
@@ -20,7 +20,11 @@ public interface PreservationService {
 	
 	void sparePartUpdateSave(SparePart sparePart);
 	
-	void deleteSparePart(int spp_idx);
+	void deleteSparePart(Integer spp_idx);
+	
+	void insertSpareSub(SparePart sparePart);
+	
+	void updateSpareSub(SparePart sparePart);
 	
 	
 	
@@ -66,6 +70,19 @@ public interface PreservationService {
 	
 	void jeomgeomDelete(int chs_code);
 	
+	
+	
+	
+	
+	
+	List<Jeomgeom> getDayJeomgeomList(Jeomgeom jeomgeom);
+	
+	List<Jeomgeom> dayJeomgeomSubList(Jeomgeom jeomgeom);
+	
+	
+	
+	
+	List<Jeomgeom> getMonthJeomgeomList(Jeomgeom jeomgeom);
 	
 	
 	

@@ -1,6 +1,10 @@
 package com.tkheat.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,11 +12,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.tkheat.domain.Bega;
 import com.tkheat.domain.Jeomgeom;
@@ -27,6 +31,35 @@ public class PreservationController {
 
 	@Autowired
 	private PreservationService preservationService;
+	
+	//파일 업로드
+		private String saveFiles(MultipartFile[] files, String uploadDir) throws IOException {
+			if (files == null || files.length == 0) return null;
+
+			File directory = new File(uploadDir);
+			if (!directory.exists()) directory.mkdirs();
+
+			for (MultipartFile file : files) {
+				if (!file.isEmpty()) {
+					String originalFilename = file.getOriginalFilename();
+					String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+					String ext = "";
+					int dotIndex = originalFilename.lastIndexOf('.');
+					if (dotIndex > 0) {
+						ext = originalFilename.substring(dotIndex);
+						originalFilename = originalFilename.substring(0, dotIndex);
+					}
+
+					String savedFilename = originalFilename + "_" + timestamp + ext;
+					File destination = new File(uploadDir + "/" + savedFilename);
+					file.transferTo(destination);
+
+					return savedFilename; //
+				}
+			}
+			return null;
+		}
 
 	//SparePart관리 - 화면로드
 	@RequestMapping(value = "/preservation/sparePart", method = RequestMethod.GET)
@@ -59,7 +92,7 @@ public class PreservationController {
 			rowMap.put("sph_suriout", sparePartList.get(i).getSph_suriout());
 			rowMap.put("sph_jasanout", sparePartList.get(i).getSph_jasanout());
 			rowMap.put("spp_jaigo", sparePartList.get(i).getSpp_jaigo());
-
+			rowMap.put("file_name", sparePartList.get(i).getFile_name());
 			rtnList.add(rowMap);
 		}
 
@@ -90,12 +123,19 @@ public class PreservationController {
 	@ResponseBody
 	public Map<String, Object> sparePartSave(
 			@ModelAttribute SparePart sparePart,
-			@RequestParam("mode") String mode) { 
-
+			@RequestParam("mode") String mode,
+			@RequestParam(value = "file_url", required = false) MultipartFile[] files)
+			 { 
+			
 		
 		Map<String, Object> result = new HashMap<>();
 
 		try {
+			
+			String path = "D:/엑셀테스트/태경출력파일/사진/SparePart관리";
+
+			String productFileName = saveFiles(files, path);
+			if (productFileName != null) sparePart.setFile_name(productFileName);
 			if ("insert".equalsIgnoreCase(mode)) {
 				preservationService.sparePartInsertSave(sparePart);
 			} else if ("update".equalsIgnoreCase(mode)) {
@@ -122,7 +162,7 @@ public class PreservationController {
 	//SparePart 삭제 - delete
 	@RequestMapping(value = "/preservation/sparePart/deleteSparePart", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> deleteSparePart(@RequestParam("spp_idx") int spp_idx) {
+	public Map<String, Object> deleteSparePart(@RequestParam("spp_idx") Integer spp_idx) {
 		Map<String, Object> result = new HashMap<>();
 
 		try {
@@ -144,48 +184,64 @@ public class PreservationController {
 	
 	
 	
-	//SpareSub 관리 조회
+	// SpareSub 관리 조회
 	@RequestMapping(value = "/preservation/sparePart/getSpareSubList", method = RequestMethod.POST) 
 	@ResponseBody 
 	public Map<String, Object> getSpareSubList(@RequestParam("spp_idx") Integer spp_idx) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+	    Map<String, Object> rtnMap = new HashMap<>();
 
+	    SparePart sparePart = new SparePart();
+	    sparePart.setSpp_idx(spp_idx);
+	    
+	    List<SparePart> sparePartList = preservationService.getSpareSubList(sparePart);
 
-		SparePart s = new SparePart();
-		s.setSpp_idx(spp_idx);
-		
-		List<SparePart> sparePartList = preservationService.getSpareSubList(s);
+	    List<Map<String, Object>> rtnList = new ArrayList<>();
+	    for (int i = 0; i < sparePartList.size(); i++) {
+	        SparePart sp = sparePartList.get(i);
+	        Map<String, Object> rowMap = new HashMap<>();
+	        rowMap.put("idx", i + 1);
+	        rowMap.put("spp_idx", sp.getSpp_idx());
+	        rowMap.put("spp_idx_his", sp.getSpp_idx_his());
+	        rowMap.put("spp_purchase_his", sp.getSpp_purchase_his());
+	        rowMap.put("spp_no_his", sp.getSpp_no_his());
+	        rowMap.put("spp_name_his", sp.getSpp_name_his());
+	        rowMap.put("spp_gyu_his", sp.getSpp_gyu_his());
+	        rowMap.put("spp_yong_his", sp.getSpp_yong_his());
+	        rowMap.put("sph_input", sp.getSph_input());
+	        rowMap.put("sph_suriout", sp.getSph_suriout());
+	        rowMap.put("sph_jasanout", sp.getSph_jasanout());
+	        rowMap.put("sph_bigo", sp.getSph_bigo());
+	        rowMap.put("sph_time", sp.getSph_time());
+	        rowMap.put("sph_user", sp.getSph_user());
+	        rtnList.add(rowMap);
+	    }
 
-		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
-		for(int i=0; i<sparePartList.size(); i++) {
-			HashMap<String, Object> rowMap = new HashMap<String, Object>();
-			rowMap.put("spp_idx", sparePartList.get(i).getSpp_idx());
-			rowMap.put("spp_purchase_his", sparePartList.get(i).getSpp_purchase_his());
-			rowMap.put("spp_no_his", sparePartList.get(i).getSpp_no_his());
-			rowMap.put("spp_name_his", sparePartList.get(i).getSpp_name_his());
-			rowMap.put("spp_gyu_his", sparePartList.get(i).getSpp_gyu_his());
-			rowMap.put("spp_yong_his", sparePartList.get(i).getSpp_yong_his());
-			rowMap.put("sph_input", sparePartList.get(i).getSph_suriout());
-			rowMap.put("sph_suriout", sparePartList.get(i).getSph_suriout());
-			rowMap.put("sph_jasanout", sparePartList.get(i).getSph_jasanout());
-			rowMap.put("sph_bigo", sparePartList.get(i).getSph_bigo());
-			rowMap.put("sph_time", sparePartList.get(i).getSph_time());
-			rowMap.put("sph_user", sparePartList.get(i).getSph_user());
-			rowMap.put("sph_user", sparePartList.get(i).getSph_user());
-
-			rtnList.add(rowMap);
-		}
-
-		rtnMap.put("last_page",1);
-		rtnMap.put("data",rtnList);
-
-		return rtnMap; 
+	    rtnMap.put("last_page", 1);
+	    rtnMap.put("data", rtnList);
+	    return rtnMap;
 	}
-	
-	
-	
 
-	
+
+	// SpareSub 저장 (insert or update 분기)
+	@RequestMapping(value = "/preservation/sparePart/spareSubSave", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> spareSubSave(@ModelAttribute SparePart sparePart) {
+	    Map<String, Object> result = new HashMap<>();
+
+	    try {
+	        if (sparePart.getSpp_idx_his() != null && sparePart.getSpp_idx_his() > 0) {
+	            preservationService.updateSpareSub(sparePart); // update
+	        } else {
+	            preservationService.insertSpareSub(sparePart); // insert
+	        }
+	        result.put("status", "success");
+	    } catch (Exception e) {
+	        result.put("status", "error");
+	        result.put("message", e.getMessage());
+	    }
+
+	    return result;
+	}
 	
 	
 
@@ -378,117 +434,132 @@ public class PreservationController {
 
 
 	//설비수리이력관리 조회
-	@RequestMapping(value = "/preservation/suriHistory/getSuriHistoryList", method = RequestMethod.POST) 
-	@ResponseBody 
-	public Map<String, Object> getSuriHistoryList(
-			@RequestParam String sdate,
-			@RequestParam String edate
-			) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		@RequestMapping(value = "/preservation/suriHistory/getSuriHistoryList", method = RequestMethod.POST) 
+		@ResponseBody 
+		public Map<String, Object> getSuriHistoryList(
+				@RequestParam String sdate,
+				@RequestParam String edate
+				) {
+			Map<String, Object> rtnMap = new HashMap<String, Object>();
 
-		Suri suri = new Suri();
+			Suri suri = new Suri();
 
-		suri.setSdate(sdate);
-		suri.setEdate(edate);
+			suri.setSdate(sdate);
+			suri.setEdate(edate);
 
 
-		List<Suri> suriHistoryList = preservationService.getSuriHistoryList(suri);
+			List<Suri> suriHistoryList = preservationService.getSuriHistoryList(suri);
 
-		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
-		for(int i=0; i<suriHistoryList.size(); i++) {
-			HashMap<String, Object> rowMap = new HashMap<String, Object>();
-			rowMap.put("idx", (i+1));
-			rowMap.put("fac_no", suriHistoryList.get(i).getFac_no());
-			rowMap.put("fac_code", suriHistoryList.get(i).getFac_code());
-			rowMap.put("fac_name", suriHistoryList.get(i).getFac_name());
-			rowMap.put("ffx_date", suriHistoryList.get(i).getFfx_date());
-			rowMap.put("ffx_man", suriHistoryList.get(i).getFfx_man());
-			rowMap.put("ffx_wrk", suriHistoryList.get(i).getFfx_wrk());
-			rowMap.put("ffx_cost", suriHistoryList.get(i).getFfx_cost());
-			rowMap.put("ffx_note", suriHistoryList.get(i).getFfx_note());
-			rowMap.put("ffx_no", suriHistoryList.get(i).getFfx_no());
+			List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+			for(int i=0; i<suriHistoryList.size(); i++) {
+				HashMap<String, Object> rowMap = new HashMap<String, Object>();
+				rowMap.put("idx", (i+1));
+				rowMap.put("fac_no", suriHistoryList.get(i).getFac_no());
+				rowMap.put("fac_code", suriHistoryList.get(i).getFac_code());
+				rowMap.put("fac_name", suriHistoryList.get(i).getFac_name());
+				rowMap.put("ffx_date", suriHistoryList.get(i).getFfx_date());
+				rowMap.put("ffx_man", suriHistoryList.get(i).getFfx_man());
+				rowMap.put("ffx_wrk", suriHistoryList.get(i).getFfx_wrk());
+				rowMap.put("ffx_cost", suriHistoryList.get(i).getFfx_cost());
+				rowMap.put("ffx_note", suriHistoryList.get(i).getFfx_note());
+				rowMap.put("ffx_no", suriHistoryList.get(i).getFfx_no());
+				rowMap.put("file_name1", suriHistoryList.get(i).getFile_name1());
+				rowMap.put("file_name2", suriHistoryList.get(i).getFile_name2());
 
-			rtnList.add(rowMap);
-		}
-
-		rtnMap.put("last_page",1);
-		rtnMap.put("data",rtnList);
-
-		return rtnMap; 
-	}
-	
-	//설비 수리이력 더블클릭조회
-	@RequestMapping(value = "/preservation/suriHistory/suriHistoryDetail", method = RequestMethod.POST) 
-	@ResponseBody 
-	public Map<String, Object> suriHistoryDetail(
-			@RequestParam int ffx_no) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-
-		Suri suri = new Suri();
-		suri.setFfx_no(ffx_no);
-		Suri SuriList = preservationService.suriHistoryDetail(suri);
-
-		rtnMap.put("data",SuriList);
-
-		return rtnMap; 
-	}
-	
-	//설비 수리이력 - insert, update
-	@RequestMapping(value = "/preservation/suriHistory/suriHistorySave", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> suriHistorySave(
-			@ModelAttribute Suri suri,
-			@RequestParam("mode") String mode) { 
-		
-		System.out.println("mode = " + mode);
-	    System.out.println("Ffx_note = " + suri.getFfx_note());
-	    System.out.println("Ffx_no = " + suri.getFfx_no());
-		Map<String, Object> result = new HashMap<>();
-
-		try {
-			if ("insert".equalsIgnoreCase(mode)) {
-				preservationService.suriHistoryInsertSave(suri);
-			} else if ("update".equalsIgnoreCase(mode)) {
-				preservationService.suriHistoryUpdateSave(suri);  
-			} else {
-				throw new IllegalArgumentException("Invalid mode: " + mode);
+				rtnList.add(rowMap);
 			}
 
-			result.put("status", "success");
-			result.put("message", "OK");
+			rtnMap.put("last_page",1);
+			rtnMap.put("data",rtnList);
 
-		} catch (Exception e) {
-			result.put("status", "error");
-			result.put("message", e.getMessage());
+			return rtnMap; 
 		}
 
-		System.out.println(result.get("status"));
-		System.out.println(result.get("message"));
+		//설비 수리이력 더블클릭조회
+		@RequestMapping(value = "/preservation/suriHistory/suriHistoryDetail", method = RequestMethod.POST) 
+		@ResponseBody 
+		public Map<String, Object> suriHistoryDetail(
+				@RequestParam int ffx_no) {
+			Map<String, Object> rtnMap = new HashMap<String, Object>();
 
-		return result;
-	}
-		
-		
-	//설비 수리이력 삭제 - delete
-	@RequestMapping(value = "/preservation/suriHistory/suriHistoryDelete", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> suriHistoryDelete(@RequestParam("ffx_no") int ffx_no) {
-		Map<String, Object> result = new HashMap<>();
+			Suri suri = new Suri();
+			suri.setFfx_no(ffx_no);
+			Suri SuriList = preservationService.suriHistoryDetail(suri);
 
-		try {
-			preservationService.suriHistoryDelete(ffx_no);
-			result.put("status", "success");
-			result.put("message", "삭제 완료");
-		} catch (Exception e) {
-			result.put("status", "error");
-			result.put("message", e.getMessage());
+			rtnMap.put("data",SuriList);
+
+			return rtnMap; 
 		}
 
-		System.out.println(result.get("status"));
-		System.out.println(result.get("message"));
+		//설비 수리이력 - insert, update
+		@RequestMapping(value = "/preservation/suriHistory/suriHistorySave", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> suriHistorySave(
+				@ModelAttribute Suri suri,
+				@RequestParam("mode") String mode,
+				  @RequestParam(value = "file_url1", required = false) MultipartFile[] files1,
+				  @RequestParam(value = "file_url2", required = false) MultipartFile[] files2) { 
 
-		return result;
-	}	
+			System.out.println("mode = " + mode);
+			System.out.println("Ffx_note = " + suri.getFfx_note());
+			System.out.println("Ffx_no = " + suri.getFfx_no());
+			Map<String, Object> result = new HashMap<>();
+
+			try {
+				
+				String path = "D:/엑셀테스트/태경출력파일/사진/설비수리이력관리/";
+
+				String productFileName = saveFiles(files1, path);
+				if (productFileName != null) suri.setFile_name1(productFileName);
+				System.out.println("파일 이름: "+productFileName);
+				
+				String productFileName2 = saveFiles(files2, path);
+				if (productFileName2 != null) suri.setFile_name2(productFileName2);
+				System.out.println("파일 이름: "+productFileName2);
+				
+				if ("insert".equalsIgnoreCase(mode)) {
+					preservationService.suriHistoryInsertSave(suri);
+				} else if ("update".equalsIgnoreCase(mode)) {
+					preservationService.suriHistoryUpdateSave(suri);  
+				} else {
+					throw new IllegalArgumentException("Invalid mode: " + mode);
+				}
+
+				result.put("status", "success");
+				result.put("message", "OK");
+
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
+			}
+
+			System.out.println(result.get("status"));
+			System.out.println(result.get("message"));
+
+			return result;
+		}
+
+
+		//설비 수리이력 삭제 - delete
+		@RequestMapping(value = "/preservation/suriHistory/suriHistoryDelete", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> suriHistoryDelete(@RequestParam("ffx_no") int ffx_no) {
+			Map<String, Object> result = new HashMap<>();
+
+			try {
+				preservationService.suriHistoryDelete(ffx_no);
+				result.put("status", "success");
+				result.put("message", "삭제 완료");
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
+			}
+
+			System.out.println(result.get("status"));
+			System.out.println(result.get("message"));
+
+			return result;
+		}	
 
 	
 	
@@ -504,43 +575,43 @@ public class PreservationController {
 	}
 
 	//설비점검기준등록 조회
-	@RequestMapping(value = "/preservation/jeomgeomInsert/getJeomgeomInsertList", method = RequestMethod.POST) 
-	@ResponseBody 
-	public Map<String, Object> getJeomgeomInsertList(
-			) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		@RequestMapping(value = "/preservation/jeomgeomInsert/getJeomgeomInsertList", method = RequestMethod.POST) 
+		@ResponseBody 
+		public Map<String, Object> getJeomgeomInsertList(
+				) {
+			Map<String, Object> rtnMap = new HashMap<String, Object>();
 
-		List<Jeomgeom> jeomgeomInsertList = preservationService.getJeomgeomInsertList();
+			List<Jeomgeom> jeomgeomInsertList = preservationService.getJeomgeomInsertList();
 
-		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
-		for(int i=0; i<jeomgeomInsertList.size(); i++) {
-			HashMap<String, Object> rowMap = new HashMap<String, Object>();
-			rowMap.put("idx", (i+1));
-			rowMap.put("chs_code", jeomgeomInsertList.get(i).getChs_code());
-			rowMap.put("chs_no", jeomgeomInsertList.get(i).getChs_no());
-			rowMap.put("tech_ht", jeomgeomInsertList.get(i).getTech_ht());
-			rowMap.put("fac_name", jeomgeomInsertList.get(i).getFac_name());
-			rowMap.put("chs_gubn", jeomgeomInsertList.get(i).getChs_gubn());
-			rowMap.put("chs_sort", jeomgeomInsertList.get(i).getChs_sort());
-			rowMap.put("chs_hang", jeomgeomInsertList.get(i).getChs_hang());
-			rowMap.put("chs_kijun", jeomgeomInsertList.get(i).getChs_kijun());
-			rowMap.put("chs_chkmethod", jeomgeomInsertList.get(i).getChs_chkmethod());
-			rowMap.put("chs_stepmethod", jeomgeomInsertList.get(i).getChs_stepmethod());
-			rowMap.put("chs_min", jeomgeomInsertList.get(i).getChs_min());
-			rowMap.put("chs_max", jeomgeomInsertList.get(i).getChs_max());
-			rowMap.put("chs_danw", jeomgeomInsertList.get(i).getChs_danw());
-			rowMap.put("chs_img", jeomgeomInsertList.get(i).getChs_img());
+			List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+			for(int i=0; i<jeomgeomInsertList.size(); i++) {
+				HashMap<String, Object> rowMap = new HashMap<String, Object>();
+				rowMap.put("idx", (i+1));
+				rowMap.put("chs_code", jeomgeomInsertList.get(i).getChs_code());
+				rowMap.put("chs_no", jeomgeomInsertList.get(i).getChs_no());
+				rowMap.put("tech_ht", jeomgeomInsertList.get(i).getTech_ht());
+				rowMap.put("fac_name", jeomgeomInsertList.get(i).getFac_name());
+				rowMap.put("chs_gubn", jeomgeomInsertList.get(i).getChs_gubn());
+				rowMap.put("chs_sort", jeomgeomInsertList.get(i).getChs_sort());
+				rowMap.put("chs_hang", jeomgeomInsertList.get(i).getChs_hang());
+				rowMap.put("chs_kijun", jeomgeomInsertList.get(i).getChs_kijun());
+				rowMap.put("chs_chkmethod", jeomgeomInsertList.get(i).getChs_chkmethod());
+				rowMap.put("chs_stepmethod", jeomgeomInsertList.get(i).getChs_stepmethod());
+				rowMap.put("chs_min", jeomgeomInsertList.get(i).getChs_min());
+				rowMap.put("chs_max", jeomgeomInsertList.get(i).getChs_max());
+				rowMap.put("chs_danw", jeomgeomInsertList.get(i).getChs_danw());
+				rowMap.put("chs_img", jeomgeomInsertList.get(i).getChs_img());
 
-			rtnList.add(rowMap);
+				rtnList.add(rowMap);
+			}
+
+			rtnMap.put("last_page",1);
+			rtnMap.put("data",rtnList);
+
+			return rtnMap; 
 		}
 
-		rtnMap.put("last_page",1);
-		rtnMap.put("data",rtnList);
-
-		return rtnMap; 
-	}
-	
-	//설비점검기준등록 더블클릭조회
+		//설비점검기준등록 더블클릭조회
 		@RequestMapping(value = "/preservation/jeomgeomInsert/jeomgeomInsertDetail", method = RequestMethod.POST) 
 		@ResponseBody 
 		public Map<String, Object> jeomgeomInsertDetail(
@@ -555,60 +626,61 @@ public class PreservationController {
 
 			return rtnMap; 
 		}
-	
-	//설비 점검기준등록 - insert, update
-	@RequestMapping(value = "/preservation/jeomgeomInsert/jeomgeomInsertSave", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> jeomgeomInsertSave(
-			@ModelAttribute Jeomgeom jeomgeom,
-			@RequestParam("mode") String mode) { 
-		Map<String, Object> result = new HashMap<>();
 
-		try {
-			if ("insert".equalsIgnoreCase(mode)) {
-				preservationService.jeomgeomInsertSave(jeomgeom);
-			} else if ("update".equalsIgnoreCase(mode)) {
-				preservationService.jeomgeomUpdateSave(jeomgeom);  
-			} else {
-				throw new IllegalArgumentException("Invalid mode: " + mode);
+		//설비 점검기준등록 - insert, update
+		@RequestMapping(value = "/preservation/jeomgeomInsert/jeomgeomInsertSave", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> jeomgeomInsertSave(
+				@ModelAttribute Jeomgeom jeomgeom,
+				@RequestParam("mode") String mode) { 
+			Map<String, Object> result = new HashMap<>();
+
+			try {
+				if ("insert".equalsIgnoreCase(mode)) {
+					preservationService.jeomgeomInsertSave(jeomgeom);
+				} else if ("update".equalsIgnoreCase(mode)) {
+					preservationService.jeomgeomUpdateSave(jeomgeom);  
+				} else {
+					throw new IllegalArgumentException("Invalid mode: " + mode);
+				}
+
+				result.put("status", "success");
+				result.put("message", "OK");
+
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
 			}
 
-			result.put("status", "success");
-			result.put("message", "OK");
+			System.out.println(result.get("status"));
+			System.out.println(result.get("message"));
 
-		} catch (Exception e) {
-			result.put("status", "error");
-			result.put("message", e.getMessage());
+			return result;
 		}
 
-		System.out.println(result.get("status"));
-		System.out.println(result.get("message"));
 
-		return result;
-	}
-	
-	
-	//설비 점검기준등록 삭제 - delete
-	@RequestMapping(value = "/preservation/jeomgeomInsert/jeomgeomDelete", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> jeomgeomDelete(@RequestParam("chs_code") int chs_code) {
-		Map<String, Object> result = new HashMap<>();
+		//설비 점검기준등록 삭제 - delete
+		@RequestMapping(value = "/preservation/jeomgeomInsert/jeomgeomDelete", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> jeomgeomDelete(@RequestParam("chs_code") int chs_code) {
+			Map<String, Object> result = new HashMap<>();
 
-		try {
-			preservationService.jeomgeomDelete(chs_code);
-			result.put("status", "success");
-			result.put("message", "삭제 완료");
-		} catch (Exception e) {
-			result.put("status", "error");
-			result.put("message", e.getMessage());
-		}
+			try {
+				preservationService.jeomgeomDelete(chs_code);
+				result.put("status", "success");
+				result.put("message", "삭제 완료");
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
+			}
 
-		System.out.println(result.get("status"));
-		System.out.println(result.get("message"));
+			System.out.println(result.get("status"));
+			System.out.println(result.get("message"));
 
-		return result;
-	}	
-	
+			return result;
+		}	
+
+
 	
 	
 	
@@ -623,12 +695,200 @@ public class PreservationController {
 	public String dayJeomgeom() {
 		return "/preservation/dayJeomgeom.jsp";
 	}	 
+	
+	//설비별점검현황(일별) 조회
+	@RequestMapping(value = "/preservation/dayJeomgeom/getDayJeomgeomList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getDayJeomgeomList(
+			@RequestParam String sdate
+			) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		Jeomgeom jeomgeom = new Jeomgeom();
+
+		jeomgeom.setSdate(sdate);
+
+		List<Jeomgeom> jeomgeomList = preservationService.getDayJeomgeomList(jeomgeom);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for(int i=0; i<jeomgeomList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("che_date", jeomgeomList.get(i).getChe_date());
+			rowMap.put("fac_name", jeomgeomList.get(i).getFac_name());
+			rowMap.put("chs_gubn", jeomgeomList.get(i).getChs_gubn());
+			rowMap.put("chs_sort", jeomgeomList.get(i).getChs_sort());
+			rowMap.put("chs_hang", jeomgeomList.get(i).getChs_hang());
+			rowMap.put("chs_kijun", jeomgeomList.get(i).getChs_kijun());
+			rowMap.put("chs_danw", jeomgeomList.get(i).getChs_danw());
+			rowMap.put("chs_min", jeomgeomList.get(i).getChs_min());
+			rowMap.put("chs_max", jeomgeomList.get(i).getChs_max());
+			rowMap.put("che_x1", jeomgeomList.get(i).getChe_x1());
+			rowMap.put("che_pan", jeomgeomList.get(i).getChe_pan());
+			rowMap.put("che_check", jeomgeomList.get(i).getChe_check());
+			rowMap.put("che_rx1", jeomgeomList.get(i).getChe_rx1());
+			rowMap.put("che_re_pan", jeomgeomList.get(i).getChe_re_pan());
+			rowMap.put("che_jochi_contents", jeomgeomList.get(i).getChe_jochi_contents());
+			rowMap.put("che_req", jeomgeomList.get(i).getChe_req());
+			rowMap.put("che_fin", jeomgeomList.get(i).getChe_fin());
+			rowMap.put("che_bigo", jeomgeomList.get(i).getChe_bigo());
+			rowMap.put("che_code", jeomgeomList.get(i).getChe_code());
+			rowMap.put("chs_code", jeomgeomList.get(i).getChs_code());
+			rowMap.put("fac_code", jeomgeomList.get(i).getFac_code());
+			rowMap.put("chs_gubn_detail", jeomgeomList.get(i).getChs_gubn_detail());	
+			
+			
+			
+
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page",1);
+		rtnMap.put("data",rtnList);
+
+		return rtnMap; 
+	}
+	
+	
+	
+	//설비별점검현황(일별) 모달리스트 조회
+	@RequestMapping(value = "/preservation/dayJeomgeom/dayJeomgeomSubList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> dayJeomgeomSubList(
+			@RequestParam String sdate,
+			@RequestParam(required = false) Integer fac_code,
+			@RequestParam String chs_gubn,
+			@RequestParam String chs_gubn_detail,
+			@RequestParam int chs_sort,
+			@RequestParam String che_pan
+			) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Jeomgeom jeomgeom = new Jeomgeom();
+
+		jeomgeom.setSdate(sdate);
+		jeomgeom.setFac_code(fac_code);
+		jeomgeom.setChs_gubn(chs_gubn);
+		jeomgeom.setChs_gubn_detail(chs_gubn_detail);
+		jeomgeom.setChs_sort(chs_sort);
+		jeomgeom.setChe_pan(che_pan);
+		
+
+		List<Jeomgeom> jeomgeomList = preservationService.dayJeomgeomSubList(jeomgeom);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for(int i=0; i<jeomgeomList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("chs_std_code", jeomgeomList.get(i).getChs_std_code());
+			rowMap.put("chs_sort", jeomgeomList.get(i).getChs_sort());
+			rowMap.put("fac_name", jeomgeomList.get(i).getFac_name());
+			rowMap.put("chs_gubn", jeomgeomList.get(i).getChs_gubn());
+			rowMap.put("chs_gubn_detail", jeomgeomList.get(i).getChs_gubn_detail());
+			rowMap.put("chs_hang", jeomgeomList.get(i).getChs_hang());
+			rowMap.put("chs_kijun", jeomgeomList.get(i).getChs_kijun());
+			rowMap.put("chs_min", jeomgeomList.get(i).getChs_min());
+			rowMap.put("chs_max", jeomgeomList.get(i).getChs_max());
+			rowMap.put("chs_danw", jeomgeomList.get(i).getChs_danw());
+			rowMap.put("che_x1", jeomgeomList.get(i).getChe_x1());
+			rowMap.put("che_chkmethod", jeomgeomList.get(i).getChs_chkmethod());
+			rowMap.put("che_stepmethod", jeomgeomList.get(i).getChe_rx1());
+			rowMap.put("fac_code", jeomgeomList.get(i).getChs_stepmethod());
+
+
+
+
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page",1);
+		rtnMap.put("data",rtnList);
+
+		return rtnMap; 
+	}
+
+	
+	
+	
 
 	//설비별점검현황(월별) - 화면로드
 	@RequestMapping(value = "/preservation/monthJeomgeom", method = RequestMethod.GET)
 	public String monthJeomgeom() {
 		return "/preservation/monthJeomgeom.jsp";
 	}	 
+	
+	
+	
+	//설비별점검현황(월별) 조회
+	@RequestMapping(value = "/preservation/monthJeomgeom/getMonthJeomgeomList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getMonthJeomgeomList(
+			@RequestParam String sdate
+			) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Jeomgeom jeomgeom = new Jeomgeom();
+
+		jeomgeom.setSdate(sdate);
+
+		List<Jeomgeom> jeomgeomList = preservationService.getMonthJeomgeomList(jeomgeom);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for(int i=0; i<jeomgeomList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("tech_ht", jeomgeomList.get(i).getTech_ht());
+			rowMap.put("tech_no", jeomgeomList.get(i).getTech_no());
+			rowMap.put("fac_name", jeomgeomList.get(i).getFac_name());
+			rowMap.put("chs_gubn", jeomgeomList.get(i).getChs_gubn());
+			rowMap.put("chs_gubn_detail", jeomgeomList.get(i).getChs_gubn_detail());
+			rowMap.put("chs_sort", jeomgeomList.get(i).getChs_sort());
+			rowMap.put("chs_hang", jeomgeomList.get(i).getChs_hang());
+			rowMap.put("chs_kijun", jeomgeomList.get(i).getChs_kijun());
+			rowMap.put("che_bigo", jeomgeomList.get(i).getChe_bigo());
+			rowMap.put("chs_img", jeomgeomList.get(i).getChs_img());
+			rowMap.put("mm1", jeomgeomList.get(i).getMm1());
+			rowMap.put("mm2", jeomgeomList.get(i).getMm2());
+			rowMap.put("mm3", jeomgeomList.get(i).getMm3());
+			rowMap.put("mm4", jeomgeomList.get(i).getMm4());
+			rowMap.put("mm5", jeomgeomList.get(i).getMm5());
+			rowMap.put("mm6", jeomgeomList.get(i).getMm6());
+			rowMap.put("mm7", jeomgeomList.get(i).getMm7());
+			rowMap.put("mm8", jeomgeomList.get(i).getMm8());
+			rowMap.put("mm9", jeomgeomList.get(i).getMm9());
+			rowMap.put("mm10", jeomgeomList.get(i).getMm10());
+			rowMap.put("mm11", jeomgeomList.get(i).getMm11());
+			rowMap.put("mm12", jeomgeomList.get(i).getMm12());
+			rowMap.put("mm13", jeomgeomList.get(i).getMm13());
+			rowMap.put("mm14", jeomgeomList.get(i).getMm14());
+			rowMap.put("mm15", jeomgeomList.get(i).getMm15());
+			rowMap.put("mm16", jeomgeomList.get(i).getMm16());
+			rowMap.put("mm17", jeomgeomList.get(i).getMm17());
+			rowMap.put("mm18", jeomgeomList.get(i).getMm18());
+			rowMap.put("mm19", jeomgeomList.get(i).getMm19());
+			rowMap.put("mm20", jeomgeomList.get(i).getMm20());
+			rowMap.put("mm21", jeomgeomList.get(i).getMm21());
+			rowMap.put("mm22", jeomgeomList.get(i).getMm22());
+			rowMap.put("mm23", jeomgeomList.get(i).getMm23());
+			rowMap.put("mm24", jeomgeomList.get(i).getMm24());
+			rowMap.put("mm25", jeomgeomList.get(i).getMm25());
+			rowMap.put("mm26", jeomgeomList.get(i).getMm26());
+			rowMap.put("mm27", jeomgeomList.get(i).getMm27());
+			rowMap.put("mm28", jeomgeomList.get(i).getMm28());
+			rowMap.put("mm29", jeomgeomList.get(i).getMm29());
+			rowMap.put("mm30", jeomgeomList.get(i).getMm30());
+			rowMap.put("mm31", jeomgeomList.get(i).getMm31());
+
+
+
+
+
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page",1);
+		rtnMap.put("data",rtnList);
+
+		return rtnMap; 
+	}
+
 
 	//측정기기고장이력 - 화면로드
 	@RequestMapping(value = "/preservation/gigiGojang", method = RequestMethod.GET)
@@ -671,6 +931,22 @@ public class PreservationController {
 			rowMap.put("terr_condi", gigiGojangList.get(i).getTerr_condi());
 			rowMap.put("terr_code", gigiGojangList.get(i).getTerr_code());
 			rowMap.put("ter_code", gigiGojangList.get(i).getTer_code());
+			rowMap.put("terr_strt_h", gigiGojangList.get(i).getTerr_strt_h());
+			rowMap.put("terr_strt_m", gigiGojangList.get(i).getTerr_strt_m());
+			rowMap.put("terr_strt_s", gigiGojangList.get(i).getTerr_strt_s());
+			rowMap.put("terr_end_h", gigiGojangList.get(i).getTerr_end_h());
+			rowMap.put("terr_end_m", gigiGojangList.get(i).getTerr_end_m());
+			rowMap.put("terr_end_s", gigiGojangList.get(i).getTerr_end_s());
+			rowMap.put("terr_strt_mm", gigiGojangList.get(i).getTerr_strt_mm());
+			rowMap.put("terr_strt_ss", gigiGojangList.get(i).getTerr_strt_ss());
+			rowMap.put("terr_end_mm", gigiGojangList.get(i).getTerr_end_mm());
+			rowMap.put("terr_end_ss", gigiGojangList.get(i).getTerr_end_ss());
+			rowMap.put("file_name", gigiGojangList.get(i).getFile_name());
+			rowMap.put("file_name1", gigiGojangList.get(i).getFile_name1());
+			rowMap.put("file_name2", gigiGojangList.get(i).getFile_name2());
+			rowMap.put("file_name3", gigiGojangList.get(i).getFile_name3());
+			rowMap.put("terr_aphoto", gigiGojangList.get(i).getTerr_aphoto());
+			rowMap.put("terr_bphoto", gigiGojangList.get(i).getTerr_bphoto());
 
 			rtnList.add(rowMap);
 		}
@@ -685,7 +961,7 @@ public class PreservationController {
 	@RequestMapping(value = "/preservation/gigiGojang/gigiGojangtDetail", method = RequestMethod.POST) 
 	@ResponseBody 
 	public Map<String, Object> gigiGojangtDetail(
-			@RequestParam int terr_code) {
+			@RequestParam Integer terr_code) {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 
 		Measure measure = new Measure();

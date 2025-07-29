@@ -128,5 +128,69 @@ public class ProductionDaoImpl implements ProductionDao{
 		
 		sqlSession.insert("work.setWorkJSave",work);
 	}
-
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@Override
+	public List<Work> getLotIpgoList(Work work) {
+		return sqlSession.selectList("work.getLotIpgoList",work);
+	}
+	
+	@Override
+	 public List<Work> getLotIpgoReadyList(Integer ord_code) {
+		 return sqlSession.selectList("work.getLotIpgoReadyList",ord_code);
+	 }
+	
+	@Override
+	 public List<Work> getLotIpgoChimList(Integer ord_code) {
+		 return sqlSession.selectList("work.getLotIpgoChimList",ord_code);
+	 }
+	
+	@Override
+	 public List<Work> getLotIpgoTemList(Integer ord_code) {
+		 return sqlSession.selectList("work.getLotIpgoTemList",ord_code);
+	 }
+	
+	@Override
+	 public List<Work> getLotIpgoChulList(Integer ord_code) {
+		 return sqlSession.selectList("work.getLotIpgoChulList",ord_code);
+	 }
+	
+	
+	
+	
+	
+	@Override
+	public List<Work> getLotHeatList(Work work) {
+		return sqlSession.selectList("work.getLotHeatList",work);
+	}
+	
+	@Override
+	 public List<Work> getLotHeatIpgoList(Integer ord_code) {
+		 return sqlSession.selectList("work.getLotHeatIpgoList",ord_code);
+	 }
+	
+	@Override
+	 public List<Work> getLotHeatJuckList(String ilbo_pc) {
+		 return sqlSession.selectList("work.getLotHeatJuckList",ilbo_pc);
+	 }
+	
+	@Override
+	 public List<Work> getLotHeatChimList(String ilbo_pc) {
+		 return sqlSession.selectList("work.getLotHeatChimList",ilbo_pc);
+	 }
+	
+	
+	
+	
+	
+	
+	
+	
 }

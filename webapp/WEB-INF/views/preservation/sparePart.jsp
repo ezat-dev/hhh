@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sparePart관리</title>
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
     
@@ -21,6 +22,10 @@
 	display: flex;
 	justify-content: space-between;
 }
+.container3 {
+	display: flex;
+	justify-content: space-between;
+}
 .spareModal {
     position: fixed; /* 화면에 고정 */
     top: 50%; /* 수직 중앙 */
@@ -29,7 +34,26 @@
     transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
     z-index: 1000; /* 다른 요소 위에 표시 */
 }
+.spareHisModal {
+    position: fixed; /* 화면에 고정 */
+    top: 50%; /* 수직 중앙 */
+    left: 50%; /* 수평 중앙 */
+    display : none;
+    transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+    z-index: 1000; /* 다른 요소 위에 표시 */
+}
 .header {
+    display: flex; /* 플렉스 박스 사용 */
+    justify-content: center; /* 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    margin-bottom: 10px; /* 상단 여백 */
+    background-color: #33363d; /* 배경색 */
+    height: 50px; /* 높이 */
+    color: white; /* 글자색 */
+    font-size: 20px; /* 글자 크기 */
+    text-align: center; /* 텍스트 정렬 */
+}
+.header2 {
     display: flex; /* 플렉스 박스 사용 */
     justify-content: center; /* 중앙 정렬 */
     align-items: center; /* 수직 중앙 정렬 */
@@ -51,7 +75,17 @@
     border-radius: 5px; /* 모서리 둥글게 */
     overflow-y: auto; /* 세로 스크롤 추가 */
 }
-
+#editPop2 {
+    background: #ffffff;
+    border: 1px solid #000000;
+    width: 500px; /* 가로 길이 고정 */
+    height: 650px; /* 세로 길이 고정 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    margin: 20px auto; /* 중앙 정렬 */
+    padding: 20px;
+    border-radius: 5px; /* 모서리 둥글게 */
+    overflow-y: auto; /* 세로 스크롤 추가 */
+}
 .insideTable {
     width: 100%; /* 테이블 너비 100% */
     border-collapse: collapse; /* 테두리 겹침 제거 */
@@ -183,6 +217,15 @@ textarea {
 		<div class="container">
 			<div id="tab1" class="tabulator"></div>
 		</div>
+		<h4>sparePart 관리내역
+			<button class="sparePartHisInsert">
+            	입력
+        	</button>
+        	<button class="">
+            	삭제
+        	</button>
+		</h4>
+		
 		<div class="container2">
 			<div id="sub" class="tabulator"></div>
 		</div>
@@ -195,7 +238,7 @@ textarea {
 	<div class="spareModal">    
 	  <div id="editPop">
 	  	<div class="header">
-	  	
+	  		sparePart 리스트
 	  	</div>
 		<div class="detail">
 			<table cellspacing="0" cellpadding="0" width="100%">
@@ -293,8 +336,8 @@ textarea {
 								<th class="thSub2">이미지</th>
 								<td class="tdRight">
 									<div>
-										<input id="imgInput0" class="imgInputClass valClean" type="file" title="이미지 찾기">
-										<input type="button" value="X" onclick="$('#img0').attr('src', '/resources/images/noimage_01.gif'); $('#imgInput0').val('');">
+										<input id="imgInput0" class="imgInputClass valClean" type="file" name="file_url" title="이미지 찾기">
+										<!-- <input type="button" value="X" onclick="$('#img0').attr('src', '/resources/images/noimage_01.gif'); $('#imgInput0').val('');"> -->
 										<a href="" class="form-control aphoto" download="">다운로드</a>
 									</div>
 									<div class="imgArea" style="width:200px; height:150px; border:1px solid #ddd;">
@@ -339,16 +382,122 @@ textarea {
 
 
 
+
+
+			<!-- 서브 모달 -->
+			<form method="post" id="sparePartHisForm" name="sparePartHisForm">	
+				<div class="spareHisModal">    
+				  <div id="editPop2">
+				  	<div class="header2">
+				  		sparePart 관리내역
+				  	</div>
+					<div class="detail2">
+						<table cellspacing="0" cellpadding="0" width="100%">
+							<tbody><tr>
+								<td>
+									<table cellspacing="0" cellpadding="0" width="100%" class="insideTable" table-layout:fixed="">
+										<tbody><tr>
+											<th class="" style="width: 20%;">매입처</th>
+											<td>
+												<input id="spp_purchase_his" name="spp_purchase_his" class="basic valPost valClean" type="text" style="width:90%;" value="">
+											</td>
+										</tr>
+										<tr>
+											<th class="" style="width: 20%;">품번</th>
+											<td>
+												<input id="spp_no_his" name="spp_no_his" class="basic valPost valClean" type="text" style="width:90%;" value="">
+												<input id="spp_idx" name="spp_idx" class="basic valPost valClean" type="hidden" value="0">
+											</td>
+										</tr>
+										<tr>
+											<th class="left">품명</th>
+											<td>
+												<input id="spp_name_his" name="spp_name_his" class="basic valPost valClean" type="text" style="width:90%;" value="">
+											</td>
+										</tr>
+										<tr>
+											<th class="left">규격</th>
+											<td>
+												<input id="spp_gyu_his" name="spp_gyu_his" class="basic valPost valClean" type="text" style="width:90%;" value="">
+											</td>
+										</tr>
+										<tr>
+											<th class="left">교체주기</th>
+											<td>
+												<input id="spp_yong_his" name="spp_yong_his" class="basic valPost valClean" type="text" style="width:90%;" value="">
+											</td>
+										</tr>
+										<tr>
+											<th class="left">입고</th>
+											<td>
+												<input id="sph_input" name="sph_input" class="basic valPost valClean" type="text" style="width:90%;" value="">
+											</td>
+										</tr>
+										<tr>
+											<th class="left">수리출고</th>
+											<td>
+												<input id="sph_suriout" name="sph_suriout" class="basic valPost valClean" type="text" style="width:90%;" value="">
+											</td>
+										</tr>
+										<tr>
+											<th class="left">자산출고</th>
+											<td>
+												<input id="sph_jasanout" name="sph_jasanout" class="basic valPost valClean" type="text" style="width:90%;" value="">
+											</td>
+										</tr>
+										<tr>
+											<th class="left">비고</th>
+											<td>
+												<input id="sph_bigo" name="sph_bigo" class="basic valPost valClean" type="text" style="width:90%;" value="">
+											</td>
+										</tr>
+										<tr>
+											<th class="left">입력시간</th>
+											<td>
+												<input id="sph_time" name="sph_time" class="basic valPost valClean" type="text" style="width:90%;" value="">
+											</td>
+										</tr>
+										<tr>
+											<th class="left">담당자</th>
+											<td>
+												<input id="sph_user" name="sph_user" class="basic valPost valClean" type="text" style="width:90%;" value="">
+											</td>
+										</tr>
+				
+				
+				
+									</tbody></table>
+									
+							</td></tr>
+								
+							
+						</tbody></table>
+					</div>
+					<div class="btnSaveClose">
+						<button class="save2" type="button" onclick="saveSpareSub()">저장</button>
+						<button class="close2" type="button" onclick="window.close();">닫기</button>
+			    	 </div>
+				</div>
+			</div>
+			</form>
+
+
+
+
+
+
+
 	    
 <script>
 	//전역변수
     var cutumTable;	
     var isEditMode = false; //수정,최초저장 구분값
+    let isSubEditMode = false;
+    let selectedSubRowData = null;
 	//로드
 	$(function(){
 		//전체 거래처목록 조회
 		getSparePartList();
-		getSpareSubList(0);
 	});
 
 	//이벤트
@@ -375,9 +524,20 @@ textarea {
 		        return response; //return the response data to tabulator
 		    },
 		    columns:[
+		    	{title:"제품", field:"file_name", width:100,
+					hozAlign:"center", formatter:"image",
+				    cssClass:"rp-img-popup",
+			      	formatterParams:{
+				      	height:"30px", width:"30px",
+				      	urlPrefix:"/excelTest/태경출력파일/사진/SparePart관리/"
+				      	}, 
+				    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+				    },
 		    	{title:"NO", field:"idx", width:80, hozAlign:"center"},
 		        {title:"NO", field:"spp_idx", sorter:"int", width:80,
 		        	hozAlign:"center",visible:false},
+		        {title:"NO", field:"spp_idx_his", sorter:"int", width:80,
+			        hozAlign:"center",visible:false},	
 		        {title:"매입처", field:"spp_purchase", sorter:"string", width:120,
 			        hozAlign:"center", headerFilter:"input"},	
 			    {title:"품번", field:"spp_no", sorter:"string", width:120,
@@ -420,6 +580,25 @@ textarea {
 			    });
 
 			    var rowData = row.getData();
+			    $("#spp_purchase_his").val(rowData.spp_purchase);
+			    $("#spp_no_his").val(rowData.spp_no);
+			    $("#spp_idx").val(rowData.spp_idx);  // hidden input
+			    $("#spp_name_his").val(rowData.spp_name);
+			    $("#spp_gyu_his").val(rowData.spp_gyu);
+			    $("#spp_yong_his").val(rowData.spp_yong);
+			    $("#sph_user").val(rowData.sph_user); // 담당자 필드
+
+			    const now = new Date();
+			    const formatted = now.getFullYear() + '-' +
+			        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+			        String(now.getDate()).padStart(2, '0') + ' ' +
+			        String(now.getHours()).padStart(2, '0') + ':' +
+			        String(now.getMinutes()).padStart(2, '0') + ':' +
+			        String(now.getSeconds()).padStart(2, '0');
+			    $("#sph_time").val(formatted);
+
+			    // 서브 모달 열기
+			    /* $(".spareHisModal").show().addClass("show"); */
 
 			 
 			    if(rowData.spp_idx){
@@ -458,10 +637,27 @@ textarea {
 					$("input[name='"+key+"']").val(allData[key]);
 				}
 
+				// 이미지 초기화
+				$("#img0").attr("src", "/resources/images/noimage_01.gif");
+
+				if (allData.file_name) {
+					console.log("원본 파일명:", allData.file_name);
+					console.log("인코딩된 경로:", encodeURIComponent(allData.file_name));
+					const path = "/excelTest/태경출력파일/사진/SparePart관리/" + allData.file_name;
+					console.log("path: ", path);
+					$("#img0").attr("src", path);
+					//$(".aphoto").attr("href", path).text(d.product_file_name);
+				}
+
 				$('.spareModal').show().addClass('show');
 			}
 		});
 	}
+
+
+
+
+	
 
 	//SparePart 저장
     function save() {
@@ -534,8 +730,6 @@ textarea {
 	}
 
 
-
-
 	function getSpareSubList(spp_idx){
 		
 		subTable = new Tabulator("#sub", {
@@ -558,7 +752,8 @@ textarea {
 		        return response; //return the response data to tabulator
 		    },
 		    columns:[
-		        {title:"NO", field:"spp_idx", sorter:"int", width:80,
+		    	
+		        {title:"NO", field:"idx", sorter:"int", width:80,
 		        	hozAlign:"center"},
 		        {title:"매입처", field:"spp_purchase_his", sorter:"string", width:120,
 			        hozAlign:"center"},	
@@ -605,8 +800,74 @@ textarea {
 				var rowData = row.getData();
 				
 			},
+			rowDblClick:function(e, row){
+			    const rowData = row.getData();
+
+			    // 모드 설정
+			    isSubEditMode = true;
+			    selectedSubRowData = rowData;
+
+			    $('#sparePartHisForm')[0].reset();
+			    // 값 채우기
+			    $("#spp_purchase_his").val(rowData.spp_purchase_his);
+			    $("#spp_no_his").val(rowData.spp_no_his);
+			    $("#spp_name_his").val(rowData.spp_name_his);
+			    $("#spp_gyu_his").val(rowData.spp_gyu_his);
+			    $("#spp_yong_his").val(rowData.spp_yong_his);
+			    $("#sph_input").val(rowData.sph_input);
+			    $("#sph_suriout").val(rowData.sph_suriout);
+			    $("#sph_jasanout").val(rowData.sph_jasanout);
+			    $("#sph_bigo").val(rowData.sph_bigo);
+			    $("#sph_time").val(rowData.sph_time);
+			    $("#sph_user").val(rowData.sph_user);
+			    $("#spp_idx").val(rowData.spp_idx);
+			    $(".spareHisModal").show().addClass("show");
+			},
 		});		
 	}
+
+
+
+
+
+
+
+	function saveSpareSub() {
+	    var formData = new FormData($("#sparePartHisForm")[0]);
+
+	    if (!formData.get("spp_idx")) {
+	        alert("대상이 선택되지 않았습니다.");
+	        return;
+	    }
+
+	    let confirmMsg = isSubEditMode ? "수정하시겠습니까?" : "저장하시겠습니까?";
+	    if (!confirm(confirmMsg)) return;
+
+	    if (isSubEditMode) {
+	        formData.append("mode", "update");
+	    } else {
+	        formData.append("mode", "insert");
+	    }
+
+	    $.ajax({
+	        url: "/tkheat/preservation/sparePart/spareSubSave",
+	        type: "POST",
+	        data: formData,
+	        contentType: false,
+	        processData: false,
+	        dataType: "json",
+	        success: function (res) {
+	            alert("저장되었습니다.");
+	            $(".spareHisModal").hide();
+	            getSpareSubList(formData.get("spp_idx")); 
+	            isSubEditMode = false;
+	        },
+	        error: function (xhr, status, error) {
+	            console.error("저장 오류:", error);
+	        }
+	    });
+	}
+
 	
 
     </script>
@@ -663,6 +924,11 @@ textarea {
 
 	insertButton.addEventListener('click', function() {
 		spareModal.style.display = 'block'; // 모달 표시
+		isEditMode = false;
+		selectedRowData = null;
+
+		$('#img0').attr('src', '/resources/images/noimage_01.gif');
+		$('#sparePartForm')[0].reset(); // 메인 폼 초기화
 	});
 
 	closeButton.addEventListener('click', function() {
@@ -670,6 +936,130 @@ textarea {
 	});
 		
 
+
+
+	//his 서브모달
+	// 드래그 기능 추가
+	const modal2 = document.querySelector('.spareHisModal');
+	const header2 = document.querySelector('.header2'); // 헤더를 드래그할 요소로 사용
+
+	header2.addEventListener('mousedown', function(e) {
+		// transform 제거를 위한 초기 위치 설정
+		const rect2 = modal2.getBoundingClientRect();
+		modal2.style.left = rect2.left + 'px';
+		modal2.style.top = rect2.top + 'px';
+		modal2.style.transform = 'none'; // 중앙 정렬 해제
+
+		let offsetX2 = e.clientX - rect.left;
+		let offsetY2 = e.clientY - rect.top;
+
+		function moveModal2(e) {
+			modal2.style.left = (e.clientX - offsetX2) + 'px';
+			modal2.style.top = (e.clientY - offsetY2) + 'px';
+		}
+
+		function stopMove2() {
+			window.removeEventListener('mousemove', moveModal2);
+			window.removeEventListener('mouseup', stopMove2);
+		}
+
+		window.addEventListener('mousemove', moveModal2);
+		window.addEventListener('mouseup', stopMove2);
+	});
+		
+
+	// 모달 열기
+	const insertButton2 = document.querySelector('.sparePartHisInsert');
+	const spareHisModal = document.querySelector('.spareHisModal');
+	const closeButton2 = document.querySelector('.close2');
+
+	insertButton2.addEventListener('click', function() {
+		spareHisModal.style.display = 'block';
+
+		isSubEditMode = false;
+		selectedSubRowData = null;
+
+		$("#sph_input").val('');
+		$("#sph_suriout").val('');
+		$("#sph_jasanout").val('');
+		$("#sph_bigo").val('');
+
+		
+		const now = new Date();
+		const formatted = now.getFullYear() + '-' +
+			String(now.getMonth() + 1).padStart(2, '0') + '-' +
+			String(now.getDate()).padStart(2, '0') + ' ' +
+			String(now.getHours()).padStart(2, '0') + ':' +
+			String(now.getMinutes()).padStart(2, '0') + ':' +
+			String(now.getSeconds()).padStart(2, '0');
+		$("#sph_time").val(formatted);
+
+		
+		$("#sph_user").val($("#login_user").val() || "");
+	});
+
+
+	closeButton2.addEventListener('click', function() {
+		spareHisModal.style.display = 'none'; 
+	});
+
+
+	$(".excel-button").click(function () {
+	    const data1 = userTable.getData();
+	    const data2 = subTable.getData();
+
+	    const columns1 = userTable.getColumnDefinitions();
+	    const columns2 = subTable.getColumnDefinitions();
+
+	    const ws = XLSX.utils.aoa_to_sheet([]);
+	    let rowIndex = 0;
+
+	    //  [userTable] 삽입
+	    if (data1.length > 0) {
+	        const headers1 = columns1.map(col => col.title);
+	        const fields1 = columns1.map(col => col.field);
+
+	        XLSX.utils.sheet_add_aoa(ws, [["[SparePart 관리]"]], { origin: rowIndex++ });
+	        XLSX.utils.sheet_add_aoa(ws, [headers1], { origin: rowIndex++ });
+
+	        const rows1 = data1.map(row =>
+	            fields1.map(f => row[f])
+	        );
+	        XLSX.utils.sheet_add_aoa(ws, rows1, { origin: rowIndex });
+	        rowIndex += rows1.length;
+	    }
+
+	    rowIndex += 2; // 구분용 빈 줄
+
+
+	    const headers2 = columns2.map(col => col.title);
+	    const fields2 = columns2.map(col => col.field);
+
+	    XLSX.utils.sheet_add_aoa(ws, [["[SparePart 관리]"]], { origin: rowIndex++ });
+	    XLSX.utils.sheet_add_aoa(ws, [headers2], { origin: rowIndex++ });
+
+	    //  [subTable] 삽입
+	    if (data2.length > 0) {
+	        const rows2 = data2.map(row =>
+	            fields2.map(f => row[f])
+	        );
+	        XLSX.utils.sheet_add_aoa(ws, rows2, { origin: rowIndex });
+	    }
+
+	    // 열 너비 설정 (전체 최대 열 수 기준)
+	    const maxCols = Math.max(
+	        columns1.length,
+	        columns2.length
+	    );
+	    ws['!cols'] = Array.from({ length: maxCols }, () => ({ wch: 20 }));
+
+	    const wb = XLSX.utils.book_new();
+	    XLSX.utils.book_append_sheet(wb, ws, "SparePart 관리");
+
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "SparePart 관리_" + today + ".xlsx";
+	    XLSX.writeFile(wb, filename);
+	});
 
     </script>
 

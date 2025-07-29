@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,6 +73,34 @@ public class ProcessController {
 
 			return rtnMap; 
 		}
+		
+		
+		//준비작업실적 삭제
+		@RequestMapping(value = "/process/readySiljuk/delete", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> deleteReadySiljuk(@RequestBody Siljuk siljuk) {
+		    Map<String, Object> result = new HashMap<>();
+
+		    try {
+		    	processService.deleteSiljuk(siljuk);
+		        result.put("status", "success");
+		        result.put("message", "삭제 완료");
+		    } catch (Exception e) {
+		        result.put("status", "error");
+		        result.put("message", e.getMessage());
+		    }
+
+		    System.out.println(result.get("status"));
+		    System.out.println(result.get("message"));
+
+		    return result;
+		}
+
+
+	
+		
+		
+		
 
 	//전세정작업실적 - 화면로드
 	@RequestMapping(value = "/process/cleanSiljuk", method = RequestMethod.GET)
@@ -359,7 +388,7 @@ public class ProcessController {
 		for(int i=0; i<facSiljukList.size(); i++) {
 			HashMap<String, Object> rowMap = new HashMap<String, Object>();
 			rowMap.put("idx", (i+1));
-			rowMap.put("ilbo_lot", facSiljukList.get(i).getIlbo_strt());
+			rowMap.put("ilbo_lot", facSiljukList.get(i).getIlbo_lot());
 			rowMap.put("ilbo_code", facSiljukList.get(i).getIlbo_code());
 			rowMap.put("fac_name", facSiljukList.get(i).getFac_name());
 			rowMap.put("corp_name", facSiljukList.get(i).getCorp_name());

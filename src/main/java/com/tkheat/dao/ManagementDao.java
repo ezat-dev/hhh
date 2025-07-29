@@ -65,6 +65,8 @@ public interface ManagementDao {
 	
 	void measureDelete(int ter_code);
 	
+	Measure getMeasurmentDetail(Measure measure);
+	
 	
 	
 	List<Standard> getChimStandardList(Standard standard);

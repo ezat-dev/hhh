@@ -22,10 +22,6 @@ public interface ManagementService {
 	
 	void authorityUserSelectSave(Permission permission);
 	
-	
-	
-	
-	
 	List<Product> getProductList(Product product);
 	
 	Product productInsertDetail(Product product);
@@ -35,11 +31,6 @@ public interface ManagementService {
 	void productUpdateSave(Product product);
 	
 	void productDelete(int prod_code);
-	
-
-	
-	
-	
 	
 	List<Corp> getCorpList(Corp corp);
 	
@@ -51,8 +42,6 @@ public interface ManagementService {
 	
 	void cutumDelete(int corp_code);
 	
-
-	
 	List<Fac> getFacList(Fac fac);
 	
 	Fac facInsertDetail(Fac fac);
@@ -63,18 +52,15 @@ public interface ManagementService {
 	
 	void facDelete(int fac_code);
 	
-	
-	
-	
 	List<Measure> getMeasureList();
 	
 	void measureInsertSave(Measure measure);
 	
 	void measureUpdateSave(Measure measure);
 	
+	Measure getMeasurmentDetail(Measure measure);
+	
 	void measureDelete(int ter_code);
-	
-	
 	
 	List<Standard> getChimStandardList(Standard standard);
 	
@@ -86,14 +72,11 @@ public interface ManagementService {
 	
 	void chimStandardDelete(int wstd_code);
 	
-	
-	
 	List<Standard> getGoStandardList(Standard standard);
 	
-	
-	
-	
 	void insertUser(Users users);
+	
+	
 
 	
 }

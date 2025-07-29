@@ -174,6 +174,12 @@ public class ManagementDaoImpl implements ManagementDao {
 	public void measureDelete(int ter_code) {
 		sqlSession.delete("measure.measureDelete", ter_code);
 	}
+
+	//측정기기 더블클릭 정보 조회
+	@Override
+	public Measure getMeasurmentDetail(Measure measure) {
+		return sqlSession.selectOne("measure.getMeasurmentDetail", measure);
+	}
 	
 	
 	
@@ -220,6 +226,7 @@ public class ManagementDaoImpl implements ManagementDao {
 	    public void insertUser(Users users) {
 	        sqlSession.insert("users.insertUser", users); 
 	    }
+
 
 	
 }

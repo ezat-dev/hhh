@@ -33,6 +33,7 @@
 		,TER_GUM
 		,TER_V
 		,TER_A TER_KW
+		,file_name
 		FROM TESTER WITH(NOLOCK)
 	</select>
 
@@ -86,7 +87,7 @@
         terr_date,
         ter_code
     ) VALUES (
-    	(SELECT ISNULL(MAX(TERR_CODE), 0) + 1 FROM TESTER_ERR_LIST),
+    	<!-- (SELECT ISNULL(MAX(TERR_CODE), 0) + 1 FROM TESTER_ERR_LIST), -->
         #{terr_name},
         #{terr_chkman},
         #{terr_reward},
@@ -165,7 +166,8 @@
 		[TER_KW],
 		[TER_NEXT_GUM],
 		[TER_END_GUM],
-		[TER_FILE]
+		[TER_FILE],
+		[FILE_NAME]
 		)
 		VALUES
 		(
@@ -192,7 +194,8 @@
 		#{ter_kw},
 		#{ter_next_gum},
 		#{ter_end_gum},
-		#{ter_file}
+		#{ter_file},
+		#{file_name}
 		)
 
 	</insert>
@@ -227,7 +230,8 @@
 	TER_NEXT_GUM =
 	#{ter_next_gum},
 	TER_END_GUM = #{ter_end_gum},
-	TER_FILE = #{ter_file}
+	TER_FILE = #{ter_file},
+	FILE_NAME = #{file_name}
 	WHERE
 	TER_NO = #{ter_no}
 
@@ -266,6 +270,7 @@
 		, MCD.MCD_MOD_CD as MCD_MOD_CD
 		, mtu.USER_NAME as MCD_MOD_NM
 		, MCD.MCD_FILE as MCD_FILE
+		,MCD.FILE_NAME3 as FILE_NAME3
 		from MEASUREMENT_DEVICE_CEHCK MCD
 		inner join TESTER TT on MCD.TER_CODE = TT.TER_CODE
 		inner join USERT TU on MCD.MCD_MANAGER_USER_CD = TU.USER_CODE
@@ -295,6 +300,7 @@
         , MCD_FILE
         , MCD_REG_DT
         , MCD_REG_CD
+        , FILE_NAME3
         )
         values (
         #{mcd_cd}
@@ -311,6 +317,7 @@
         , <choose><when test=" req_s_tmcd_file != null and req_s_tmcd_file != '' "> #{req_s_tmcd_file} </when><otherwise> null </otherwise></choose>
         , GETDATE()
         , #{req_user_cd}
+         , #{file_name3}
         )
 	</insert>
 
@@ -329,6 +336,9 @@
         , MCD_FILE				=  #{req_s_tmcd_file}
         , MCD_MOD_DT				= GETDATE()
         , MCD_MOD_CD				= #{req_user_cd}
+        <if test="file_name3 != null and file_name3 != ''">
+            , FILE_NAME3 = #{file_name3}
+        </if>
         where MCD_CD = #{req_s_tmcd_cd}
 
 </update>
@@ -338,6 +348,12 @@
 		delete from MEASUREMENT_DEVICE_CEHCK
         where MCD_CD = #{req_s_tmcd_cd}
 	</delete>
+	
+		<select id="getMeasurmentDetail" parameterType="measure" resultType="measure">
+		SELECT *		 
+		  FROM TESTER
+		 WHERE TER_CODE = #{ter_code}
+	</select>
 
 
 

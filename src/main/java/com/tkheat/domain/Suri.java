@@ -22,19 +22,22 @@ public class Suri {
 	private String ffx_next;
 	private String ffx_end;
 	
+	private String file_name1; //수리 전 사진 이름
+	private String file_name2; //수리 후 사진 이름
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public String getFile_name1() {
+		return file_name1;
+	}
+	public void setFile_name1(String file_name1) {
+		this.file_name1 = file_name1;
+	}
+	public String getFile_name2() {
+		return file_name2;
+	}
+	public void setFile_name2(String file_name2) {
+		this.file_name2 = file_name2;
+	}
 	public String getFac_no() {
 		return fac_no;
 	}

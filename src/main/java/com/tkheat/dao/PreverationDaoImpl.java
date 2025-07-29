@@ -23,8 +23,8 @@ public class PreverationDaoImpl implements PreservationDao {
 	 }
 	
 	@Override
-	 public List<SparePart> getSpareSubList(int spp_idx) {
-		 return sqlSession.selectList("sparePart.getSpareSubList",spp_idx);
+	 public List<SparePart> getSpareSubList(SparePart sparePart) {
+		 return sqlSession.selectList("sparePart.getSpareSubList",sparePart);
 	 }
 	
 	@Override
@@ -43,11 +43,19 @@ public class PreverationDaoImpl implements PreservationDao {
 	 }
 	
 	@Override
-	 public void deleteSparePart(int spp_idx) {
+	 public void deleteSparePart(Integer spp_idx) {
 		 sqlSession.delete("sparePart.deleteSparePart", spp_idx);
 	 }
 	
+	@Override
+	 public void insertSpareSub(SparePart sparePart) {
+		 sqlSession.insert("sparePart.insertSpareSub", sparePart);
+	 }
 	
+	@Override
+	 public void updateSpareSub(SparePart sparePart) {
+		 sqlSession.update("sparePart.updateSpareSub", sparePart);
+	 }
 	
 	
 	
@@ -149,6 +157,24 @@ public class PreverationDaoImpl implements PreservationDao {
 	 }
 	
 	
+	
+	
+	
+	@Override
+    public List<Jeomgeom> getDayJeomgeomList(Jeomgeom jeomgeom) {
+        return sqlSession.selectList("jeomgeom.getDayJeomgeomList", jeomgeom);
+    }
+	
+	@Override
+    public List<Jeomgeom> dayJeomgeomSubList(Jeomgeom jeomgeom) {
+        return sqlSession.selectList("jeomgeom.dayJeomgeomSubList", jeomgeom);
+    }
+	
+	
+	@Override
+    public List<Jeomgeom> getMonthJeomgeomList(Jeomgeom jeomgeom) {
+        return sqlSession.selectList("jeomgeom.getMonthJeomgeomList", jeomgeom);
+    }
 	
 	
 	

@@ -209,7 +209,7 @@
 		        {title:"입사일", field:"user_jdate", sorter:"string", width:200,
 			        hozAlign:"center"},	
 		        {title:"퇴사", field:"user_ret", sorter:"string", width:100,
-		        	hozAlign:"center"},
+		        	hozAlign:"center",visible:false},
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();

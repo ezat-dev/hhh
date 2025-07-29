@@ -790,7 +790,49 @@ th{
 
 	
 
+    $(function(){
 
+    	  // 1~9 입력창 변화 감지 (keyup, change)
+    	  $("#fstp_01, #fstp_02, #fstp_03, #fstp_04, #fstp_05, #fstp_06, #fstp_07, #fstp_08, #fstp_09").on("input", function() {
+    	    updateSum();
+    	  });
+
+    	  // fstp_stby 입력창 변화 감지
+    	  $("#fstp_stby").on("input", function() {
+    	    updateSil();
+    	  });
+
+    	  // 합계 계산 함수
+    	  function updateSum() {
+    	    let sum = 0;
+    	    for(let i=1; i<=9; i++) {
+    	      let val = parseInt($("#fstp_0" + i).val());
+    	      if(!isNaN(val)) {
+    	        sum += val;
+    	      }
+    	    }
+    	    $("#fstp_10").val(sum);
+    	  }
+
+    	  // 실가동시간 계산 함수
+    	  function updateSil() {
+    	    let plan = parseInt($("#fstp_plan").val());
+    	    let stby = parseInt($("#fstp_stby").val());
+
+    	    if(isNaN(plan)) plan = 0;
+    	    if(isNaN(stby)) stby = 0;
+
+    	    let sil = plan - stby;
+    	    if(sil < 0) sil = 0;  // 음수 방지
+
+    	    $("#fstp_sil").val(sil);
+    	  }
+
+    	  // 초기 계산 한번 실행 (폼 초기값 반영)
+    	  updateSum();
+    	  updateSil();
+
+    	});
 
 
 

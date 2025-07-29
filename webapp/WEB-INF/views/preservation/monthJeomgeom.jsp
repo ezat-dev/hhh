@@ -34,32 +34,259 @@
 .row_select{
 	background-color:#9ABCEA !important;
 }
+
+
+.btnSaveClose {
+	display: flex;
+	justify-content: center; /* 가운데 정렬 */
+	gap: 20px; /* 버튼 사이 여백 */
+	margin-top: 30px; /* 모달 내용과의 간격 */
+	margin-bottom: 20px; /* 모달 하단과 버튼 사이 간격  */
+}
+.btnSaveClose button {
+	width: 100px;
+	height: 35px;
+	background-color: #FFD700; /* 기본 배경 - 노란색 */
+	color: black;
+	border: 2px solid #FFC107; /* 노란 테두리 */
+	border-radius: 5px;
+	font-weight: bold;
+	text-align: center;
+	cursor: pointer;
+	line-height: 35px;
+	margin: 0 10px;
+	margin-top: 10px;
+	transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* 저장 버튼 호버 시 */
+.btnSaveClose .save:hover {
+	background-color: #FFC107;
+	transform: scale(1.05);
+}
+
+/* 닫기 버튼 - 회색 톤 */
+.btnSaveClose .close {
+	background-color: #A9A9A9;
+	color: black;
+	border: 2px solid #808080;
+}
+
+/* 닫기 버튼 호버 시 */
+.btnSaveClose .close:hover {
+	background-color: #808080;
+	transform: scale(1.05);
+}
+.box1 {
+	display: flex;
+	justify-content: right;
+	align-items: center;
+	width: 1500px;
+	margin-left: -400px;
+}
+
+.box1 select{
+	width: 5%
+}  
+.box1 input[type="text"] {
+	width: 100px;
+	padding: 5px 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	color: #333;
+	outline: none;
+	transition: border 0.3s ease;
+}
+
+.box1 input[type="text"]:focus {
+	border: 1px solid #007bff;
+	background-color: #fff;
+}  
+.box1 label,
+.box1 input {
+	margin-right: 10px; /* 요소 사이 간격 */
+} 
+
+.dayJeomgeomModal {
+	position: fixed; /* 화면에 고정 */
+	top: 50%; /* 수직 중앙 */
+	left: 50%; /* 수평 중앙 */
+	display: none;
+	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+	z-index: 1000; /* 다른 요소 위에 표시 */
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 10px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.modal-close {
+  cursor: pointer;
+  font-size: 28px;
+}
+
+.modal-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px 30px;
+  margin-bottom: 20px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row label {
+  font-weight: bold;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.modal-form-inline {
+  display: flex;
+  flex-wrap: wrap; /* 혹시 너비 넘치면 줄바꿈 */
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: nowrap; /* 가능한 한 줄 유지 */
+  overflow-x: auto;
+}
+
+.modal-form-inline label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.input-field {
+  font-size: 14px;
+  padding: 5px 8px;
+  width: 150px;
+  min-width: 130px;
+  max-width: 180px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
     
-    
+    .subSearch {
+  padding: 6px 14px;
+  font-size: 14px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.subSearch:hover {
+  background-color: #2980b9;
+}
+.box1 {
+	display: flex;
+	justify-content: right;
+	align-items: center;
+	width: 1500px;
+	margin-left: -1170px;
+}
+
+.box1 select{
+	width: 5%
+}  
+.box1 input[type="date"] {
+	width: 150px;
+	padding: 5px 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	color: #333;
+	outline: none;
+	transition: border 0.3s ease;
+}
+
+.box1 input[type="date"]:focus {
+	border: 1px solid #007bff;
+	background-color: #fff;
+}
+.box1 input[type="month"] {
+	width: 150px;
+	padding: 5px 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	color: #333;
+	outline: none;
+	transition: border 0.3s ease;
+}
+
+.box1 input[type="month"]:focus {
+	border: 1px solid #007bff;
+	background-color: #fff;
+}    
+.box1 label,
+.box1 input {
+	margin-right: 10px; /* 요소 사이 간격 */
+} 
     </style>
     
     
     <body>
     
     <div class="tab">
-    
+    <div class="box1">
+         <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>        
+		<label class="daylabel">날짜선택 : </label>
+		<input type="month" class="sdate" id="sdate" style="font-size: 16px;" autocomplete="off">
+				
+	</div>
     <div class="button-container">
-        <button class="select-button">
+        <button class="select-button" onclick="getMonthJeomgeomList();">
             <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
            
         </button>
-        <!-- <button class="insert-button">
+        <button class="insert-button">
             <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
           
-        </button> -->
+        </button>
         <button class="excel-button">
             <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
             
         </button>
-        <!-- <button class="printer-button">
+        <button class="printer-button">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
             
-        </button> -->
+        </button>
     </div>
 </div>
     <main class="main">
@@ -67,103 +294,175 @@
 			<div id="tab1" class="tabulator"></div>
 		</div>
 	</main>
-	    
-	    
+	
+	
+	
+	
+	
 <script>
-	//전역변수
-    var cutumTable;	
+  var userTable;
 
-	//로드
-	$(function(){
-		//전체 거래처목록 조회
-		getCutumList();
-	});
+  $(function () {
+    // 현재 날짜를 yyyy-MM 형식으로 포맷
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // 01~12
+    const todayYM = `${year}-${month}`;
 
-	//이벤트
-	//함수
-	function getCutumList(){
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    /*		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/management/authority/productList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{},
-*/		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","29px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},
-		        {title:"코드", field:"prod_code", sorter:"string", width:120,
-			        hozAlign:"center"},	
-			    {title:"등록일", field:"prod_date", sorter:"string", width:120,
-				    hozAlign:"center"},     
-				{title:"거래처명", field:"corp_name", sorter:"string", width:120,
-				    hozAlign:"center"}, 
-				{title:"품명", field:"prod_name", sorter:"string", width:150,
-				    hozAlign:"center"}, 
-		        {title:"품번", field:"prod_no", sorter:"string", width:120,
-		        	hozAlign:"center"},		        
-		        {title:"규격", field:"prod_gyu", sorter:"string", width:100,
-		        	hozAlign:"center"},
-		        {title:"재질", field:"prod_jai", sorter:"string", width:100,
-		        	hozAlign:"center"},
-		        {title:"공정", field:"tech_te", sorter:"string", width:100,
-			        hozAlign:"center"},	
-		        {title:"단중", field:"prod_danj", sorter:"int", width:100,
-		        	hozAlign:"center"},  	
-		        {title:"단위", field:"prod_danw", sorter:"int", width:100,
-			        hozAlign:"center"},	
-			    {title:"단가(EA)", field:"prod_danw", sorter:"int", width:100,
-				    hozAlign:"center"},	
-				{title:"단가(kG)", field:"prod_danw", sorter:"int", width:100,
-				    hozAlign:"center"},
-				{title:"표면경도", field:"prod_danw", sorter:"int", width:100,
-					hozAlign:"center"},
-			    {title:"경화깊이", field:"prod_danw", sorter:"int", width:100,
-					hozAlign:"center"},
- 			    {title:"심부경도", field:"prod_danw", sorter:"int", width:100,
-					hozAlign:"center"},
-				    
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
+    // input type="month"에 기본값 설정
+    $("#sdate").val(todayYM);
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+    // 기본값 기준으로 리스트 조회 실행
+    getMonthJeomgeomList();
 
-				var rowData = row.getData();
-				
-			},
-		});		
-	}
+    // sdate 변경 시 재조회
+    $("#sdate").on("change", function () {
+      getMonthJeomgeomList();
+    });
+  });
+
+  function getMonthJeomgeomList() {
+    const sdate = $("#sdate").val();
+    console.log("현재 sdate:", sdate);
+
+    if (!sdate) {
+      console.warn("sdate가 비어있음");
+      return;
+    }
+
+    const [year, month] = sdate.split("-").map(Number);
+    const lastDay = new Date(year, month, 0).getDate();
+
+    let dayColumns = [];
+    for (let day = 1; day <= lastDay; day++) {
+      const date = new Date(year, month - 1, day);
+      const weekday = ["일", "월", "화", "수", "목", "금", "토"][date.getDay()];
+      const field = "mm" + day;
+
+      dayColumns.push({
+        title: weekday,
+        headerHozAlign: "center",
+        headerSort: false,
+        columns: [{
+          title: String(day),
+          field: field,
+          width: 20,
+          hozAlign: "center",
+          headerSort: false,
+        }]
+      });
+    }
+
+    let columns = [
+      {
+        title: "설비공정종류",
+        field: "tech_ht",
+        sorter: "string",
+        width: 80,
+        hozAlign: "center",
+        headerSort: false,
+        headerFilter: "select",
+        headerFilterParams: {
+          values: {
+            "": "all",
+            "이온질화": "이온질화",
+            "진공로": "진공로",
+            "템퍼링로": "템퍼링로",
+            "Box Type": "Box Type",
+            "PQ": "PQ",
+            "Salt": "Salt"
+          }
+        }
+      },
+      {
+        title: "설비",
+        field: "fac_name",
+        sorter: "string",
+        width: 80,
+        hozAlign: "center",
+        headerSort: false,
+        headerFilter: "select",
+        headerFilterParams: {
+          values: {
+            "": "all",
+            "고주파 1호기(폐기)": "고주파 1호기(폐기)",
+            "고주파 2호기 (폐기)": "고주파 2호기 (폐기)",
+            "고주파 5호기": "고주파 5호기",
+            "급수시설": "급수시설",
+            "변성로 1호기": "변성로 1호기",
+            "변성로 2호기": "변성로 2호기",
+            "쇼트 1호기": "쇼트 1호기",
+            "쇼트 2호기": "쇼트 2호기",
+            "쇼트 3호기": "쇼트 3호기",
+            "쇼트 4호기": "쇼트 4호기",
+            "전기시설": "전기시설",
+            "진공세정기 2호기": "진공세정기 2호기",
+            "침탄로 1호기": "침탄로 1호기",
+            "침탄로 2호기": "침탄로 2호기",
+            "침탄로 3호기": "침탄로 3호기",
+            "침탄로 4호기": "침탄로 4호기",
+            "침탄로 5호기": "침탄로 5호기",
+            "콤프레샤": "콤프레샤",
+            "템퍼링기 1호기": "템퍼링기 1호기",
+            "템퍼링기 2호기": "템퍼링기 2호기"
+          }
+        }
+      },
+      { title: "점검주기", field: "chs_gubn", sorter: "string", width: 40, hozAlign: "center", headerSort: false },
+      { title: "구분", field: "chs_gubn_detail", sorter: "string", width: 40, hozAlign: "center", headerSort: false },
+      { title: "순번", field: "chs_sort", sorter: "string", width: 40, hozAlign: "center", headerSort: false },
+      { title: "점검항목", field: "chs_hang", sorter: "string", width: 90, hozAlign: "center", headerSort: false },
+      { title: "기준방법", field: "chs_kijun", sorter: "string", width: 90, hozAlign: "center", headerSort: false },
+      ...dayColumns,
+      { title: "비고", field: "che_bigo", sorter: "string", width: 60, hozAlign: "center", headerSort: false },
+      // { title: "사진", field: "chs_img", sorter: "string", width: 60, hozAlign: "center", headerSort: false },
+    ];
+
+    if (userTable) {
+      userTable.destroy();
+    }
+
+    userTable = new Tabulator("#tab1", {
+      height: "750px",
+      layout: "fitColumns",
+      selectable: true,
+      tooltips: true,
+      selectableRangeMode: "click",
+      reactiveData: true,
+      headerHozAlign: "center",
+      ajaxURL: "/tkheat/preservation/monthJeomgeom/getMonthJeomgeomList",
+      ajaxConfig: "POST",
+      ajaxParams: { sdate: sdate },
+      ajaxLoader: false,
+      ajaxProgressiveLoad: "scroll",
+      paginationSize: 20,
+      placeholder: "조회된 데이터가 없습니다.",
+      columns: columns,
+      groupBy: "fac_name",
+      groupStartOpen: true,
+      groupHeader: function (value, count, data) {
+        return `${value} (${count} 항목)`;
+      },
+      ajaxResponse: function (url, params, response) {
+        $("#tab1 .tabulator-col.tabulator-sortable").css("height", "50px");
+        console.log("📦 조회된 데이터:", response);
+        return response;
+      },
+      rowFormatter: function (row) {
+        row.getElement().style.fontWeight = "700";
+        row.getElement().style.backgroundColor = "#FFFFFF";
+      },
+      rowClick: function (e, row) {
+        $("#tab1 .tabulator-tableHolder .tabulator-row").removeClass("row_select");
+        row.getElement().classList.add("row_select");
+        const rowData = row.getData();
+        console.log("🟩 클릭한 행 데이터:", rowData);
+      },
+    });
+  }
+</script>
 	
 
-    </script>
 
 	</body>
 </html>

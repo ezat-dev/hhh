@@ -369,6 +369,14 @@
     </div>
    <script>
 
+   $(document).on('click', '.menuDivTab', function () {
+       // 기존 active 클래스 제거
+       $('.menuDivTab').removeClass('active');
+
+       // 현재 클릭된 탭에 active 클래스 추가
+       $(this).addClass('active');
+   });
+
    //로드
    $(function(){
 		var loginInfo = "${loginUser.user_name}";
@@ -407,19 +415,19 @@
 									var _groupID = "";
 
 									if(key.indexOf("a") != -1){
-										_group = "모니터링";
+										_group = "제품관리";
 										_groupID = "aMenu";
 									}else if(key.indexOf("b") != -1){
 										_group = "생산관리";
 										_groupID = "bMenu";
 									}else if(key.indexOf("c") != -1){
-										_group = "조건관리";
+										_group = "생산공정관리";
 										_groupID = "cMenu";
 									}else if(key.indexOf("d") != -1){
-										_group = "품질관리";
+										_group = "모니터링";
 										_groupID = "dMenu";
 									}else if(key.indexOf("e") != -1){
-										_group = "기준관리";
+										_group = "설비보존관리";
 										_groupID = "eMenu";
 									}else if(key.indexOf("f") != -1){
 			                              _group = "품질관리";
@@ -431,7 +439,9 @@
 			                              _group = "기준정보";
 			                              _groupID = "hMenu";
 			                           }
-									
+
+									_group_t = _group.replace(/\s/gi,"&nbsp;");
+									_name_t = _name.replace(/\s/gi,"&nbsp;");
 									
 									var _menu = "<li>";
 									_menu += "<a class='collapse__sublink' onClick=updateHeaderAndNavigate(event,'"+_link+"','"+_group+"-"+_name+"');>"+_name+"</a>"
@@ -509,27 +519,55 @@
 				$(".menuDiv").empty();
         		
 				for(let key in data){
-					var menuName = data[key].menu_name;
-					var menuNameIndex = (data[key].menu_name).indexOf("-")+1;
-					menuName = menuName.substring(menuNameIndex,menuName.length);
+					 var menuName = data[key].menu_name;
+		                var menuNameIndex = (data[key].menu_name).indexOf("-")+1;
+		                
+		                menuName = menuName.substring(menuNameIndex,menuName.length);                
+		                menuName = menuName.replace("/\s/g","&nbsp;");
 
-	                   _div = "<div class='menuDivTab'>";
-	                   _div += "<label class='menuName' onClick=iframeSrc('"+data[key].menu_url+"','"+menuName+"')>" + menuName + "</label>";
-	                   _div += "<button class='close-btn' onClick=removeMenu('"+data[key].menu_url+"')>×</button>";
-	                   _div += "</div>";
-					
-					
-					if(idx == 0){
-						iframeSrc(data[key].menu_url,(data[key].menu_name));
-					}
-					idx++;
-					$(".menuDiv").append(_div);
+		                _div = "<div class='menuDivTab' onClick=iframeSrc('"+data[key].menu_url+"','"+menuName+"')>";
+						_div += "<label class='menuName' onClick=iframeSrc('"+data[key].menu_url+"','"+menuName+"')>" + menuName + "</label>";
+		                _div += "<button class='close-btn' onClick=removeMenu('"+data[key].menu_url+"')>×</button>";
+		                _div += "</div>";
+
+		                $(".menuDiv").append(_div);
 				}
          			
 			}
 		});
 	}
-	
+
+
+	document.addEventListener('DOMContentLoaded', function () {
+		  const collapseItems = document.querySelectorAll('.nav__link.collapse');
+
+		  collapseItems.forEach(item => {
+		    item.addEventListener('click', function (e) {
+		      e.stopPropagation(); // 이벤트 전파 방지
+
+		      const collapseMenu = this.querySelector('.collapse__menu');
+		      const icon = this.querySelector('.collapse__link');
+
+		      // toggle 상태만 제어 (닫거나 열기)
+		      collapseMenu.classList.toggle('showCollapse');
+		      icon.classList.toggle('rotate');
+		    });
+		  });
+
+		  // 하위 메뉴 클릭 시 상위 메뉴 닫히지 않게
+		  document.querySelectorAll('.collapse__menu a').forEach(link => {
+		    link.addEventListener('click', function (e) {
+		      e.stopPropagation(); // 반드시 필요
+		      // 페이지 이동 또는 iframeSrc 등 호출 가능
+		    });
+		  });
+		});
+
+
+
+
+
+		
 	   function removeMenu(url) {
 			var loginCode = "${loginUser.user_code}";		   
 		   

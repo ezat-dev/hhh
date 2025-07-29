@@ -235,7 +235,7 @@ th{
                     <tbody><tr>
                         <td>
                             <table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-    
+    						
                                 <colgroup span="4">
                                     <col width="10%">
                                     <col width="40%">
@@ -252,6 +252,7 @@ th{
                                                 <option value="2">비커스경도기</option>
                                             
                                         </select>
+                                        <input type="hidden" id="terr_code" name="terr_code" value="">
                                     </td>
                                     <th class="left">수리시작시간</th>
                                     <td>

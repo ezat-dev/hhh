@@ -18,13 +18,13 @@ public class Gongjung {
 	private String prod_no;			//품번
 	private String prod_gyu;		//규격
 	private String prod_jai;		//재질
-	private String prod_j;          //준비
-	private String prod_p;          //전세정
-	private String prod_a;          //침탄
-	private String prod_h;          //고주파
-	private String prod_f;          //후세정 
-	private String prod_r;          //템퍼링
-	private String prod_s;          //쇼트
+	private int prod_j;          //준비
+	private int prod_p;          //전세정
+	private int prod_a;          //침탄
+	private int prod_h;          //고주파
+	private int prod_f;          //후세정 
+	private int prod_r;          //템퍼링
+	private int prod_s;          //쇼트
 	
 	
 	
@@ -174,46 +174,46 @@ public class Gongjung {
 	public void setProd_jai(String prod_jai) {
 		this.prod_jai = prod_jai;
 	}
-	public String getProd_j() {
+	public int getProd_j() {
 		return prod_j;
 	}
-	public void setProd_j(String prod_j) {
+	public void setProd_j(int prod_j) {
 		this.prod_j = prod_j;
 	}
-	public String getProd_p() {
+	public int getProd_p() {
 		return prod_p;
 	}
-	public void setProd_p(String prod_p) {
+	public void setProd_p(int prod_p) {
 		this.prod_p = prod_p;
 	}
-	public String getProd_a() {
+	public int getProd_a() {
 		return prod_a;
 	}
-	public void setProd_a(String prod_a) {
+	public void setProd_a(int prod_a) {
 		this.prod_a = prod_a;
 	}
-	public String getProd_h() {
+	public int getProd_h() {
 		return prod_h;
 	}
-	public void setProd_h(String prod_h) {
+	public void setProd_h(int prod_h) {
 		this.prod_h = prod_h;
 	}
-	public String getProd_f() {
+	public int getProd_f() {
 		return prod_f;
 	}
-	public void setProd_f(String prod_f) {
+	public void setProd_f(int prod_f) {
 		this.prod_f = prod_f;
 	}
-	public String getProd_r() {
+	public int getProd_r() {
 		return prod_r;
 	}
-	public void setProd_r(String prod_r) {
+	public void setProd_r(int prod_r) {
 		this.prod_r = prod_r;
 	}
-	public String getProd_s() {
+	public int getProd_s() {
 		return prod_s;
 	}
-	public void setProd_s(String prod_s) {
+	public void setProd_s(int prod_s) {
 		this.prod_s = prod_s;
 	}
 	public String getSdate() {

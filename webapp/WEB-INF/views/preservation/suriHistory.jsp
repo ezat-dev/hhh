@@ -8,6 +8,7 @@
     <title>설비수리이력관리</title>
     <link rel="stylesheet" href="/tkheat/css/management/productInsert.css">
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
     
@@ -38,92 +39,90 @@
     text-align: center; /* 텍스트 정렬 */
 }
 .detail {
-    background: #ffffff;
-    border: 1px solid #000000;
-    width: 800px; /* 가로 길이 고정 */
-    height: 660px; /* 세로 길이 고정 */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-    margin: 20px auto; /* 중앙 정렬 */
-    padding: 20px;
-    border-radius: 5px; /* 모서리 둥글게 */
-    overflow-y: auto; /* 세로 스크롤 추가 */
-}
+      background: #ffffff;
+      border: 1px solid #000000;
+      width: 800px;
+      height: 660px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 5px;
+      overflow-y: auto;
+    }
 
+    .insideTable {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
 
-.insideTable {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; /* 셀 크기 고정 */
-}
+    .insideTable th,
+    .insideTable td {
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      vertical-align: middle;
+      font-size: 14px;
+      line-height: 1.4;
+    }
 
-.insideTable th,
-.insideTable td {
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    vertical-align: middle;
-    font-size: 14px;
-    line-height: 1.4;
-}
+    .insideTable th {
+      background-color: #f5f5f5;
+      text-align: left;
+      font-weight: 600;
+      width: 15%;
+      white-space: nowrap;
+    }
 
-.insideTable th {
-    background-color: #f5f5f5;
-    text-align: left;
-    font-weight: 600;
-    width: 20%;
-    white-space: nowrap;
-}
+    .insideTable td {
+      text-align: left;
+      width: 35%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-.insideTable td {
-    text-align: left;
-    width: 30%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
+    .basic,
+    .rp-input,
+    select,
+    input[type="text"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      padding: 6px 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
 
-.basic,
-.rp-input,
-select,
-input[type="text"],
-input[type="date"],
-textarea {
-    width: 100%;
-    padding: 6px 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
 
-textarea {
-    resize: vertical;
-    min-height: 100px;
-}
+    .findImage {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-start;
+    }
 
-.findImage {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: flex-start;
-}
+    .imgArea {
+      width: 200px;
+      height: 130px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
 
-.imgArea {
-    width: 100%;
-    max-width: 200px;
-    height: 130px;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.imgArea img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+    .imgArea img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 .btnSaveClose {
 	display: flex;
 	justify-content: center; /* 가운데 정렬 */
@@ -196,6 +195,11 @@ textarea {
 .box1 input {
 	margin-right: 10px; /* 요소 사이 간격 */
 }  
+
+.findImage{
+
+	width:100%
+}
     
     </style>
     
@@ -240,29 +244,24 @@ textarea {
 	    
 	    
 	    
-<form method="post" id="suriHistoryForm" name="suriHistoryForm">		    
- <div class="suriHistoryModal">    
-  <div class="detail">
-   <div class="header">
-   		설비수리이력
-   </div>
-    <table cellspacing="0" cellpadding="0" width="100%">
+<form method="post" id="suriHistoryForm" name="suriHistoryForm" enctype="multipart/form-data">
+  <div class="suriHistoryModal">
+    <div class="detail">
+      <div class="header">설비수리이력</div>
+      <table class="insideTable">
+        <colgroup>
+          <col width="15%">
+          <col width="35%">
+          <col width="15%">
+          <col width="35%">
+        </colgroup>
         <tbody>
-            <tr>
-                <td class="">
-                    <table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-                        <colgroup span="4">
-                            <col width="*">
-                            <col width="30%">
-                            <col width="*">
-                            <col width="30%">
-                        </colgroup>
-                        <tbody>
-                            <tr>
-                                <th class="left" style="width: 15%;">설비</th>
-                                <td class="">
-                                    <select id="fac_code" name="fac_code" class="basic" style="width:80%;">
-                                        <option value="5">고주파 1호기(폐기):(5)</option>
+          <!-- 설비 / 일자 -->
+          <tr>
+            <th>설비</th>
+            <td>
+              <select id="fac_code" name="fac_code" class="basic">
+                <option value="5">고주파 1호기(폐기):(5)</option>
                                         <option value="6">고주파 2호기 (폐기):(6)</option>
                                         <option value="9">고주파 5호기:(9)</option>
                                         <option value="21">급수시설:(21)</option>
@@ -282,55 +281,33 @@ textarea {
                                         <option value="22">콤프레샤:(22)</option>
                                         <option value="16">템퍼링기 1호기:(16)</option>
                                         <option value="17">템퍼링기 2호기:(17)</option>
-                                    </select>
-                                </td>
-                                <th rowspan="3" class="" style="width: 15%;">수리전 사진<span class="left"></span></th>
-                                <td rowspan="3" class="findImage">
-                                    <input type="hidden" name="type" value="run">
-                                    <input type="file" name="imageFile1" title="이미지 찾기" onchange="previewImage(this,'previewId')">
-                                    <div class="imgArea" id="previewId" style="height:100px;"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th class="left" style="width: 15%;">일자</th>
-                                <td class=""><input id="ffx_date" name="ffx_date" class="date js-datepicker hasDatepicker" type="date" style="width:150px;"  maxlength="20" size="20"></td>
-                            </tr>
-                            <tr>
-                                <th class="left" style="width: 15%;">내용</th>
-                                <td class=""><textarea id="ffx_note" name="ffx_note" rows="8" class="basic" style="width:100%;"></textarea></td>
-                            </tr>
-                            <tr>
-                                <!-- <th class="left" style="width: 15%;">소요부품<input type="button" title="검색" class="btnSearchSmall" onclick="MM_openBrWindow('etcSub_popup_12','Srch','width=800,height=430,scrollbars=yes')"></th>
-                                <td>
-                                    <input id="ffx_prt" name="ffx_prt" class="basic" type="text" style="width:100%;" value="" readonly="readonly" placeholder="검색버튼을 눌러 선택해 주세요.">
-                                    <input id="spr_code" name="spr_code" class="basic" type="hidden">
-                                    <input id="spr_time" name="spr_time" class="basic" type="hidden">
-                                </td> -->
-                                <th rowspan="4" class="" style="width: 15%;">수리후 사진</th>
-                                <td rowspan="4" class="findImage">
-                                    <input type="hidden" name="type" value="run">
-                                    <input type="file" name="imageFile2" title="이미지 찾기" onchange="previewImage(this,'previewId2')">
-                                    <div class="imgArea" id="previewId2" style="height:100px;"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th class="left" style="width: 15%;">수리처</th>
-                                <td class=""><input id="ffx_wrk" name="ffx_wrk" class="basic" type="text" style="width:100%;" value=""></td>
-                            </tr>
-                            <tr>
-                                <th class="left" style="width: 15%;">수리비용</th>
-                                <td class="">
-                                    <input id="ffx_evt" name="ffx_evt" class="basic" type="hidden" style="width:100%;" value="">
-                                    <input id="ffx_time" name="ffx_time" class="basic" type="hidden" style="width:100%;" value="">
-                                    <input id="ffx_end" name="ffx_end" class="basic" type="hidden" style="width:100%;" value="">
-                                    <input id="ffx_cost" name="ffx_cost" class="basic" type="text" style="width:100%;" value="">
-                                </td>
-                            </tr>
-                            <tr>
-                                <th class="left" style="width: 15%;">담당자</th>
-                                <td class="">
-                                    <select id="ffx_man" name="ffx_man" class="basic" style="width:100px;">
-                                        <option value="admin">admin:(0)</option>
+              </select>
+            </td>
+            <th>일자</th>
+            <td><input id="ffx_date" name="ffx_date" type="date" class="basic"></td>
+          </tr>
+
+          <!-- 내용 / 수리처 -->
+          <tr>
+            <th>내용</th>
+            <td><textarea id="ffx_note" name="ffx_note" class="basic"></textarea></td>
+            <th>수리처</th>
+            <td><input id="ffx_wrk" name="ffx_wrk" type="text" class="basic"></td>
+          </tr>
+
+          <!-- 수리비용 / 담당자 -->
+          <tr>
+            <th>수리비용</th>
+            <td>
+              <input id="ffx_evt" name="ffx_evt" type="hidden">
+              <input id="ffx_time" name="ffx_time" type="hidden">
+              <input id="ffx_end" name="ffx_end" type="hidden">
+              <input id="ffx_cost" name="ffx_cost" type="text" class="basic">
+            </td>
+            <th>담당자</th>
+            <td>
+              <select id="ffx_man" name="ffx_man" class="basic">
+                <option value="admin">admin:(0)</option>
                                         <option value="정중환">정중환:(2)</option>
                                         <option value="김성우">김성우:(4)</option>
                                         <option value="조병수">조병수:(5)</option>
@@ -378,36 +355,45 @@ textarea {
                                         <option value="">:(51)</option>
                                         <option value="123123">123123:(52)</option>
                                         <option value="ㅁㅁㅁ">ㅁㅁㅁ:(53)</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <!-- <tr>
-                                <td class=""></td>
-                                <td class=""></td>
-                                <td class=""></td>
-                                <td class=""></td>
-                            </tr> -->
-                            <tr>
-                                <th class="left">차기점검일</th>
-                                <td class=""><input id="ffx_next" name="ffx_next" type="date" style="width:100px;" maxlength="20" size="20"></td>
-                            </tr>
-                            <!-- <tr>
-                                <th>완료</th>
-                                <td><input id="ffx_check" name="ffx_check" class="basic" type="checkbox" value="" onchange="nextFfxDate(this);"></td>
-                            </tr> -->
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
+              </select>
+            </td>
+          </tr>
+
+          <!-- 차기점검일 -->
+          <tr>
+            <th>차기점검일</th>
+            <td><input id="ffx_next" name="ffx_next" type="date" class="basic"></td>
+            <th></th>
+            <td></td>
+          </tr>
+
+          <!-- 수리전 사진 / 수리후 사진 -->
+          <tr>
+            <th>수리 전 사진</th>
+            <td class="findImage">
+              <input type="file" name="file_url1" onchange="previewImage(this, 'previewId')">
+              <div class="imgArea" id="previewId">
+                <img id="img0" src="/resources/images/noimage_01.gif" class="imgClass rp-img-popup">
+              </div>
+            </td>
+            <th>수리 후 사진</th>
+            <td class="findImage">
+              <input type="file" name="file_url2" onchange="previewImage(this, 'previewId2')">
+              <div class="imgArea" id="previewId2">
+                <img id="img1" src="/resources/images/noimage_01.gif" class="imgClass rp-img-popup">
+              </div>
+            </td>
+          </tr>
         </tbody>
-    </table>
-    <div class="btnSaveClose">
-    	<button class="delete" type="button" onclick="deleteSuri();"  style="display: none;">삭제</button>
-		<button class="save" type="button" onclick="save();">저장</button>
-		<button class="close" type="button" onclick="window.close();">닫기</button>
+      </table>
+
+      <div class="btnSaveClose">
+        <button class="delete" type="button" onclick="deleteSuri();" style="display: none;">삭제</button>
+        <button class="save" type="button" onclick="save();">저장</button>
+        <button class="close" type="button" onclick="window.close();">닫기</button>
+      </div>
     </div>
-</div>
-</div>
+  </div>
 </form>
 
 
@@ -426,6 +412,23 @@ textarea {
 		$("#sdate").val(ydate);
 		$("#edate").val(tdate);
 		getSuriHistoryList();
+	});
+
+	$(function(){
+		// 파일 선택시 이미지 띄우기
+		$('.imgInputClass').change(function(event){
+			var selectedFile = event.target.files[0];
+			var reader = new FileReader();
+
+			var img = $(this).parent().parent().find('img')[0];
+			img.title = selectedFile.name;
+
+			reader.onload = function(event) {
+				img.src = event.target.result;
+			};
+
+			reader.readAsDataURL(selectedFile);
+		});
 	});
 
 	//이벤트
@@ -475,6 +478,24 @@ textarea {
 			        	hozAlign:"center" ,visible:false},   
 			    {title:"NO", field:"fac_code", sorter:"int", width:80,
 				        hozAlign:"center" ,visible:false}, 
+						{title:"수리 전 사진", field:"file_name1", width:100,
+							hozAlign:"center", formatter:"image",
+						    cssClass:"rp-img-popup",
+					      	formatterParams:{
+						      	height:"30px", width:"30px",
+						      	urlPrefix:"/excelTest/태경출력파일/사진/설비수리이력관리/"
+						      	}, 
+						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+						    },
+							{title:"수리 후 사진", field:"file_name2", width:100,
+								hozAlign:"center", formatter:"image",
+							    cssClass:"rp-img-popup",
+						      	formatterParams:{
+							      	height:"30px", width:"30px",
+							      	urlPrefix:"/excelTest/태경출력파일/사진/설비수리이력관리/"
+							      	}, 
+							    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+							    },
 				        	
 				    
 		    ],
@@ -539,6 +560,29 @@ textarea {
 					$("[name='"+key+"']").val(allData[key]);
 				}
 
+				// 이미지, 제목 초기화
+				$("#img0").attr("src", "/resources/images/noimage_01.gif");
+				$("#img1").attr("src", "/resources/images/noimage_01.gif");
+				$("#img0").attr("title", "");
+				$("#img1").attr("title", "");
+
+				// 이미지
+				if (allData.file_name1) {
+					console.log("원본 파일명:", allData.file_name1);
+					console.log("인코딩된 경로:", encodeURIComponent(allData.file_name1));
+					const path = "/excelTest/태경출력파일/사진/설비수리이력관리/" + allData.file_name1;
+					console.log("path: ", path);
+					$("#img0").attr("src", path);
+				}
+
+				if (allData.file_name2) {
+					console.log("원본 파일명:", allData.file_name2);
+					console.log("인코딩된 경로:", encodeURIComponent(allData.file_name2));
+					const path = "/excelTest/태경출력파일/사진/설비수리이력관리/" + allData.file_name2;
+					console.log("path: ", path);
+					$("#img1").attr("src", path);
+				}
+
 				$('.suriHistoryModal').show().addClass('show');
 			}
 		});
@@ -587,6 +631,11 @@ textarea {
 	insertButton.addEventListener('click', function() {
 		isEditMode = false;  // 추가 모드
 	    $('#suriHistoryForm')[0].reset(); // 폼 초기화
+
+	    //사진 초기화
+		$("#img0").attr("src", "/resources/images/noimage_01.gif");
+		$("#img1").attr("src", "/resources/images/noimage_01.gif");
+		
 	    suriHistoryModal.style.display = 'block'; // 모달 표시
 
 		$('.delete').hide();
@@ -667,7 +716,13 @@ textarea {
 	        }
 	    });
 	}
-		
+
+    //엑셀 다운로드
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "설비수리이력관리_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "설비수리이력관리" });
+	});
 
 
     </script>

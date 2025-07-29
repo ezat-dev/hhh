@@ -45,6 +45,11 @@ public class ProcessServiceImpl implements ProcessService{
 	}
 	
 	@Override
+	public void deleteSiljuk(Siljuk siljuk) {
+		processDao.deleteSiljuk(siljuk);
+	}
+	
+	@Override
 	public List<Siljuk> getFacSiljukList(Siljuk siljuk) {
 		return processDao.getFacSiljukList(siljuk);
 	}

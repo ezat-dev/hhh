@@ -153,12 +153,28 @@
 		        	hozAlign:"center"},
 		        {title:"삭제일", field:"del_date", sorter:"string", width:120,
 			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"입고일", field:"ord_date", sorter:"string", width:120,
+			    {title:"입고일", field:"och_date", sorter:"string", width:120,
 				    hozAlign:"center", headerFilter:"input"},     
 				{title:"출고일", field:"och_date", sorter:"string", width:120,
 				    hozAlign:"center", headerFilter:"input"}, 
-				{title:"구분", field:"del_kind", sorter:"string", width:150,
-				    hozAlign:"center", headerFilter:"input"}, 
+				    {
+				    	  title: "구분", field: "del_kind", sorter: "string", width: 80,
+				    	  hozAlign: "center", headerFilter: "input",
+				    	  formatter: function(cell) {
+				    	    const value = cell.getValue();
+				    	    const el = cell.getElement();
+
+				    	    if (value === "입고") {
+				    	      el.style.backgroundColor = "#f9e79f"; // 노랑
+				    	      el.style.fontWeight = "bold";
+				    	    } else if (value === "출고") {
+				    	      el.style.backgroundColor = "#aed6f1"; // 파랑
+				    	      el.style.fontWeight = "bold";
+				    	    }
+
+				    	    return value;
+				    	  }
+				    	},
 		        {title:"거래처", field:"corp_name", sorter:"string", width:120,
 		        	hozAlign:"center", headerFilter:"input"},		        
 		        {title:"품명", field:"prod_name", sorter:"string", width:210,

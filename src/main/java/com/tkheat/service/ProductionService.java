@@ -47,5 +47,31 @@ public interface ProductionService {
 	Work getWorkJBarcode(Work work);
 
 	void setWorkJSave(Work work);
+	
+	
+	
+	
+	List<Work> getLotIpgoList(Work work);
+	
+	List<Work> getLotIpgoReadyList(Integer ord_code);
+	
+	List<Work> getLotIpgoChimList(Integer ord_code);
+	
+	List<Work> getLotIpgoTemList(Integer ord_code);
+	
+	List<Work> getLotIpgoChulList(Integer ord_code);
+	
+	
+	
+	
+	
+	List<Work> getLotHeatList(Work work);
+	
+	List<Work> getLotHeatIpgoList(Integer ord_code);
+	
+	List<Work> getLotHeatJuckList(String ilbo_pc);
+	
+	List<Work> getLotHeatChimList(String ilbo_pc);
+	
 
 }

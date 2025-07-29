@@ -28,7 +28,9 @@
 		PROD_SG,
 		PROD_SG1,
 		PROD_SG2,
-		PROD_E1
+		PROD_E1,
+		Wstd_chim_file_name1,
+		Wstd_chim_file_name2
 		FROM vworkstd
 		where 1=1
 		<!-- <if test='wstd_gubn == "B"'>
@@ -221,7 +223,9 @@
 				      WSTD_GJ79,
 				      WSTD_GJ84,
 				      WSTD_GJ85,
-				      FAC_CODE3
+				      FAC_CODE3,
+				      WSTD_CHIM_FILE_NAME1,
+				      WSTD_CHIM_FILE_NAME2
 				      
 		       ) 
 		       VALUES 
@@ -366,7 +370,9 @@
 						  #{wstd_gj79},
 						  #{wstd_gj84},
 						  #{wstd_gj85},
-						  #{fac_code3}
+						  #{fac_code3},
+						  #{wstd_chim_file_name1},
+						  #{wstd_chim_file_name2}
 						  						  			    						     			  
 		          ) 
 	</insert>
@@ -374,7 +380,7 @@
 	
 	<update id="chimStandardUpdateSave" parameterType="standard">
     UPDATE WORKSTD
-    SET 
+    <set>
         PROD_CODE = #{prod_code},
         WSTD_G25 = #{wstd_g25},
         WSTD_G26 = #{wstd_g26},
@@ -512,7 +518,14 @@
         WSTD_GJ79 = #{wstd_gj79},
         WSTD_GJ84 = #{wstd_gj84},
         WSTD_GJ85 = #{wstd_gj85},
-        FAC_CODE3 = #{fac_code3}
+        FAC_CODE3 = #{fac_code3},
+        <if test="wstd_chim_file_name1 != null">
+            WSTD_CHIM_FILE_NAME1 = #{wstd_chim_file_name1},
+        </if>
+        <if test="wstd_chim_file_name2 != null">
+            WSTD_CHIM_FILE_NAME2 = #{wstd_chim_file_name2},
+        </if>
+        </set> 
     WHERE WSTD_CODE = #{wstd_code}
 </update>
 	

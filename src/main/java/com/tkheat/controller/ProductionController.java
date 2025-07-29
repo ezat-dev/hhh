@@ -430,6 +430,7 @@ public class ProductionController {
 		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
 		for(int i=0; i<WorkStatusList.size(); i++) {
 			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("idx", (i+1));
 			rowMap.put("plnp_no", WorkStatusList.get(i).getPlnp_no());
 			rowMap.put("plnp_date", WorkStatusList.get(i).getPlnp_date());
 			rowMap.put("ord_code", WorkStatusList.get(i).getOrd_code());
@@ -442,6 +443,8 @@ public class ProductionController {
 			rowMap.put("prod_gyu", WorkStatusList.get(i).getProd_gyu());
 			rowMap.put("prod_jai", WorkStatusList.get(i).getProd_jai());
 			rowMap.put("plnp_dsu", WorkStatusList.get(i).getPlnp_dsu());
+			rowMap.put("ilbo_date", WorkStatusList.get(i).getIlbo_date());
+			rowMap.put("ilbo_su", WorkStatusList.get(i).getIlbo_su());
 
 			rtnList.add(rowMap);
 		}
@@ -686,11 +689,399 @@ public class ProductionController {
 	public String lotIpgo() {
 		return "/production/lotIpgo.jsp";
 	}	 
+	
+	
+	//LOT추적 관리(입고) 조회
+	@RequestMapping(value = "/production/lotIpgo/getLotIpgoList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getLotIpgoList(
+			@RequestParam String sdate,
+			@RequestParam String edate,
+			@RequestParam String corp_name,
+			@RequestParam String prod_name,
+			@RequestParam String prod_no,
+			@RequestParam String prod_gyu,
+			@RequestParam String prod_jai) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Work work = new Work();
+		work.setSdate(sdate);
+		work.setEdate(edate);
+		work.setCorp_name(corp_name);
+		work.setProd_name(prod_name);
+		work.setProd_no(prod_no);
+		work.setProd_gyu(prod_gyu);
+		work.setProd_jai(prod_jai);
+
+
+		List<Work> ipgoList = productionService.getLotIpgoList(work);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for(int i=0; i<ipgoList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("idx", (i+1));
+			rowMap.put("corp_name", ipgoList.get(i).getCorp_name());
+			rowMap.put("corp_business", ipgoList.get(i).getCorp_business());
+			rowMap.put("ord_code", ipgoList.get(i).getOrd_code());
+			rowMap.put("prod_name", ipgoList.get(i).getProd_name());
+			rowMap.put("prod_no", ipgoList.get(i).getProd_no());
+			rowMap.put("prod_gyu", ipgoList.get(i).getProd_gyu());
+			rowMap.put("prod_jai", ipgoList.get(i).getProd_jai());
+			rowMap.put("ord_date", ipgoList.get(i).getOrd_date());
+			rowMap.put("ord_lot", ipgoList.get(i).getOrd_lot());
+			rowMap.put("ord_danw", ipgoList.get(i).getOrd_danw());
+			rowMap.put("ord_su", ipgoList.get(i).getOrd_su());
+			rowMap.put("ord_dang", ipgoList.get(i).getOrd_dang());
+			rowMap.put("ord_mon", ipgoList.get(i).getOrd_mon());
+			rowMap.put("ord_bigo", ipgoList.get(i).getOrd_bigo());
+
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page",1);
+		rtnMap.put("data",rtnList);
+
+		return rtnMap; 
+	}
+	
+	
+	//LOT추적 관리(입고) - 준비 조회
+	@RequestMapping(value = "/production/lotIpgo/getLotIpgoReadyList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getLotIpgoReadyList(@RequestParam("ord_code") Integer ord_code) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Work work = new Work();
+		work.setOrd_code(ord_code);
+
+
+		List<Work> ipgoList = productionService.getLotIpgoReadyList(ord_code);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for(int i=0; i<ipgoList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("idx", (i+1));
+			rowMap.put("ilbo_code", ipgoList.get(i).getIlbo_code());
+			rowMap.put("ilbo_strt", ipgoList.get(i).getIlbo_strt());
+			rowMap.put("ilbo_strt", ipgoList.get(i).getIlbo_strt());
+			rowMap.put("ilbo_end", ipgoList.get(i).getIlbo_end());
+			rowMap.put("ilbo_su", ipgoList.get(i).getIlbo_su());
+			rowMap.put("ilbo_jung", ipgoList.get(i).getIlbo_jung());
+			rowMap.put("user_name", ipgoList.get(i).getUser_name());
+
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page",1);
+		rtnMap.put("data",rtnList);
+
+		return rtnMap; 
+	}
+	
+	
+	//LOT추적 관리(입고) - 침탄 조회
+	@RequestMapping(value = "/production/lotIpgo/getLotIpgoChimList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getLotIpgoChimList(@RequestParam("ord_code") Integer ord_code) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Work work = new Work();
+		work.setOrd_code(ord_code);
+
+
+		List<Work> ipgoList = productionService.getLotIpgoChimList(ord_code);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for(int i=0; i<ipgoList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("ilbo_pc", ipgoList.get(i).getIlbo_pc());
+			rowMap.put("ilbo_lot", ipgoList.get(i).getIlbo_lot());
+			rowMap.put("ilbo_strt", ipgoList.get(i).getIlbo_strt());
+			rowMap.put("ilbo_end", ipgoList.get(i).getIlbo_end());
+			rowMap.put("fac_name", ipgoList.get(i).getFac_name());
+			rowMap.put("user_name", ipgoList.get(i).getUser_name());
+			rowMap.put("ilbo_su", ipgoList.get(i).getIlbo_su());
+			rowMap.put("ilbo_jung", ipgoList.get(i).getIlbo_jung());
+			rowMap.put("ilbo_g43", ipgoList.get(i).getIlbo_g43());
+			rowMap.put("ilbo_g42", ipgoList.get(i).getIlbo_g42());
+			rowMap.put("ilbo_g23", ipgoList.get(i).getIlbo_g23());
+			rowMap.put("ilbo_g24", ipgoList.get(i).getIlbo_g24());
+			rowMap.put("ilbo_g25", ipgoList.get(i).getIlbo_g25());
+			rowMap.put("ilbo_pg6", ipgoList.get(i).getIlbo_pg6());
+			rowMap.put("ilbo_g26", ipgoList.get(i).getIlbo_g26());
+			rowMap.put("ilbo_g27", ipgoList.get(i).getIlbo_g27());
+			rowMap.put("ilbo_g31", ipgoList.get(i).getIlbo_g31());
+			rowMap.put("ilbo_g32", ipgoList.get(i).getIlbo_g32());
+			rowMap.put("ilbo_g33", ipgoList.get(i).getIlbo_g33());
+			rowMap.put("ilbo_g34", ipgoList.get(i).getIlbo_g34());
+
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page",1);
+		rtnMap.put("data",rtnList);
+
+		return rtnMap; 
+	}
+	
+	
+	//LOT추적 관리(입고) - 템퍼링 조회
+	@RequestMapping(value = "/production/lotIpgo/getLotIpgoTemList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getLotIpgoTemList(@RequestParam("ord_code") Integer ord_code) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Work work = new Work();
+		work.setOrd_code(ord_code);
+
+
+		List<Work> ipgoList = productionService.getLotIpgoTemList(ord_code);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for(int i=0; i<ipgoList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("ilbo_pc", ipgoList.get(i).getIlbo_pc());
+			rowMap.put("ilbo_lot", ipgoList.get(i).getIlbo_lot());
+			rowMap.put("ilbo_strt", ipgoList.get(i).getIlbo_strt());
+			rowMap.put("ilbo_end", ipgoList.get(i).getIlbo_end());
+			rowMap.put("fac_name", ipgoList.get(i).getFac_name());
+			rowMap.put("user_name", ipgoList.get(i).getUser_name());
+			rowMap.put("ilbo_su", ipgoList.get(i).getIlbo_su());
+			rowMap.put("ilbo_jung", ipgoList.get(i).getIlbo_jung());
+			rowMap.put("ilbo_g11", ipgoList.get(i).getIlbo_g11());
+			rowMap.put("ilbo_g12", ipgoList.get(i).getIlbo_g12());
+			rowMap.put("ilbo_cm", ipgoList.get(i).getIlbo_cm());
+
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page",1);
+		rtnMap.put("data",rtnList);
+
+		return rtnMap; 
+	}
+	
+	
+	//LOT추적 관리(입고) - 출고 조회
+	@RequestMapping(value = "/production/lotIpgo/getLotIpgoChulList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getLotIpgoChulList(@RequestParam("ord_code") Integer ord_code) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Work work = new Work();
+		work.setOrd_code(ord_code);
+
+
+		List<Work> ipgoList = productionService.getLotIpgoChulList(ord_code);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for(int i=0; i<ipgoList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("ord_code", ipgoList.get(i).getOrd_code());
+			rowMap.put("corp_name", ipgoList.get(i).getCorp_name());
+			rowMap.put("prod_name", ipgoList.get(i).getProd_name());
+			rowMap.put("prod_no", ipgoList.get(i).getProd_no());
+			rowMap.put("ord_date", ipgoList.get(i).getOrd_date());
+			rowMap.put("ord_lot", ipgoList.get(i).getOrd_lot());
+			rowMap.put("och_date", ipgoList.get(i).getOch_date());
+			rowMap.put("och_su", ipgoList.get(i).getOch_su());
+			rowMap.put("och_amnt", ipgoList.get(i).getOch_amnt());
+			rowMap.put("och_bigo", ipgoList.get(i).getOch_bigo());
+
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page",1);
+		rtnMap.put("data",rtnList);
+
+		return rtnMap; 
+	}
+	
+	
 
 	//LOT추적 관리(열처리LOT) - 화면로드
 	@RequestMapping(value = "/production/lotHeat", method = RequestMethod.GET)
 	public String lotHeat() {
 		return "/production/lotHeat.jsp";
 	}	 
+	
+	
+	//LOT추적 관리(열처리LOT) 조회
+	@RequestMapping(value = "/production/lotHeat/getLotHeatList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getLotHeatList(
+			@RequestParam String sdate,
+			@RequestParam String edate) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Work work = new Work();
+		work.setSdate(sdate);
+		work.setEdate(edate);
+
+
+		List<Work> ipgoList = productionService.getLotHeatList(work);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for(int i=0; i<ipgoList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("ord_code", ipgoList.get(i).getOrd_code());
+			rowMap.put("ilbo_strt", ipgoList.get(i).getIlbo_strt());
+			rowMap.put("juckjaecode", ipgoList.get(i).getJuckjaecode());
+			rowMap.put("corp_name", ipgoList.get(i).getCorp_name());
+			rowMap.put("prod_name", ipgoList.get(i).getProd_name());
+			rowMap.put("prod_no", ipgoList.get(i).getProd_no());
+			rowMap.put("ord_date", ipgoList.get(i).getOrd_date());
+			rowMap.put("ilbo_lot", ipgoList.get(i).getIlbo_lot());
+			rowMap.put("ilbo_su", ipgoList.get(i).getIlbo_su());
+			rowMap.put("och_bigo", ipgoList.get(i).getOch_bigo());
+			rowMap.put("ilbo_pc", ipgoList.get(i).getIlbo_pc());
+
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page",1);
+		rtnMap.put("data",rtnList);
+
+		return rtnMap; 
+	}
+	
+	
+	//LOT추적 관리(열처리LOT) - 입고 조회
+	@RequestMapping(value = "/production/lotHeat/getLotHeatIpgoList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getLotHeatIpgoList(@RequestParam("ord_code") Integer ord_code) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Work work = new Work();
+		work.setOrd_code(ord_code);
+
+
+		List<Work> ipgoList = productionService.getLotHeatIpgoList(ord_code);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for(int i=0; i<ipgoList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("ord_code", ipgoList.get(i).getOrd_code());
+			rowMap.put("ord_date", ipgoList.get(i).getOrd_date());
+			rowMap.put("ord_lot", ipgoList.get(i).getOrd_lot());
+			rowMap.put("ord_danw", ipgoList.get(i).getOrd_danw());
+			rowMap.put("ord_su", ipgoList.get(i).getOrd_su());
+			rowMap.put("ord_dang", ipgoList.get(i).getOrd_dang());
+			rowMap.put("ord_mon", ipgoList.get(i).getOrd_mon());
+
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page",1);
+		rtnMap.put("data",rtnList);
+
+		return rtnMap; 
+	}
+
+	
+	
+	//LOT추적 관리(열처리LOT) - 입고 조회
+	@RequestMapping(value = "/production/lotHeat/getLotHeatJuckList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getLotHeatJuckList(@RequestParam("ilbo_pc") String ilbo_pc) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Work work = new Work();
+		work.setIlbo_pc(ilbo_pc);
+
+
+		List<Work> ipgoList = productionService.getLotHeatJuckList(ilbo_pc);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for(int i=0; i<ipgoList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("juckjaecode", ipgoList.get(i).getJuckjaecode());
+			rowMap.put("ilbo_strt", ipgoList.get(i).getIlbo_strt());
+			rowMap.put("ilbo_end", ipgoList.get(i).getIlbo_end());
+			rowMap.put("ilbo_su", ipgoList.get(i).getIlbo_su());
+			rowMap.put("user_name", ipgoList.get(i).getUser_name());
+
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page",1);
+		rtnMap.put("data",rtnList);
+
+		return rtnMap; 
+	}
+
+	
+	
+	//LOT추적 관리(열처리LOT) - 입고 조회
+	@RequestMapping(value = "/production/lotHeat/getLotHeatChimList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getLotHeatChimList(@RequestParam("ilbo_pc") String ilbo_pc) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Work work = new Work();
+		work.setIlbo_pc(ilbo_pc);
+
+
+		List<Work> ipgoList = productionService.getLotHeatChimList(ilbo_pc);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for(int i=0; i<ipgoList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>();
+			rowMap.put("juckjaecode", ipgoList.get(i).getJuckjaecode());
+			rowMap.put("ilbo_strt", ipgoList.get(i).getIlbo_strt());
+			rowMap.put("ilbo_end", ipgoList.get(i).getIlbo_end());
+			rowMap.put("ilbo_su", ipgoList.get(i).getIlbo_su());
+			rowMap.put("user_name", ipgoList.get(i).getUser_name());
+			rowMap.put("ilbo_lot", ipgoList.get(i).getIlbo_lot());
+			rowMap.put("ilbo_g11", ipgoList.get(i).getIlbo_g11());
+			rowMap.put("ilbo_g12", ipgoList.get(i).getIlbo_g12());
+			rowMap.put("ilbo_ms", ipgoList.get(i).getIlbo_ms());
+			rowMap.put("ilbo_g34", ipgoList.get(i).getIlbo_g34());
+			rowMap.put("ilbo_g35", ipgoList.get(i).getIlbo_g35());
+			rowMap.put("ilbo_mp", ipgoList.get(i).getIlbo_mp());
+			rowMap.put("ilbo_g23", ipgoList.get(i).getIlbo_g23());
+			rowMap.put("ilbo_g24", ipgoList.get(i).getIlbo_g24());
+			rowMap.put("ilbo_g25", ipgoList.get(i).getIlbo_g25());
+			rowMap.put("ilbo_p26", ipgoList.get(i).getIlbo_p26());
+			rowMap.put("ilbo_g26", ipgoList.get(i).getIlbo_g26());
+			rowMap.put("ilbo_g27", ipgoList.get(i).getIlbo_g27());
+			rowMap.put("ilbo_g31", ipgoList.get(i).getIlbo_g31());
+			rowMap.put("ilbo_g32", ipgoList.get(i).getIlbo_g32());
+			rowMap.put("ilbo_g33", ipgoList.get(i).getIlbo_g33());
+			rowMap.put("ilbo_cm", ipgoList.get(i).getIlbo_cm());
+			rowMap.put("ilbo_g41", ipgoList.get(i).getIlbo_g41());
+			rowMap.put("ilbo_g42", ipgoList.get(i).getIlbo_g42());
+			rowMap.put("ilbo_g21", ipgoList.get(i).getIlbo_g21());
+			rowMap.put("ilbo_g22", ipgoList.get(i).getIlbo_g22());
+			rowMap.put("ilbo_g13", ipgoList.get(i).getIlbo_g13());
+			rowMap.put("ilbo_pg1", ipgoList.get(i).getIlbo_pg1());
+			rowMap.put("ilbo_pg2", ipgoList.get(i).getIlbo_pg2());
+			rowMap.put("ilbo_pg3", ipgoList.get(i).getIlbo_pg3());
+			rowMap.put("ilbo_pg4", ipgoList.get(i).getIlbo_pg4());
+			rowMap.put("ilbo_pg5", ipgoList.get(i).getIlbo_pg5());
+			
+			
+
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page",1);
+		rtnMap.put("data",rtnList);
+
+		return rtnMap; 
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

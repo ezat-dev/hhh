@@ -527,7 +527,7 @@
 	<update id="nonUdateSave" parameterType="work">
 		update workerr set ILBO_CODE= #{ilbo_code},ILBO_NO= #{ilbo_no},WERR_DATE= #{werr_date},WERR_YU= #{werr_yu},WERR_WDATE= #{werr_wdate},WERR_MON=#{werr_mon},WERR_LOT= #{werr_lot},WERR_USER = #{werr_user},
 			WERR_REP= #{werr_rep},WERR_AMNT= #{werr_amnt},WERR_GUBN= #{werr_gubn},WERR_GNOTE= #{werr_gnote},WERR_CASE= #{werr_case},WERR_JGUBN= #{werr_jgubn},WERR_JNOTE= #{werr_jnote},
-			CHECK_DATEA= #{check_date_a},CHECK_DATEB= #{check_date_b},CHECK_DATEC= #{check_date_c}, WERR_USER1= #{werr_user1},  WERR_USER2= #{werrUser2}, WERR_USER3= #{werrUser3},  WERR_NOTE1= #{werr_note1},
+			CHECK_DATEA= #{check_date_a},CHECK_DATEB= #{check_date_b},CHECK_DATEC= #{check_date_c}, WERR_USER1= #{werr_user1},  WERR_USER2= #{werr_user2}, WERR_USER3= #{werr_user3},  WERR_NOTE1= #{werr_note1},
 			 WERR_NOTE2= #{werr_note2}, WERR_NOTE3= #{werr_note3}, WERR_BIGO1= #{werr_bigo1}, WERR_BIGO2= #{werr_bigo2}, WERR_BIGO3= #{werr_bigo3},WERR_ALERT= #{werr_alert}, WERR_FNAME = #{werr_fname},
 			 WERR_INOUTGUBN = #{werr_in_out_gubn}, WERR_BUSO = #{werr_buso}
 		where WERR_CODE = #{werr_code}
@@ -1006,16 +1006,143 @@
 	</select>
 	
 	
+	<!-- 월별불량현황 불량유형별 항목 조회 -->
+	<select id="getMonthBulSubList" parameterType="work" resultType="work">
+	with getWorkSu as (
+			select isnull( subString(CONVERT(VARCHAR, twr.ILBO_STRT, 120), 6,2), '') as month
+				,sum(ILBO_SU)                                                        as workilbo_amount_byMonth
+			from workilbo twr
+			where 1=1
+			  and ILBO_GUBN = 'A' /*열처리 A*/
+			  and LEFT(CONVERT(VARCHAR, twr.ILBO_STRT, 120), 4) = #{sdate}
+				group by subString(CONVERT(VARCHAR, twr.ILBO_STRT, 120), 6,2)
+		), getNcmSu as (
+			select
+				isnull( subString(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6,2), '')    as month,
+				isnull(sum(tn.WERR_AMNT), 0)                                         as WERR_AMNT_byMonth,
+				isnull(tn.WERR_GUBN, '')                                             as WERR_GUBN
+			from WORKERR tn
+-- 	inner join PRODUCT tp on tn.PROD_CODE = tp.PROD_CODE
+			where 1 = 1
+			  and LEFT(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 4) = #{sdate}
+				group by subString(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6,2), WERR_GUBN, tn.WERR_WDATE
+		), getAVG as(
+			select 'AVG'                                                                                                                              as month
+				 , isnull(ROUND(SUM(isnull(getWorkSu.workilbo_amount_byMonth,	0 )) / 12, 0, 1), 0)                                                  as workSu
+				 , isnull(ROUND(SUM(isnull(getNcmSu.WERR_AMNT_byMonth,  		0 )) / 12, 0, 1), 0)                                                  as ncmSu
+				 , isnull(ROUND(SUM((isnull(getNcmSu.WERR_AMNT_byMonth, 0) / isnull(getWorkSu.workilbo_amount_byMonth, 0)) * 1000000) / 12, 0, 1), 0) as PPM
+			from getWorkSu
+					 left outer join getNcmSu on getWorkSu.month = getNcmSu.month
+		)
+		   , result as(
+			select isnull(CAST( ROUND(getWorkSu.month, 0, 1) as varchar ) ,						'')                                            as month
+				 , isnull(ROUND(getWorkSu.workilbo_amount_byMonth, 0, 1),	    0 )                                                            as workSu
+				 , isnull(ROUND(getNcmSu.WERR_AMNT_byMonth, 0, 1),			0 )                                                                as ncmSu
+				 , isnull(ROUND( ((isnull(getNcmSu.WERR_AMNT_byMonth, 0) / isnull(getWorkSu.workilbo_amount_byMonth, 0)) * 1000000), 0, 1), 0) as PPM
+			from getWorkSu
+					 left outer join getNcmSu on getWorkSu.month = getNcmSu.month
+			union all
+			select * from getAVG
+		)
+		select case
+				   when x=1 then '생산수량'
+				   when x=2 then '불량수량'
+				   when x=3 then 'PPM'
+				end quantityItem
+			 , max(case when month='1'     then value else  0 end ) as m1
+			 , max(case when month='2'     then value else  0 end ) as m2
+			 , max(case when month='3'     then value else  0 end ) as m3
+			 , max(case when month='4'     then value else  0 end ) as m4
+			 , max(case when month='5'     then value else  0 end ) as m5
+			 , max(case when month='6'     then value else  0 end ) as m6
+			 , max(case when month='7'     then value else  0 end ) as m7
+			 , max(case when month='8'     then value else  0 end ) as m8
+			 , max(case when month='9'     then value else  0 end ) as m9
+			 , max(case when month='10'    then value else  0 end ) as m10
+			 , max(case when month='11'    then value else  0 end ) as m11
+			 , max(case when month='12'    then value else  0 end ) as m12
+			 , max(case when month='AVG'   then value else  0 end ) as average_SUM
+		from (
+				 select month, x
+					  , case
+							when x=1 then workSu
+							when x=2 then ncmSu
+							when x=3 then PPM
+					 end value
+				 from (
+						  select * from result a,
+										(
+											select 1 as x
+											union all select 2 as x
+											union all select 3 as x
+										) b
+					  ) c
+			 ) origin
+		group by x
+	
+	
+	
+	
+	</select>
+	
+	
 	<!-- 월별불량현황 조회 -->
 	<select id="getMonthBulList" parameterType="work" resultType="work">
 	with getMonthSUM as(
 			select
-				isnull( subString(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6,2), '') as month,
+				CAST(SUBSTRING(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6, 2) AS INT) AS month,
 				isnull(sum(tn.WERR_AMNT), 0)                                      as WERR_AMNT_byMonth,
 				isnull(tn.WERR_GUBN, '')                                          as WERR_GUBN
 			from WORKERR tn
 			where 1 = 1
-			  and LEFT(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 4) = #{sdate}
+			and LEFT(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 4) = #{sdate}
+				group by WERR_GUBN, tn.WERR_WDATE
+		)
+		select a.WERR_GUBN
+			/*, WERR_INOUTGUBN*/
+			 , sum(case when a.month=1  then a.WERR_AMNT_byMonth else  0 end ) as m1
+			 , sum(case when a.month=2  then a.WERR_AMNT_byMonth else  0 end ) as m2
+			 , sum(case when a.month=3  then a.WERR_AMNT_byMonth else  0 end ) as m3
+			 , sum(case when a.month=4  then a.WERR_AMNT_byMonth else  0 end ) as m4
+			 , sum(case when a.month=5  then a.WERR_AMNT_byMonth else  0 end ) as m5
+			 , sum(case when a.month=6  then a.WERR_AMNT_byMonth else  0 end ) as m6
+			 , sum(case when a.month=7  then a.WERR_AMNT_byMonth else  0 end ) as m7
+			 , sum(case when a.month=8  then a.WERR_AMNT_byMonth else  0 end ) as m8
+			 , sum(case when a.month=9  then a.WERR_AMNT_byMonth else  0 end ) as m9
+			 , sum(case when a.month=10 then a.WERR_AMNT_byMonth else  0 end ) as m10
+			 , sum(case when a.month=11 then a.WERR_AMNT_byMonth else  0 end ) as m11
+			 , sum(case when a.month=12 then a.WERR_AMNT_byMonth else  0 end ) as m12
+			 , format(
+				( ( sum( case when a.month=1   then a.WERR_AMNT_byMonth else  0 end ) +
+					sum( case when a.month=2   then a.WERR_AMNT_byMonth else  0 end ) +
+					sum( case when a.month=3   then a.WERR_AMNT_byMonth else  0 end ) +
+					sum( case when a.month=4   then a.WERR_AMNT_byMonth else  0 end ) +
+					sum( case when a.month=5   then a.WERR_AMNT_byMonth else  0 end ) +
+					sum( case when a.month=6   then a.WERR_AMNT_byMonth else  0 end ) +
+					sum( case when a.month=7   then a.WERR_AMNT_byMonth else  0 end ) +
+					sum( case when a.month=8   then a.WERR_AMNT_byMonth else  0 end ) +
+					sum( case when a.month=9   then a.WERR_AMNT_byMonth else  0 end ) +
+					sum( case when a.month=10  then a.WERR_AMNT_byMonth else  0 end ) +
+					sum( case when a.month=11  then a.WERR_AMNT_byMonth else  0 end ) +
+					sum( case when a.month=12  then a.WERR_AMNT_byMonth else  0 end )
+					  ) / 12)
+			, '0.0' )  as average_SUM
+		from getMonthSUM as a
+		group by WERR_GUBN
+		/*, WERR_INOUTGUBN*/
+	</select>
+	
+	
+	<!-- 월별불량현황 차트 조회 -->
+	<select id="getMonthBulChartData" parameterType="work" resultType="work">
+	with getMonthSUM as(
+			select
+				CAST(SUBSTRING(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6, 2) AS INT) AS month,
+				isnull(sum(tn.WERR_AMNT), 0)                                      as WERR_AMNT_byMonth,
+				isnull(tn.WERR_GUBN, '')                                          as WERR_GUBN
+			from WORKERR tn
+			where 1 = 1
+			and LEFT(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 4) = #{sdate}
 				group by WERR_GUBN, tn.WERR_WDATE
 		)
 		select a.WERR_GUBN
@@ -1054,24 +1181,358 @@
 	
 	
 	
+	<!-- LOT추적관리(입고) 메인조회 -->
+	<select id="getLotIpgoList" parameterType="work" resultType="work">
+	SELECT 
+		ROW_NUMBER() OVER(ORDER BY ORDERT.ORD_CODE) AS ROW_NUM, 
+		ORDERT.ORD_CODE, PRODUCT.PROD_CODE, ORD_DATE, 
+		CORP.CORP_NAME, PRODUCT.PROD_NAME, PRODUCT.PROD_NO, 
+		PRODUCT.PROD_GYU, PRODUCT.PROD_JAI, TECHIN.TECH_TE, 
+		ORDERT.ORD_GYU, ORDERT.ORD_SU, ORDERT.ORD_BIGO, ORD_LOT, ORD_DANW, ORD_DANG, ORD_MON, ORD_BIGO, CORP_NAME, CORP_BUSINESS
+	FROM ORDERT
+		INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+		INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+		INNER JOIN IPTEST ON ORDERT.ORD_CODE = IPTEST.ORD_CODE
+		LEFT OUTER JOIN TECHIN ON PRODUCT.TECH_NO = TECHIN.TECH_NO
+	WHERE 1 = 1
+	<if test="sdate != null and sdate != '' and edate != null and edate != ''">
+		AND ORDERT.ORD_DATE BETWEEN #{sdate} AND #{edate}
+	</if>
+	<if test="corp_name != null and corp_name != ''">
+		AND CORP_NAME LIKE '%' + #{corp_name} + '%'
+	</if>
+	<if test="prod_name != null and prod_name != ''">
+		AND PROD_NAME LIKE '%' + #{prod_name} + '%'
+	</if>
+	<if test="prod_no != null and prod_no != ''">
+		AND PROD_NO LIKE '%' + #{prod_no} + '%'
+	</if>
+	<if test="prod_gyu != null and prod_gyu != ''">
+		AND PROD_GYU LIKE '%' + #{prod_gyu} + '%'
+	</if>
+	<if test="prod_jai != null and prod_jai != ''">
+		AND PROD_JAI LIKE '%' + #{prod_jai} + '%'
+	</if>
+</select>
+	
+	
+	
+	<!-- LOT추적관리(입고) "준비" 조회 -->
+	<select id="getLotIpgoReadyList" parameterType="work" resultType="work">
+		select *
+		from WORKILBO
+			left outer join FACILITY on FACILITY.FAC_CODE = WORKILBO.FAC_CODE
+			inner join USERT on USERT.USER_CODE = WORKILBO.USER_CODE
+		where ORD_CODE = #{ord_code} and ILBO_GUBN = 'J'
+		order by ILBO_CODE ASC
+	</select>
+	
+	<!-- LOT추적관리(입고) "침탄" 조회 -->
+	<select id="getLotIpgoChimList" parameterType="work" resultType="work">
+		select *
+		from WORKILBO
+			left outer join FACILITY on FACILITY.FAC_CODE = WORKILBO.FAC_CODE
+			inner join USERT on USERT.USER_CODE = WORKILBO.USER_CODE
+		where ORD_CODE = #{ord_code} and ILBO_GUBN = 'A'
+		order by ILBO_PC ASC
+	</select>
+	
+	<!-- LOT추적관리(입고) "템퍼링" 조회 -->
+	<select id="getLotIpgoTemList" parameterType="work" resultType="work">
+		select *
+		from WORKILBO
+			left outer join FACILITY on FACILITY.FAC_CODE = WORKILBO.FAC_CODE
+			inner join USERT on USERT.USER_CODE = WORKILBO.USER_CODE
+		where ORD_CODE = #{ord_code} and ILBO_GUBN = 'R'
+		order by ILBO_PC ASC
+	</select>
+	
+	<!-- LOT추적관리(입고) "출고" 조회 -->
+	<select id="getLotIpgoChulList" parameterType="work" resultType="work">
+		select * 
+		from OCHULGO
+			inner join ORDERT on ORDERT.ORD_CODE = OCHULGO.ORD_CODE
+			inner join PRODUCT on PRODUCT.PROD_CODE = ORDERT.PROD_CODE
+			inner join CORP on CORP.CORP_CODE = PRODUCT.CORP_CODE
+			--inner join USERT on USERT.USER_CODE = OCHULGO.USER_CODE
+			--inner join WORKILBO on WORKILBO.ILBO_CODE = OCHULGO.ILBO_CODE AND WORKILBO.ILBO_NO = OCHULGO.ILBO_NO
+		where OCHULGO.ORD_CODE = #{ord_code}
+	</select>
 	
 	
 	
 	
+	<!-- LOT추적관리(LOT) 메인조회 -->
+	<select id="getLotHeatList" parameterType="work" resultType="work">
+		SELECT *,
+              SUBSTRING(dbo.WORKILBO.ILBO_G21, 0, CASE WHEN PATINDEX('%±%', ILBO_G21)
+              = 0 THEN len(ILBO_G21) + 1 ELSE PATINDEX('%±%', ILBO_G21) END) AS ilboG21,
+			  SUBSTRING(dbo.WORKILBO.ILBO_G34, 0, CASE WHEN PATINDEX('%±%', ILBO_G34)
+              = 0 THEN len(ILBO_G34) + 1 ELSE PATINDEX('%±%', ILBO_G34) END) AS ilboG34,
+			  SUBSTRING(dbo.WORKILBO.ILBO_G35, 0, CASE WHEN PATINDEX('%±%', ILBO_G35)
+              = 0 THEN len(ILBO_G35) + 1 ELSE PATINDEX('%±%', ILBO_G35) END) AS ilboG35,
+              SUBSTRING(dbo.WORKILBO.ILBO_G22, 0, CASE WHEN PATINDEX('%±%', ILBO_G22)
+              = 0 THEN len(ILBO_G22) + 1 ELSE PATINDEX('%±%', ILBO_G22) END) AS ilboG22,
+              SUBSTRING(dbo.WORKILBO.ILBO_G23, 0, CASE WHEN PATINDEX('%±%', ILBO_G23)
+              = 0 THEN len(ILBO_G23) + 1 ELSE PATINDEX('%±%', ILBO_G23) END) AS ilboG23,
+              SUBSTRING(dbo.WORKILBO.ILBO_G24, 0, CASE WHEN PATINDEX('%±%', ILBO_G24)
+              = 0 THEN len(ILBO_G24) + 1 ELSE PATINDEX('%±%', ILBO_G24) END) AS ilboG24,
+              SUBSTRING(dbo.WORKILBO.ILBO_G26, 0, CASE WHEN PATINDEX('%±%', ILBO_G26)
+              = 0 THEN len(ILBO_G26) + 1 ELSE PATINDEX('%±%', ILBO_G26) END) AS ilboG26,
+              SUBSTRING(dbo.WORKILBO.ILBO_G12, 0, CASE WHEN PATINDEX('%±%', ILBO_G12)
+              = 0 THEN len(ILBO_G12) + 1 ELSE PATINDEX('%±%', ILBO_G12) END) AS ilboG12,
+              SUBSTRING(dbo.WORKILBO.ILBO_G11, 0, CASE WHEN PATINDEX('%±%', ILBO_G11)
+              = 0 THEN len(ILBO_G11) + 1 ELSE PATINDEX('%±%', ILBO_G11) END) AS ilboG11,
+       		'J' + RIGHT('000000000' + CAST(dbo.WORKILBO.ILBO_CODE AS nvarchar), 9) AS Barcode,
+       		'J' + RIGHT('000000000' + CAST(dbo.WORKILBO.ILBO_PC AS nvarchar), 9) AS JuckJaeCode
+		FROM     WORKILBO
+				LEFT OUTER JOIN OCHULGO ON WORKILBO.ILBO_CODE = OCHULGO.ILBO_CODE AND OCHULGO.ILBO_NO = WORKILBO.ILBO_NO
+				INNER JOIN ORDERT ON WORKILBO.ORD_CODE = ORDERT.ORD_CODE
+				INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+				INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+		WHERE  WORKILBO.ILBO_STRT BETWEEN #{sdate} AND #{edate}
+			AND ILBO_LOT != ''
+			AND ILBO_PC IS NOT NULL
+		ORDER BY WORKILBO.ILBO_STRT DESC
+	</select>
+	
+	
+	<!-- LOT추적관리(LOT) 입고 조회 -->
+	<select id="getLotHeatIpgoList" parameterType="work" resultType="work">
+		select ORD_CODE , ORD_DATE, ORD_LOT , ORD_GYU, ORD_DANW, ORD_SU, ORD_DANG, ORD_MON
+		from ORDERT
+			INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+			INNER JOIN WORKSTD ON WORKSTD.PROD_CODE = PRODUCT.PROD_CODE
+			INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+		where ORD_CODE = #{ord_code}
+		group by ORD_CODE, ORD_DATE, ORD_LOT , ORD_GYU, ORD_DANW, ORD_SU, ORD_DANG, ORD_MON
+	</select>
+	
+	
+	<!-- LOT추적관리(LOT) 적재 조회 -->
+	<select id="getLotHeatJuckList" parameterType="work" resultType="work">
+		select ILBO_CODE,ILBO_NO,WORKILBO.ORD_CODE,ILBO_GUBN,ILBO_STRT,CORP_NAME,ORD_DATE,ILBO_END,ILBO_SU,USER_NAME,ILBO_LOT
+			 , 'J' + RIGHT('000000000' + CAST(dbo.WORKILBO.ILBO_CODE AS nvarchar), 9) AS JuckJaeCode
+		from WORKILBO
+			INNER JOIN ORDERT ON ORDERT.ORD_CODE = WORKILBO.ORD_CODE
+			INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+			INNER JOIN WORKSTD ON WORKSTD.PROD_CODE = PRODUCT.PROD_CODE
+			INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+			INNER JOIN USERT ON USERT.USER_CODE = WORKILBO.USER_CODE
+		where
+			WORKILBO.ILBO_CODE = #{ilbo_pc}
+
+		group by ILBO_CODE,ILBO_NO,WORKILBO.ORD_CODE,ILBO_GUBN,ILBO_STRT,CORP_NAME,ORD_DATE,ILBO_END,ILBO_SU,USER_NAME,ILBO_LOT,ILBO_PC
+	</select>
+	
+	
+	<!-- LOT추적관리(LOT) 침탄 조회 -->
+	<select id="getLotHeatChimList" parameterType="work" resultType="work">
+		select * ,
+		      SUBSTRING(dbo.WORKILBO.ILBO_G21, 0, CASE WHEN PATINDEX('%±%', ILBO_G21)
+              = 0 THEN len(ILBO_G21) + 1 ELSE PATINDEX('%±%', ILBO_G21) END) AS ilboG21,
+			  SUBSTRING(dbo.WORKILBO.ILBO_G34, 0, CASE WHEN PATINDEX('%±%', ILBO_G34)
+              = 0 THEN len(ILBO_G34) + 1 ELSE PATINDEX('%±%', ILBO_G34) END) AS ilboG34,
+			  SUBSTRING(dbo.WORKILBO.ILBO_G35, 0, CASE WHEN PATINDEX('%±%', ILBO_G35)
+              = 0 THEN len(ILBO_G35) + 1 ELSE PATINDEX('%±%', ILBO_G35) END) AS ilboG35,
+              SUBSTRING(dbo.WORKILBO.ILBO_G22, 0, CASE WHEN PATINDEX('%±%', ILBO_G22)
+              = 0 THEN len(ILBO_G22) + 1 ELSE PATINDEX('%±%', ILBO_G22) END) AS ilboG22,
+              SUBSTRING(dbo.WORKILBO.ILBO_G23, 0, CASE WHEN PATINDEX('%±%', ILBO_G23)
+              = 0 THEN len(ILBO_G23) + 1 ELSE PATINDEX('%±%', ILBO_G23) END) AS ilboG23,
+              SUBSTRING(dbo.WORKILBO.ILBO_G24, 0, CASE WHEN PATINDEX('%±%', ILBO_G24)
+              = 0 THEN len(ILBO_G24) + 1 ELSE PATINDEX('%±%', ILBO_G24) END) AS ilboG24,
+              SUBSTRING(dbo.WORKILBO.ILBO_G26, 0, CASE WHEN PATINDEX('%±%', ILBO_G26)
+              = 0 THEN len(ILBO_G26) + 1 ELSE PATINDEX('%±%', ILBO_G26) END) AS ilboG26,
+              SUBSTRING(dbo.WORKILBO.ILBO_G12, 0, CASE WHEN PATINDEX('%±%', ILBO_G12)
+              = 0 THEN len(ILBO_G12) + 1 ELSE PATINDEX('%±%', ILBO_G12) END) AS ilboG12,
+              SUBSTRING(dbo.WORKILBO.ILBO_G11, 0, CASE WHEN PATINDEX('%±%', ILBO_G11)
+              = 0 THEN len(ILBO_G11) + 1 ELSE PATINDEX('%±%', ILBO_G11) END) AS ilboG11,
+			  'J' + RIGHT('000000000' + CAST(dbo.WORKILBO.ILBO_PC AS nvarchar), 9) AS JuckJaeCode
+		from WORKILBO
+			INNER JOIN ORDERT ON ORDERT.ORD_CODE = WORKILBO.ORD_CODE
+			INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+			INNER JOIN WORKSTD ON WORKSTD.PROD_CODE = PRODUCT.PROD_CODE
+			INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+			INNER JOIN USERT ON USERT.USER_CODE = WORKILBO.USER_CODE
+		where ILBO_PC = #{ilbo_pc}
+	</select>
 	
 	
 	
 	
+	<!-- 월별 거래처별불량현황 메인조회 -->
+	<select id="getCuMonthBulList" parameterType="work" resultType="work">
+		with corp_werr_ammt(CORP_CODE, WERR_GUBN , WERR_GUBN_AMMT) as ( /*부적합 구분 및 구분의 수량 가져오기*/
+			SELECT CORP.CORP_CODE,
+				   WORKERR.WERR_GUBN,
+				   SUM(WORKERR.WERR_AMNT) as WERR_GUBN_AMMT
+			FROM WORKERR
+					 INNER JOIN WORKILBO ON WORKERR.ILBO_CODE = WORKILBO.ILBO_CODE AND
+											WORKERR.ILBO_NO = WORKILBO.ILBO_NO
+					 INNER JOIN ORDERT ON WORKILBO.ORD_CODE = ORDERT.ORD_CODE
+					 INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+					 INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+			where 1 = 1
+			  and LEFT(CONVERT(VARCHAR, WORKERR.WERR_WDATE, 120), 7) = #{sdate}
+			  and WORKERR.WERR_INOUTGUBN = #{werr_in_out_gubn}
+				GROUP BY CORP.CORP_CODE
+				, WORKERR.WERR_GUBN
+		), corp_werr_pivot_list as ( /*부적합 구분 피벗*/
+			select CORP_CODE,
+				   [찍힘],
+				   [외관(이물)],
+				   [외관(조도)],
+				   [외관(발청)],
+				   [경도],
+				   [경화깊이],
+				   [조직],
+				   [크랙],
+				   [사양오정용(혼입)],
+				   [변형]
+			from corp_werr_ammt
+					 PIVOT ( SUM(corp_werr_ammt.WERR_GUBN_AMMT) for WERR_GUBN in ([찍힘] , [외관(이물)] , [외관(조도)] , [외관(발청)] , [경도] ,[경화깊이] ,[조직] ,[크랙] ,[사양오정용(혼입)] ,[변형])) as A
+		), werr_exterior_ammt as( /*[외관(이물)] , [외관(조도)] , [외관(발청)]을 한번에 묶어서 외관으로 값을 가져올 경우*/
+			select CORP.CORP_CODE,
+				   COUNT(WORKERR.WERR_GUBN) as WERR_GUBN2
+			FROM WORKERR
+					 INNER JOIN WORKILBO ON WORKERR.ILBO_CODE = WORKILBO.ILBO_CODE AND WORKERR.ILBO_NO = WORKILBO.ILBO_NO
+					 INNER JOIN ORDERT ON WORKILBO.ORD_CODE = ORDERT.ORD_CODE
+					 INNER JOIN OCHULGO ON ORDERT.ORD_CODE = OCHULGO.ORD_CODE
+					 INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+					 INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+			where 1 = 1
+			  and LEFT(CONVERT(VARCHAR, OCHULGO.OCH_DATE, 120), 7) = #{sdate}
+			  and WORKERR.WERR_GUBN like '%외관%'
+			  and WORKERR.WERR_INOUTGUBN = #{werr_in_out_gubn}
+				GROUP BY CORP.CORP_CODE
+		) , corp_och_sum as ( /*거래처별 출고 수량, 금액 가져오기*/
+			select CORP.CORP_CODE,
+				   CORP.CORP_NAME,
+				   sum(OCHULGO.OCH_SU)  as och_su,
+				   sum(OCHULGO.OCH_MON) as och_mon
+			FROM OCHULGO
+					 INNER JOIN ORDERT ON ORDERT.ORD_CODE = OCHULGO.ORD_CODE
+					 INNER JOIN PRODUCT ON PRODUCT.PROD_CODE = ORDERT.PROD_CODE
+					 INNER JOIN CORP ON CORP.CORP_CODE = PRODUCT.CORP_CODE
+					 INNER JOIN TECHIN ON TECHIN.TECH_NO = PRODUCT.TECH_NO
+			where 1 = 1
+			  and LEFT(CONVERT(VARCHAR, OCHULGO.OCH_DATE, 120), 7) = #{sdate}
+				group by CORP.CORP_CODE
+				, CORP.CORP_NAME
+		) , corp_werr_sum as ( /*거래처별부적합 수량,금액 가져오기*/
+			select CORP.CORP_CODE,
+				   sum(WORKERR.WERR_AMNT) as werr_su,
+				   sum(WORKERR.WERR_MON)  as werr_mon
+			FROM WORKERR
+					 inner join WORKILBO ON WORKERR.ILBO_CODE = WORKILBO.ILBO_CODE and WORKERR.ILBO_NO = WORKILBO.ILBO_NO
+					 INNER JOIN ORDERT ON ORDERT.ORD_CODE = WORKILBO.ORD_CODE
+					 INNER JOIN PRODUCT ON PRODUCT.PROD_CODE = ORDERT.PROD_CODE
+					 INNER JOIN CORP ON CORP.CORP_CODE = PRODUCT.CORP_CODE
+			where 1 = 1
+			  and LEFT(CONVERT(VARCHAR, WORKERR.WERR_WDATE, 120), 7) = #{sdate}
+			  and WORKERR.WERR_INOUTGUBN = #{werr_in_out_gubn}
+				group by CORP.CORP_CODE
+		)
+		select
+			cos.CORP_CODE,
+			cos.CORP_NAME,
+			isnull(cos.och_su , 0) as och_su,
+			isnull(cos.och_mon , 0) as och_mon,
+			isnull(cws.werr_su , 0) as werr_su,
+			isnull(cws.werr_mon , 0) as werr_mon,
+			isnull(ROUND((isnull(cws.werr_su,0) / isnull(CASE cos.och_su when 0 then 1 else cos.och_su end , 1) * 1000000), 0 ), 0) as ppm,
+			isnull(ROUND((isnull(cws.werr_mon,0)/ isnull(CASE cos.och_mon when 0 then 1 else cos.och_mon end , 1) * 100) , 2), 0) as ppm_mon,
+			isnull(cwpl.찍힘 , 0) as WERR_GUBN1,
+			isnull(cwpl.[외관(이물)] , 0) as WERR_GUBN2,
+			isnull(cwpl.[외관(조도)] , 0) as WERR_GUBN3,
+			isnull(cwpl.[외관(발청)] , 0) as WERR_GUBN4,
+			/*isnull(wea.WERR_GUBN2 , 0) as WERR_GUBN2,*/
+			isnull(cwpl.경도 , 0) as WERR_GUBN5,
+			isnull(cwpl.경화깊이 , 0) as WERR_GUBN6,
+			isnull(cwpl.조직 , 0) as WERR_GUBN7,
+			isnull(cwpl.크랙 , 0) as WERR_GUBN8,
+			isnull(cwpl.[사양오정용(혼입)] , 0) as WERR_GUBN9,
+			isnull(cwpl.변형 , 0) as WERR_GUBN10
+		FROM corp_och_sum cos
+				 LEFT JOIN corp_werr_sum cws on cos.CORP_CODE = cws.CORP_CODE
+				 LEFT JOIN corp_werr_pivot_list cwpl on cos.CORP_CODE = cwpl.CORP_CODE
+				 LEFT JOIN werr_exterior_ammt wea on cwpl.CORP_CODE = wea.CORP_CODE
+		where 1 = 1
+	</select>
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	<!-- 월별 거래처별불량현황 항목 조회 -->
+	<select id="getCuBulSubList" parameterType="work" resultType="work">
+		with getWorkSu as (
+			select isnull( subString(CONVERT(VARCHAR, cg.OCH_DATE, 120), 6,2), '') as month
+				 ,case sum(cg.OCH_SU) when 0 then 1 else sum(cg.OCH_SU) end        as ochulgo_amount_bymonth
+				 ,case sum(cg.OCH_MON) when 0 then 1 else sum(cg.OCH_MON) end      as ochulgo_mon_bymonth
+			from OCHULGO cg
+			where 1=1
+			  and LEFT(CONVERT(VARCHAR, cg.OCH_DATE, 120), 4) = #{sdate}
+			group by subString(CONVERT(VARCHAR, cg.OCH_DATE, 120), 6,2)
+		), getNcmSu as (
+			select
+				isnull( subString(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6,2), '')    as month,
+				isnull(sum(tn.WERR_AMNT), 0)                                         as WERR_AMNT_byMonth,
+				isnull(sum(tn.WERR_MON), 0)                                         as WERR_MON_byMonth
+			from WORKERR tn
+			where 1 = 1
+			  and LEFT(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 4) = #{sdate}
+			  and tn.WERR_INOUTGUBN = #{werr_in_out_gubn}
+			group by subString(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6,2)
+		), getAVG as(
+			select 'AVG'                                                                                                                              as month
+				 , isnull(ROUND(SUM(isnull(getWorkSu.ochulgo_amount_bymonth,	0 )) / 12, 0, 1), 0)                                                  as workSu
+				 , isnull(ROUND(SUM(isnull(getNcmSu.WERR_AMNT_byMonth,  		0 )) / 12, 0, 1), 0)                                                  as ncmSu
+				 , isnull(ROUND(SUM((isnull(getNcmSu.WERR_AMNT_byMonth, 0) / isnull(getWorkSu.ochulgo_amount_bymonth, 1)) * 1000000) / 12, 0, 1), 0) as PPM
+			from getWorkSu
+					 left outer join getNcmSu on getWorkSu.month = getNcmSu.month
+		)	 , result as(
+			select isnull(CAST( ROUND(getWorkSu.month, 0, 1) as varchar ) ,						'')                                            as month
+				 , isnull(ROUND(getWorkSu.ochulgo_amount_bymonth, 0, 1),	    0 )                                                            as workSu
+				 , isnull(ROUND(getNcmSu.WERR_AMNT_byMonth, 0, 1),			0 )                                                                as ncmSu
+				 , isnull(ROUND( ((isnull(getNcmSu.WERR_AMNT_byMonth, 0) / isnull(getWorkSu.ochulgo_amount_bymonth, 1)) * 1000000), 0, 1), 0) as PPM
+			from getWorkSu
+					 left outer join getNcmSu on getWorkSu.month = getNcmSu.month
+			union all
+			select * from getAVG
+		)select case
+					when x=1 then '납품수량(EA)'
+					when x=2 then '불량수량(EA)'
+					when x=3 then '불량율(PPM)'
+			end quantityItem
+		   , max(case when month='1'     then value else  0 end ) as m1
+		   , max(case when month='2'     then value else  0 end ) as m2
+		   , max(case when month='3'     then value else  0 end ) as m3
+		   , max(case when month='4'     then value else  0 end ) as m4
+		   , max(case when month='5'     then value else  0 end ) as m5
+		   , max(case when month='6'     then value else  0 end ) as m6
+		   , max(case when month='7'     then value else  0 end ) as m7
+		   , max(case when month='8'     then value else  0 end ) as m8
+		   , max(case when month='9'     then value else  0 end ) as m9
+		   , max(case when month='10'    then value else  0 end ) as m10
+		   , max(case when month='11'    then value else  0 end ) as m11
+		   , max(case when month='12'    then value else  0 end ) as m12
+		   , max(case when month='AVG'   then value else  0 end ) as average_SUM
+			from (
+			select month, x
+				 , case
+					   when x=1 then workSu
+					   when x=2 then ncmSu
+					   when x=3 then PPM
+				end value
+			from (
+					 select * from result a,
+								   (
+									   select 1 as x
+									   union all select 2 as x
+									   union all select 3 as x
+								   ) b
+				 ) c
+		) origin
+			group by x
+	</select>
 	
 	
 	

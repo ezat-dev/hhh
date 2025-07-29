@@ -112,6 +112,7 @@ public class Work {
 	private String ilbo_gubn;			//공정별 작업구분
 	private String ilbo_date;			//작업일자
 	private String ilbo_lot;			//생산 LOT, 열처리 LOT
+	private String ilbo_pc;
 	private int sum_su;
 	private int ilbo_su;				//생산 수량
 	private String ilbo_ok;             //판정
@@ -138,6 +139,30 @@ public class Work {
 	private Integer ord_code;				//수주NO
 	private String ord_lot;
 	private String ord_gyu;
+	private String ord_danw;
+	private String ord_dang;
+	private int ord_mon;
+	private String ord_bigo;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	//TECHIN 테이블
 	private String tech_te;				//공정
@@ -174,10 +199,40 @@ public class Work {
 	private String werr_note3;      // 유효성 점검 3차 내용
 	private String werr_bigo3;      // 유효성 점검 3차 비고
 	private String werr_team;
+	private int werr_amnt_bymonth;
+	private String month;
+	
+	private int werr_gubn1;
+	private int werr_gubn2;
+	private int werr_gubn3;
+	private int werr_gubn4;
+	private int werr_gubn5;
+	private int werr_gubn6;
+	private int werr_gubn7;
+	private int werr_gubn8;
+	private int werr_gubn9;
+	private int werr_gubn10;
+	private int werr_su;
+	private int ppm;
+	private float ppm_mon;
+	private int werr_gubn_amnt;
 	
 	private String check_date_a;
 	private String check_date_b;
 	private String check_date_c;
+	
+	
+	private int ochulgo_amount_bymonth;
+	private int ochulgo_mon_bymonth;
+	private int werr_mon_bymonth;
+	private int workSu;
+	private int ncmSu;
+	
+	
+	
+	
+	
+	
 	
 	private int m1;
 	private int m2;
@@ -192,7 +247,7 @@ public class Work {
 	private int m11;
 	private int m12;
 	
-	private int average_SUM;
+	private float average_SUM;
 	private String quantityItem;
 	
 	
@@ -224,7 +279,6 @@ public class Work {
 //	private String ilbo_strt;			//작업 시작시간
 //	private String ilbo_end;			//작업 종료시간
 	private float ilbo_jung;			//작업 중량
-	
 	//USERT테이블
 	private String user_name;			//작업자
 	private int user_code;			//작업자
@@ -240,11 +294,10 @@ public class Work {
 	
 	private String ilbo_g43;			//예열 온도
 	private String ilbo_g42;			//예열 시간
-	
+	private String ilbo_g41;
 	private String ilbo_pg6;			//확산 온도
 	private String ilbo_g26;			//확산 시간
 	private String ilbo_g27;			//확산 CP
-	
 	private String ilbo_g31;			//강온 온도
 	private String ilbo_g32;			//강온 시간
 	private String ilbo_g33;			//강온 CP
@@ -254,8 +307,14 @@ public class Work {
 										//균열 CP
 
 	private String ilbo_g34;			//유조 온도
-										//유조 시간
-										//유조 CP
+	private String ilbo_g35;									//유조 시간
+	private String ilbo_mp;									//유조 CP
+	
+	private String ilbo_ms; //승온cp
+	
+	private String ilbo_p26;
+	private String ilbo_g13;
+	
 	
 	//PIT로 그리드(ILBO_GUBN = 'T') 없음
 	
@@ -284,6 +343,7 @@ public class Work {
 	private int och_su;					//출고수량
 	private float och_amnt;				//출고중량
 	private String och_bigo;			//출고 비고
+	private int och_mon;
 	
 	//[침탄]
 	//예열CP; 균열CP; 유조 시간,CP; 교반기 온도,시간,CP; 냉각 온도,시간,CP
@@ -1859,11 +1919,11 @@ public class Work {
 		this.m12 = m12;
 	}
 
-	public int getAverage_SUM() {
+	public float getAverage_SUM() {
 		return average_SUM;
 	}
 
-	public void setAverage_SUM(int average_SUM) {
+	public void setAverage_SUM(float average_SUM) {
 		this.average_SUM = average_SUM;
 	}
 
@@ -1913,5 +1973,269 @@ public class Work {
 
 	public void setCheck_date_c(String check_date_c) {
 		this.check_date_c = check_date_c;
+	}
+
+	public int getWerr_amnt_bymonth() {
+		return werr_amnt_bymonth;
+	}
+
+	public void setWerr_amnt_bymonth(int werr_amnt_bymonth) {
+		this.werr_amnt_bymonth = werr_amnt_bymonth;
+	}
+
+	public String getMonth() {
+		return month;
+	}
+
+	public void setMonth(String month) {
+		this.month = month;
+	}
+
+	public String getOrd_danw() {
+		return ord_danw;
+	}
+
+	public void setOrd_danw(String ord_danw) {
+		this.ord_danw = ord_danw;
+	}
+
+	public String getOrd_dang() {
+		return ord_dang;
+	}
+
+	public void setOrd_dang(String ord_dang) {
+		this.ord_dang = ord_dang;
+	}
+
+	public int getOrd_mon() {
+		return ord_mon;
+	}
+
+	public void setOrd_mon(int ord_mon) {
+		this.ord_mon = ord_mon;
+	}
+
+	public String getOrd_bigo() {
+		return ord_bigo;
+	}
+
+	public void setOrd_bigo(String ord_bigo) {
+		this.ord_bigo = ord_bigo;
+	}
+
+	public String getIlbo_pc() {
+		return ilbo_pc;
+	}
+
+	public void setIlbo_pc(String ilbo_pc) {
+		this.ilbo_pc = ilbo_pc;
+	}
+
+	public String getIlbo_ms() {
+		return ilbo_ms;
+	}
+
+	public void setIlbo_ms(String ilbo_ms) {
+		this.ilbo_ms = ilbo_ms;
+	}
+
+	public String getIlbo_g35() {
+		return ilbo_g35;
+	}
+
+	public void setIlbo_g35(String ilbo_g35) {
+		this.ilbo_g35 = ilbo_g35;
+	}
+
+	public String getIlbo_mp() {
+		return ilbo_mp;
+	}
+
+	public void setIlbo_mp(String ilbo_mp) {
+		this.ilbo_mp = ilbo_mp;
+	}
+
+	public String getIlbo_p26() {
+		return ilbo_p26;
+	}
+
+	public void setIlbo_p26(String ilbo_p26) {
+		this.ilbo_p26 = ilbo_p26;
+	}
+
+	public String getIlbo_g41() {
+		return ilbo_g41;
+	}
+
+	public void setIlbo_g41(String ilbo_g41) {
+		this.ilbo_g41 = ilbo_g41;
+	}
+
+	public String getIlbo_g13() {
+		return ilbo_g13;
+	}
+
+	public void setIlbo_g13(String ilbo_g13) {
+		this.ilbo_g13 = ilbo_g13;
+	}
+
+	public int getWerr_gubn1() {
+		return werr_gubn1;
+	}
+
+	public void setWerr_gubn1(int werr_gubn1) {
+		this.werr_gubn1 = werr_gubn1;
+	}
+
+	public int getWerr_gubn2() {
+		return werr_gubn2;
+	}
+
+	public void setWerr_gubn2(int werr_gubn2) {
+		this.werr_gubn2 = werr_gubn2;
+	}
+
+	public int getWerr_gubn3() {
+		return werr_gubn3;
+	}
+
+	public void setWerr_gubn3(int werr_gubn3) {
+		this.werr_gubn3 = werr_gubn3;
+	}
+
+	public int getWerr_gubn4() {
+		return werr_gubn4;
+	}
+
+	public void setWerr_gubn4(int werr_gubn4) {
+		this.werr_gubn4 = werr_gubn4;
+	}
+
+	public int getWerr_gubn5() {
+		return werr_gubn5;
+	}
+
+	public void setWerr_gubn5(int werr_gubn5) {
+		this.werr_gubn5 = werr_gubn5;
+	}
+
+	public int getWerr_gubn6() {
+		return werr_gubn6;
+	}
+
+	public void setWerr_gubn6(int werr_gubn6) {
+		this.werr_gubn6 = werr_gubn6;
+	}
+
+	public int getWerr_gubn7() {
+		return werr_gubn7;
+	}
+
+	public void setWerr_gubn7(int werr_gubn7) {
+		this.werr_gubn7 = werr_gubn7;
+	}
+
+	public int getWerr_gubn8() {
+		return werr_gubn8;
+	}
+
+	public void setWerr_gubn8(int werr_gubn8) {
+		this.werr_gubn8 = werr_gubn8;
+	}
+
+	public int getWerr_gubn9() {
+		return werr_gubn9;
+	}
+
+	public void setWerr_gubn9(int werr_gubn9) {
+		this.werr_gubn9 = werr_gubn9;
+	}
+
+	public int getWerr_gubn10() {
+		return werr_gubn10;
+	}
+
+	public void setWerr_gubn10(int werr_gubn10) {
+		this.werr_gubn10 = werr_gubn10;
+	}
+
+	public int getOch_mon() {
+		return och_mon;
+	}
+
+	public void setOch_mon(int och_mon) {
+		this.och_mon = och_mon;
+	}
+
+	public int getPpm() {
+		return ppm;
+	}
+
+	public void setPpm(int ppm) {
+		this.ppm = ppm;
+	}
+
+	public float getPpm_mon() {
+		return ppm_mon;
+	}
+
+	public void setPpm_mon(float ppm_mon) {
+		this.ppm_mon = ppm_mon;
+	}
+
+	public int getWerr_su() {
+		return werr_su;
+	}
+
+	public void setWerr_su(int werr_su) {
+		this.werr_su = werr_su;
+	}
+
+	public int getWerr_gubn_amnt() {
+		return werr_gubn_amnt;
+	}
+
+	public void setWerr_gubn_amnt(int werr_gubn_amnt) {
+		this.werr_gubn_amnt = werr_gubn_amnt;
+	}
+
+	public int getOchulgo_amount_bymonth() {
+		return ochulgo_amount_bymonth;
+	}
+
+	public void setOchulgo_amount_bymonth(int ochulgo_amount_bymonth) {
+		this.ochulgo_amount_bymonth = ochulgo_amount_bymonth;
+	}
+
+	public int getOchulgo_mon_bymonth() {
+		return ochulgo_mon_bymonth;
+	}
+
+	public void setOchulgo_mon_bymonth(int ochulgo_mon_bymonth) {
+		this.ochulgo_mon_bymonth = ochulgo_mon_bymonth;
+	}
+
+	public int getWerr_mon_bymonth() {
+		return werr_mon_bymonth;
+	}
+
+	public void setWerr_mon_bymonth(int werr_mon_bymonth) {
+		this.werr_mon_bymonth = werr_mon_bymonth;
+	}
+
+	public int getWorkSu() {
+		return workSu;
+	}
+
+	public void setWorkSu(int workSu) {
+		this.workSu = workSu;
+	}
+
+	public int getNcmSu() {
+		return ncmSu;
+	}
+
+	public void setNcmSu(int ncmSu) {
+		this.ncmSu = ncmSu;
 	}
 }

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>측정기기등록</title>
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %>     
     <style>
     
@@ -203,7 +204,7 @@ textarea {
                   </tr>
                   <tr>
                     <td class="" colspan="2">
-                    <input id="ter_img" name="ter_img" type="file" class="rp-input" style="width:92%;" onchange="rpReadImageURL(this); $(this).parent().find('img').removeClass('rp-file-del');">
+                    <input id="imgInput0" class="imgInputClass" type="file" name="file_url" style="width:92%;" onchange="rpReadImageURL(this); $(this).parent().find('img').removeClass('rp-file-del');">
                       <button onclick="imageDelete(this)">X</button>
                     </td>
                     <th class="">모델명</th>
@@ -214,7 +215,7 @@ textarea {
                   </tr>
                   <tr>
                     <td class="" colspan="2" rowspan="10">
-                      <img class="img-rounded rp-img-popup" src="resources/images/imgs/noimage_click.jpg" alt="사진" style="width: 220px;">
+                      <img id="img0" class="img-rounded rp-img-popup" src="resources/images/imgs/noimage_click.jpg" alt="사진" style="width: 220px;">
                     </td>
                     <th class="">S/N</th>
                     <td class=""><input id="ter_sn" name="ter_sn" class="basic rp-input" type="text" style="width:90%;" value=""></td>
@@ -283,7 +284,7 @@ textarea {
                   </tr>
                   <tr>
                     <th class="">첨부파일</th>
-                    <td class="findImage"><input type="hidden" name="type" id="type" class="rp-input" value="tester">
+                    <td class="findImage"><input type="hidden" name="type" id="type" class="imgInputClass" value="tester" onchange="rpReadImageURL(this); $(this).parent().find('img').removeClass('rp-file-del');">
                       <input type="file" name="file1" id="file1" class="rp-input" title="파일 찾기" onchange="" accept=".xls,.xlsx,.hwp,.hwpx,.pdf,.jpeg,.jpg,.png">
                     </td><th class="">최종검교정일</th>
                     <td class=""><input id="ter_end_gum" name="ter_end_gum"  type="date" onfocusout="set_ter_next_gum();" style="width:90%;" value=""></td>
@@ -321,6 +322,24 @@ textarea {
 		getMeasureList();
 	});
 
+	$(function(){	
+		  // 파일 선택 시 이미지 미리보기 적용
+		  $('.imgInputClass').change(function(event){
+		    var selectedFile = event.target.files[0];
+		    if (!selectedFile) return;
+
+		    var reader = new FileReader();
+
+		    // 이미지 출력 위치 지정
+		    reader.onload = function(event) {
+		      $('#img0').attr('src', event.target.result); 
+		    };
+
+		    reader.readAsDataURL(selectedFile);
+		  });
+		});
+
+
 	//이벤트
 	//함수
 	function getMeasureList(){
@@ -346,19 +365,19 @@ textarea {
 		        return response; //return the response data to tabulator
 		    },
 		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:80,
+		        {title:"NO", field:"idx", sorter:"int", width:60,
 		        	hozAlign:"center"},
-		        {title:"상태", field:"ter_use", sorter:"string", width:120,
+		        {title:"상태", field:"ter_use", sorter:"string", width:90,
 		        	hozAlign:"center", headerFilter:"input"},
 		        {title:"측정기기명", field:"ter_name", sorter:"string", width:150,
 		        	hozAlign:"center", headerFilter:"input"},
 		        {title:"측정기기번호", field:"ter_code", sorter:"string", width:100,
 		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"최근검교정날짜", field:"ter_end_gum", sorter:"string", width:200,
+		        {title:"최근검교정날짜", field:"ter_end_gum", sorter:"string", width:150,
 		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"차기검교정날짜", field:"ter_next_gum", sorter:"int", width:200,
+		        {title:"차기검교정날짜", field:"ter_next_gum", sorter:"int", width:150,
 		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"검교정주기", field:"ter_gum", sorter:"int", width:200,
+		        {title:"검교정주기", field:"ter_gum", sorter:"int", width:100,
 			        hozAlign:"center", headerFilter:"input"},
 			    {title:"모델명", field:"ter_model", sorter:"int", width:120,
 				    hozAlign:"center", headerFilter:"input"},
@@ -367,7 +386,16 @@ textarea {
 				{title:"구입일", field:"ter_bdate", sorter:"int", width:100,
 					hozAlign:"center", headerFilter:"input"},
 				{title:"구입금액", field:"ter_bmon", sorter:"int", width:100,
-				    hozAlign:"center", headerFilter:"input"},      		
+				    hozAlign:"center", headerFilter:"input"}, 
+					/* {title:"사진", field:"file_name", width:100,
+						hozAlign:"center", formatter:"image",
+					    cssClass:"rp-img-popup",
+				      	formatterParams:{
+					      	height:"30px", width:"30px",
+					      	urlPrefix:"/excelTest/태경출력파일/사진/측정기기관리/"
+					      	}, 
+					    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+					    },   */   		
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
@@ -397,19 +425,59 @@ textarea {
 				selectedRowData = data;
 				isEditMode = true;
 				$('#measurementForm')[0].reset();
-				$('.measurementModal').show().addClass('show');
 
+/*
 				Object.keys(data).forEach(function (key) {
-			        const field = $('[name="' + key + '"]');
+			        const field = $('#chimStandardForm [name="' + key + '"]');
 
 			        if (field.length) {
 			            field.val(data[key]);
 			        }
 				});
+*/
+
+				console.log("data.ter_code",data.ter_code);
+				measureDetail(data.ter_code);
 
 				 $('.delete').show();
 			},
 		});		
+	}
+
+	//더블클릭 했을 때 데이터 가져오기
+		function measureDetail(ter_code){
+		$.ajax({
+			url:"/tkheat/management/getMeasurmentDetail",
+			type:"post",
+			dataType:"json",
+			data:{
+				"ter_code":ter_code
+			},
+			success:function(result){
+				console.log(result);
+				var allData = result.data;
+				
+				for(let key in allData){
+//					console.log(allData, key);	
+					$("#measurementForm [name='"+key+"']").val(allData[key]);
+				}
+
+				// 이미지 초기화
+				$("#img0").attr("src", "/resources/images/noimage_01.gif");
+
+				// 이미지
+ 				if (allData.file_name) {
+					console.log("원본 파일명:", allData.file_name);
+					console.log("인코딩된 경로:", encodeURIComponent(allData.file_name));
+					const path = "/excelTest/태경출력파일/사진/측정기기관리/" + allData.file_name;
+					console.log("path: ", path);
+					$("#img0").attr("src", path);
+					//$(".aphoto").attr("href", path).text(d.product_file_name);
+				} 
+
+				$('.measurementModal').show().addClass('show');
+			}
+		});
 	}
 	
 
@@ -536,6 +604,13 @@ textarea {
 	        }
 	    });
 	}
+
+    //엑셀 다운로드
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "측정기기관리_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "측정기기관리" });
+	});
 		
 
 

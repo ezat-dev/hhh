@@ -3,6 +3,7 @@ package com.tkheat.domain;
 public class SparePart {
 	
 	private Integer spp_idx;
+	private Integer spp_idx_his;
 	private String spp_purchase; //매입처
 	private String spp_no; //품번
 	private String spp_name; //품명
@@ -16,7 +17,7 @@ public class SparePart {
 	private int spp_jaigo; //재고
 	private String spp_image;
 	
-	
+	private String file_name; //사진 파일 이름
 	
 	// 관리내역
 	private String spp_purchase_his;
@@ -27,6 +28,8 @@ public class SparePart {
 	private String sph_time; //입력시간
 	private String sph_user; //담당자
 	private String sph_bigo; //비고
+	
+	private Integer sph_idx;
 	
 	
 	
@@ -158,6 +161,24 @@ public class SparePart {
 	}
 	public void setSpp_image(String spp_image) {
 		this.spp_image = spp_image;
+	}
+	public Integer getSpp_idx_his() {
+		return spp_idx_his;
+	}
+	public void setSpp_idx_his(Integer spp_idx_his) {
+		this.spp_idx_his = spp_idx_his;
+	}
+	public Integer getSph_idx() {
+		return sph_idx;
+	}
+	public void setSph_idx(Integer sph_idx) {
+		this.sph_idx = sph_idx;
+	}
+	public String getFile_name() {
+		return file_name;
+	}
+	public void setFile_name(String file_name) {
+		this.file_name = file_name;
 	}
 
 }

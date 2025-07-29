@@ -5,8 +5,10 @@
 <script type="text/javascript" src="/tkheat/js/jquery-3.7.1.min.js"></script>
 
 <!-- Tabulator 테이블 -->
+
+
 <script type="text/javascript" src="/tkheat/js/tabulator/tabulator.js"></script>
-<link rel="stylesheet" href="/tkheat/css/tabulator/tabulator_simple.css">
+<link rel="stylesheet" href="/tkheat/css/tabulator/tabulator_simple.css"> 
 
 <!-- moment -->
 <script type="text/javascript" src="/tkheat/js/moment/moment.min.js"></script>
@@ -28,7 +30,9 @@
 <link rel="stylesheet" href="/tkheat/css/airdatepicker/datepicker.min.css"> 
 
 <style>
-	
+	.tabulator {
+    font-size: 10px;
+}
 </style>
 <script>
 
@@ -64,6 +68,11 @@ $(function(){
 	
 	
 });
+
+function thisYear() {
+    var now = new Date();
+    return now.getFullYear();
+}
 
 //오늘날짜 년-월-일
 function todayDate(){

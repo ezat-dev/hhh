@@ -103,6 +103,11 @@ public class ManagementServiceImpl implements ManagementService {
 		managementDao.cutumDelete(corp_code);
 	}
 	
+	@Override
+	public Measure getMeasurmentDetail(Measure measure) {
+		return managementDao.getMeasurmentDetail(measure);
+	}
+	
 	
 	
 	
@@ -197,6 +202,4 @@ public class ManagementServiceImpl implements ManagementService {
         managementDao.insertUser(users); 
     
     }
-	
-	
 }

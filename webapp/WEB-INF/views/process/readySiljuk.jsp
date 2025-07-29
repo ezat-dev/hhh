@@ -144,89 +144,118 @@
 
 	//이벤트
 	//함수
-	function getReadySiljukList(){
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/process/readySiljuk/getReadySiljukList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	"sdate": $("#sdate").val(),
-                "edate": $("#edate").val(),
-			    },
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","29px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},
-		        {title:"작업일", field:"ilbo_date", sorter:"string", width:120,
-			        hozAlign:"center"},	
-			    {title:"준비코드", field:"ilbo_code", sorter:"string", width:120,
-				    hozAlign:"center"},     
-				{title:"수주NO", field:"ord_code", sorter:"string", width:120,
-				    hozAlign:"center"}, 
-				{title:"시작", field:"ilbo_strt", sorter:"string", width:120,
-				    hozAlign:"center"}, 
-		        {title:"완료", field:"ilbo_end", sorter:"string", width:120,
-		        	hozAlign:"center"},		        
-		        {title:"입고LOT", field:"ord_lot", sorter:"string", width:200,
-		        	hozAlign:"center"},
-		        {title:"거래처", field:"corp_name", sorter:"string", width:200,
-		        	hozAlign:"center"},
-		        {title:"품명", field:"prod_name", sorter:"string", width:250,
-			        hozAlign:"center"},	
-		        {title:"품번", field:"prod_no", sorter:"string", width:200,
-		        	hozAlign:"center"},  	
-		        {title:"규격", field:"prod_gyu", sorter:"string", width:200,
-			        hozAlign:"center"},	
-			    {title:"재질", field:"prod_jai", sorter:"string", width:150,
-				    hozAlign:"center"},	
-				{title:"작업량", field:"ilbo_su", sorter:"string", width:100,
-				    hozAlign:"center"},
-				{title:"작업자", field:"user_name", sorter:"string", width:150,
-					hozAlign:"center"},
-			    {title:"담당자", field:"ord_name", sorter:"string", width:150,
-					hozAlign:"center"},
- 			    {title:"삭제", field:"prod_danw", sorter:"string", width:100,
-					hozAlign:"center"},
-				    
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
+	function getReadySiljukList() {
+    userTable = new Tabulator("#tab1", {
+        height: "750px",
+        layout: "fitColumns",
+        selectable: true, // 로우 선택설정 (체크박스 선택용)
+        tooltips: true,
+        selectableRangeMode: "click",
+        reactiveData: true,
+        headerHozAlign: "center",
+        ajaxConfig: "POST",
+        ajaxLoader: false,
+        ajaxURL: "/tkheat/process/readySiljuk/getReadySiljukList",
+        ajaxProgressiveLoad: "scroll",
+        ajaxParams: {
+            "sdate": $("#sdate").val(),
+            "edate": $("#edate").val(),
+        },
+        placeholder: "조회된 데이터가 없습니다.",
+        paginationSize: 20,
+        ajaxResponse: function (url, params, response) {
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height", "29px");
+            return response; // return the response data to tabulator
+        },
+        columns: [
+            {
+                formatter: "rowSelection", // 체크박스 컬럼
+                titleFormatter: "rowSelection", // 헤더 체크박스 (전체선택)
+                hozAlign: "center",
+                headerSort: false,
+                width: 50,
+                frozen: true,
+                cellClick: function (e, cell) {
+                    cell.getRow().toggleSelect();
+                },
+            },
+            { title: "NO", field: "idx", sorter: "int", width: 80, hozAlign: "center" },
+            { title: "작업일", field: "ilbo_date", sorter: "string", width: 120, hozAlign: "center" },
+            { title: "준비코드", field: "ilbo_code", sorter: "string", width: 120, hozAlign: "center" },
+            { title: "수주NO", field: "ord_code", sorter: "string", width: 120, hozAlign: "center" },
+            { title: "시작", field: "ilbo_strt", sorter: "string", width: 120, hozAlign: "center" },
+            { title: "완료", field: "ilbo_end", sorter: "string", width: 120, hozAlign: "center" },
+            { title: "입고LOT", field: "ord_lot", sorter: "string", width: 200, hozAlign: "center" },
+            { title: "거래처", field: "corp_name", sorter: "string", width: 200, hozAlign: "center" },
+            { title: "품명", field: "prod_name", sorter: "string", width: 250, hozAlign: "center" },
+            { title: "품번", field: "prod_no", sorter: "string", width: 200, hozAlign: "center" },
+            { title: "규격", field: "prod_gyu", sorter: "string", width: 200, hozAlign: "center" },
+            { title: "재질", field: "prod_jai", sorter: "string", width: 150, hozAlign: "center" },
+            { title: "작업량", field: "ilbo_su", sorter: "string", width: 100, hozAlign: "center" },
+            { title: "작업자", field: "user_name", sorter: "string", width: 150, hozAlign: "center" },
+            { title: "담당자", field: "ord_name", sorter: "string", width: 150, hozAlign: "center" },
+            {
+                title: "삭제",
+                formatter: function () {
+                    return "<button class='btn-delete'>삭제</button>";
+                },
+                hozAlign: "center",
+                width: 100,
+                cellClick: function (e, cell) {
+                    e.stopPropagation();
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+                   
+                    let selectedRows = userTable.getSelectedRows();
 
-				var rowData = row.getData();
-				
-			},
-		});		
+                    if (selectedRows.length === 0) {
+                        
+                    	deleteSiljuk([cell.getRow()]);
+                    } else {
+                      
+                    	deleteSiljuk(selectedRows);
+                    }
+                }
+            }
+        ],
+        rowFormatter: function (row) {
+            row.getElement().style.fontWeight = "700";
+            row.getElement().style.backgroundColor = "#FFFFFF";
+        },
+        rowClick: function (e, row) {
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function (index, item) {
+                if ($(this).hasClass("row_select")) {
+                    $(this).removeClass('row_select');
+                    row.getElement().className += " row_select";
+                } else {
+                    $("#tab1 div.row_select").removeClass("row_select");
+                    row.getElement().className += " row_select";
+                }
+            });
+        },
+    });
+}
+
+	function deleteSiljuk(siljuk) {
+	    $.ajax({
+	        url: "/process/readySiljuk/deleteSiljuk",
+	        type: "POST",
+	        contentType: "application/json",
+	        data: JSON.stringify(siljuk),
+	        success: function(res) {
+	            if(res.status === "success"){
+	                alert(res.message);
+	                // 테이블 리로드 등 처리
+	            } else {
+	                alert("삭제 실패: " + res.message);
+	            }
+	        },
+	        error: function(err){
+	            alert("통신 오류 발생");
+	        }
+	    });
 	}
+
+
 	
 
     </script>
