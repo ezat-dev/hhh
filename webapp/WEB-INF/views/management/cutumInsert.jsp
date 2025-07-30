@@ -43,8 +43,16 @@
 	color: white; /* 글자색 */
 	font-size: 20px; /* 글자 크기 */
 	text-align: center; /* 텍스트 정렬 */
+	position: relative;
 }
-
+.header-close {
+	position: absolute;
+	right: 15px;
+	top: 10px;
+	cursor: pointer;
+	font-size: 20px;
+	color: white;
+}
 .detail {
 	background: #ffffff;
 	border: 1px solid #000000;
@@ -232,7 +240,9 @@ th{
 	    
 	<form method="post" class="corrForm" id="cutumInsertForm" name="cutumInsertForm">
 			<div class="cutumModal">
-				<div class="header">거래처등록</div>	
+				<div class="header">거래처등록 
+					<span class="header-close">&times;</span>
+				</div>	
 				<div class="detail">
 					<table cellspacing="0" cellpadding="0" width="100%">
 						<tr>
@@ -475,7 +485,7 @@ th{
 	// 드래그 기능 추가
 	const modal = document.querySelector('.cutumModal');
 	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
-
+	
 	header.addEventListener('mousedown', function(e) {
 		// transform 제거를 위한 초기 위치 설정
 		const rect = modal.getBoundingClientRect();
@@ -505,7 +515,8 @@ th{
 	const insertButton = document.querySelector('.insert-button');
 	const cutumModal = document.querySelector('.cutumModal');
 	const closeButton = document.querySelector('.close');
-
+	const headerCloseButton = document.querySelector('.header-close');
+	
 	insertButton.addEventListener('click', function() {
 		isEditMode = false;  // 추가 모드
 	    $('#cutumInsertForm')[0].reset(); // 폼 초기화
@@ -518,7 +529,9 @@ th{
 	    cutumModal.style.display = 'none'; // 모달 숨김
 	});
 
-
+	headerCloseButton.addEventListener('click', function() {
+		cutumModal.style.display = 'none';
+	});
 	
 
 	

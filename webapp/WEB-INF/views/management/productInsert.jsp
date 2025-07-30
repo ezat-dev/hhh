@@ -122,15 +122,25 @@ textarea {
 }
 
 .header {
-	display: flex; /* 플렉스 박스 사용 */
-	justify-content: center; /* 중앙 정렬 */
-	align-items: center; /* 수직 중앙 정렬 */
-	margin-bottom: 10px; /* 상단 여백 */
-	background-color: #33363d; /* 배경색 */
-	height: 50px; /* 높이 */
-	color: white; /* 글자색 */
-	font-size: 20px; /* 글자 크기 */
-	text-align: center; /* 텍스트 정렬 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative; /* 닫기버튼의 절대 위치 기준 */
+	margin-bottom: 10px;
+	background-color: #33363d;
+	height: 50px;
+	color: white;
+	font-size: 20px;
+	text-align: center;
+}
+
+.header-close {
+	position: absolute;
+	right: 15px;
+	top: 10px;
+	cursor: pointer;
+	font-size: 20px;
+	color: white;
 }
 .btnSaveClose {
 	display: flex;
@@ -342,6 +352,7 @@ textarea {
  <div class="detail">
  <div class="header">
  	제품등록
+ 	<span class="header-close">&times;</span>
  </div>
     <table cellspacing="0" cellpadding="0" width="100%">
       <tbody><tr>
@@ -1027,7 +1038,6 @@ $('.imgInputClass').change(function(event){
 				    
 				    // 상세조회 Ajax 요청 실행
 				    productInsertDetail(d.prod_code);
-
 				    
 
 				    $('.delete').show();  // 필요 시
@@ -1062,6 +1072,7 @@ $('.imgInputClass').change(function(event){
 			        }
 			    } else {
 			        $("[name='" + key + "']").val(d[key]);
+			        
 			    }
 			}
             // 이미지 초기화
@@ -1137,6 +1148,7 @@ $('.imgInputClass').change(function(event){
 	const insertButton = document.querySelector('.insert-button');
 	const productModal = document.querySelector('.productModal');
 	const closeButton = document.querySelector('.close');
+	const headerCloseButton = document.querySelector('.header-close');
 
 	insertButton.addEventListener('click', function() {
 		isEditMode = false;  // 추가 모드
@@ -1155,7 +1167,9 @@ $('.imgInputClass').change(function(event){
 		productModal.style.display = 'none'; // 모달 숨김
 	});
 
-
+	headerCloseButton.addEventListener('click', function() {
+		productModal.style.display = 'none';
+	});
 
 
 	//설비검색버튼 리스트 모달

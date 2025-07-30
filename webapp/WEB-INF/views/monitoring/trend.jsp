@@ -111,10 +111,10 @@ $(document).ready(function () {
     });
 
     // 시간 셋팅
-/*    $("#startDate").val(trendStime());
-    $("#endDate").val(trendEtime());*/
-    $("#startDate").val("2025-06-25 10:00");
-    $("#endDate").val("2025-06-25 15:00");
+    $("#startDate").val(trendStime());
+    $("#endDate").val(trendEtime());
+/*    $("#startDate").val("2025-06-25 10:00");
+    $("#endDate").val("2025-06-25 15:00");*/
 
     var hogi = "";
     // 조회 버튼 클릭 이벤트 정의

@@ -37,6 +37,15 @@
     color: white; /* 글자색 */
     font-size: 20px; /* 글자 크기 */
     text-align: center; /* 텍스트 정렬 */
+    position: relative;
+}
+.header-close {
+	position: absolute;
+	right: 15px;
+	top: 10px;
+	cursor: pointer;
+	font-size: 20px;
+	color: white;
 }
 .detail {
       background: #ffffff;
@@ -247,7 +256,9 @@
 <form method="post" id="suriHistoryForm" name="suriHistoryForm" enctype="multipart/form-data">
   <div class="suriHistoryModal">
     <div class="detail">
-      <div class="header">설비수리이력</div>
+      <div class="header">설비수리이력
+      	<span class="header-close">&times;</span>
+      </div>
       <table class="insideTable">
         <colgroup>
           <col width="15%">
@@ -627,6 +638,7 @@
 	const insertButton = document.querySelector('.insert-button');
 	const suriHistoryModal = document.querySelector('.suriHistoryModal');
 	const closeButton = document.querySelector('.close');
+	const headerCloseButton = document.querySelector('.header-close');
 
 	insertButton.addEventListener('click', function() {
 		isEditMode = false;  // 추가 모드
@@ -645,6 +657,9 @@
 		suriHistoryModal.style.display = 'none'; // 모달 숨김
 	});
 
+	headerCloseButton.addEventListener('click', function() {
+		suriHistoryModal.style.display = 'none';
+	});
 
 	//설비수리이력 저장
     function save() {

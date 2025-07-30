@@ -37,6 +37,15 @@
 	color: white; /* 글자색 */
 	font-size: 20px; /* 글자 크기 */
 	text-align: center; /* 텍스트 정렬 */
+	position: relative;
+}
+.header-close {
+	position: absolute;
+	right: 15px;
+	top: 10px;
+	cursor: pointer;
+	font-size: 20px;
+	color: white;
 }
 
 .detail {
@@ -261,6 +270,7 @@ th{
 	<div class="detail">
 			<div class="header">
 				설비비가동등록
+				<span class="header-close">&times;</span>
 			</div>
                 <table cellspacing="0" cellpadding="0" width="100%">
                     <tbody><tr>
@@ -768,6 +778,7 @@ th{
 	const insertButton = document.querySelector('.insert-button');
 	const begaInsertModal = document.querySelector('.begaInsertModal');
 	const closeButton = document.querySelector('.close');
+	const headerCloseButton = document.querySelector('.header-close');
 
 	insertButton.addEventListener('click', function() {
 		isEditMode = false;  // 추가 모드
@@ -781,7 +792,9 @@ th{
 		begaInsertModal.style.display = 'none'; // 모달 숨김
 	});
 		
-
+	headerCloseButton.addEventListener('click', function() {
+		begaInsertModal.style.display = 'none';
+	});
 
     </script>
     

@@ -40,7 +40,7 @@
 	align-items: center;
 /*	width: 1500px;*/
 /*	margin-left: -620px;*/
-	margin-left: -25%;
+	margin-left: 0%;
 }
 
 .box1 input{
@@ -50,8 +50,11 @@
 	width: 5%
 }  
 
-.workSetModal {
+
+.workPrintStatusModal {
 	position: fixed; /* 화면에 고정 */
+	width:350px;
+	height:150px;	
 	top: 50%; /* 수직 중앙 */
 	left: 40%; /* 수평 중앙 */
 	display: none;
@@ -61,23 +64,25 @@
 	background-color:white;
 }
 
-
-.workWaitModal {
+.workHIpgoModal {
 	position: fixed; /* 화면에 고정 */
+	width:1200px;
+	height:750px;
 	top: 50%; /* 수직 중앙 */
-	left: 70%; /* 수평 중앙 */
+	left: 50%; /* 수평 중앙 */
 	display: none;
 	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
 	z-index: 20011; /* 다른 요소 위에 표시 */
 	border:2px solid black;
 	background-color:white;
-	width:1100px;
 }
 
-.workSelectModal {
+.workHModal {
 	position: fixed; /* 화면에 고정 */
+	width:1600px;
+	height:830px;
 	top: 50%; /* 수직 중앙 */
-	left: 40%; /* 수평 중앙 */
+	left: 50%; /* 수평 중앙 */
 	display: none;
 	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
 	z-index: 20010; /* 다른 요소 위에 표시 */
@@ -85,20 +90,7 @@
 	background-color:white;
 }
 
-.workJModal {
-	position: fixed; /* 화면에 고정 */
-	width:1200px;
-	height:700px;
-	top: 50%; /* 수직 중앙 */
-	left: 40%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
-}
-
-.workAModal {
+.workJHModal {
 	position: fixed; /* 화면에 고정 */
 	width:1600px;
 	height:700px;
@@ -183,7 +175,7 @@
 	width: 10%;
 	height: 25px;
 }
-
+/*
 input[type="date"] {
     width: 150px;
     padding: 5px 10px;
@@ -195,7 +187,7 @@ input[type="date"] {
     outline: none;
     transition: border 0.3s ease;
 }
-
+*/
 .workSelectBtn{
     width: 100px;
     height:50px;
@@ -211,11 +203,7 @@ input[type="date"] {
 }
 
 
-.iRowLabel{
-	display:inline-block;
-	width:150px;
-	height:25px;
-}
+
 
 .iRowLabel2{
 	display:inline-block;
@@ -223,11 +211,6 @@ input[type="date"] {
 	height:25px;
 }
 
-.iRowInput{
-	/*display:flex;*/
-	width:200px !important;
-	height:25px;
-}
 
 .iRowInput2{
 	width:100px !important;
@@ -243,6 +226,127 @@ input[type="date"] {
 .iRow2{
 	display:inline-block;
 }
+
+.iRowLabel{
+	display:block;
+	width:120px;
+	height:20px;
+	text-align:center;
+	margin-bottom:2px;
+	font-size:12pt;
+}
+
+.iRowInput{
+	/*display:flex;*/
+	width:120px !important;
+	height:20px;
+	font-size:12pt;
+	text-align:center;
+}
+
+.iRowLabel_180{
+	display:block;
+	width:180px;
+	height:20px;
+	text-align:center;
+	margin-bottom:2px;
+	font-size:12pt;
+}
+
+.iRowInput_180{
+	/*display:flex;*/
+	width:180px !important;
+	height:20px;
+	font-size:12pt;
+	text-align:center;
+}
+
+.iRowLabel_300{
+	display:block;
+	width:300px;
+	height:20px;
+	text-align:center;
+	margin-bottom:2px;
+	font-size:12pt;
+}
+
+.iRowInput_300{
+	/*display:flex;*/
+	width:300px !important;
+	height:20px;
+	font-size:12pt;
+	text-align:center;
+}
+
+
+.iRowBtn{
+	display:block;
+	cursor:pointer;
+	width:128px !important;
+	height:26px;
+	font-size:12pt;
+}
+/*준비작업모달 */
+.j_container{
+	display:flex;
+/*	border-radius: 6px;
+    border: 1px solid gray*/	
+}
+
+.j_row1{
+	display:flex;
+	margin-top:1px;
+}
+
+.margin_left{
+	margin-left:5px;
+}
+
+.tabulator-col-title > input[type='checkbox']{
+	width:20px;
+	height:20px;
+}
+
+.tabulator-cell > input[type='checkbox']{
+	width:20px;
+	height:20px;
+}
+
+.iRowHLabel{
+	display:block;
+	width:120px;
+	height:25px;
+	text-align:center;
+	margin-bottom:2px;
+	font-size:12pt;
+}
+
+.iRowHInput{
+	display:block;
+	width:120px !important;
+	height:25px;
+	font-size:12pt;
+	text-align:center;
+}
+
+.j_h_div{
+	width:130px;
+}
+
+.workJisiReportModal {
+	position: fixed; /* 화면에 고정 */
+	width:850px;
+	height:800px;
+	top: 50%; /* 수직 중앙 */
+	left: 50%; /* 수평 중앙 */
+	display: none;
+	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+	z-index: 20010; /* 다른 요소 위에 표시 */
+	border:2px solid black;
+	background-color:white;
+}
+
+
     </style>
     
     
@@ -251,40 +355,38 @@ input[type="date"] {
     <div class="tab">
     <div class="box1">
          <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>
-		<label class="daylabel">지시일 :</label>
-		<input type="date" class="plnp_date" id="plnp_date" style="font-size: 16px;" autocomplete="off">
-			
-		<label class="daylabel">거래처명 :</label>
-		<input type="text" class="corp_name" id="corp_name" style="font-size: 16px;" autocomplete="off">
-			
-		<label class="daylabel">품명 :</label>
-		<input type="text" class="prod_name" id="prod_name" style="font-size: 16px;" autocomplete="off">
-			
-		<label class="daylabel">품번 :</label>
-		<input type="text" class="prod_no" id="prod_no" style="font-size: 16px;" autocomplete="off">
-		
-		<label class="daylabel">제품구분 :</label>
-		<input type="text" class="prod_gubn" id="prod_gubn" style="font-size: 16px;" autocomplete="off">
-		
-		<label class="daylabel">설비선택 :</label>
-		<input type="text" class="fac_name" id="fac_name" style="font-size: 16px;" autocomplete="off">
-			
+		<form action="">
+				<label class="daylabel">작업지시일 :</label>
+				<input type="date" class="jisi_sdate" id="jisi_sdate" style="font-size: 14pt; width:140px;">
+				~
+				<input type="date" class="jisi_edate" id="jisi_edate" style="font-size: 14pt; width:140px;">
+		</form>	
 	</div>
     <div class="button-container">
-        <button class="select-button" onclick="getWorkInstructionList();">
+        <button class="select-button" onclick="getWorkJisiAllListData();">
             <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
            
         </button>
-        <button class="insert-button">
+<!--         
+        <button class="insert-button" id="jAddBtn">
             <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
-          
+          	단취등록
+        </button>
+ -->
+        <button class="insert-button" id="hAddBtn">
+            <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
+        </button>
+<!--         
+        <button class="printer-button" id="jPrintBtn">
+            <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
+			 공정이동표            
+        </button>
+ -->
+        <button class="printer-button" id="hPrintBtn">
+            <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
         </button>
         <button class="excel-button">
             <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
-            
-        </button>
-        <button class="printer-button">
-            <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
             
         </button>
     </div>
@@ -296,296 +398,710 @@ input[type="date"] {
 	</main>
 	    
 <!-- 다이얼로그 -->
-<!-- 준비, 열처리, 템퍼링 등록구분 모달 -->
-<div class="workSelectModal">
-	<div class="detail">
-		<div class="header">
-			작업등록 선택
-		</div>
-		<div class="setRow">
-			<div id="workJ" class="workSelectBtn" onclick="workSelectFunc('J')">준비</div>
-			<div id="workA" class="workSelectBtn" onclick="workSelectFunc('A')">열처리</div>
-			<div id="workR" class="workSelectBtn" onclick="workSelectFunc('R')">템퍼링</div>
-		</div>
-	</div>
-    <div class="btnSelectClose">
-<!--        <button class="save" type="button" onclick="save();">저장</button> -->
-            <button class="workSelectClose" type="button" onclick="workSelectCloseBtn();">닫기</button>
-    </div>		
-</div>
-
-
-<!-- 준비작업 저장 모달 -->
-<div class="workJModal">
-	<div class="detail">
-		<div class="header">
-		준비작업
-		</div>
-	</div>
-		<form id="workJForm" name="workJForm">
-
-			<div class="iRow">
-				<label for="barcode" class="iRowLabel">수주NO</label>
-				<input type="text" id="barcode" name="barcode" class="iRowInput"/>
-				<button type="button" onclick="getWorkJBarcode();">검색</button>
-			</div>
-			<div class="setRow">
-				<div id="workJTabu"></div>
-			</div>
-				
-			<div class="iCol">	
-				<div class="iRow">
-					<label for="ilbo_strt" class="iRowLabel">작업 시작일</label>
-					<input type="text" name="ilbo_strt" class="iRowInput"/>
-				</div>
-				<div class="iRow">
-					<label for="ilbo_end" class="iRowLabel">작업 종료일</label>
-					<input type="text" name="ilbo_end" class="iRowInput"/>
-				</div>
-				<div class="iRow">
-					<label class="iRowLabel">*적재방법*</label>
-				</div>
-				<div class="iRow">
-					<label for="wstd_t32" class="iRowLabel">1줄/1판</label>
-					<input type="text" name="wstd_t32" class="iRowInput"/>
-				</div>
-				<div class="iRow">
-					<label for="wstd_t33" class="iRowLabel">줄/단</label>
-					<input type="text" name="wstd_t33" class="iRowInput"/>
-				</div>
-				<div class="iRow">
-					<label for="wstd_t41" class="iRowLabel">단/Tray</label>
-					<input type="text" name="wstd_t41" class="iRowInput"/>
-				</div>
-				<div class="iRow">
-					<label class="iRowLabel">추가수량</label>
-					<input type="text" name="wstd_t87" class="iRowInput"/>
-				</div>
-				<div class="iRow">
-					<label class="iRowLabel">적재수량</label>
-					<input type="text" name="wstd_t43" class="iRowInput"/>
-				</div>
-				<div class="iRow">
-					<label for="wstd_t44" class="iRowLabel">Jig중량(kg)</label>
-					<input type="text" name="wstd_t44" class="iRowInput"/>
-				</div>
-				<div class="iRow">
-					<label for="wstd_t51" class="iRowLabel">제품중량(kg)</label>
-					<input type="text" name="wstd_t51" class="iRowInput"/>
-				</div>
-				<div class="iRow">
-					<label for="wstd_t52" class="iRowLabel">총중량(kg)</label>
-					<input type="text" name="wstd_t52" class="iRowInput"/>
-				</div>
-	
-				<!-- 
-					작업자
-					작업일(시작)	ilbo_strt
-					작업일(종료)	ilbo_end
-					
-					*적재방법*
-					1줄/1판		WSTD_T32
-					줄/단			WSTD_T33
-					단/Tray 		WSTD_T41
-					추가수량
-					적재수량
-					Jig중량(kg) 	WSTD_T44
-					제품중량(kg) 	WSTD_T51
-					총중량(kg) 	WSTD_T52
-					
-					*적재주의사항*
-					1줄			WSTD_T53
-					2줄			WSTD_T54
-					3줄			WSTD_T30
-					치구불량
-					비고
-				 -->
-			</div>
-			<div class="iCol">
-				<div class="iRow">
-					<label class="iRowLabel">적재주의사항-1</label>
-					<input type="text" name="wstd_t53" class="iRowInput"/>
-				</div>
-				<div class="iRow">
-					<label class="iRowLabel">적재주의사항-2</label>
-					<input type="text" name="wstd_t54" class="iRowInput"/>
-				</div>
-				<div class="iRow">
-					<label class="iRowLabel">적재주의사항-3</label>
-					<input type="text" name="wstd_t30" class="iRowInput"/>
-				</div>
-				<div class="iRow">
-					<label class="iRowLabel">치구불량</label>
-					<input type="text" class="iRowInput"/>
-				</div>
-				<div class="iRow">
-					<label class="iRowLabel">비고</label>
-					<input type="text" class="iRowInput"/>
-				</div>
-				<input type="text" name="ilbo_su" style="display:none;" />
-				<input type="text" name="ilbo_jung" style="display:none;" />
-				<input type="text" name="ord_code" style="display:none;" />
-			</div>
-		</form>
-	
-    <div class="btnSaveClose">
-            <button class="save" type="button" onclick="workJSave();">저장</button>
-            <button class="workJClose" type="button" onclick="workJCloseBtn();">닫기</button>
-    </div>	
-</div>
 
 <!-- 열처리작업 저장 모달 -->
-<div class="workAModal">
+<div class="workHModal">
 	<div class="detail">
 		<div class="header">
 		열처리작업
 		</div>
 	</div>
-		<form id="workAForm" name="workAForm">
-
-			<div class="iRow">
-				<label for="barcode" class="iRowLabel">수주NO</label>
-				<input type="text" id="barcodeA" name="barcode" class="iRowInput"/>
-				<label for="ilbo_lot" class="iRowLabel">생산NO</label>
-				<input type="text" id="ilbo_lot" name="ilbo_lot" class="iRowInput"/>
-				<button type="button" onclick="getWorkABarcode();">검색</button>
-			</div>
-			<div class="setRow">
-				<div id="workATabu"></div>
-			</div>
-				<div class="iRow2">
-					<label for="ilbo_strt" class="iRowLabel2">작업시작</label>
-					<input type="text" name="ilbo_strt" class="iRowInput"/>
-				</div>
-				<div class="iRow2">	
-					<label for="ilbo_end" class="iRowLabel2">작업종료</label>
-					<input type="text" name="ilbo_end" class="iRowInput"/>
-				</div>					
-				<div class="iRow2">
-					<label for="ilbo_end" class="iRowLabel2">주/야</label>
-					<input type="text" name="ilbo_end" class="iRowInput2"/>
-				
-				</div>				
-				<div class="iRow2">
-					<label for="ilbo_end" class="iRowLabel2">총수량</label>
-					<input type="text" name="ilbo_end" class="iRowInput2"/>
-				</div>				
-				<div class="iRow2">
-					<label for="ilbo_end" class="iRowLabel2">총중량</label>
-					<input type="text" name="ilbo_end" class="iRowInput2"/>				
-				</div>
-				
-				<div class="iRow">
-					<div class="iRow2">
-						<label for="ilbo_strt" class="iRowLabel2">설비</label>
-						<input type="text" name="ilbo_strt" class="iRowInput"/>
-					</div>
-					<div class="iRow2">
-						<label for="ilbo_strt" class="iRowLabel2">작업자</label>
-						<input type="text" name="ilbo_strt" class="iRowInput"/>
-					</div>
-				</div>
-				<div class="iRow">
-					*****************************열처리 작업조건******************************************************************************
-				</div>
-				<div class="iRow">
-					<div class="iRow2">
-						<label for="wstd_gj11" class="iRowLabel2">예열온도</label>
-						<input type="text" name="wstd_gj11" class="iRowInput2"/>
-						<label for="wstd_gj12" class="iRowLabel2">침탄온도</label>
-						<input type="text" name="wstd_gj12" class="iRowInput2"/>
-						<label for="wstd_gj13" class="iRowLabel2">확산온도</label>
-						<input type="text" name="wstd_gj13" class="iRowInput2"/>
-						<label for="wstd_gj14" class="iRowLabel2">강온온도</label>
-						<input type="text" name="wstd_gj14" class="iRowInput2"/>
-						<label for="wstd_gj15" class="iRowLabel2">균열온도</label>
-						<input type="text" name="wstd_gj15" class="iRowInput2"/>
-						<label for="wstd_gj16" class="iRowLabel2">냉각온도</label>
-						<input type="text" name="wstd_gj16" class="iRowInput2"/>
-					</div>
-				</div>
-				<div class="iRow">
-					<div class="iRow2">
-						<label for="wstd_gj21" class="iRowLabel2">예열시간</label>
-						<input type="text" name="wstd_gj21" class="iRowInput2"/>
-						<label for="wstd_gj22" class="iRowLabel2">침탄시간</label>
-						<input type="text" name="wstd_gj22" class="iRowInput2"/>
-						<label for="wstd_gj23" class="iRowLabel2">확산시간</label>
-						<input type="text" name="wstd_gj23" class="iRowInput2"/>
-						<label for="wstd_gj24" class="iRowLabel2">강온시간</label>
-						<input type="text" name="wstd_gj24" class="iRowInput2"/>
-						<label for="wstd_gj25" class="iRowLabel2">균열시간</label>
-						<input type="text" name="wstd_gj25" class="iRowInput2"/>
-						<label for="wstd_gj26" class="iRowLabel2">냉각시간</label>
-						<input type="text" name="wstd_gj26" class="iRowInput2"/>
-					</div>
-				</div>
-				<div class="iRow">
-					<div class="iRow2">
-						<label for="wstd_gj31" class="iRowLabel2">예열CP</label>
-						<input type="text" name="wstd_gj31" class="iRowInput2"/>
-						<label for="wstd_gj32" class="iRowLabel2">침탄CP</label>
-						<input type="text" name="wstd_gj32" class="iRowInput2"/>
-						<label for="wstd_gj33" class="iRowLabel2">확산CP</label>
-						<input type="text" name="wstd_gj33" class="iRowInput2"/>
-						<label for="wstd_gj34" class="iRowLabel2">강온CP</label>
-						<input type="text" name="wstd_gj34" class="iRowInput2"/>
-						<label class="iRowLabel2">균열CP</label>
-						<input type="text" class="iRowInput2"/>
-						<label class="iRowLabel2">냉각CP</label>
-						<input type="text" class="iRowInput2"/>
-					</div>
-				</div>
-				<div class="iRow">
-					<div class="iRow2">
-						<label for="wstd_gj69" class="iRowLabel2">예열H2</label>
-						<input type="text" name="wstd_gj69" class="iRowInput2"/>
-						<label for="wstd_gj72" class="iRowLabel2">침탄H2</label>
-						<input type="text" name="wstd_gj72" class="iRowInput2"/>
-						<label for="wstd_gj73" class="iRowLabel2">확산H2</label>
-						<input type="text" name="wstd_gj73" class="iRowInput2"/>
-						<label for="wstd_gj74" class="iRowLabel2">강온H2</label>
-						<input type="text" name="wstd_gj74" class="iRowInput2"/>
-						<label class="iRowLabel2">균열H2</label>
-						<input type="text" class="iRowInput2"/>
-						<label class="iRowLabel2">냉각H2</label>
-						<input type="text" class="iRowInput2"/>
-					</div>
-				</div>
-				<div class="iRow">
-					<div class="iRow2">
-						<label for="wstd_gj79" class="iRowLabel2">예열NH3</label>
-						<input type="text" name="wstd_gj79" class="iRowInput2"/>
-						<label for="wstd_gj82" class="iRowLabel2">침탄NH3</label>
-						<input type="text" name="wstd_gj82" class="iRowInput2"/>
-						<label for="wstd_gj83" class="iRowLabel2">확산NH3</label>
-						<input type="text" name="wstd_gj83" class="iRowInput2"/>
-						<label for="wstd_gj84" class="iRowLabel2">강온NH3</label>
-						<input type="text" name="wstd_gj84" class="iRowInput2"/>
-						<label class="iRowLabel2">균열NH3</label>
-						<input type="text" class="iRowInput2"/>
-						<label class="iRowLabel2">냉각NH3</label>
-						<input type="text" class="iRowInput2"/>
-						<label class="iRowLabel2"></label>
-						<input type="text" class="iRowInput2"/>
-					</div>
-				</div>
-				<div class="iRow">
-					<div class="iRow2">
-						<label for="wstd_gj42" class="iRowLabel2">RX</label>
-						<input type="text" name="wstd_gj42" class="iRowInput2"/>
-						<label for="wstd_gj52" class="iRowLabel2">LPG</label>
-						<input type="text" name="wstd_gj52" class="iRowInput2"/>
-						<label for="wstd_gj17" class="iRowLabel2">교반속도</label>
-						<input type="text" name="wstd_gj17" class="iRowInput2"/>
-					</div>
-				</div>
-		</form>
 	
-    <div class="btnSaveClose">
-            <button class="save" type="button" onclick="workASave();">저장</button>
-            <button class="workAClose" type="button" onclick="workACloseBtn();">닫기</button>
-    </div>	
+		<form id="workHForm" name="workHForm" autocomplete="off">
+			<div class="j_container">
+				<label for="" class="iRowLabel">선입선출제외</label>
+				<input type="checkbox" id="s_ord_sunip_check" name="s_ord_sunip_check" class="iRowInput"
+					style="width:40px !important;"/>
+				<input type="password" id="s_ord_sunip_pw" name="s_ord_sunip_pw" class="iRowInput margin_left"/>					
+				<label for="" class="iRowLabel">수주NO</label>
+				<input type="text" id="s_ord_code" name="s_ord_code" class="iRowInput_180" onchange="workHIpgoDataBarcodeScan();"/>
+				<button class="workHDataBtn iRowBtn margin_left" type="button" onclick="workHDataList();">검색</button>				
+			</div>	
+	
+		
+			<div class="setRow">
+				<div id="workHTabu"></div>
+			</div>
+			<hr />
+			
+		<div class="j_container">
+			<div class="j_row1">
+				<input type="text" style="display:none;" name="jisi_h_ord_code" />
+				<div class="j_div">
+					<label for="jisi_h_fac_code" class="iRowLabel">열처리설비</label>
+					<select name="jisi_h_fac_code" class="iRowInput">
+						<option value="1">침탄 1호기</option>
+						<option value="2">침탄 2호기</option>
+						<option value="3">침탄 3호기</option>
+						<option value="4">침탄 4호기</option>
+						<option value="18">침탄 5호기</option>
+					</select>
+				</div>				
+				<div class="j_div">
+					<label for="jisi_t_fac_code" class="iRowLabel margin_left">템퍼링설비</label>
+					<select name="jisi_t_fac_code" class="iRowInput margin_left">
+						<option value="16">템퍼링 1호기</option>
+						<option value="17">템퍼링 2호기</option>
+					</select>
+				</div>
+				
+				<div class="j_div">
+					<label for="jisi_j_su" class="iRowLabel margin_left">총 작업수량</label>
+					<input type="text" name="jisi_j_su" class="iRowInput margin_left"/>
+				</div>
+				
+				<div class="j_div">
+					<label for="jisi_h_calc_su" class="iRowLabel margin_left">작업지시수량</label>
+					<input type="text" name="jisi_h_calc_su" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="jisi_h_calc_jung" class="iRowLabel margin_left">작업지시중량</label>
+					<input type="text" name="jisi_h_calc_jung" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="jisi_h_work_q_hard_std" class="iRowLabel_180 margin_left">소입경도</label>
+					<input type="text" name="jisi_h_work_q_hard_std" class="iRowInput_180 margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="jisi_h_work_q_hard_std2" class="iRowLabel_300 margin_left">경화깊이</label>
+					<input type="text" name="jisi_h_work_q_hard_std2" class="iRowInput_300 margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="jisi_h_rx" class="iRowLabel margin_left">RX</label>
+					<input type="text" name="jisi_h_rx" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="jisi_h_lpg" class="iRowLabel margin_left">LPG</label>
+					<input type="text" name="jisi_h_lpg" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="jisi_h_agi" class="iRowLabel margin_left">교반속도</label>
+					<input type="text" name="jisi_h_agi" class="iRowInput margin_left"/>
+				</div>
+			</div>
+		</div>
+		<hr />
+
+		<div class="j_container" style="justify-content:center; font-size:14pt;">
+			<div class="j_row1">*적재방법*</div>			
+		</div>
+		<hr />
+		<div class="j_container">				
+			<div class="j_row1">
+				<div class="j_div">
+					<label for="wstd_t32" class="iRowLabel">1줄/1판</label>
+					<input type="text" name="wstd_t32" class="iRowInput"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t33" class="iRowLabel margin_left">줄/단</label>
+					<input type="text" name="wstd_t33" class="iRowInput margin_left"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t41" class="iRowLabel margin_left">단/Tray</label>
+					<input type="text" name="wstd_t41" class="iRowInput margin_left"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t87" class="iRowLabel margin_left">추가수량</label>
+					<input type="text" name="wstd_t87" class="iRowInput margin_left"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t43" class="iRowLabel margin_left">적재수량</label>
+					<input type="text" name="wstd_t43" class="iRowInput margin_left"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t44" class="iRowLabel margin_left">Jig중량(kg)</label>
+					<input type="text" name="wstd_t44" class="iRowInput margin_left"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t51" class="iRowLabel margin_left">제품중량(kg)</label>
+					<input type="text" name="wstd_t51" class="iRowInput margin_left"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t52" class="iRowLabel margin_left">총중량(kg)</label>
+					<input type="text" name="wstd_t52" class="iRowInput margin_left"/>						
+				</div>
+			</div>			
+		</div>
+
+		<div class="j_container">				
+			<div class="j_row1">
+				<div class="j_div">
+					<label for="wstd_t53" class="iRowLabel">적재주의사항-1</label>
+					<input type="text" name="wstd_t53" class="iRowInput"/>
+				</div>
+				<div class="j_div">
+					<label for="wstd_t54" class="iRowLabel margin_left">적재주의사항-2</label>
+					<input type="text" name="wstd_t54" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="wstd_t30" class="iRowLabel margin_left">적재주의사항-3</label>
+					<input type="text" name="wstd_t30" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="" class="iRowLabel margin_left">치구불량</label>
+					<input type="text" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="" class="iRowLabel margin_left">비고</label>
+					<input type="text" class="iRowInput margin_left"/>
+				</div>
+			</div>
+		</div>
+		
+		<hr />
+
+		<div class="j_container" style="justify-content:center; font-size:14pt;">
+			<div class="j_row1">*열처리 패턴정보*</div>			
+		</div>
+		
+		<hr />
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel"></label>
+				</div>
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">예열</label>
+				</div>			
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">침탄</label>
+				</div>			
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">확산</label>
+				</div>			
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">강온</label>
+				</div>			
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">균열</label>
+				</div>			
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">냉각</label>
+				</div>			
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">템퍼링</label>
+				</div>			
+			</div>
+		</div>
+		
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel">온도</label>
+				</div>
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_pre_temp" class="iRowHInput"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_chim_temp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_diff_temp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_gang_temp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_crack_temp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_cold_temp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_t_temp" class="iRowHInput margin_left"/>
+				</div>
+			</div>
+		</div>
+		
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel">시간</label>
+				</div>
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_pre_time" class="iRowHInput"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_chim_time" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_diff_time" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_gang_time" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_crack_time" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_cold_time" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_t_time" class="iRowHInput margin_left"/>
+				</div>			
+			</div>
+		</div>
+		
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel">CP</label>
+				</div>
+				<div class="j_h_div">
+					<input type="text" name="" class="iRowHInput"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_chim_cp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_diff_cp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_gang_cp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="" class="iRowHInput margin_left"/>
+				</div>			
+			</div>
+		</div>
+		
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel">H2[m3/Hr]</label>
+				</div>
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_pre_h2" class="iRowHInput"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_chim_h2" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_diff_h2" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_gang_h2" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_crack_h2" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_cold_h2" class="iRowHInput margin_left"/>
+				</div>			
+			</div>
+		</div>
+		
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel">NH3[m3/Hr]</label>
+				</div>
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_pre_nh3" class="iRowHInput"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_chim_nh3" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_diff_nh3" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_gang_nh3" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_crack_nh3" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_cold_nh3" class="iRowHInput margin_left"/>
+				</div>			
+			</div>
+		</div>
+				
+	</form>
+    <div class="j_container" style="justify-content:end;">
+    	<div class="j_row1">
+			<button class="save iRowBtn" type="button" onclick="workHSave();">저장</button>
+			<button class="workHClose iRowBtn margin_left" type="button" onclick="workHCloseBtn();">닫기</button>
+		</div>
+    </div>
+</div>
+
+<!-- 열처리등록시 입고이력, 잔량표현 -->
+<div class="workHIpgoModal">
+	<div class="detail">
+		<div class="header">
+		작업대기 리스트
+		</div>
+	</div>
+		<div class="j_container">
+			<form action="">
+					<label class="daylabel margin_left">입고일 :</label>
+					<input type="date" class="ord_sdate" id="ord_sdate" style="font-size: 14pt; width:140px;">
+					~
+					<input type="date" class="ord_edate" id="ord_edate" style="font-size: 14pt; width:140px;">
+			</form>			
+			<button class="iRowBtn margin_left" type="button" onclick="workHIpgoDataList();">조회</button>				
+		</div>	
+	
+		<div class="j_container">
+			<div class="setRow">
+				<div id="workHIpgoTabu"></div>
+			</div>
+		</div>
+		<hr />	
+		
+    <div class="j_container" style="justify-content:end;">
+    	<div class="j_row1">
+			<button class="iRowBtn" type="button" onclick="workHIpgoDataReg();">적용</button>
+			<button class="workHIpgoClose iRowBtn margin_left" type="button" onclick="workHIpgoCloseBtn();">닫기</button>
+		</div>
+    </div>
+</div>
+
+<!-- 단취, 열처리 수정 모달 -->
+<div class="workJHModal">
+	<div class="detail">
+		<div class="header">
+		단취,열처리 수정
+		</div>
+	</div>
+		<form id="workJHForm" name="workJHForm">
+		<div class="j_container" style="justify-content:center; font-size:14pt;">
+			<div class="j_row1">*단취정보*</div>			
+		</div>
+		<hr />
+		
+		<div class="j_container">
+			<div class="j_row1">
+				<input type="text" style="display:none;" name="jisi_j_ord_code" />
+				<div class="j_div">
+					<label for="j_ord_su" class="iRowLabel">단취수량</label>
+					<input type="text" name="j_ord_su" class="iRowInput"/>
+				</div>
+				<div class="j_div">
+					<label for="j_ord_danj" class="iRowLabel margin_left">단취중량</label>
+					<input type="text" name="j_ord_danj" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="j_ord_su" class="iRowLabel margin_left"></label>
+					<button type="button" id="jisi_j_btn" class="iRowBtn margin_left">계산 => </button>
+				</div>
+				<div class="j_div">
+					<label for="jisi_j_su" class="iRowLabel margin_left">총수량</label>
+					<input type="text" name="jisi_j_su" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="jisi_j_jung" class="iRowLabel margin_left">총중량</label>
+					<input type="text" name="jisi_j_jung" class="iRowInput margin_left"/>
+				</div>
+			</div>
+		</div>
+		
+		<div class="j_container">				
+			<div class="j_row1">
+				<div class="j_div">
+					<label for="wstd_t32" class="iRowLabel">1줄/1판</label>
+					<input type="text" name="wstd_t32" class="iRowInput"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t33" class="iRowLabel margin_left">줄/단</label>
+					<input type="text" name="wstd_t33" class="iRowInput margin_left"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t41" class="iRowLabel margin_left">단/Tray</label>
+					<input type="text" name="wstd_t41" class="iRowInput margin_left"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t87" class="iRowLabel margin_left">추가수량</label>
+					<input type="text" name="wstd_t87" class="iRowInput margin_left"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t43" class="iRowLabel margin_left">적재수량</label>
+					<input type="text" name="wstd_t43" class="iRowInput margin_left"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t44" class="iRowLabel margin_left">Jig중량(kg)</label>
+					<input type="text" name="wstd_t44" class="iRowInput margin_left"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t51" class="iRowLabel margin_left">제품중량(kg)</label>
+					<input type="text" name="wstd_t51" class="iRowInput margin_left"/>						
+				</div>
+				<div class="j_div">
+					<label for="wstd_t52" class="iRowLabel margin_left">총중량(kg)</label>
+					<input type="text" name="wstd_t52" class="iRowInput margin_left"/>						
+				</div>
+			</div>			
+		</div>
+
+		<div class="j_container">				
+			<div class="j_row1">
+				<div class="j_div">
+					<label for="wstd_t53" class="iRowLabel">적재주의사항-1</label>
+					<input type="text" name="wstd_t53" class="iRowInput"/>
+				</div>
+				<div class="j_div">
+					<label for="wstd_t54" class="iRowLabel margin_left">적재주의사항-2</label>
+					<input type="text" name="wstd_t54" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="wstd_t30" class="iRowLabel margin_left">적재주의사항-3</label>
+					<input type="text" name="wstd_t30" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="" class="iRowLabel margin_left">치구불량</label>
+					<input type="text" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="" class="iRowLabel margin_left">비고</label>
+					<input type="text" class="iRowInput margin_left"/>
+				</div>
+			</div>
+		</div>
+
+
+		<hr />
+		<div class="j_container" style="justify-content:center; font-size:14pt;">
+			<div class="j_container">
+				<div class="j_row1">*열처리정보*</div>
+			</div>
+			<div class="j_container">	
+		    	<div class="j_row1">
+		    		<button class="save iRowBtn" type="button" onclick="workJHSave();">저장</button>			
+					<button class="workJHClose iRowBtn margin_left" type="button" onclick="workJHCloseBtn();">닫기</button>
+				
+				</div>
+			</div>
+		</div>
+		<hr />
+
+		<div class="j_container">
+			<div class="j_row1">
+				<input type="text" style="display:none;" name="jisi_h_ord_code" />
+				<div class="j_div">
+					<label for="jisi_h_fac_code" class="iRowLabel">열처리설비</label>
+					<select name="jisi_h_fac_code" class="iRowInput">
+						<option value="1">침탄로 1호기</option>
+						<option value="2">침탄로 2호기</option>
+						<option value="3">침탄로 3호기</option>
+						<option value="4">침탄로 4호기</option>
+						<option value="18">침탄로 5호기</option>
+					</select>
+				</div>				
+				<div class="j_div">
+					<label for="jisi_t_fac_code" class="iRowLabel margin_left">템퍼링설비</label>
+					<select name="jisi_t_fac_code" class="iRowInput margin_left">
+						<option value="16">템퍼링로 1호기</option>
+						<option value="17">템퍼링로 2호기</option>
+					</select>
+				</div>
+				
+				<div class="j_div">
+					<label for="jisi_h_calc_su" class="iRowLabel margin_left">작업수량</label>
+					<input type="text" name="jisi_h_calc_su" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="jisi_h_calc_jung" class="iRowLabel margin_left">작업중량</label>
+					<input type="text" name="jisi_h_calc_jung" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="jisi_h_work_q_hard_std" class="iRowLabel_180 margin_left">소입경도</label>
+					<input type="text" name="jisi_h_work_q_hard_std" class="iRowInput_180 margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="jisi_h_work_q_hard_std2" class="iRowLabel_300 margin_left">경화깊이</label>
+					<input type="text" name="jisi_h_work_q_hard_std2" class="iRowInput_300 margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="jisi_h_rx" class="iRowLabel margin_left">RX</label>
+					<input type="text" name="jisi_h_rx" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="jisi_h_lpg" class="iRowLabel margin_left">LPG</label>
+					<input type="text" name="jisi_h_lpg" class="iRowInput margin_left"/>
+				</div>
+				<div class="j_div">
+					<label for="jisi_h_agi" class="iRowLabel margin_left">교반속도</label>
+					<input type="text" name="jisi_h_agi" class="iRowInput margin_left"/>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel"></label>
+				</div>
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">예열</label>
+				</div>			
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">침탄</label>
+				</div>			
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">확산</label>
+				</div>			
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">강온</label>
+				</div>			
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">균열</label>
+				</div>			
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">냉각</label>
+				</div>			
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel margin_left">템퍼링</label>
+				</div>			
+			</div>
+		</div>
+		
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel">온도</label>
+				</div>
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_pre_temp" class="iRowHInput"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_chim_temp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_diff_temp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_gang_temp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_crack_temp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_cold_temp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_t_temp" class="iRowHInput margin_left"/>
+				</div>
+			</div>
+		</div>
+		
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel">시간</label>
+				</div>
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_pre_time" class="iRowHInput"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_chim_time" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_diff_time" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_gang_time" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_crack_time" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_cold_time" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_t_time" class="iRowHInput margin_left"/>
+				</div>			
+			</div>
+		</div>
+		
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel">CP</label>
+				</div>
+				<div class="j_h_div">
+					<input type="text" name="" class="iRowHInput"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_chim_cp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_diff_cp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_gang_cp" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="" class="iRowHInput margin_left"/>
+				</div>			
+			</div>
+		</div>
+		
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel">H2[m3/Hr]</label>
+				</div>
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_pre_h2" class="iRowHInput"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_chim_h2" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_diff_h2" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_gang_h2" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_crack_h2" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_cold_h2" class="iRowHInput margin_left"/>
+				</div>			
+			</div>
+		</div>
+		
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<label for="" class="iRowHLabel">NH3[m3/Hr]</label>
+				</div>
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_pre_nh3" class="iRowHInput"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_chim_nh3" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_diff_nh3" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_gang_nh3" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_crack_nh3" class="iRowHInput margin_left"/>
+				</div>			
+				<div class="j_h_div">
+					<input type="text" name="jisi_h_cold_nh3" class="iRowHInput margin_left"/>
+				</div>			
+			</div>
+		</div>
+	<hr />
+	</form>
+    <div class="j_container" style="justify-content:end;">
+    	<div class="j_row1">			
+			<button class="workJHClose iRowBtn margin_left" type="button" onclick="workJHCloseBtn();">닫기</button>
+		</div>
+    </div>
 </div>
 
 <input type="text" id="plnpSeq" style="display:none;" value="0" />
@@ -598,7 +1114,47 @@ input[type="date"] {
 </form>
 
 <a style="display:none;" id="downLoadLink" href="#" download="#"></a>
-<iframe src="" frameborder="0" id="workReport" style="display:none;"></iframe>
+<!-- 열처리작업 저장 모달 -->
+<div class="workJisiReportModal">
+	<div class="j_container">
+		<iframe src="" frameborder="0" width="800" height="700" id="workJisi">
+		</iframe>	
+	</div>
+    <div class="j_container" style="justify-content:end;">
+    	<div class="j_row1">
+			<button class="workJisiReportClose iRowBtn margin_left" type="button" onclick="workJisiReportCloseBtn();">닫기</button>
+		</div>
+    </div>
+</div>
+
+<!-- 공정이동표, 작업지시서 출력중 모달 -->
+<div class="workPrintStatusModal">
+	<div class="detail">
+		<div class="header">
+			공정이동표, 작업지시서 파일 생성
+		</div>
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<span style="display:inline-block; width:350px;">공정이동표, 작업지시서 파일 생성중입니다....</span>
+					<br />
+					<span style="display:inline-block; width:350px;">생성완료시 팝업창이 닫힙니다.</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	    <div class="j_container" style="justify-content:end;">
+    	<div class="j_row1">
+			<button class="workPrintStatusClose iRowBtn margin_left" type="button" onclick="workPrintStatusCloseBtn();">닫기</button>
+		</div>
+    </div>	
+</div>
+	
+	
+	
+	
 <script>
 	//전역변수
     var cutumTable;	
@@ -615,85 +1171,114 @@ input[type="date"] {
 		
 		$("#wait_ord_sdate").val(ydate);
 		$("#wait_ord_edate").val(tdate);
+		$("#jisi_sdate").val(yesterDate());
+		$("#jisi_edate").val(todayDate());
+//		$("#jisi_sdate").val("2024-07-14");
+//		$("#jisi_edate").val("2024-07-20");
+		$("#ord_sdate").val(beforeWeekDate());
+		$("#ord_edate").val(todayDate());
 		
+		getWorkJisiAllListData();
 		getWorkInstructionList();
+
 	});
 
 	//이벤트
 	
-	//작업지시서 출력
-	$(".printer-button").on("click", function(){
+	//공정이동식별표 파일저장
+	$("#jPrintBtn").on("click",function(){
 		
-		var printForm = new FormData($("#reportPrint")[0]);
-		//선택한 행
+	});
+	
+	//작업지시서 파일저장
+	$("#hPrintBtn").on("click",function(){
 		
-		//plnp_lot
-		//날짜
-		//바코드
+		workPrintStatusModal.style.display = "block";
 		
-		$.ajax({
-            url: "/tkheat/production/workInstruction/workInstructionReport",
-            type: "POST",
-            data: printForm,
-            contentType: false,    
-            processData: false,   
-            dataType: "json",      
-            success: function(result) {
-                console.log(result);
-				var resultData = result.data;
-
-				var fileName = decodeURIComponent(resultData);
-                var downLoadUrl = "/tkheat/print/"+fileName;
+		//체크한 데이터만 조회
+		if(workAllDataTable.getSelectedData().length > 0){
 			
-                console.log(downLoadUrl);
-                
-                $("#workReport").attr("src",downLoadUrl);
-                $("#workReport").show();
-
-                
-/*
-				$("#downLoadLink").prop("href",downLoadUrl);
-				$("#downLoadLink").prop("download",fileName);
+			var selectArray = workAllDataTable.getSelectedData();
+			var jisiLotArray = new Array();
+			
+			for(var i=0; i<selectArray.length; i++){
 				
-				$("#downLoadLink")[0].click();     
-*/
-                alert("저장 되었습니다.");
+				if(selectArray[i].jisi_lot != null){
+					//작업번호가 다를경우 alert창
+					jisiLotArray.push(selectArray[i].jisi_lot);	
+				}else{
+					alert("작업지시 등록진행 후 파일을 저장해주십시오!");
+					return false;
+				}
 
-//                $(".chimStandardModal").hide();
- //               getBegaInsertList();
-                
-            },
-            error: function(xhr, status, error) {
-                console.error("저장 오류:", error);
-            }
-		})
+			}
+			
+			$.ajax({
+				url:"/tkheat/production/workjisi/heat/workHeatListPrint",
+				type:"post",
+				dataType:"json",
+				traditional: true,
+				data:{
+					"jisi_lot_array":jisiLotArray
+				},
+				success:function(result){
+					
+					workPrintStatusCloseBtn();
+					getWorkJisiAllListData();
+				}
+			});
+		}		
 	});
 	
 	//함수
+	function getWorkJisiAllListData(){
+		$.ajax({
+			url:"/tkheat/production/workjisi/allList",
+			type:"post",
+			dataType:"json",
+			data:{
+				"jisi_sdate":$("#jisi_sdate").val(),
+				"jisi_edate":$("#jisi_edate").val()
+			},success:function(result){
+				workAllDataTable.setData(result.data);
+				
+			}
+		});
+	}
+/*	
+    <button class="insert-button" id="jAddBtn">
+    <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
+  	단취등록
+</button>
+*/
+	var printIconProc = function(cell, formatterParams){ //plain text value
+	var icon = "";
+	if(cell.getRow().getData().jisi_j_file_yn != 0){
+		icon = "<img src='/tkheat/css/image/folder-icon.png' alt='forder' class='button-image'></img>";
+	}
+	return icon;
+	};
+	
+	var printIconJisi = function(cell, formatterParams){ //plain text value
+		var icon = "";
+		if(cell.getRow().getData().jisi_h_file_yn != 0){
+			icon = "<img src='/tkheat/css/image/folder-icon.png' alt='forder' class='button-image'></img>";
+		}
+		return icon;
+	};
+	
 	
 	//작업지시 전체이력
+	var workAllDataTable;
 	function getWorkInstructionList(){
-		
-		userTable = new Tabulator("#tab1", {
+		workAllDataTable = new Tabulator("#tab1", {
 		    height:"750px",
 		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
+//		    selectable:true,	//로우 선택설정
 		    tooltips:true,
 		    selectableRangeMode:"click",
 		    reactiveData:true,
 		    headerHozAlign:"center",
-			ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/production/workInstruction/getWorkInstructionList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	"plnp_date": $("#plnp_date").val(),
-                "corp_name": $("#corp_name").val(),
-                "prod_name": $("#prod_name").val(),
-                "prod_no": $("#prod_no").val(),
-                "prod_gubn": $("#prod_gubn").val(),
-                "fac_name": $("#fac_name").val()
-			},
 		    placeholder:"조회된 데이터가 없습니다.",
 		    paginationSize:20,
 		    ajaxResponse:function(url, params, response){
@@ -701,61 +1286,62 @@ input[type="date"] {
 		        return response; //return the response data to tabulator
 		    },
 		    columns:[
-		        {title:"NO", field:"plnp_no", sorter:"int", width:80,
+		    	{formatter:"rowSelection", titleFormatter:"rowSelection", width:40, headerSort:false,
+		    		cellClick:function(e, cell){
+//		    			cell.getRow().toggleSelect();
+						
+		    		}
+		    	},
+				{	headerSort:false,
+		    		formatter:printIconProc, width:60, title:"공정</br>이동표",cellClick:function(e, cell){
+		    			if(cell.getRow().getData().jisi_lot_view != null){
+		    				var ord_code = cell.getRow().getData().ord_code;
+//		    				alert("작업로트 " + jisi_lot_view);
+		    				var fileUrl = "/tkPrint/공정이동표/"+ord_code+".pdf";
+		                    $("#workJisi").attr("src",fileUrl);
+		                    workJisiReportModal.style.display = "block";
+		    			}
+		    		}
+				},
+				{	headerSort:false,
+		    		formatter:printIconJisi, width:60, title:"작업</br>지시서",cellClick:function(e, cell){
+		    			if(cell.getRow().getData().jisi_lot_view != null){
+		    				var jisi_lot_view = cell.getRow().getData().jisi_lot_view;
+//		    				alert("작업로트 " + jisi_lot_view);
+		    				var fileUrl = "/tkPrint/작업지시서/"+jisi_lot_view+".pdf";
+		                    $("#workJisi").attr("src",fileUrl);
+		                    workJisiReportModal.style.display = "block";
+		    			}
+		    		}
+				},
+		        {title:"NO", field:"jisi_j_code", sorter:"int", width:80,
 		        	hozAlign:"center", visible:false},
-		        {title:"입고일", field:"ord_date", sorter:"string", width:120,
+		        {title:"NO", field:"jisi_h_code", sorter:"int", width:80,
+		        	hozAlign:"center", visible:false},
+		        {title:"NO", field:"jisi_lot", sorter:"int", width:80,
+		        	hozAlign:"center", visible:false},
+		        {title:"NO", field:"jisi_h_file_yn", sorter:"int", width:80,
+		        	hozAlign:"center", visible:false},
+		        {title:"입고일", field:"ord_input", sorter:"string", width:100,
 			        hozAlign:"center"},	
-		        {title:"지시일", field:"ilbo_strt", sorter:"string", width:120,
+		        {title:"작업지시일", field:"jisi_h_regtime", sorter:"string", width:160,
 			        hozAlign:"center"},	
-		        {title:"작업번호", field:"ilbo_lot", sorter:"string", width:140,
-			        hozAlign:"center"},	
-		        {title:"작업구분", field:"ilbo_gubn", sorter:"string", width:100,
-			        hozAlign:"center"},	
-		        {title:"수주NO", field:"ord_code", sorter:"string", width:140,
-			        hozAlign:"center"},	
-		        {title:"바코드", field:"plnp_barcode", sorter:"string", width:140,
-			        hozAlign:"center", visible:false},	
-/*			    {title:"제품사진", field:"prod_date", sorter:"string", width:120,
-				    hozAlign:"center"},*/     
-				{title:"설비", field:"fac_name", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"}, 
-				{title:"순번", field:"ilbo_no", sorter:"string", width:80,
-				    hozAlign:"center", headerFilter:"input"}, 
+		        {title:"입고코드", field:"ord_code", sorter:"string", width:100,
+			        hozAlign:"center", headerFilter:"input"},     
 		        {title:"거래처", field:"corp_name", sorter:"string", width:120,
-		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"품명", field:"prod_name", sorter:"string", width:160,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"품번", field:"prod_no", sorter:"string", width:160,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"규격", field:"prod_gyu", sorter:"string", width:100,
-			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"재질", field:"prod_jai", sorter:"int", width:100,
-		        	hozAlign:"center", headerFilter:"input"},  	
-		        {title:"입고수량", field:"ord_su", sorter:"int", width:90,
-			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"작업수량", field:"ilbo_su", sorter:"int", width:90,
-			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"온도(침탄)", field:"plnp_tmp1", sorter:"int", width:100,
-				    hozAlign:"center", visible:false, headerFilter:"input"},	
-				{title:"시간(침탄)", field:"plnp_time1", sorter:"int", width:100,
-				    hozAlign:"center", visible:false, headerFilter:"input"},
-				{title:"온도(확산)", field:"plnp_tmp2", sorter:"int", width:100,
-					hozAlign:"center", visible:false, headerFilter:"input"},
-			    {title:"시간(확산)", field:"plnp_time2", sorter:"int", width:100,
-					hozAlign:"center", visible:false, headerFilter:"input"},
- 			    {title:"소려온도", field:"plnp_ttmp", sorter:"int", width:100,
-					hozAlign:"center", visible:false, headerFilter:"input"},
- 			    {title:"소려시간", field:"plnp_ttime", sorter:"int", width:100,
-					hozAlign:"center", visible:false, headerFilter:"input"},
-		        {title:"비고", field:"plnp_note", sorter:"int", width:100,
-			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"경화깊이", field:"prod_cd", sorter:"int", width:300,
-			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"표면경도", field:"prod_pg", sorter:"int", width:100,
-			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"심부경도", field:"prod_sg", sorter:"int", width:100,
-			        hozAlign:"center", headerFilter:"input"},	
-
+		        	hozAlign:"center", headerFilter:"input", headerSort:false},		        
+		        {title:"작업번호", field:"jisi_lot_view", sorter:"string", width:120,
+			        hozAlign:"center", headerFilter:"input"},
+				{title:"설비", field:"fac_name", sorter:"string", width:100,
+				    hozAlign:"center", headerFilter:"input", headerSort:false},
+		        {title:"품명", field:"prod_name", sorter:"string", width:220,
+		        	hozAlign:"center", headerFilter:"input", headerSort:false},
+		        {title:"품번", field:"prod_no", sorter:"string", width:200,
+		        	hozAlign:"center", headerFilter:"input", headerSort:false}, 	
+		        {title:"입고수량", field:"ord_su", sorter:"int", width:80,
+			        hozAlign:"center", headerFilter:"input", headerSort:false},
+		        {title:"작업수량", field:"jisi_h_su", sorter:"int", width:80,
+			        hozAlign:"center", headerFilter:"input", headerSort:false},
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
@@ -765,7 +1351,8 @@ input[type="date"] {
 			},
 			rowClick:function(e, row){
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
+				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(
+					function(index, item){
 						
 					if($(this).hasClass("row_select")){							
 						$(this).removeClass('row_select');
@@ -775,17 +1362,38 @@ input[type="date"] {
 						row.getElement().className += " row_select";	
 					}
 				});
-
-				var rowData = row.getData();
-				
-				$("#reportDate").val(rowData.plnp_date);
-				$("#reportPlnpLot").val(rowData.plnp_lot);
-				$("#reportBarcode").val(rowData.plnp_barcode);
 				
 				
-
 			},
+			rowDblClick:function(e, row){
+				var rData = row.getData();
+				
+				
+				//준비작업 코드
+				var jisi_j_code = rData.jisi_j_code;
+				//작업지시 코드 전송
+				var jisi_h_code = rData.jisi_h_code;
+				
+				getWorkInstructionListDetail(jisi_j_code,jisi_h_code);
+			}
 		});		
+	}
+	
+	function getWorkInstructionListDetail(jisi_j_code,jisi_h_code){
+/*
+		$.ajax({
+			url:"/tkheat/production/workjisi/allList/detail",
+			type:"post",
+			dataType:"json",
+			data:{
+				"jisi_j_code":jisi_j_code,
+				"jisi_h_code":jisi_h_code
+			},success:function(result){
+				workJHModal.style.display = 'block'; // 모달 표시
+			}			
+		});
+*/
+		workJHModal.style.display = 'block'; // 모달 표시
 	}
 	
 	function nullValueRtn(value){
@@ -796,24 +1404,17 @@ input[type="date"] {
 		return rtnValue;
 	}
 	
+	
 	//작업등록 선택
 	function workSelectFunc(wGubun){
 		//wGubun : J(준비), A(열처리), R(템퍼링)
 		if(wGubun == 'J'){
-			$("#workJForm")[0].reset();
-			//모달 오픈
-			//작업 시작일, 작업 종료일 지정
-			$("input[name=ilbo_strt]").val(todayDate()+" "+nowTime());
-			$("input[name=ilbo_end]").val(todayDate()+" "+nowTimeAfterOne());
-			
-			getWorkJList();
-			workJModal.style.display = 'block'; // 모달 표시
-		}else if(wGubun = 'A'){
-			$("#workAForm")[0].reset();
+		}else if(wGubun = 'H'){
+			$("#workHForm")[0].reset();
 			//모달 오픈
 			
-			getWorkAList();
-			workAModal.style.display = 'block'; // 모달 표시			
+			getWorkHList();
+			workHModal.style.display = 'block'; // 모달 표시			
 		}else if(wGubun = 'R'){
 			//모달 오픈
 			
@@ -823,12 +1424,162 @@ input[type="date"] {
 		workSelectCloseBtn();
 	}
 	
-	//
-	var workjTable;
-	function getWorkJList(){
+	
+/*	
+	function getWorkHData(selectedData){
+
+//		$("#workHForm")[0].reset();
+		$.ajax({
+			url:"/tkheat/production/workjisi/heat/jisiList",
+			type:"post",
+			dataType:"json",
+			data:{
+				"jisi_code_array":selectedData
+			},
+			success:function(result){
+				
+				workHDataTable.setData(result.data);
+			}
+		});
+	}
+*/	
+
+	//입고기간 내 작업가능한 리스트 모달창 표현
+	function workHDataList(){
+		getWorkHIpgoDataList();
+		workHIpgoDataList();
+		workHIpgoModal.style.display = 'block';
+	}
+	
+	function workHIpgoDataList(){
+		$.ajax({
+			url:"/tkheat/production/workInstruction/heat/ipgoList",
+			type:"post",
+			dataType:"json",
+			data:{
+				"ord_sdate":$("#ord_sdate").val(),
+				"ord_edate":$("#ord_edate").val(),
+				"ord_sunip_chk":$("#s_ord_sunip_check").val()
+			},success:function(result){
+				console.log(result.data);
+				
+				workHIpgoDataTable.setData(result.data);
+			}
+		});
+	}
+	
+	let workHIpgoSelectData;
+	let workJisiParam;
+	//적용버튼을 눌렀을 때
+	function workHIpgoDataReg(){
+		workJisiParam = JSON.stringify(workHIpgoSelectData);
+		//
+		workHIpgoDataRegSetting();
+	}
+
+	//바코드를 스캔해서 수주번호가 변경되었을 때
+	function workHIpgoDataBarcodeScan(){
+		var s_ord_code = $("#s_ord_code").val();
+		if(s_ord_code.length > 0){
+			console.log(s_ord_code);
+			console.log("s_ord_code : 변경");
+			
+			//workJisiParam = JSON.stringify(workHIpgoSelectData);
+			$.ajax({
+				url:"/tkheat/production/workInstruction/heat/ipgoBarcodeScan",
+				type:"post",
+				dataType:"json",
+				data:{
+					"ord_code":s_ord_code
+				},success:function(result){
+					workJisiParam = JSON.stringify(result.data);
+					workHIpgoDataRegSetting();
+				}
+			});
+		}
+	}
+	
+	function workHIpgoDataRegSetting(){
+		var sunip_chk = 0;
 		
-		workjTable = new Tabulator("#workJTabu", {
-		    height:"200px",
+		if($("#s_ord_sunip_check").is(":checked")){
+			sunip_chk = 1;
+		}		
+		
+		
+		$.ajax({
+			url:"/tkheat/production/workInstruction/heat/ipgoListReg",
+			type:"post",
+			dataType:"json",
+			traditional: true,
+			data:{
+				"workJisi":workJisiParam,
+				"ord_sdate":$("#ord_sdate").val(),
+				"ord_edate":$("#ord_edate").val(),
+				"s_ord_sunip_check":sunip_chk,
+				"s_ord_sunip_pw":$("#s_ord_sunip_pw").val()
+			},
+			success:function(result){
+
+				if(typeof result.alert != "undefined"){
+					alert(result.alert);
+					return false;
+				}else{
+					//열처리작업 모달에서 작업지시수량,중량 계산
+					var jisiData = result.data;
+					
+					
+					var jisi_h_calc_su = 0;
+					var jisi_h_calc_jung = 0;
+					
+					for(var jd in jisiData){
+						console.log(jisiData[jd]);
+						var j2Array = jisiData[jd];
+						
+						for(var j2 in j2Array){
+							$("#workHForm input[name='"+j2+"']").val(j2Array[j2]);
+						}
+						
+						var jisiListData = workHDataTable.getData();
+//						console.log("행 갯수 : ",jisiListData.length);
+	
+						var rowValueCheck = true;
+						var tempArray = new Array();
+						//모달에서 선택, 바코드선택시 열처리 작업리스트에 없는 수주번호만 추가되도록 
+						if(jisiListData.length > 0){
+							for(var whl in jisiListData){
+								if(jisiData[jd].ord_code == jisiListData[whl].ord_code){
+									rowValueCheck = false;
+								}
+							}
+							
+							//열처리작업리스트에 동일한 데이터가 없을경우
+							if(rowValueCheck){
+								tempArray.push(jisiData[jd]);
+								workHDataTable.addData(tempArray);
+							}
+
+						}else{
+							//리스트가 비어있으면 조회된 데이터 적용
+							workHDataTable.addData(result.data);
+						}
+					}
+
+					
+					workHIpgoCloseBtn();
+
+				}
+			}
+		});	
+		
+	}
+	
+	//작업지시 적용리스트
+	var workHIpgoDataTable;
+	function getWorkHIpgoDataList(){
+		
+		workHIpgoDataTable = new Tabulator("#workHIpgoTabu", {
+		    height:"600px",
 		    layout:"fitColumns",
 		    selectable:true,	//로우 선택설정
 		    tooltips:true,
@@ -837,57 +1588,30 @@ input[type="date"] {
 		    headerHozAlign:"center",
 		    placeholder:"조회된 데이터가 없습니다.",
 		    paginationSize:20,
+		    headerSort:false,
 		    ajaxResponse:function(url, params, response){
-				$("#workJTabu .tabulator-col.tabulator-sortable").css("height","55px");
+				$("#workHIpgoTabu .tabulator-col.tabulator-sortable").css("height","55px");
 		        return response; //return the response data to tabulator
 		    },
 		    columns:[
-		        {title:"바코드", field:"ord_code", sorter:"string", width:120,
+		        {title:"수주번호", field:"ord_code", sorter:"string", width:120,
 			        hozAlign:"center"},	
-		        {title:"입고일", field:"ord_date", sorter:"string", width:120,
+		        {title:"입고일", field:"ord_input", sorter:"string", width:120,
 			        hozAlign:"center"},	
-		        {title:"수량", field:"ord_su", sorter:"string", width:100,
-			        hozAlign:"center", editor:true, 
-			        cellEdited:function(cell){
-			        	//
-						var rowData = cell.getRow().getData();
-						var cellData = cell.getData();						
-						
-						var prod_danj = rowData.prod_danj;
-						var ord_su = cellData.ord_su;
-						
-						var ord_danj = prod_danj * ord_su;
-						cell.getRow().getCell("ord_danj").setValue(ord_danj);
-						$("input[name='ilbo_su']").val(ord_su);
-						$("input[name='ilbo_jung']").val(ord_danj);						
-			        }
-			    },	
-		        {title:"중량", field:"ord_danj", sorter:"string", width:100,
-			        hozAlign:"center"
-			    },
 		        {title:"거래처", field:"corp_name", sorter:"string", width:120,
 		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"품명", field:"prod_name", sorter:"string", width:160,
+		        {title:"품명", field:"prod_name", sorter:"string", width:220,
 		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"품번", field:"prod_no", sorter:"string", width:160,
+		        {title:"품번", field:"prod_no", sorter:"string", width:200,
 		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"소입경도", field:"prod_pg", sorter:"string", width:100,
-			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"경화깊이", field:"prod_gd", sorter:"int", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-		        //적재방법 등 추가예정.
-		        {title:"1줄/1판", field:"wstd_t32", visible:false},
-		        {title:"줄/단", field:"wstd_t33", visible:false},
-		        {title:"단/Tray", field:"wstd_t41", visible:false},
-		        {title:"추가수량", field:"wstd_t87", visible:false},
-		        {title:"적재수량", field:"wstd_t43", visible:false},
-		        {title:"Jig중량(kg)", field:"wstd_t44", visible:false},
-		        {title:"제품중량(kg)", field:"wstd_t51", visible:false},
-		        {title:"총중량(kg)", field:"wstd_t52", visible:false},
-		        {title:"적재주의사항-1", field:"wstd_t53", visible:false},
-		        {title:"적재주의사항-2", field:"wstd_t54", visible:false},
-		        {title:"적재주의사항-3", field:"wstd_t30", visible:false},
-		        {title:"적재주의사항-3", field:"prod_danj", visible:false},
+		        {title:"입고수량", field:"ord_su", sorter:"string", width:80,
+			        hozAlign:"center"},	
+		        {title:"작업지시수량", field:"jisi_h_su", sorter:"string", width:100,
+			        hozAlign:"center"},
+		        {title:"잔량", field:"jisi_diff_su", sorter:"string", width:80,
+			        hozAlign:"center"},
+			    {title:"단취수량", field:"jisi_j_su", width:80, visible:false},
+			    {title:"제품코드", field:"prod_code", visible:false}
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
@@ -897,112 +1621,184 @@ input[type="date"] {
 			},
 			rowClick:function(e, row){
 
-				$("#workJTabu .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
+				$("#workHIpgoTabu .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
 						
 					if($(this).hasClass("row_select")){							
 						$(this).removeClass('row_select');
 						row.getElement().className += " row_select";
 					}else{
-						$("#workJTabu div.row_select").removeClass("row_select");
+						$("#workHTabu div.row_select").removeClass("row_select");
 						row.getElement().className += " row_select";	
 					}
 				});
-			},
-			rowDblClick:function(e, row){
-				var data = row.getData();
 				
-				Object.keys(data).forEach(function (key) {					
-			        var field = $('#workJForm .iCol div [name="' + key + '"]');
+				var rData = row.getData();
+				workHIpgoSelectData = rData;
+			}
+		});		
+	}
 
-			        if (field.length) {
-						console.log(field, key, data[key]);
-			            field.val(data[key]);
-			        }
+	 //행삭제 버튼
+	var rowDeleteBtn = function(cell, formatterParams){ //plain text value
+		var btn = "";
+		btn = "<button type='button' style='display: flex;align-items: center; cursor:pointer;width:90px;height:20px; font-size:12pt;padding-left:20px; margin-right:0;'>행삭제</button>";
+		
+		return btn;
+	};
+	
+	function getWorkHListRowDeleteDataCalc(){
+		
+    	//form태그의 수량, 중량 연산
+    	let tData = workHDataTable.getData();
+    	var row_su = 0;
+    	var row_jung = 0;
+    	for(var i in tData){
+    		row_su += eval(tData[i].jisi_h_su);
+    		row_jung += eval(tData[i].jisi_h_su * tData[i].ord_danj);
+    	}
+    	$("input[name='jisi_h_calc_su']").val(row_su);
+    	$("input[name='jisi_h_calc_jung']").val(row_jung.toFixed(2));				
+	}
+	
+	//열처리작업 리스트
+	var workHDataTable;
+	function getWorkHList(){
+		workHDataTable = new Tabulator("#workHTabu", {
+		    height:"180px",
+		    layout:"fitColumns",
+		    selectable:true,	//로우 선택설정
+		    tooltips:true,
+		    selectableRangeMode:"click",
+		    reactiveData:true,
+		    headerHozAlign:"center",
+		    placeholder:"조회된 데이터가 없습니다.",
+		    paginationSize:20,
+		    headerSort:false,
+		    ajaxResponse:function(url, params, response){
+				$("#workHTabu .tabulator-col.tabulator-sortable").css("height","55px");
+		        return response; //return the response data to tabulator
+		    },
+		    columns:[
+				{	headerSort:false,
+		    		formatter:rowDeleteBtn, width:100, title:"",
+		    		cellClick:function(e, cell){
+		    			cell.getRow().delete();
+		    			getWorkHListRowDeleteDataCalc();
+	    			}
+				},
+		        {title:"수주번호", field:"ord_code", sorter:"string", width:120,
+			        hozAlign:"center"},	
+		        {title:"수주번호", field:"ord_code", sorter:"string", width:120,
+			        hozAlign:"center"},	
+		        {title:"입고일", field:"ord_input", sorter:"string", width:120,
+			        hozAlign:"center"},	
+		        {title:"입고수량", field:"ord_su", sorter:"string", width:100,
+			        hozAlign:"center"},	
+		        {title:"입고중량", field:"ord_amnt", sorter:"string", width:100,
+			        hozAlign:"center"},
+		        {title:"작업지시수량", field:"jisi_h_su", sorter:"string", width:100,
+			        hozAlign:"center"},
+		        {title:"작업완료수량", field:"jisi_suc_su", sorter:"string", width:100,
+			        hozAlign:"center"},
+		        {title:"거래처", field:"corp_name", sorter:"string", width:120,
+		        	hozAlign:"center", headerFilter:"input"},		        
+		        {title:"품명", field:"prod_name", sorter:"string", width:220,
+		        	hozAlign:"center", headerFilter:"input"},
+		        {title:"품번", field:"prod_no", sorter:"string", width:200,
+		        	hozAlign:"center", headerFilter:"input"},
+		        {title:"입고중량", field:"ord_danj", sorter:"string", width:100,
+			        hozAlign:"center", headerFilter:"input", visible:false},	
+		        {title:"소입경도", field:"prod_pg", sorter:"string", width:100,
+			        hozAlign:"center", headerFilter:"input", visible:false},	
+		        {title:"경화깊이", field:"prod_gd", sorter:"int", width:220,
+		        	hozAlign:"center", headerFilter:"input", visible:false},
+		        //출고정보 추가예정
+		        {title:"jisi_h_pre_temp", field:"jisi_h_pre_temp", visible:false},
+		        {title:"jisi_h_chim_temp", field:"jisi_h_chim_temp", visible:false},
+		        {title:"jisi_h_diff_temp", field:"jisi_h_diff_temp", visible:false},
+		        {title:"jisi_h_gang_temp", field:"jisi_h_gang_temp", visible:false},
+		        {title:"jisi_h_crack_temp", field:"jisi_h_crack_temp", visible:false},
+		        {title:"jisi_h_cold_temp", field:"jisi_h_cold_temp", visible:false},
+		        {title:"jisi_h_pre_time", field:"jisi_h_pre_time", visible:false},
+		        {title:"jisi_h_chim_time", field:"jisi_h_chim_time", visible:false},
+		        {title:"jisi_h_diff_time", field:"jisi_h_diff_time", visible:false},
+		        {title:"jisi_h_gang_time", field:"jisi_h_gang_time", visible:false},
+		        {title:"jisi_h_crack_time", field:"jisi_h_crack_time", visible:false},
+		        {title:"jisi_h_cold_time", field:"jisi_h_cold_time", visible:false},
+		        {title:"jisi_h_pre_cp", field:"jisi_h_pre_cp", visible:false},
+		        {title:"jisi_h_chim_cp", field:"jisi_h_chim_cp", visible:false},
+		        {title:"jisi_h_diff_cp", field:"jisi_h_diff_cp", visible:false},
+		        {title:"jisi_h_gang_cp", field:"jisi_h_gang_cp", visible:false},
+		        {title:"jisi_h_crack_cp", field:"jisi_h_crack_cp", visible:false},
+		        {title:"jisi_h_rx", field:"jisi_h_rx", visible:false},
+		        {title:"jisi_h_lpg", field:"jisi_h_lpg", visible:false},
+		        {title:"jisi_h_agi", field:"jisi_h_agi", visible:false},
+		        {title:"jisi_t_temp", field:"jisi_t_temp", visible:false},
+		        {title:"jisi_t_time", field:"jisi_t_time", visible:false},
+		    	{field:"jisi_j_code", visible:false},
+		    	{field:"jisi_h_code", visible:false},
+		    ],
+		    rowFormatter:function(row){
+			    var data = row.getData();
+			    
+			    row.getElement().style.fontWeight = "700";
+				row.getElement().style.backgroundColor = "#FFFFFF";
+			},
+			rowClick:function(e, row){
+
+				$("#workHTabu .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
+						
+					if($(this).hasClass("row_select")){							
+						$(this).removeClass('row_select');
+						row.getElement().className += " row_select";
+					}else{
+						$("#workHTabu div.row_select").removeClass("row_select");
+						row.getElement().className += " row_select";	
+					}
 				});
 			}
 		});		
 	}
 	
 	
-	//검색버튼 눌렀을 때
-	//바코드 스캔 이후	
-	var workjData = new Array();
-	function getWorkJBarcode(){
-		var barcode = $("#barcode").val();
-		$.ajax({
-			url:"/tkheat/production/workInstruction/getWorkJBarcode",
-			type:"post",
-			dataType:"json",
-			data:{"barcode":barcode},
-			success:function(result){
-//				console.log(result);
-				
-				var data = result.data;
-				
-				if(data != "조회된 데이터 없음"){
-				
-					//현재 검색된 데이터가 리스트에 있는지 없는지비교					
-					var workjTableData = workjTable.getData();
-					var chk = true;
-					
-					for(var wData in workjTableData){
-						if(workjTableData[wData].ord_code == data.ord_code){
-							chk = false;
-							break;
-						}
-					}
-					
-					if(chk){
-						
-						var obj = {
-								"ord_code":data.ord_code,
-								"ord_date":data.ord_date,
-								"ord_su":data.ord_su,
-								"ord_danj":data.ord_danj,
-								"corp_name":data.corp_name,
-								"prod_name":data.prod_name,
-								"prod_no":data.prod_no,
-								"prod_pg":data.prod_pg,
-								"prod_gd":data.prod_gd,
-								"wstd_t32":data.wstd_t32,
-								"wstd_t33":data.wstd_t33,
-								"wstd_t41":data.wstd_t41,
-								"wstd_t87":data.wstd_t87,
-								"wstd_t43":data.wstd_t43,
-								"wstd_t44":data.wstd_t44,
-								"wstd_t51":data.wstd_t51,
-								"wstd_t52":data.wstd_t52,
-								"wstd_t53":data.wstd_t53,
-								"wstd_t54":data.wstd_t54,
-								"wstd_t30":data.wstd_t30,
-								"prod_danj":data.prod_danj
-							}
-							$("input[name='ilbo_su']").val(data.ord_su);
-							$("input[name='ilbo_jung']").val(data.ord_danj);
-							$("input[name='ord_code']").val(data.ord_code);
-							workjData.push(obj);
-							workjTable.setData(workjData);
-					}
-				}
-			}
-		})
-	}
-	
-	function workJSave(){
+	function workHSave(){
 		//form태그값 조회		
-		var formData = new FormData($("#workJForm")[0]);
+		var formData = $("#workHForm").serialize();
+		var formJson = {};
+		
+//		console.log(formData);
+		
+		formData.split("&").forEach(data => {
+			const [key,value] = data.split("=");
+/*			var v_value = " ";
+			if(value.length > 0){v_value = decodeURIComponent(value)}*/
+			formJson[key] = decodeURIComponent(value);
+		});
+		
+		var formJsonString = JSON.stringify(formJson);
+		
+		var hDataList = workHDataTable.getData();
+		
+		var objParams = {
+			"hDataList":hDataList,
+			"hDataForm":formJson
+		};
+
+		var jsonData = JSON.stringify(objParams);
+		jQuery.ajaxSettings.traditional = true;		
 		
 	    $.ajax({
-	        url: "/tkheat/production/workInstruction/workJSave",
-	        type: "POST",
-	        data: formData,
-	        contentType: false,
-	        processData: false,
-	        dataType: "json",
+	        url: "/tkheat/production/workInstruction/workJisiHSave",
+            type: "post",
+            dataType: "json",
+            data:{"jsonData" : jsonData
+            },
 	        success: function(result) {
-				console.log(result);
-				$("#workJForm")[0].reset();
-				workJCloseBtn();
+//	        	console.log(result.data1);
+//	        	console.log(result.data2);
+				$("#workHForm")[0].reset();
+				workHCloseBtn();
+				getWorkJisiAllListData();
 	        },
 	        error: function(xhr, status, error) {
 	            console.error("저장 오류:", error);
@@ -1012,144 +1808,32 @@ input[type="date"] {
 		
 	}
 	
-	var workaTable;
-	function getWorkAList(){
-		
-		workaTable = new Tabulator("#workATabu", {
-		    height:"200px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#workATabu .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		        {title:"바코드", field:"ord_code", sorter:"string", width:120,
-			        hozAlign:"center"},	
-		        {title:"입고일", field:"ord_date", sorter:"string", width:120,
-			        hozAlign:"center"},	
-		        {title:"수량", field:"ord_su", sorter:"string", width:100,
-			        hozAlign:"center", editor:true, 
-			        cellEdited:function(cell){
-			        	//
-						var rowData = cell.getRow().getData();
-						var cellData = cell.getData();						
-						
-						var prod_danj = rowData.prod_danj;
-						var ord_su = cellData.ord_su;
-						
-						var ord_danj = prod_danj * ord_su;
-						cell.getRow().getCell("ord_danj").setValue(ord_danj);
-						$("input[name='ilbo_su']").val(ord_su);
-						$("input[name='ilbo_jung']").val(ord_danj);						
-			        }
-			    },	
-		        {title:"중량", field:"ord_danj", sorter:"string", width:100,
-			        hozAlign:"center"
-			    },
-		        {title:"거래처", field:"corp_name", sorter:"string", width:120,
-		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"품명", field:"prod_name", sorter:"string", width:160,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"품번", field:"prod_no", sorter:"string", width:160,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"소입경도", field:"prod_pg", sorter:"string", width:100,
-			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"경화깊이", field:"prod_gd", sorter:"int", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-		        //적재방법 등 추가예정.
-		        {title:"1줄/1판", field:"wstd_t32", visible:false},
-		        {title:"줄/단", field:"wstd_t33", visible:false},
-		        {title:"단/Tray", field:"wstd_t41", visible:false},
-		        {title:"추가수량", field:"wstd_t87", visible:false},
-		        {title:"적재수량", field:"wstd_t43", visible:false},
-		        {title:"Jig중량(kg)", field:"wstd_t44", visible:false},
-		        {title:"제품중량(kg)", field:"wstd_t51", visible:false},
-		        {title:"총중량(kg)", field:"wstd_t52", visible:false},
-		        {title:"적재주의사항-1", field:"wstd_t53", visible:false},
-		        {title:"적재주의사항-2", field:"wstd_t54", visible:false},
-		        {title:"적재주의사항-3", field:"wstd_t30", visible:false},
-		        {title:"적재주의사항-3", field:"prod_danj", visible:false},
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
-
-				$("#workATabu .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#workJTabu div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
-			},
-			rowDblClick:function(e, row){
-				var data = row.getData();
-				
-				Object.keys(data).forEach(function (key) {					
-			        var field = $('#workAForm .iCol div [name="' + key + '"]');
-
-			        if (field.length) {
-						console.log(field, key, data[key]);
-			            field.val(data[key]);
-			        }
-				});
-			}
-		});		
+	function workHCloseBtn(){
+		$("#workHForm")[0].reset();
+		workHModal.style.display = 'none'; // 모달 숨김
+	}
+	function workJisiReportCloseBtn(){
+		workJisiReportModal.style.display = 'none'; // 모달 숨김
+	}
+	function workJHCloseBtn(){
+		workJHModal.style.display = 'none'; // 모달 숨김
+	}
+	function workPrintStatusCloseBtn(){
+		workPrintStatusModal.style.display = 'none'; // 모달 숨김
+	}
+	function workHIpgoCloseBtn(){		
+		workHIpgoModal.style.display = 'none'; // 모달 숨김
 	}
 	
-	function workSetCloseBtn(){
-		workSetData = new Array();
-		workSetTable.setData(workSetData);
-		workSetModal.style.display = 'none'; // 모달 숨김
-		
-	}
-	function workWaitCloseBtn(){
-		workWaitModal.style.display = 'none'; // 모달 숨김
-	}
-	function workSelectCloseBtn(){
-		workSelectModal.style.display = 'none'; // 모달 숨김
-	}
-	function workJCloseBtn(){
-		workJModal.style.display = 'none'; // 모달 숨김
-	}
-	function workACloseBtn(){
-		workAModal.style.display = 'none'; // 모달 숨김
-	}
-
 	
 	//모달기능
-	const workSetModal = document.querySelector('.workSetModal');
-	const workWaitModal = document.querySelector('.workWaitModal');
-	const workSelectModal = document.querySelector('.workSelectModal');
-	const workJModal = document.querySelector('.workJModal');
-	const workAModal = document.querySelector('.workAModal');
+	const workHIpgoModal = document.querySelector('.workHIpgoModal');
+	const workHModal = document.querySelector('.workHModal');
+	const workJHModal = document.querySelector('.workJHModal');
+	const workJisiReportModal = document.querySelector('.workJisiReportModal');
+	const workPrintStatusModal = document.querySelector('.workPrintStatusModal');
 	
 	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
-	const insertButton = document.querySelector('.insert-button');
-	const workSetCloseButton = document.querySelector('.workSetClose');
-	const workWaitCloseButton = document.querySelector('.workWaitClose');
-
-	function workWaitSearch(){
-		getWorkWaitList();
-		
-//		getWorkWaitListData();
-		workWaitModal.style.display = 'block'; // 모달 표시
-	}
-	
 	
 	header.addEventListener('mousedown', function(e) {
 		// transform 제거를 위한 초기 위치 설정
@@ -1178,12 +1862,25 @@ input[type="date"] {
 		
 
 	// 모달 열기
+	//단취등록
+	$("#jAddBtn").on("click",function(){
+		$("#workJForm")[0].reset();
+		getWorkJData();
+		$("#jisi_j_sdate").val(yesterDate());
+		$("#jisi_j_edate").val(todayDate());
+		
+		getWorkJList();
+		
+		workJModal.style.display = 'block'; // 모달 표시
+	});
 
-	insertButton.addEventListener('click', function() {
-//		getIpgoAddList();
-//		getWorkSetList();
-//		get
-		workSelectModal.style.display = 'block'; // 모달 표시
+	
+	//열처리등록
+	$("#hAddBtn").on("click",function(){
+
+		getWorkHList();
+		workHModal.style.display = 'block'; // 모달 표시
+		
 	});
 	
     </script>

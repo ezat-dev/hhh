@@ -94,6 +94,17 @@ function yesterDate(){
 	return y+"-"+m+"-"+d; 	
 }
 
+//일주일전날짜 년-월-일
+function beforeWeekDate(){
+	var now = new Date();
+	now.setDate(now.getDate() - 7);
+	var y = now.getFullYear();
+	var m = paddingZero(now.getMonth()+1);
+	var d = paddingZero(now.getDate());
+		
+	return y+"-"+m+"-"+d; 	
+}
+
 //현재시간
 function nowTime(){
 	var now = new Date();

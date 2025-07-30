@@ -1,0 +1,740 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="workjisi">
+
+	<!-- 입고관리 -->
+
+	<!-- 입고 조회 -->
+	<select id="getIpgoList" parameterType="workjisi" resultType="workjisi">
+		SELECT ORDERT.ORD_PRN,
+		ORDERT.ORD_CODE,
+		PRODUCT.PROD_CODE,
+		CONVERT(VARCHAR,ORDERT.ORD_DATE,23) AS ORD_DATE,
+		CORP.CORP_NAME,
+		PRODUCT.PROD_NAME,		
+		CONVERT(VARCHAR,ORDERT.ORD_NAP,23) AS ORD_NAP,
+		PRODUCT.PROD_NO,
+		PRODUCT.PROD_GYU,
+		PRODUCT.PROD_JAI,
+		PRODUCT.PROD_PG + '
+		' + PRODUCT.PROD_PG1 + '~' + PRODUCT.PROD_PG2 AS prod_pg,
+		PRODUCT.PROD_SG + ' ' + PRODUCT.PROD_SG1 + '~' + PRODUCT.PROD_SG2 AS
+		Prod_sg,
+		PRODUCT.PROD_GD4 + '~' + PRODUCT.PROD_GD5 AS Prod_cd,
+		PRODUCT.PROD_E1,
+		TECHIN.TECH_TE,
+		ORDERT.ORD_LOT,
+		ORDERT.ORD_GYU,
+		ROUND((ORDERT.ORD_SU * ORDERT.ORD_DANJ),2) AS ORD_AMNT,
+		ORD_DANG,
+		ORDERT.ORD_MON,
+		ORDERT.ORD_DANW,
+		ROUND(ORDERT.ORD_SU, 1) as ORD_SU, ORDERT.ORD_SUNIP,
+		case when ORD_CHULHACHECK ='true' then '출고' else '미출고' END AS
+		ORD_CHULHACHECK,
+		ORDERT.ORD_DANJ,
+		ORDERT.ORD_BIGO,
+		ORDERT.ORD_NAME,
+		CASE
+		WHEN [ORDERT].[ORD_T02] = '1'
+		THEN 'O'
+		ELSE 'X'
+		END AS ORD_T02,
+		CASE
+		WHEN
+		[ORDERT].[ORD_T01] = '1'
+		THEN 'O'
+		ELSE 'X'
+		END AS ORD_T01,
+		ORDERT.ORD_BOXSU,
+		IPTEST.ITST_WP
+		FROM ORDERT
+		INNER JOIN PRODUCT ON
+		ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+		INNER JOIN CORP ON
+		PRODUCT.CORP_CODE = CORP.CORP_CODE
+		INNER JOIN IPTEST ON ORDERT.ORD_CODE
+		= IPTEST.ORD_CODE
+		LEFT OUTER JOIN TECHIN ON PRODUCT.TECH_NO =
+		TECHIN.TECH_NO
+		WHERE CONVERT(CHAR(19),ORDERT.ORD_DATE,120) BETWEEN
+		CONCAT(#{sdate},' 00:00:00') AND CONCAT(#{edate},' 23:59:59')
+		<!-- <if test="corp_name != null"> AND CORP.CORP_NAME LIKE '%'+ #{corp_name} 
+			+'%' </if> <if test="prod_name != null"> AND PRODUCT.PROD_NAME LIKE '%'+ 
+			#{prod_name} +'%' </if> <if test="prod_no != null"> AND PRODUCT.PROD_NO LIKE 
+			'%'+ #{prod_no} +'%' </if> <if test="prod_gyu != null"> AND PRODUCT.PROD_GYU 
+			LIKE '%'+ #{prod_gyu} +'%' </if> <if test="ord_code != null"> AND ORDERT.ORD_CODE 
+			LIKE '%'+ #{ord_code} +'%' </if> <if test="prod_jai != null"> AND PRODUCT.PROD_JAI 
+			LIKE '%'+ #{prod_jai} +'%' </if> <if test="ord_name != null"> AND ORDERT.ORD_NAME 
+			LIKE '%'+ #{ord_name} +'%' </if> <if test="ord_lot != null"> AND ORDERT.ORD_LOT 
+			LIKE '%'+ #{ord_lot} +'%' </if> <if test="tech_te != null"> AND TECHIN.TECH_TE 
+			LIKE '%'+ #{tech_te} +'%' </if> <if test="ORD_PRN != ''"> AND ORDERT.ORD_PRN 
+			like '%'+#{ORD_PRN}+'%' </if> <if test="prod_gubn != null"> AND PRODUCT.PROD_GUBN 
+			LIKE + '%' + CASE #{prod_gubn} WHEN '양산' THEN '양산' WHEN '개발' THEN '개발' ELSE 
+			'' END + '%' </if> -->
+	</select>
+
+	<!-- 입고등록 리스트 -->
+	<select id="getIpgoAddList" parameterType="workjisi"
+		resultType="workjisi">
+		SELECT PRODUCT.PROD_CODE, CORP.CORP_NAME, PRODUCT.PROD_NAME,
+		PRODUCT.PROD_NO, PRODUCT.PROD_GYU, PRODUCT.PROD_JAI, TECHIN.TECH_TE,
+		CONCAT(PRODUCT.PROD_PG,' ',PRODUCT.PROD_PG1,'~',PRODUCT.PROD_PG2) AS
+		Prod_PG, CONCAT(PRODUCT.PROD_SG,'
+		',PRODUCT.PROD_SG1,'~',PRODUCT.PROD_SG2) AS Prod_SG,
+		CONCAT(PRODUCT.PROD_GD4,'~',PRODUCT.PROD_GD5) AS Prod_Cd,
+		PRODUCT.PROD_GUBN, PRODUCT.PROD_E1, PRODUCT.PROD_E3,
+		PRODUCT.PROD_DANW, PRODUCT.PROD_DANJ, PRODUCT.PROD_DANG,
+		PRODUCT.PROD_CNO, PRODUCT.PROD_GD1, PRODUCT.PROD_GD2,
+		PRODUCT.PROD_GD3, PRODUCT.PROD_BOXSU FROM PRODUCT INNER JOIN CORP ON
+		PRODUCT.CORP_CODE = CORP.CORP_CODE LEFT OUTER JOIN TECHIN ON
+		PRODUCT.TECH_NO = TECHIN.TECH_NO
+		<!-- <where> <if test="corpName != ''"> CORP.CORP_NAME LIKE '%' + #{corpName} 
+			+ '%' </if> <if test="prodName != ''"> AND PRODUCT.PROD_NAME LIKE '%' + #{prodName} 
+			+ '%' </if> <if test="prodNo != ''"> AND PRODUCT.PROD_NO LIKE '%' + #{prodNo} 
+			+ '%' </if> <if test="prodGyu != ''"> AND PRODUCT.PROD_GYU LIKE '%' + #{prodGyu} 
+			+ '%' </if> <if test="prodJai != ''"> AND PRODUCT.PROD_JAI LIKE '%' + #{prodJai} 
+			+ '%' </if> <if test="techTe != ''"> AND TECHIN.TECH_TE LIKE '%' + #{techTe} 
+			+ '%' </if> <if test="prodGubn != ''"> AND PRODUCT.PROD_GUBN LIKE + '%' + 
+			CASE #{prodGubn} WHEN '양산' THEN '양산' WHEN '개발' THEN '개발' ELSE '' END + '%' 
+			</if> </where> -->
+	</select>
+
+	<insert id="setIpgoAdd" parameterType="workjisi" keyProperty="ord_code">
+		<selectKey resultType="int" keyProperty="ord_code" order="BEFORE">
+			select isnull(MAX(ORD_CODE), cast(substring(CONCAT(#{ord_code},''), 3, 8)+'000' AS numeric))+1 
+			from ORDERT 
+			where ord_code>cast(substring(CONCAT(#{ord_code},''), 3, 8)+'000' AS numeric)
+		</selectKey>
+		INSERT INTO ORDERT
+           (ORD_CODE, ORD_PRN,
+		   ORD_INPUT, PROD_CODE, ORD_DATE, ORD_NAP, ORD_LOT, 
+		   ORD_DANW, ORD_DANG, ORD_DANJ, ORD_SU, ORD_AMNT,
+		   ORD_MON, ORD_NAME, ORD_GYU, ORD_SUNIP,ORD_BOXSU)
+     VALUES(
+           #{ord_code}, 0 ,
+		   #{ord_date}, #{prod_code}, #{ord_date}, DATEADD(DAY,10,#{ord_date}), '',
+		   #{ord_danw}, #{ord_dang}, #{ord_danj}, #{ord_su}, #{ord_amnt},
+		   #{ord_mon}, #{ord_name}, '', '선입1', #{ord_boxsu})
+	</insert>
+	
+	<insert id="setIpgoTest" parameterType="workjisi">
+		INSERT INTO IPTEST(
+				ITST_CODE, 
+				ORD_CODE, ITST_POOR,
+				ITST_DATE, ITST_WP, ITST_WN, ITST_WS, ITST_SU,
+				ITST_05N, ITST_05S, ITST_03N, ITST_03S, ITST_01N, ITST_01S,
+				ITST_051, ITST_052, ITST_053, ITST_054, ITST_055,
+				ITST_031, ITST_032, ITST_033, ITST_034, ITST_035,
+				ITST_011, ITST_012, ITST_013, ITST_014, ITST_015,
+				ITST_P,ITST_06N,ITST_06S,ITST_07N,ITST_07S,ITST_08N,ITST_08S,
+				ITST_04N,ITST_04S,ITST_02N,ITST_02S,ITST_11N, ITST_12N, ITST_121, ITST_122, ITST_123, ITST_124,
+				ITST_111, ITST_112, ITST_113, ITST_114
+			) 
+				SELECT ISNULL(MAX(ITST_CODE), 0)+1, 
+				#{ord_code}, '',
+				#{ord_date}, '검사대기', '외관', '녹없을것', '5EA',
+				'가공칩', '가공칩없을것', '이물질', '이물질없을것', '찍힘', '찍힘없을것',
+				'OK', 'OK', 'OK', 'OK', 'OK', 
+				'OK', 'OK', 'OK', 'OK', 'OK', 
+				'OK', 'OK', 'OK', 'OK', 'OK', 
+				#{ord_name},
+				#{prod_chisu1n},#{prod_chisu1s},#{prod_chisu2n},#{prod_chisu2s},
+				#{prod_chisu3n},#{prod_chisu3s},
+				#{prod_chisu4n},#{prod_chisu4s},#{prod_chisu5n},#{prod_chisu5s}, 
+				'OK', 'OK', 'OK', 'OK', 'OK', 'OK', 'OK', 'OK', 'OK', 'OK'  
+		FROM IPTEST
+	</insert>
+
+	<select id="getProductData" parameterType="workjisi" resultType="product">
+		SELECT *
+		FROM PRODUCT
+		WHERE prod_code = #{prod_code}
+	</select>
+	
+	<!-- 입고관리 - 열처리수주서 출력 -->
+	<select id="ipgoListPrintBeforeHeat" parameterType="workjisi" resultType="workjisi">
+	    SELECT 
+	    	LEFT(CONVERT(varchar, ORDERT.ORD_DATE, 120), 10) AS ord_date,
+	    	ORDERT.ord_code, ord_nap, corp_name, prod_name, prod_no, prod_gyu, ord_lot,
+	        tech_te, prod_jai, ord_su, (ord_su * ord_danj) AS ord_jung, ord_amnt, ord_danj, prod_upjong, prod_pg, prod_gd1, prod_gd3,
+	        prod_gd2, prod_polish, prod_sg, prod_whadeep, itst_wp, prod_vnyl, prod_plt, prod_pad, prod_danch,
+	        prod_bangch, ord_bigo, prod_note, ord_sunip, ord_name, ord_boxsu,
+	        prod_sg1, prod_sg2, prod_pg1, prod_pg2, prod_gd4, prod_gd5, PRODUCT.prod_code, prod_e1,prod_e2,
+	        'http://127.0.0.1:8082/tkPrint/asd.png' AS prod_img
+	    FROM ORDERT AS ORDERT
+        INNER JOIN PRODUCT AS PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+        INNER JOIN CORP AS 	 CORP 	 ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+        INNER JOIN TECHIN AS	 TECHIN  ON PRODUCT.TECH_NO = TECHIN.TECH_NO
+        LEFT OUTER JOIN IPTEST AS IPTEST ON ORDERT.ORD_CODE = IPTEST.ORD_CODE
+        WHERE ORDERT.ord_code = #{ord_code}
+        
+        UPDATE ORDERT SET ord_prn = ord_prn+1
+        WHERE ord_code = #{ord_code} 
+	</select>
+
+	<!-- 입고리스트 수정 -->
+	<update id="getIpgoListUpdate" parameterType="workjisi">
+		UPDATE ORDERT SET
+		${cell_field} = #{cell_value}
+		WHERE ord_code = #{cell_code}
+	</update>
+
+	<!-- 작업지시 -->
+	<select id="workJisiAllList" parameterType="workjisi" resultType="workjisi">
+		SELECT 
+		CONVERT(VARCHAR(20),A.ord_input,23) AS ord_input, A.ord_code,
+		B.jisi_h_regtime, 
+		CASE WHEN jisi_lot IS NULL THEN ''
+			 ELSE CONCAT('TK',
+			 			LEFT(jisi_lot,6),'-',SUBSTRING(jisi_Lot,7,2), 
+			 			CASE WHEN RIGHT(jisi_lot,1) = '1' THEN 'A' 
+			 				 WHEN RIGHT(jisi_lot,1) = '2' THEN 'B' 
+			 				 ELSE RIGHT(jisi_lot,1) 
+			 			END 
+			 		)			 			
+		END AS jisi_lot_view, jisi_lot,
+		E.fac_name, D.corp_name, C.prod_name, C.prod_no,
+		A.ord_su, ISNULL(B.jisi_h_su,0) AS jisi_h_su
+		FROM tb_workheat B
+		LEFT OUTER JOIN
+			ordert A
+		ON A.ord_code = B.jisi_ord_code
+		LEFT OUTER JOIN
+			PRODUCT C
+		ON A.prod_code = C.prod_code
+		LEFT OUTER JOIN
+			CORP D
+		ON D.CORP_CODE = C.CORP_CODE
+		LEFT OUTER JOIN
+			FACILITY E
+		ON E.FAC_CODE = B.jisi_h_hogi
+		WHERE 1=1
+		AND B.jisi_h_regtime >= CONCAT(#{jisi_sdate},' 00:00:00')
+		AND B.jisi_h_regtime <![CDATA[<=]]> CONCAT(#{jisi_edate},' 23:59:59')
+		ORDER BY A.ord_code, B.jisi_lot	
+	</select>
+
+	<select id="workJisiReadyIpgoList" parameterType="workjisi" resultType="workjisi">
+		SELECT ORDERT.ORD_PRN,
+		ORDERT.ORD_CODE,
+		PRODUCT.PROD_CODE,
+		ORDERT.ORD_DATE,
+		CORP.CORP_NAME,
+		PRODUCT.PROD_NAME,
+		ORDERT.ORD_NAP,
+		PRODUCT.PROD_NO,
+		PRODUCT.PROD_GYU,
+		PRODUCT.PROD_JAI,
+		PRODUCT.PROD_PG + '
+		' + PRODUCT.PROD_PG1 + '~' + PRODUCT.PROD_PG2 AS prod_pg,
+		PRODUCT.PROD_SG + ' ' + PRODUCT.PROD_SG1 + '~' + PRODUCT.PROD_SG2 AS
+		Prod_sg,
+		PRODUCT.PROD_GD4 + '~' + PRODUCT.PROD_GD5 AS Prod_cd,
+		PRODUCT.PROD_GD1 + ' ' + PRODUCT.PROD_GD3 + ' '+ PRODUCT.PROD_GD2 +'기준 '+ PRODUCT.PROD_GD4 + '~' + PRODUCT.PROD_GD5 AS PROD_GD,
+		PRODUCT.PROD_E1,
+		TECHIN.TECH_TE,
+		ORDERT.ORD_LOT,
+		ORDERT.ORD_GYU,
+		ROUND(ORD_AMNT,2) AS ORD_AMNT,
+		ORD_DANG,
+		ORDERT.ORD_MON,
+		ORDERT.ORD_DANW,
+		ROUND(ORDERT.ORD_SU, 1) as ORD_SU, ORDERT.ORD_SUNIP,
+		case when ORD_CHULHACHECK ='true' then '출고' else '미출고' END AS
+		ORD_CHULHACHECK,
+		ORDERT.ORD_DANJ,
+		ORDERT.ORD_BIGO,
+		ORDERT.ORD_NAME,
+		CASE
+		WHEN [ORDERT].[ORD_T02] = '1'
+		THEN 'O'
+		ELSE 'X'
+		END AS ORD_T02,
+		CASE
+		WHEN
+		[ORDERT].[ORD_T01] = '1'
+		THEN 'O'
+		ELSE 'X'
+		END AS ORD_T01,
+		ORDERT.ORD_BOXSU,
+		IPTEST.ITST_WP,
+		STD.WSTD_T32, STD.WSTD_T33, STD.WSTD_T41, STD.WSTD_T42, STD.WSTD_T87,
+		STD.WSTD_T43, STD.WSTD_T44, STD.WSTD_T51, STD.WSTD_T52, STD.WSTD_T53,
+		STD.WSTD_T54, STD.WSTD_T30, jisi_j_save_su, jisi_h_save_su
+		FROM ORDERT
+		INNER JOIN PRODUCT ON
+		ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+		INNER JOIN CORP ON
+		PRODUCT.CORP_CODE = CORP.CORP_CODE
+		INNER JOIN IPTEST ON ORDERT.ORD_CODE
+		= IPTEST.ORD_CODE
+		LEFT OUTER JOIN TECHIN ON PRODUCT.TECH_NO =
+		TECHIN.TECH_NO
+		LEFT OUTER JOIN
+		(
+			SELECT prod_code, 
+			MAX(WSTD_CODE) AS WSTD_CODE,
+			MAX(WSTD_T32) AS WSTD_T32,
+			MAX(WSTD_T33) AS WSTD_T33,
+			MAX(WSTD_T41) AS WSTD_T41,
+			MAX(WSTD_T42) AS WSTD_T42,
+			MAX(WSTD_T87) AS WSTD_T87,
+			MAX(WSTD_T43) AS WSTD_T43,
+			MAX(WSTD_T44) AS WSTD_T44,
+			MAX(WSTD_T51) AS WSTD_T51,
+			MAX(WSTD_T52) AS WSTD_T52,
+			MAX(WSTD_T53) AS WSTD_T53,
+			MAX(WSTD_T54) AS WSTD_T54,
+			MAX(WSTD_T30) AS WSTD_T30
+			FROM workstd
+			GROUP BY prod_code
+		) AS STD
+		ON PRODUCT.PROD_CODE = STD.PROD_CODE
+		LEFT OUTER JOIN
+		(
+			SELECT ord_code AS jisi_save_ord_code, 
+			ISNULL(SUM(jisi_j_su),0) AS jisi_j_save_su, ISNULL(SUM(jisi_h_su),0) AS jisi_h_save_su
+			FROM tb_workdanch A
+			LEFT OUTER JOIN
+				tb_workheat B
+			ON A.jisi_j_code = B.jisi_j_code_ref
+			GROUP BY ord_code		
+		) AS SAVE_SU
+		ON ORDERT.ORD_CODE = SAVE_SU.jisi_save_ord_code
+		WHERE CONVERT(CHAR(19),ORDERT.ORD_DATE,120) BETWEEN
+		CONCAT(#{jisi_j_sdate},' 00:00:00') AND CONCAT(#{jisi_j_edate},' 23:59:59')
+	</select>
+
+
+	<select id="setWorkJisiJSaveChk" parameterType="work" resultType="work">
+		SELECT *
+		FROM tb_workdanch
+		WHERE 1=1 
+		AND jisi_j_code = #{jisi_j_code}
+	</select>
+
+	<select id="workJisiHeatJisiList" parameterType="workjisi" resultType="workjisi">
+		SELECT 
+			ISNULL(E.jisi_h_su,0) AS jisi_h_su, ROUND(ISNULL(E.jisi_h_jung,0),2) AS jisi_h_jung, 
+			ISNULL(E.jisi_h_code,0) AS jisi_h_code,
+			CONVERT(VARCHAR(10),A.ord_input,23) AS ord_input, A.ord_code, A.ord_su, A.ord_danj, 
+			B.prod_no, B.prod_name, C.corp_name,
+			B.PROD_PG + '' + B.PROD_PG1 + '~' + B.PROD_PG2 AS jisi_h_work_q_hard_std,
+			B.PROD_GD1 + ' ' + B.PROD_GD3 + ' '+ B.PROD_GD2 +'기준 '+ B.PROD_GD4 + '~' + B.PROD_GD5 AS jisi_h_work_q_hard_std2,
+			D.wstd_gj11 AS jisi_h_pre_temp, D.wstd_gj12 AS jisi_h_chim_temp, D.wstd_gj13 AS jisi_h_diff_temp, 
+			D.wstd_gj14 AS jisi_h_gang_temp, D.wstd_gj15 AS jisi_h_crack_temp, D.wstd_gj16 AS jisi_h_cold_temp,
+			D.wstd_gj21 AS jisi_h_pre_time, D.wstd_gj22 AS jisi_h_chim_time, D.wstd_gj23 AS jisi_h_diff_time,
+			D.wstd_gj24 AS jisi_h_gang_time, D.wstd_gj25 AS jisi_h_crack_time, D.wstd_gj26 AS jisi_h_cold_time,
+			D.wstd_gj31 AS jisi_h_pre_cp, D.wstd_gj32 AS jisi_h_chim_cp, D.wstd_gj33 AS jisi_h_diff_cp,
+			D.wstd_gj34 AS jisi_h_gang_cp, D.wstd_gj35 AS jisi_h_crack_cp, 
+			CASE WHEN D.wstd_gj42 IS NOT NULL THEN D.wstd_gj42
+				 WHEN D.wstd_gj43 IS NOT NULL THEN D.wstd_gj43
+				 WHEN D.wstd_gj44 IS NOT NULL THEN D.wstd_gj44 END AS jisi_h_rx,
+			CASE WHEN D.wstd_gj52 IS NOT NULL THEN D.wstd_gj52
+				 WHEN D.wstd_gj53 IS NOT NULL THEN D.wstd_gj53
+				 WHEN D.wstd_gj54 IS NOT NULL THEN D.wstd_gj54 END AS jisi_h_lpg,
+			D.wstd_gj17 AS jisi_h_agi,
+			D.wstd_ready AS jisi_t_temp, D.wstd_worktime AS jisi_t_time,
+			D.WSTD_T32, D.WSTD_T33, D.WSTD_T41, D.WSTD_T42, D.WSTD_T87,
+			D.WSTD_T43, D.WSTD_T44, D.WSTD_T51, D.WSTD_T52, D.WSTD_T53,
+			D.WSTD_T54, D.WSTD_T30, 0 AS jisi_default_su
+		FROM ORDERT A
+		LEFT OUTER JOIN
+			PRODUCT B
+		ON A.PROD_CODE = B.PROD_CODE
+		LEFT OUTER JOIN
+			CORP C
+		ON B.CORP_CODE = C.CORP_CODE
+		LEFT OUTER JOIN
+		(
+			SELECT *,
+			ROW_NUMBER() OVER(PARTITION BY prod_code ORDER BY prod_code) AS rnum
+			FROM workstd
+		) D
+		ON B.PROD_CODE = D.PROD_CODE
+		LEFT OUTER JOIN
+		(
+			SELECT 
+				jisi_ord_code, 
+				SUM(jisi_h_su) AS jisi_h_su, 
+				ROUND(SUM(jisi_h_jung),2) AS jisi_h_jung, 
+				MAX(jisi_h_code) AS jisi_h_code
+			FROM tb_workheat
+			GROUP BY jisi_ord_code		
+		) E
+		ON A.ord_code = E.jisi_ord_code
+		WHERE ord_code IN
+		<foreach collection="ord_code_array" item="ord_code" open="(" separator="," close=")">
+			#{ord_code}
+		</foreach>
+		AND D.rnum = 1
+	</select>
+
+	<select id="getWorkJisiLot" parameterType="workjisi" resultType="string">
+		
+		SELECT CONCAT(CONVERT(VARCHAR(6),GETDATE(),12),#{jisi_h_hogi},
+		(
+			(				
+				SELECT COUNT(h_count)+1
+				FROM (
+					SELECT jisi_lot, COUNT(*) AS h_count
+					FROM tb_workheat
+					WHERE 1=1
+					AND jisi_h_hogi = #{jisi_h_hogi}
+					AND CONVERT(VARCHAR(6),jisi_h_regtime,12) = CONVERT(VARCHAR(6),GETDATE(),12)
+					GROUP BY jisi_lot
+				) AS A				
+			)
+		),
+		 	(SELECT COUNT(ccc)-1
+			FROM (
+				SELECT prod_code, COUNT(*) AS ccc
+				FROM ordert
+				WHERE ord_code IN 
+				<foreach collection="ord_code_array" item="ord_code" open="(" separator="," close=")">
+					#{ord_code}
+				</foreach>
+				GROUP BY prod_code
+			) AS B)
+		) AS jisi_lot		
+		
+	</select>
+
+	<select id="workHeatListPrint" parameterType="workjisi" resultType="workjisi">
+		SELECT 
+		A.jisi_lot, E.fac_name, C.ord_code, F.corp_name,
+		D.prod_name, D.prod_no, D.prod_jai,
+		D.PROD_PG + '' + D.PROD_PG1 + ' 이상' AS prod_cd,
+		D.PROD_GD1 + ' ' + D.PROD_GD3 + ' '+ D.PROD_GD2 +'기준 '+ D.PROD_GD4 + '~' + D.PROD_GD5 AS prod_gd,
+		'~' AS aaa,
+		D.prod_e1,
+		A.jisi_h_su, ROUND(A.jisi_h_jung,2) AS jisi_h_jung,
+		A.jisi_h_pre_temp, A.jisi_h_chim_temp, A.jisi_h_diff_temp, A.jisi_h_gang_temp,
+		A.jisi_h_pre_time, A.jisi_h_chim_time, A.jisi_h_diff_time, A.jisi_h_gang_time,
+		A.jisi_h_chim_cp, A.jisi_h_diff_cp, A.jisi_h_gang_cp,
+		A.jisi_h_cold_time, A.jisi_h_cold_temp,
+		A.jisi_t_temp, A.jisi_t_time,
+		A.jisi_h_regtime,
+		G.TECH_TE,
+		H.user_name,
+		CASE WHEN jisi_lot IS NULL THEN ''
+			 ELSE CONCAT('TK',
+			 			LEFT(jisi_lot,6),'-',SUBSTRING(jisi_Lot,7,2), 
+			 			CASE WHEN RIGHT(jisi_lot,1) = '1' THEN 'A' 
+			 				 WHEN RIGHT(jisi_lot,1) = '2' THEN 'B' 
+			 				 ELSE RIGHT(jisi_lot,1) 
+			 			END 
+			 		)			 			
+		END AS jisi_lot_view		
+		FROM tb_workheat A
+		INNER JOIN
+			ORDERT C
+		ON A.jisi_ord_code = C.ord_code
+		INNER JOIN
+			PRODUCT D
+		ON C.prod_code = D.prod_code
+		INNER JOIN
+			FACILITY E
+		ON A.jisi_h_hogi = E.FAC_CODE
+		INNER JOIN
+			CORP F
+		ON F.corp_code = D.corp_code
+		INNER JOIN
+			TECHIN G
+		ON D.TECH_NO = G.TECH_NO
+		INNER JOIN
+			USERT H
+		ON A.jisi_h_user_code = H.user_code
+		WHERE 1=1
+		AND A.jisi_lot = #{jisi_lot}	
+	</select>
+	
+	<select id="workHeatListProcessPrint" parameterType="workjisi" resultType="workjisi">
+		SELECT 
+			A.jisi_h_code, A.jisi_h_su, ROUND(A.jisi_h_jung,3) AS jisi_h_jung, A.jisi_lot,
+			B.ord_code, B.ord_name, ISNULL(B.ord_bigo,'') AS ord_bigo, B.ord_lot, B.ord_gyu,
+			B.ord_su, B.ord_amnt, B.ord_mon,
+			C.prod_no, C.prod_name, C.prod_gyu, C.prod_jai, C.prod_danj,
+			C.prod_upjong, 
+			C.PROD_PG + ' ' + C.PROD_PG1 + '~' + C.PROD_PG2 AS prod_gd, -- 표면경도
+			C.PROD_GD1 + ' ' + C.PROD_GD3 + ' '+ C.PROD_GD2 +'기준 '+ C.PROD_GD4 + '~' + C.PROD_GD5 AS prod_pg, -- 경화깊이
+			C.PROD_SG + ' ' + C.PROD_SG1 + ' ~ ' + C.PROD_SG2 AS prod_sg, -- 심부경도
+			C.prod_polish, C.prod_Plt, C.prod_pad, C.prod_danch, C.prod_bangch, C.prod_note,
+			C.prod_e1,  C.prod_vnyl, 
+			CASE WHEN C.prod_fac1 = 1 THEN 'O' ELSE 'X' END AS fac1, CASE WHEN C.prod_fac2 = 1 THEN 'O' ELSE 'X' END AS fac2,
+			CASE WHEN C.prod_fac3 = 1 THEN 'O' ELSE 'X' END AS fac3, CASE WHEN C.prod_fac4 = 1 THEN 'O' ELSE 'X' END AS fac4,
+			CASE WHEN C.prod_fac5 = 1 THEN 'O' ELSE 'X' END AS fac5, CASE WHEN C.prod_fac6 = 1 THEN 'O' ELSE 'X' END AS fac6,
+			CASE WHEN C.prod_fac7 = 1 THEN 'O' ELSE 'X' END AS fac7,
+			D.corp_name, E.tech_te,
+			CEILING(B.ord_mon / B.ord_su) AS cost_ea,
+			CEILING(B.ord_mon / B.ord_amnt) AS cost_kg,
+			F.user_name, 'asd.png' AS prod_img,
+			(CEILING(B.ord_mon / B.ord_su) * jisi_h_su) AS jisi_h_cost
+		FROM tb_workheat A
+		LEFT OUTER JOIN
+			ordert B
+		ON A.jisi_ord_code = B.ord_code
+		LEFT OUTER JOIN
+			product C
+		ON B.prod_code = C.prod_code
+		LEFT OUTER JOIN
+			CORP D
+		ON C.corp_code = D.corp_code
+		LEFT OUTER JOIN
+			TECHIN E
+		ON C.tech_no = E.tech_no
+		LEFT OUTER JOIN
+			USERT F
+		ON A.jisi_h_user_code = F.user_code
+		WHERE jisi_lot = #{jisi_lot}
+	</select>
+	
+	<!-- 작업대기리스트 -->
+	<select id="workJisiHeatIpgoList" parameterType="workjisi" resultType="workjisi">
+		SELECT *
+		FROM (
+			SELECT 
+			CONVERT(VARCHAR(20),A.ord_input,23) AS ord_input, A.ord_code,		
+			D.corp_name, C.prod_name, C.prod_no, C.prod_code,
+			A.ord_su, ISNULL(B.jisi_h_su,0) AS jisi_h_su,
+			(A.ord_su - ISNULL(B.jisi_h_su,0)) AS jisi_diff_su,
+			CASE WHEN wstd_t43 = '' THEN 0
+				 ELSE REPLACE(wstd_t43,',','')
+			END AS jisi_j_su, rnum
+			FROM ordert A
+			LEFT OUTER JOIN
+			(
+				SELECT ord_code, SUM(ilbo_su) AS jisi_h_su
+				FROM workilbo
+				WHERE ilbo_gubn = 'J'
+				GROUP BY ord_code
+			) B
+			ON A.ord_code = B.ord_code
+			LEFT OUTER JOIN
+				PRODUCT C
+			ON A.prod_code = C.prod_code
+			LEFT OUTER JOIN
+				CORP D
+			ON D.CORP_CODE = C.CORP_CODE
+			LEFT OUTER JOIN			
+			(
+				SELECT *,
+				ROW_NUMBER() OVER(PARTITION BY prod_code ORDER BY prod_code) AS rnum
+				FROM workstd
+			) E
+			ON C.PROD_CODE = E.PROD_CODE			
+		) AS AA
+		WHERE 1=1
+		AND ord_input >= CONCAT(#{sdate},' 00:00:00')
+		AND ord_input <![CDATA[<=]]> CONCAT(#{edate},' 23:59:59')
+		AND jisi_diff_su > 0
+		AND rnum = 1
+		ORDER BY ord_code	
+	</select>
+	
+	<!-- 작업대기리스트 : 선입체크 -->
+	<select id="getWorkJisiHeatIpgoListRegSunip" parameterType="workjisi" resultType="workjisi">
+		SELECT *
+		FROM (
+			SELECT 
+			CONVERT(VARCHAR(20),A.ord_input,23) AS ord_input, A.ord_code,		
+			D.corp_name, C.prod_name, C.prod_no, C.prod_code,
+			A.ord_su, ISNULL(B.jisi_h_su,0) AS jisi_h_su,
+			(A.ord_su - ISNULL(B.jisi_h_su,0)) AS jisi_diff_su,
+			ISNULL(REPLACE(E.wstd_t43,',',''),0) AS jisi_j_su, rnum
+			FROM ordert A
+			LEFT OUTER JOIN
+			(
+				SELECT ord_code, SUM(ilbo_su) AS jisi_h_su
+				FROM workilbo
+				WHERE ilbo_gubn = 'J'
+				GROUP BY ord_code
+			) B
+			ON A.ord_code = B.ord_code
+			LEFT OUTER JOIN
+				PRODUCT C
+			ON A.prod_code = C.prod_code
+			LEFT OUTER JOIN
+				CORP D
+			ON D.CORP_CODE = C.CORP_CODE
+			LEFT OUTER JOIN			
+			(
+				SELECT *,
+				ROW_NUMBER() OVER(PARTITION BY prod_code ORDER BY prod_code) AS rnum
+				FROM workstd
+			) E
+			ON C.PROD_CODE = E.PROD_CODE
+		) AS AA
+		WHERE 1=1
+		AND ord_input >= CONCAT(#{sdate},' 00:00:00')
+		AND ord_input <![CDATA[<=]]> CONCAT(#{edate},' 23:59:59')
+		AND prod_code = #{prod_code}
+		AND jisi_diff_su > 0
+		AND ord_code <![CDATA[<]]> #{ord_code}
+		AND rnum = 1
+		ORDER BY ord_code	
+	</select>
+	
+	<!-- 작업대기리스트 : 선입없음 확인 후 리스트 표현 -->
+	<select id="getWorkJisiHeatIpgoListRegList" parameterType="workjisi" resultType="workjisi">
+		SELECT *
+		FROM (
+			SELECT 
+			CONVERT(VARCHAR(20),A.ord_input,23) AS ord_input, A.ord_code,		
+			D.corp_name, C.prod_name, C.prod_no, C.prod_code, A.ord_amnt,
+			A.ord_su, ISNULL(B.jisi_h_su,0) AS jisi_h_su, C.prod_danj, A.ord_danj,
+			ISNULL(B.jisi_h_su,0) AS jisi_suc_su,
+			(A.ord_su - ISNULL(B.jisi_h_su,0)) AS jisi_diff_su,
+			C.PROD_PG + '' + C.PROD_PG1 + '~' + C.PROD_PG2 AS jisi_h_work_q_hard_std,
+			C.PROD_GD1 + ' ' + C.PROD_GD3 + ' '+ C.PROD_GD2 +'기준 '+ C.PROD_GD4 + '~' + C.PROD_GD5 AS jisi_h_work_q_hard_std2,			
+			ISNULL(REPLACE(E.wstd_t43,',',''),0) AS jisi_j_su, rnum,
+			E.wstd_gj11 AS jisi_h_pre_temp, E.wstd_gj12 AS jisi_h_chim_temp, E.wstd_gj13 AS jisi_h_diff_temp, 
+			E.wstd_gj14 AS jisi_h_gang_temp, E.wstd_gj15 AS jisi_h_crack_temp, E.wstd_gj16 AS jisi_h_cold_temp,
+			E.wstd_gj21 AS jisi_h_pre_time, E.wstd_gj22 AS jisi_h_chim_time, E.wstd_gj23 AS jisi_h_diff_time,
+			E.wstd_gj24 AS jisi_h_gang_time, E.wstd_gj25 AS jisi_h_crack_time, E.wstd_gj26 AS jisi_h_cold_time,
+			E.wstd_gj31 AS jisi_h_pre_cp, E.wstd_gj32 AS jisi_h_chim_cp, E.wstd_gj33 AS jisi_h_diff_cp,
+			E.wstd_gj34 AS jisi_h_gang_cp, E.wstd_gj35 AS jisi_h_crack_cp, 
+			CASE WHEN E.wstd_gj42 IS NOT NULL THEN E.wstd_gj42
+				 WHEN E.wstd_gj43 IS NOT NULL THEN E.wstd_gj43
+				 WHEN E.wstd_gj44 IS NOT NULL THEN E.wstd_gj44 END AS jisi_h_rx,
+			CASE WHEN E.wstd_gj52 IS NOT NULL THEN E.wstd_gj52
+				 WHEN E.wstd_gj53 IS NOT NULL THEN E.wstd_gj53
+				 WHEN E.wstd_gj54 IS NOT NULL THEN E.wstd_gj54 END AS jisi_h_lpg,
+			E.wstd_gj17 AS jisi_h_agi,
+			E.wstd_ready AS jisi_t_temp, E.wstd_worktime AS jisi_t_time,
+			E.WSTD_T32, E.WSTD_T33, E.WSTD_T41, E.WSTD_T42, E.WSTD_T87,
+			E.WSTD_T43, E.WSTD_T44, E.WSTD_T51, E.WSTD_T52, E.WSTD_T53,
+			E.WSTD_T54, E.WSTD_T30, 0 AS jisi_default_su
+			FROM ordert A
+			LEFT OUTER JOIN
+			(
+				SELECT ord_code, SUM(ilbo_su) AS jisi_h_su
+				FROM workilbo
+				WHERE ilbo_gubn = 'J'
+				GROUP BY ord_code
+			) B
+			ON A.ord_code = B.ord_code
+			LEFT OUTER JOIN
+				PRODUCT C
+			ON A.prod_code = C.prod_code
+			LEFT OUTER JOIN
+				CORP D
+			ON D.CORP_CODE = C.CORP_CODE
+			LEFT OUTER JOIN			
+			(
+				SELECT *,
+				ROW_NUMBER() OVER(PARTITION BY prod_code ORDER BY prod_code) AS rnum
+				FROM workstd
+			) E
+			ON C.PROD_CODE = E.PROD_CODE
+		) AS AA
+		WHERE 1=1
+		AND ord_input >= CONCAT(#{sdate},' 00:00:00')
+		AND ord_input <![CDATA[<=]]> CONCAT(#{edate},' 23:59:59')
+		AND prod_code = #{prod_code}
+		AND jisi_diff_su > 0
+		AND ord_code <![CDATA[>=]]> #{ord_code}
+		AND rnum = 1
+		ORDER BY ord_code	
+	</select>
+	
+	<!-- 열처리작업 등록시 입고바코드 스캔데이터 -->
+	<select id="setWorkipgoBarcodeScan" parameterType="workjisi" resultType="workjisi">
+		SELECT A.ord_code, 
+		CONVERT(VARCHAR(20),A.ord_input,23) AS ord_input,
+		B.prod_code, ISNULL(REPLACE(C.wstd_t43,',',''),0) AS jisi_j_su
+		FROM ordert A
+		LEFT OUTER JOIN
+			PRODUCT B
+		ON A.prod_code = B.prod_code
+		LEFT OUTER JOIN			
+		(
+			SELECT *,
+			ROW_NUMBER() OVER(PARTITION BY prod_code ORDER BY prod_code) AS rnum
+			FROM workstd
+		) C
+		ON B.PROD_CODE = C.PROD_CODE
+		WHERE 1=1
+		AND ord_code = #{jisi_h_ord_code}
+		AND rnum = 1		
+	</select>
+	
+	<!-- 데이터 INERT할 ilbo_code 조회 -->
+	<select id="getWorkJisiIlboCode" parameterType="workJisi" resultType="int">
+		SELECT ISNULL(MAX(ilbo_code),0)+1
+		FROM workilbo
+	</select>
+	
+	<insert id="setWorkJisiJSave" parameterType="workjisi">
+		
+		INSERT INTO WORKILBO
+		(ilbo_code, ilbo_no, ord_code, ilbo_gubn, ilbo_lot,
+		 ilbo_su, ilbo_jung, user_code, ilbo_g11,
+		 ilbo_strt, ilbo_end)
+		VALUES
+		(#{ilbo_code}, #{ilbo_no}, #{ord_code}, #{ilbo_gubn}, #{ilbo_lot},
+		 #{ilbo_su}, #{ilbo_jung}, #{user_code}, #{ilbo_g11},
+		 CONVERT(VARCHAR(20),GETDATE(),20), CONVERT(VARCHAR(20),DATEADD(HOUR,1,GETDATE()),20)
+		 )
+		
+	</insert>
+
+	<insert id="setWorkJisiHSave" parameterType="workjisi">
+
+			INSERT INTO tb_workheat 
+			(
+				jisi_h_code, jisi_lot, jisi_j_code_ref,
+				jisi_h_hogi, jisi_h_user_code, jisi_h_regtime, 
+				jisi_h_su, jisi_h_jung,
+				jisi_h_pre_temp, jisi_h_chim_temp, jisi_h_diff_temp, jisi_h_gang_temp,
+				jisi_h_crack_temp, jisi_h_cold_temp, jisi_t_temp,
+				jisi_h_pre_time, jisi_h_chim_time, jisi_h_diff_time, jisi_h_gang_time,
+				jisi_h_crack_time, jisi_h_cold_time, jisi_t_time,
+				jisi_h_chim_cp, jisi_h_diff_cp, jisi_h_gang_cp,
+				jisi_h_pre_h2, jisi_h_chim_h2, jisi_h_diff_h2, jisi_h_gang_h2,
+				jisi_h_pre_nh3, jisi_h_chim_nh3, jisi_h_diff_nh3, jisi_h_gang_nh3,
+				jisi_h_rx, jisi_h_lpg, jisi_h_agi, jisi_t_hogi, jisi_ord_code
+			)
+			VALUES
+			(
+				(SELECT ISNULL(MAX(jisi_h_code), 0)+1 FROM tb_workheat), #{jisi_lot}, #{jisi_j_code_ref},
+				#{jisi_h_hogi}, #{jisi_user_code}, CONVERT(VARCHAR(20),GETDATE(),20), 
+				#{jisi_h_su}, #{jisi_h_jung},
+				#{jisi_h_pre_temp}, #{jisi_h_chim_temp}, #{jisi_h_diff_temp}, #{jisi_h_gang_temp},
+				#{jisi_h_crack_temp}, #{jisi_h_cold_temp}, #{jisi_t_temp},
+				#{jisi_h_pre_time}, #{jisi_h_chim_time}, #{jisi_h_diff_time}, #{jisi_h_gang_time},
+				#{jisi_h_crack_time}, #{jisi_h_cold_time}, #{jisi_t_time},
+				#{jisi_h_chim_cp}, #{jisi_h_diff_cp}, #{jisi_h_gang_cp},
+				#{jisi_h_pre_h2}, #{jisi_h_chim_h2}, #{jisi_h_diff_h2}, #{jisi_h_gang_h2},
+				#{jisi_h_pre_nh3}, #{jisi_h_chim_nh3}, #{jisi_h_diff_nh3}, #{jisi_h_gang_nh3},
+				#{jisi_h_rx}, #{jisi_h_lpg}, #{jisi_h_agi}, #{jisi_t_hogi}, #{jisi_ord_code}		
+			);
+			
+			INSERT INTO WORKILBO
+			(ilbo_code, ilbo_no, ord_code, ilbo_gubn, ilbo_lot,
+			 ilbo_su, ilbo_jung, user_code, 
+			 ilbo_g11, ilbo_g13, ilbo_g23, ilbo_g24,
+			 ilbo_g25, ilbo_g26, ilbo_g27, ilbo_g31, 
+			 ilbo_g32, ilbo_g33, ilbo_g34, ilbo_g35, 
+			 ilbo_pg6, 
+			 ilbo_pc, ilbo_pn, 
+			 ilbo_g42, ilbo_g43,
+			 ilbo_strt, fac_code)
+			VALUES
+			(#{ilbo_code}, #{ilbo_no}, #{ord_code}, #{ilbo_gubn}, #{ilbo_lot},
+			 #{ilbo_su}, #{ilbo_jung}, #{user_code}, 
+			 #{jisi_h_rx}, #{jisi_h_cold_time}, #{jisi_h_chim_temp}, #{jisi_h_chim_time},
+			 #{jisi_h_chim_cp}, #{jisi_h_diff_time}, #{jisi_h_diff_cp}, #{jisi_h_gang_temp},
+			 #{jisi_h_gang_time}, #{jisi_h_gang_cp}, #{jisi_h_cold_temp}, #{jisi_h_agi},
+			 #{jisi_h_diff_temp}, #{ilbo_pc}, #{ilbo_pn},
+			 #{jisi_h_pre_time}, #{jisi_h_pre_temp} ,
+			 CONVERT(VARCHAR(20),GETDATE(),20), #{fac_code}
+			 );
+
+	</insert>
+	
+	
+</mapper>

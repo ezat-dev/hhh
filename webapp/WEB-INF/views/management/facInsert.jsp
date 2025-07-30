@@ -136,8 +136,16 @@ textarea {
 	color: white; /* 글자색 */
 	font-size: 20px; /* 글자 크기 */
 	text-align: center; /* 텍스트 정렬 */
+	position: relative;
 }
-
+.header-close {
+	position: absolute;
+	right: 15px;
+	top: 10px;
+	cursor: pointer;
+	font-size: 20px;
+	color: white;
+}
 .box1 {
 	display: flex;
 	justify-content: right;
@@ -262,7 +270,9 @@ th{
 	    
 	<form method="post" class="corrForm" id="facInsertForm" name="facInsertForm">
 			<div class="facModal">
-				<div class="header">설비등록</div>
+				<div class="header">설비등록
+					<span class="header-close">&times;</span>
+				</div>
 				<div class="detail">
 					<table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
 						<colgroup span="4">
@@ -741,7 +751,9 @@ th{
 	const insertButton = document.querySelector('.insert-button');
 	const facModal = document.querySelector('.facModal');
 	const closeButton = document.querySelector('.close');
+	const headerCloseButton = document.querySelector('.header-close');
 
+	
 	insertButton.addEventListener('click', function() {
 		isEditMode = false;  // 추가 모드
 	    $('#facInsertForm')[0].reset(); // 폼 초기화
@@ -754,6 +766,11 @@ th{
 	    facModal.style.display = 'none'; // 모달 숨김
 	});
 
+	headerCloseButton.addEventListener('click', function() {
+		facModal.style.display = 'none';
+	});
+
+	
 	
 	// 저장 and 수정
 	function save() {

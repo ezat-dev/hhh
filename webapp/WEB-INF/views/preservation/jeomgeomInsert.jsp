@@ -37,6 +37,15 @@
     color: white; /* 글자색 */
     font-size: 20px; /* 글자 크기 */
     text-align: center; /* 텍스트 정렬 */
+    position: relative;
+}
+.header-close {
+	position: absolute;
+	right: 15px;
+	top: 10px;
+	cursor: pointer;
+	font-size: 20px;
+	color: white;
 }
 #editPop {
     background: #ffffff;
@@ -222,7 +231,9 @@ textarea {
 <form method="post" class="corrForm" id="jeomgeomInsertForm" name="jeomgeomInsertForm">	
 	<div class="jgInsertModal">
 	   <div id="editPop">
-	   	<div class="header">설비점검기준등록</div>
+	   	<div class="header">설비점검기준등록
+	   		<span class="header-close">&times;</span>
+	   	</div>
             <div class="detail">
                 <table cellspacing="0" cellpadding="0" width="100%">
                     <tbody><tr>
@@ -678,7 +689,8 @@ textarea {
 	const insertButton = document.querySelector('.insert-button');
 	const jgInsertModal = document.querySelector('.jgInsertModal');
 	const closeButton = document.querySelector('.close');
-
+	const headerCloseButton = document.querySelector('.header-close');
+	
 	insertButton.addEventListener('click', function() {
 		isEditMode = false;  // 추가 모드
 	    $('#jeomgeomInsertForm')[0].reset(); // 폼 초기화
@@ -689,6 +701,10 @@ textarea {
 
 	closeButton.addEventListener('click', function() {
 		jgInsertModal.style.display = 'none'; // 모달 숨김
+	});
+
+	headerCloseButton.addEventListener('click', function() {
+		jgInsertModal.style.display = 'none';
 	});
 
     //엑셀 다운로드

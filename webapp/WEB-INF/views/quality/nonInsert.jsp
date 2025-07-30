@@ -36,6 +36,15 @@
     color: white; /* 글자색 */
     font-size: 20px; /* 글자 크기 */
     text-align: center; /* 텍스트 정렬 */
+    position: relative;
+}
+.header-close {
+	position: absolute;
+	right: 15px;
+	top: 10px;
+	cursor: pointer;
+	font-size: 20px;
+	color: white;
 }
 #editPop {
     background: #ffffff;
@@ -283,6 +292,7 @@ textarea {
             <div id="editPop">
             	<div class="header">
             			부적합등록
+            			<span class="header-close">&times;</span>
             	</div>
                 
                 <!-- Article List1 -->
@@ -849,6 +859,7 @@ textarea {
 	const insertButton = document.querySelector('.insert-button');
 	const nonModal = document.querySelector('.nonModal');
 	const closeButton = document.querySelector('.close');
+	const headerCloseButton = document.querySelector('.header-close');
 
 	insertButton.addEventListener('click', function() {
 		nonModal.style.display = 'block'; // 모달 표시
@@ -857,7 +868,10 @@ textarea {
 	closeButton.addEventListener('click', function() {
 		nonModal.style.display = 'none'; // 모달 숨김
 	});
-		
+
+	headerCloseButton.addEventListener('click', function() {
+		nonModal.style.display = 'none';
+	});
 
 
     </script>

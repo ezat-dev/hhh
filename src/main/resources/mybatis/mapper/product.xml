@@ -71,7 +71,8 @@
 		           PROD_BH,
 		           product_file_name,
 		           apperance_file_name,
-		           heat_file_name
+		           heat_file_name,
+		           PROD_WHADEEP
 
 		       )
 		       VALUES 
@@ -141,7 +142,8 @@
 					#{prod_bh},
 					#{product_file_name},
 					#{apperance_file_name},
-					#{heat_file_name}
+					#{heat_file_name},
+					#{prod_whadeep}
 	          )
 	</insert>
 	
@@ -390,6 +392,7 @@
 		    prod_sr2        = #{prod_sr2},
 		    prod_gj         = #{prod_gj},
 		    prod_bh         = #{prod_bh},
+		    prod_whadeep    = #{prod_whadeep}
     <if test="product_file_name != null">
       product_file_name = #{product_file_name},
     </if>

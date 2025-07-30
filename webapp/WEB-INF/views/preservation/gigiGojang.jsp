@@ -35,6 +35,15 @@
     color: white; /* 글자색 */
     font-size: 20px; /* 글자 크기 */
     text-align: center; /* 텍스트 정렬 */
+    position: relative;
+}
+.header-close {
+	position: absolute;
+	right: 15px;
+	top: 10px;
+	cursor: pointer;
+	font-size: 20px;
+	color: white;
 }
 #editPop {
     background: #ffffff;
@@ -225,7 +234,9 @@ th{
 
 <form method="post" id="gigiGojangForm" name="gigiGojangForm">		
 	<div class="gojangModal">
-	<div class="header">측정기기고장이력</div> 
+	<div class="header">측정기기고장이력
+		<span class="header-close">&times;</span>
+	</div> 
         <div id="editPop">
     
             <!-- Article List -->
@@ -660,7 +671,8 @@ th{
 	const insertButton = document.querySelector('.insert-button');
 	const gojangModal = document.querySelector('.gojangModal');
 	const closeButton = document.querySelector('.close');
-
+	const headerCloseButton = document.querySelector('.header-close');
+	
 	insertButton.addEventListener('click', function() {
 		gojangModal.style.display = 'block'; // 모달 표시
 	});
@@ -669,8 +681,9 @@ th{
 		gojangModal.style.display = 'none'; // 모달 숨김
 	});
 
-
-
+	headerCloseButton.addEventListener('click', function() {
+		gojangModal.style.display = 'none';
+	});
 	
 		
 

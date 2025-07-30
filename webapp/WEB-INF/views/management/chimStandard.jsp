@@ -102,6 +102,15 @@
     color: white; /* 글자색 */
     font-size: 20px; /* 글자 크기 */
     text-align: center; /* 텍스트 정렬 */
+    position: relative;
+}
+.header-close {
+	position: absolute;
+	right: 15px;
+	top: 10px;
+	cursor: pointer;
+	font-size: 20px;
+	color: white;
 }
 .btnSaveClose {
 	display: flex;
@@ -253,6 +262,7 @@ body{
       <div id="editPop">
        <div class="header">
        			침탄로표준등록
+       			<span class="header-close">&times;</span>
        </div>
         <fieldset class="popField">
           <legend>제품정보</legend>
@@ -1220,7 +1230,8 @@ function getChimStandardDetail(wstd_code){
 	const insertButton = document.querySelector('.insert-button');
 	const chimStandardModal = document.querySelector('.chimStandardModal');
 	const closeButton = document.querySelector('.close');
-
+	const headerCloseButton = document.querySelector('.header-close');
+	
 	insertButton.addEventListener('click', function() {
 		isEditMode = false;  // 추가 모드
 	    $('#chimStandardForm')[0].reset(); // 폼 초기화
@@ -1233,7 +1244,9 @@ function getChimStandardDetail(wstd_code){
 		chimStandardModal.style.display = 'none'; // 모달 숨김
 	});
 
-
+	headerCloseButton.addEventListener('click', function() {
+		chimStandardModal.style.display = 'none';
+	});
 
 
 
