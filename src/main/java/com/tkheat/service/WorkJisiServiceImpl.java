@@ -136,4 +136,29 @@ public class WorkJisiServiceImpl implements WorkJisiService{
 		return workJisiDao.getWorkJisiIlboCode(ww);
 	}
 
+	@Override
+	public void ipgoListDelete(WorkJisi w) {
+		workJisiDao.ipgoListDelete(w);	
+	}
+
+	@Override
+	public void workJisiListDelete(WorkJisi w) {
+		workJisiDao.workJisiListDelete(w);
+	}
+
+	@Override
+	public List<WorkJisi> getChulgoList(WorkJisi chulgo) {
+		return workJisiDao.getChulgoList(chulgo);
+	}
+
+	@Override
+	public List<WorkJisi> getChulgoAddList(WorkJisi chulgo) {
+		return workJisiDao.getChulgoAddList(chulgo);
+	}
+
+	@Override
+	public void setChulgoAdd(WorkJisi chulgo) {
+		workJisiDao.setChulgoAdd(chulgo);
+	}
+
 }

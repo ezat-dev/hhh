@@ -89,165 +89,165 @@ public class ManagementController {
 
 
 	//제품등록, 수정 - insert,update
-	@RequestMapping(value = "/management/productInsert/productInsertSave", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> productInsertSave(
-			@ModelAttribute Product product,
-			@RequestParam("mode") String mode,
-			@RequestParam(value = "product_file_url", required = false) MultipartFile[] files1,
-			@RequestParam(value = "apperance_file_url", required = false) MultipartFile[] files2,
-			@RequestParam(value = "heat_file_url", required = false) MultipartFile[] files3) { 
-		
-		System.out.println("저장 컨트롤러 도착");
+		@RequestMapping(value = "/management/productInsert/productInsertSave", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> productInsertSave(
+				@ModelAttribute Product product,
+				@RequestParam("mode") String mode,
+				@RequestParam(value = "product_file_url", required = false) MultipartFile[] files1,
+				@RequestParam(value = "apperance_file_url", required = false) MultipartFile[] files2,
+				@RequestParam(value = "heat_file_url", required = false) MultipartFile[] files3) { 
+			
+			System.out.println("저장 컨트롤러 도착");
 
-		Map<String, Object> result = new HashMap<>();
+			Map<String, Object> result = new HashMap<>();
 
-		System.out.println(product.getProd_code());
-		System.out.println(product.getProd_date());
+			System.out.println(product.getProd_code());
+			System.out.println(product.getProd_date());
 
-		try {
+			try {
 
-			String path = "D:/엑셀테스트/태경출력파일/사진/제품등록";
+				String path = "D:/엑셀테스트/태경출력파일/사진/제품등록";
 
-			String productFileName = saveFiles(files1, path);
-			if (productFileName != null) product.setProduct_file_name(productFileName);
+				String productFileName = saveFiles(files1, path);
+				if (productFileName != null) product.setProduct_file_name(productFileName);
 
-			String appearanceFileName = saveFiles(files2, path);
-			if (appearanceFileName != null) product.setApperance_file_name(appearanceFileName);
+				String appearanceFileName = saveFiles(files2, path);
+				if (appearanceFileName != null) product.setApperance_file_name(appearanceFileName);
 
-			String heatFileName = saveFiles(files3, path);
-			if (heatFileName != null) product.setHeat_file_name(heatFileName);
+				String heatFileName = saveFiles(files3, path);
+				if (heatFileName != null) product.setHeat_file_name(heatFileName);
 
-			if ("insert".equalsIgnoreCase(mode)) {
-				managementService.productInsertSave(product);
-			} else if ("update".equalsIgnoreCase(mode)) {
-				managementService.productUpdateSave(product);  
-			} else {
-				throw new IllegalArgumentException("Invalid mode: " + mode);
+				if ("insert".equalsIgnoreCase(mode)) {
+					managementService.productInsertSave(product);
+				} else if ("update".equalsIgnoreCase(mode)) {
+					managementService.productUpdateSave(product);  
+				} else {
+					throw new IllegalArgumentException("Invalid mode: " + mode);
+				}
+
+				result.put("status", "success");
+				result.put("message", "OK");
+
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
+				e.printStackTrace();
 			}
 
-			result.put("status", "success");
-			result.put("message", "OK");
+			System.out.println(result.get("status"));
+			System.out.println(result.get("message"));
 
-		} catch (Exception e) {
-			result.put("status", "error");
-			result.put("message", e.getMessage());
-			e.printStackTrace();
+			return result;
 		}
 
-		System.out.println(result.get("status"));
-		System.out.println(result.get("message"));
 
-		return result;
-	}
+		//제품 삭제 - delete
+		@RequestMapping(value = "/management/productInsert/productDelete", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> productDelete(@RequestParam("prod_code") int prod_code) {
+			Map<String, Object> result = new HashMap<>();
 
+			try {
+				managementService.productDelete(prod_code);
+				result.put("status", "success");
+				result.put("message", "삭제 완료");
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
+			}
 
-	//제품 삭제 - delete
-	@RequestMapping(value = "/management/productInsert/productDelete", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> productDelete(@RequestParam("prod_code") int prod_code) {
-		Map<String, Object> result = new HashMap<>();
+			System.out.println(result.get("status"));
+			System.out.println(result.get("message"));
 
-		try {
-			managementService.productDelete(prod_code);
-			result.put("status", "success");
-			result.put("message", "삭제 완료");
-		} catch (Exception e) {
-			result.put("status", "error");
-			result.put("message", e.getMessage());
+			return result;
 		}
 
-		System.out.println(result.get("status"));
-		System.out.println(result.get("message"));
 
-		return result;
-	}
+		//전체 제품 목록 조회
+		@RequestMapping(value = "/management/productInsert/productList", method = RequestMethod.POST) 
+		@ResponseBody 
+		public Map<String, Object> getProductList(
+				) {
+			Map<String, Object> rtnMap = new HashMap<String, Object>();
 
-
-	//전체 제품 목록 조회
-	@RequestMapping(value = "/management/productInsert/productList", method = RequestMethod.POST) 
-	@ResponseBody 
-	public Map<String, Object> getProductList(
-			) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-
-		Product product = new Product();
+			Product product = new Product();
 
 
 
-		List<Product> productList = managementService.getProductList(product);
+			List<Product> productList = managementService.getProductList(product);
 
-		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
-		for(int i=0; i<productList.size(); i++) {
-			HashMap<String, Object> rowMap = new HashMap<String, Object>();
-			rowMap.put("idx", (i+1));
-			rowMap.put("prod_code", productList.get(i).getProd_code());
-			rowMap.put("prod_date", productList.get(i).getProd_date());
-			rowMap.put("corp_name", productList.get(i).getCorp_name());
-			rowMap.put("corp_code", productList.get(i).getCorp_code());
-			rowMap.put("prod_name", productList.get(i).getProd_name());
-			rowMap.put("prod_no", productList.get(i).getProd_no());
-			rowMap.put("prod_gyu", productList.get(i).getProd_gyu());
-			rowMap.put("prod_jai", productList.get(i).getProd_jai());
-			rowMap.put("tech_te", productList.get(i).getTech_te());
-			rowMap.put("prod_danj", productList.get(i).getProd_danj());
-			rowMap.put("prod_danw", productList.get(i).getProd_danw());
-			rowMap.put("prod_dang", productList.get(i).getProd_dang());
-			rowMap.put("prod_pg", productList.get(i).getProd_pg());
-			rowMap.put("prod_gd1", productList.get(i).getProd_gd1());
-			rowMap.put("prod_gd2", productList.get(i).getProd_gd2());
-			rowMap.put("prod_gd3", productList.get(i).getProd_gd3());
-			rowMap.put("prod_sg", productList.get(i).getProd_sg());
-			rowMap.put("prod_no", productList.get(i).getProd_no());
-			rowMap.put("prod_cno", productList.get(i).getProd_cno());
-			rowMap.put("prod_pwsno", productList.get(i).getProd_pwsno());
-			rowMap.put("prod_do", productList.get(i).getProd_do());
-			rowMap.put("prod_refno", productList.get(i).getProd_refno());
-			rowMap.put("prod_kijong", productList.get(i).getProd_kijong());
-			rowMap.put("prod_e1", productList.get(i).getProd_e1());
-			rowMap.put("prod_e3", productList.get(i).getProd_e3());
-			rowMap.put("prod_khecd", productList.get(i).getProd_khecd());
-			rowMap.put("prod_khtcd", productList.get(i).getProd_khtcd());
-			rowMap.put("prod_gd5", productList.get(i).getProd_gd5());
-			rowMap.put("product_file_name", productList.get(i).getProduct_file_name());
-			rowMap.put("apperance_file_name", productList.get(i).getApperance_file_name());
-			rowMap.put("heat_file_name", productList.get(i).getHeat_file_name());
-			rowMap.put("prod_fac1", productList.get(i).getProd_fac1());
-			rowMap.put("prod_fac2", productList.get(i).getProd_fac2());
-			rowMap.put("prod_fac3", productList.get(i).getProd_fac3());
-			rowMap.put("prod_fac4", productList.get(i).getProd_fac4());
-			rowMap.put("prod_fac5", productList.get(i).getProd_fac5());
-			rowMap.put("prod_fac6", productList.get(i).getProd_fac6());
-			rowMap.put("prod_fac7", productList.get(i).getProd_fac7());
-			rowMap.put("prod_fac8", productList.get(i).getProd_fac8());
+			List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+			for(int i=0; i<productList.size(); i++) {
+				HashMap<String, Object> rowMap = new HashMap<String, Object>();
+				rowMap.put("idx", (i+1));
+				rowMap.put("prod_code", productList.get(i).getProd_code());
+				rowMap.put("prod_date", productList.get(i).getProd_date());
+				rowMap.put("corp_name", productList.get(i).getCorp_name());
+				rowMap.put("corp_code", productList.get(i).getCorp_code());
+				rowMap.put("prod_name", productList.get(i).getProd_name());
+				rowMap.put("prod_no", productList.get(i).getProd_no());
+				rowMap.put("prod_gyu", productList.get(i).getProd_gyu());
+				rowMap.put("prod_jai", productList.get(i).getProd_jai());
+				rowMap.put("tech_te", productList.get(i).getTech_te());
+				rowMap.put("prod_danj", productList.get(i).getProd_danj());
+				rowMap.put("prod_danw", productList.get(i).getProd_danw());
+				rowMap.put("prod_dang", productList.get(i).getProd_dang());
+				rowMap.put("prod_pg", productList.get(i).getProd_pg());
+				rowMap.put("prod_gd1", productList.get(i).getProd_gd1());
+				rowMap.put("prod_gd2", productList.get(i).getProd_gd2());
+				rowMap.put("prod_gd3", productList.get(i).getProd_gd3());
+				rowMap.put("prod_sg", productList.get(i).getProd_sg());
+				rowMap.put("prod_no", productList.get(i).getProd_no());
+				rowMap.put("prod_cno", productList.get(i).getProd_cno());
+				rowMap.put("prod_pwsno", productList.get(i).getProd_pwsno());
+				rowMap.put("prod_do", productList.get(i).getProd_do());
+				rowMap.put("prod_refno", productList.get(i).getProd_refno());
+				rowMap.put("prod_kijong", productList.get(i).getProd_kijong());
+				rowMap.put("prod_e1", productList.get(i).getProd_e1());
+				rowMap.put("prod_e3", productList.get(i).getProd_e3());
+				rowMap.put("prod_khecd", productList.get(i).getProd_khecd());
+				rowMap.put("prod_khtcd", productList.get(i).getProd_khtcd());
+				rowMap.put("prod_gd5", productList.get(i).getProd_gd5());
+				rowMap.put("product_file_name", productList.get(i).getProduct_file_name());
+				rowMap.put("apperance_file_name", productList.get(i).getApperance_file_name());
+				rowMap.put("heat_file_name", productList.get(i).getHeat_file_name());
+				rowMap.put("prod_fac1", productList.get(i).getProd_fac1());
+				rowMap.put("prod_fac2", productList.get(i).getProd_fac2());
+				rowMap.put("prod_fac3", productList.get(i).getProd_fac3());
+				rowMap.put("prod_fac4", productList.get(i).getProd_fac4());
+				rowMap.put("prod_fac5", productList.get(i).getProd_fac5());
+				rowMap.put("prod_fac6", productList.get(i).getProd_fac6());
+				rowMap.put("prod_fac7", productList.get(i).getProd_fac7());
+				rowMap.put("prod_fac8", productList.get(i).getProd_fac8());
 
-			rtnList.add(rowMap);
+				rtnList.add(rowMap);
+			}
+
+			rtnMap.put("last_page",1);
+			rtnMap.put("data",rtnList);
+
+			return rtnMap; 
+		}	 
+
+
+		//제품 더블클릭조회
+		@RequestMapping(value = "/management/productInsert/productInsertDetail", method = RequestMethod.POST) 
+		@ResponseBody 
+		public Map<String, Object> productInsertDetail(
+				@RequestParam int prod_code) {
+			System.out.println("더블클릭 로그");
+			Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+			Product product = new Product();
+			product.setProd_code(prod_code);
+
+			Product prodList = managementService.productInsertDetail(product);
+
+			rtnMap.put("data",prodList);
+
+			return rtnMap; 
 		}
-
-		rtnMap.put("last_page",1);
-		rtnMap.put("data",rtnList);
-
-		return rtnMap; 
-	}	 
-
-
-	//제품 더블클릭조회
-	@RequestMapping(value = "/management/productInsert/productInsertDetail", method = RequestMethod.POST) 
-	@ResponseBody 
-	public Map<String, Object> productInsertDetail(
-			@RequestParam int prod_code) {
-		System.out.println("더블클릭 로그");
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-
-		Product product = new Product();
-		product.setProd_code(prod_code);
-
-		Product prodList = managementService.productInsertDetail(product);
-
-		rtnMap.put("data",prodList);
-
-		return rtnMap; 
-	}
 	
 	//모달창에 사진 출력
 	@RequestMapping(value = "/management/image/product/{filename:.+}", method = RequestMethod.GET)

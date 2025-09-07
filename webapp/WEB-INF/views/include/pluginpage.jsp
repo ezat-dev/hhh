@@ -87,9 +87,10 @@ function todayDate(){
 //어제날짜 년-월-일
 function yesterDate(){
 	var now = new Date();
+	now.setDate(now.getDate()-1);
 	var y = now.getFullYear();
 	var m = paddingZero(now.getMonth()+1);
-	var d = paddingZero(now.getDate()-1);
+	var d = paddingZero(now.getDate());
 		
 	return y+"-"+m+"-"+d; 	
 }
@@ -98,6 +99,17 @@ function yesterDate(){
 function beforeWeekDate(){
 	var now = new Date();
 	now.setDate(now.getDate() - 7);
+	var y = now.getFullYear();
+	var m = paddingZero(now.getMonth()+1);
+	var d = paddingZero(now.getDate());
+		
+	return y+"-"+m+"-"+d; 	
+}
+
+//한달전날짜 년-월-일
+function beforeMonthDate(){
+	var now = new Date();
+	now.setMonth(now.getMonth() - 1);
 	var y = now.getFullYear();
 	var m = paddingZero(now.getMonth()+1);
 	var d = paddingZero(now.getDate());
@@ -118,7 +130,8 @@ function nowTime(){
 //현재시간 +1
 function nowTimeAfterOne(){
 	var now = new Date();
-	var h = paddingZero(now.getHours()+1);
+	now.setHours(now.getHours()+1);
+	var h = paddingZero(now.getHours());
 	var m = paddingZero(now.getMinutes());
 	var s = paddingZero(now.getSeconds());
 		

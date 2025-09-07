@@ -53,6 +53,16 @@
 	    display: flex; /* 내부 요소를 플렉스 박스로 설정 */
 	    align-items: center; /* 버튼 안에서 세로 가운데 정렬 */
 	}
+	.delete {
+	    height: 40px; /* tab보다 조금 작게 설정 */
+	    padding: 0 11px; /* 좌우 패딩 */
+	    border: 1px solid rgb(53, 53, 53);
+	    border-radius: 4px; /* 모서리 둥글게 */
+	    background-color: #ffffff; /* 배경색 */
+	    cursor: pointer; /* 포인터 커서 */
+	    display: flex; /* 내부 요소를 플렉스 박스로 설정 */
+	    align-items: center; /* 버튼 안에서 세로 가운데 정렬 */
+	}
 	.excel-button {
 	    height: 40px; /* tab보다 조금 작게 설정 */
 	    padding: 0 11px; /* 좌우 패딩 */
@@ -78,6 +88,10 @@
 	.select-button:hover {
 	    background-color: #f0f0f0; /* hover 시 색상 변화 */
 	}
+	.delete:hover {
+	    background-color: #f0f0f0; /* hover 시 색상 변화 */
+	}
+	
 	.insert-button:hover {
 	    background-color: #f0f0f0; /* hover 시 색상 변화 */
 	}

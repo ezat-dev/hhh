@@ -197,19 +197,19 @@ textarea {
     <div class="button-container">
         <button class="select-button">
             <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
-           
+           조회
         </button>
         <button class="insert-button">
             <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
-          
+         입력 
         </button>
         <button class="excel-button">
             <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
-            
+        엑셀    
         </button>
         <button class="printer-button">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
-            
+       보고서출력     
         </button>
     </div>
 </div>
@@ -558,8 +558,25 @@ textarea {
 		        	hozAlign:"center", headerFilter:"input"},  	
 		        {title:"자산출고", field:"sph_jasanout", sorter:"int", width:100,
 			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"현재고", field:"spp_jaigo", sorter:"int", width:100,
-				    hozAlign:"center", headerFilter:"input"},	
+			        { 
+			        	  title: "현재고", field: "spp_jaigo", sorter: "int", width: 100,
+			        	  hozAlign: "center", headerFilter: "input",
+			        	  formatter: function(cell) {
+			        	    const value = cell.getValue(); // 현재고
+			        	    const rowData = cell.getRow().getData();
+			        	    const proper = rowData.spp_proper; // 적정재고
+			        	    const cellElement = cell.getElement();
+
+			        	    if (value < proper) {
+			        	      cellElement.style.backgroundColor = "#f99"; // 연한 빨강
+			        	      cellElement.style.fontWeight = "bold";
+			        	    } else {
+			        	      cellElement.style.backgroundColor = ""; // 기본값
+			        	      cellElement.style.fontWeight = "normal";
+			        	    }
+			        	    return value;
+			        	  }
+			        	}	
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
@@ -619,6 +636,10 @@ textarea {
 			},
 		});		
 	}
+
+
+
+	
 
 	function sparePartDetail(spp_idx){
 		$.ajax({

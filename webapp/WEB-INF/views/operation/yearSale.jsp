@@ -124,19 +124,19 @@
     <div class="button-container">
         <button class="select-button" onclick="getYearSaleList(); yearChart();">
             <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
-           
+           조회
         </button>
         <button class="insert-button" style="pointer-events: none; opacity: 0.5; cursor: not-allowed; filter: grayscale(100%); ">
             <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
-          
+         입력 
         </button>
         <button class="excel-button">
             <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
-            
+        엑셀    
         </button>
         <button class="printer-button">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
-            
+       보고서출력     
         </button>
     </div>
 </div>
@@ -182,8 +182,37 @@
         paginationSize: 20,
         ajaxResponse: function (url, params, response) {
             $("#tab1 .tabulator-col.tabulator-sortable").css("height", "29px");
-            return response;
+
+            let dataList = [];
+
+           
+            if (Array.isArray(response)) {
+                dataList = response;
+            } else if (Array.isArray(response.data)) {
+                dataList = response.data;
+            } else if (Array.isArray(response.list)) {
+                dataList = response.list;
+            } else {
+                return response;
+            }
+
+            const monthlyTotals = {
+                mm1: 0, mm2: 0, mm3: 0, mm4: 0,
+                mm5: 0, mm6: 0, mm7: 0, mm8: 0,
+                mm9: 0, mm10: 0, mm11: 0, mm12: 0
+            };
+
+            dataList.forEach(item => {
+                for (let key in monthlyTotals) {
+                    monthlyTotals[key] += item[key] || 0;
+                }
+            });
+
+            drawTotalChart(monthlyTotals);
+
+            return response; 
         },
+
         columns: [
             { title: "NO", field: "idx", sorter: "int", width: 60, hozAlign: "center" },
             { title: "업체명", field: "corp_name", sorter: "string", width: 120, hozAlign: "center" },
@@ -226,7 +255,7 @@
               formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
               bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
 
-            // 합계
+       
             { title: "합계", field: "mm_total", sorter: "int", width: 180, hozAlign: "center", 
               formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
               bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
@@ -251,7 +280,7 @@
             const corp_name = rowData.corp_name;
 
             if (corp_name) {
-                yearChart(corp_name); // 아래에서 정의한 함수
+                yearChart(corp_name);
             }
         },
     });
@@ -267,7 +296,7 @@
 	        url: "/tkheat/operation/yearSale/getYearData",
 	        data: {
 	            sdate: $("#sdate").val(),
-	            corp_name: corp_name // ← 클릭된 거래처 이름
+	            corp_name: corp_name 
 	        },
 	        success: function (result) {
 	            if (!result || result.length === 0) {
@@ -312,6 +341,38 @@
 	        }
 	    });
 	}
+
+
+	function drawTotalChart(monthlyTotals) {
+	    const categories = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+	    const data = [
+	        monthlyTotals.mm1, monthlyTotals.mm2, monthlyTotals.mm3,
+	        monthlyTotals.mm4, monthlyTotals.mm5, monthlyTotals.mm6,
+	        monthlyTotals.mm7, monthlyTotals.mm8, monthlyTotals.mm9,
+	        monthlyTotals.mm10, monthlyTotals.mm11, monthlyTotals.mm12
+	    ];
+
+	    Highcharts.chart('yearChart', {
+	        chart: { type: 'column' },
+	        title: { text: '전체 거래처 월별 매출 합계' },
+	        xAxis: {
+	            categories: categories,
+	            title: { text: '월' }
+	        },
+	        yAxis: {
+	            title: { text: '매출 (원)' }
+	        },
+	        tooltip: {
+	            shared: true,
+	            pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>'
+	        },
+	        series: [{
+	            name: '전체 합계',
+	            data: data
+	        }]
+	    });
+	}
+		
 
 
 

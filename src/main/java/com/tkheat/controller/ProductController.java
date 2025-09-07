@@ -30,64 +30,6 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 
-	//출고관리 - 화면로드
-	@RequestMapping(value = "/product/chulgo", method = RequestMethod.GET)
-	public String chulgo() {
-		return "/product/chulgo.jsp";
-	}	 
-
-	//출고관리 조회
-	@RequestMapping(value = "/product/chulgo/getChulgoList", method = RequestMethod.POST) 
-	@ResponseBody 
-	public Map<String, Object> getChulgoList(
-			@RequestParam String sdate,
-			@RequestParam String edate,
-			@RequestParam String prod_gubn
-			) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-		
-		 Chulgo chulgo = new Chulgo();
-		 chulgo.setSdate(sdate);
-		 chulgo.setEdate(edate);
-		 chulgo.setProd_gubn(prod_gubn);
-
-		List<Chulgo> chulgoList = productService.getChulgoList(chulgo);
-
-		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
-		for(int i=0; i<chulgoList.size(); i++) {
-			HashMap<String, Object> rowMap = new HashMap<String, Object>();
-			rowMap.put("idx", (i+1));
-			rowMap.put("och_prn", chulgoList.get(i).getOch_prn());
-			rowMap.put("ord_date", chulgoList.get(i).getOrd_date());
-			rowMap.put("och_date", chulgoList.get(i).getOch_date());
-			rowMap.put("och_code", chulgoList.get(i).getOch_code());
-			rowMap.put("corp_name", chulgoList.get(i).getCorp_name());
-			rowMap.put("prod_name", chulgoList.get(i).getProd_name());
-			rowMap.put("prod_no", chulgoList.get(i).getProd_no());
-			rowMap.put("prod_jai", chulgoList.get(i).getProd_jai());
-			rowMap.put("prod_gyu", chulgoList.get(i).getProd_gyu());
-			rowMap.put("tech_te", chulgoList.get(i).getTech_te());
-			rowMap.put("och_lot", chulgoList.get(i).getOch_lot());
-			rowMap.put("prod_danw", chulgoList.get(i).getProd_danw());
-			rowMap.put("och_su", chulgoList.get(i).getOch_su());
-			rowMap.put("och_amnt", chulgoList.get(i).getOch_amnt());
-			rowMap.put("och_mon", chulgoList.get(i).getOch_mon());
-			rowMap.put("och_dang", chulgoList.get(i).getOch_dang());
-			rowMap.put("prod_danj", chulgoList.get(i).getProd_danj());
-			rowMap.put("och_ma", chulgoList.get(i).getOch_ma());
-			rowMap.put("och_bigo", chulgoList.get(i).getOch_bigo());
-
-
-			rtnList.add(rowMap);
-		}
-
-		rtnMap.put("last_page",1);
-		rtnMap.put("data",rtnList);
-
-		return rtnMap; 
-	}
-
-
 	//재고현황(상세정보) - 화면로드
 	@RequestMapping(value = "/product/jaegoStatus", method = RequestMethod.GET)
 	public String jaegoStatus() {

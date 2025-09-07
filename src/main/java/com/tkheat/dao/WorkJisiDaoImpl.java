@@ -148,6 +148,43 @@ public class WorkJisiDaoImpl implements WorkJisiDao{
 	public int getWorkJisiIlboCode(WorkJisi ww) {
 		return sqlSession.selectOne("workjisi.getWorkJisiIlboCode",ww);
 	}
+
+	@Override
+	public void ipgoListDelete(WorkJisi w) {
+		//입고삭제 로깅
+		sqlSession.delete("workjisi.ipgoListDeleteLog",w);
+		//입고이력 삭제
+		sqlSession.delete("workjisi.ipgoListDelete",w);
+		//수입검사 삭제
+		sqlSession.delete("workjisi.ipgoListDeleteIpTest",w);
+	}
+
+	@Override
+	public void workJisiListDelete(WorkJisi w) {
+		//작업지시삭제 로깅
+		sqlSession.delete("workjisi.workJisiListDeleteLog",w);
+		
+		//작업지시이력 삭제(tb_workheat)
+		sqlSession.delete("workjisi.workJisiListDeletWorkHeat",w);
+		
+		//작업지시이력 삭제(WORKILBO)
+		sqlSession.delete("workjisi.workJisiListDeletWorkIlbo",w);
+	}
+
+	@Override
+	public List<WorkJisi> getChulgoList(WorkJisi chulgo) {
+		return sqlSession.selectList("workjisi.getChulgoList",chulgo);
+	}
+
+	@Override
+	public List<WorkJisi> getChulgoAddList(WorkJisi chulgo) {
+		return sqlSession.selectList("workjisi.getChulgoAddList",chulgo);
+	}
+
+	@Override
+	public void setChulgoAdd(WorkJisi chulgo) {
+		sqlSession.insert("workjisi.setChulgoAdd",chulgo);
+	}
 	
 	
 }

@@ -244,15 +244,15 @@ th{
     <div class="button-container">
         <button class="select-button" onclick="getGigiJeomgeomList();">
             <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
-           
+           조회
         </button>
         <button class="insert-button">
             <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
-          
+         입력 
         </button>
         <button class="excel-button">
             <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
-            
+        엑셀    
         </button>
         <!-- <button class="printer-button">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">

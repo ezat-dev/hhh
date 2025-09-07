@@ -49,6 +49,31 @@ public class CommConfig implements SchedulingConfigurer, AsyncConfigurer {
 		return new CommProcessor();
 	}
 	
+	@Bean
+	public MonitoringProcessorBcf1 monitoringProcessorBcf1() {
+		return new MonitoringProcessorBcf1();
+	}
+	
+	@Bean
+	public MonitoringProcessorBcf2 monitoringProcessorBcf2() {
+		return new MonitoringProcessorBcf2();
+	}
+	
+	@Bean
+	public MonitoringProcessorBcf3 monitoringProcessorBcf3() {
+		return new MonitoringProcessorBcf3();
+	}
+	
+	@Bean
+	public MonitoringProcessorBcf4 monitoringProcessorBcf4() {
+		return new MonitoringProcessorBcf4();
+	}
+	
+	@Bean
+	public MonitoringProcessorBcf5 monitoringProcessorBcf5() {
+		return new MonitoringProcessorBcf5();
+	}
+	
 	@Override
 	public Executor getAsyncExecutor() {
 		return taskScheduler();

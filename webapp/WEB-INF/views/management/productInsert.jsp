@@ -785,7 +785,7 @@ textarea {
             </tr>
             
             <tr>
-              <th>첨부파일</th>
+              <th>도면파일</th>
               <td>
                 <div>
                       <input id="file" class="valClean" type="file" title="파일 찾기">
@@ -856,6 +856,7 @@ textarea {
 	    <div class="btnSaveClose">
 	    		<button class="delete" type="button" onclick="deleteProduct();"  style="display: none;">삭제</button>
 	            <button class="save" type="button" onclick="save();">저장</button>
+	            <button id="btnSaveAs" class="saveAs" type="button" onclick="saveAsNew();" style="display:none;">다른이름저장</button>
 	            <button class="close" type="button" onclick="window.close();">닫기</button>
 	    </div>
 	  </div>
@@ -1039,12 +1040,12 @@ $('.imgInputClass').change(function(event){
 				    // 상세조회 Ajax 요청 실행
 				    productInsertDetail(d.prod_code);
 				    
-
+				    $("#btnSaveAs").show();
 				    $('.delete').show();  // 필요 시
 			},
 		});		
 	}
-
+	
 
 	// 상세 조회
 	function productInsertDetail(prod_code) {
@@ -1161,6 +1162,7 @@ $('.imgInputClass').change(function(event){
 	    productModal.style.display = 'block'; // 모달 표시
 
 		$('.delete').hide();
+		$("#btnSaveAs").hide();
 	});
 
 	closeButton.addEventListener('click', function() {
@@ -1275,7 +1277,51 @@ $('.imgInputClass').change(function(event){
     });
 }
 
+   function saveAsNew() {
+	    const checkboxFields = ["prod_fac1", "prod_fac2", "prod_fac3", "prod_fac4", "prod_fac5", "prod_fac6", "prod_fac7", "prod_fac8"];
+	    checkboxFields.forEach(field => {
+	        const checked = $("#" + field).is(":checked");
+	        if ($("#hidden_" + field).length === 0) {
+	            $("<input>").attr({
+	                type: "hidden",
+	                id: "hidden_" + field,
+	                name: field,
+	                value: checked ? "Y" : "N"
+	            }).appendTo("#productInsertForm");
+	        } else {
+	            $("#hidden_" + field).val(checked ? "Y" : "N");
+	        }
+	    });
 
+	    var formData = new FormData($("#productInsertForm")[0]);
+
+	    formData.append("mode", "insert");
+	    formData.delete("prod_code");
+
+	    if (!confirm("현재 데이터를 바탕으로 새 제품을 등록하시겠습니까?")) {
+	        return;
+	    }
+
+	    $.ajax({
+	        url: "/tkheat/management/productInsert/productInsertSave",
+	        type: "POST",
+	        data: formData,
+	        contentType: false,
+	        processData: false,
+	        dataType: "json",
+	        success: function (result) {
+	            console.log(result);
+	            alert("새로운 제품으로 저장되었습니다.");
+	            $(".productModal").hide();
+	            getProductList();
+	        },
+	        error: function (xhr, status, error) {
+	            console.error("다른이름으로 저장 오류:", error);
+	            alert("저장 중 오류가 발생했습니다.");
+	        }
+	    });
+	}
+	
     function deleteProduct() {
 	    if (!selectedRowData || !selectedRowData.prod_code) {
 	        alert("삭제할 대상을 선택하세요.");

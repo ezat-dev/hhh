@@ -76,6 +76,47 @@
 .btnSearchCorp:hover, .btn1T:hover {
 	background: #0056b3; /* 호버 시 색상 변경 */
 }
+.btnSaveClose {
+	display: flex;
+	justify-content: center; /* 가운데 정렬 */
+	gap: 20px; /* 버튼 사이 여백 */
+	margin-top: 30px; /* 모달 내용과의 간격 */
+	margin-bottom: 20px; /* 모달 하단과 버튼 사이 간격  */
+}
+.btnSaveClose button {
+	width: 100px;
+	height: 35px;
+	background-color: #FFD700; /* 기본 배경 - 노란색 */
+	color: black;
+	border: 2px solid #FFC107; /* 노란 테두리 */
+	border-radius: 5px;
+	font-weight: bold;
+	text-align: center;
+	cursor: pointer;
+	line-height: 35px;
+	margin: 0 10px;
+	margin-top: 10px;
+	transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* 저장 버튼 호버 시 */
+.btnSaveClose .save:hover {
+	background-color: #FFC107;
+	transform: scale(1.05);
+}
+
+/* 닫기 버튼 - 회색 톤 */
+.btnSaveClose .close {
+	background-color: #A9A9A9;
+	color: black;
+	border: 2px solid #808080;
+}
+
+/* 닫기 버튼 호버 시 */
+.btnSaveClose .close:hover {
+	background-color: #808080;
+	transform: scale(1.05);
+}
 
 .resultArea2 {
 	background: #f9f9f9; /* 결과 영역 배경색 */
@@ -181,47 +222,7 @@ th{
 	font-size : 14px;
 }
     
-.btnSaveClose {
-	display: flex;
-	justify-content: center; /* 가운데 정렬 */
-	gap: 20px; /* 버튼 사이 여백 */
-	margin-top: 30px; /* 모달 내용과의 간격 */
-	margin-bottom: 20px; /* 모달 하단과 버튼 사이 간격  */
-}
-.btnSaveClose button {
-	width: 100px;
-	height: 35px;
-	background-color: #FFD700; /* 기본 배경 - 노란색 */
-	color: black;
-	border: 2px solid #FFC107; /* 노란 테두리 */
-	border-radius: 5px;
-	font-weight: bold;
-	text-align: center;
-	cursor: pointer;
-	line-height: 35px;
-	margin: 0 10px;
-	margin-top: 10px;
-	transition: background-color 0.3s ease, transform 0.2s ease;
-}
 
-/* 저장 버튼 호버 시 */
-.btnSaveClose .save:hover {
-	background-color: #FFC107;
-	transform: scale(1.05);
-}
-
-/* 닫기 버튼 - 회색 톤 */
-.btnSaveClose .close {
-	background-color: #A9A9A9;
-	color: black;
-	border: 2px solid #808080;
-}
-
-/* 닫기 버튼 호버 시 */
-.btnSaveClose .close:hover {
-	background-color: #808080;
-	transform: scale(1.05);
-}
     </style>
     
     
@@ -245,19 +246,19 @@ th{
     <div class="button-container">
         <button class="select-button" onclick="getFacList();">
             <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
-           
+           조회
         </button>
         <button class="insert-button">
             <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
-          
+         입력 
         </button>
         <button class="excel-button">
             <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
-            
+        엑셀    
         </button>
         <button class="printer-button">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
-            
+       보고서출력     
         </button>
     </div>
 </div>

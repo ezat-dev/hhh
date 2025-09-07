@@ -21,8 +21,8 @@ import com.tkheat.util.OpcDataMap;
 public class MainController {
 	
 	//오토닉스 서버 IP
-	public static final String MAIN_IP = "192.168.0.101";
-	public static final String SUB_IP = "192.168.0.101";
+	public static final String MAIN_IP = "127.0.0.1";
+	public static final String SUB_IP = "127.0.0.1";
 	public static final int PORT = 5660;
 	
 	public static OpcUaClient client = null;
@@ -40,10 +40,10 @@ public class MainController {
     	boolean mainPingCheck = pingTest(MAIN_IP);
     	boolean subPingCheck = pingTest(SUB_IP);
     	
-    	
-//    	System.out.println("메인아이피 : "+mainPingCheck);
-//    	System.out.println("서브아이피 : "+subPingCheck);
-    	
+/*    	
+    	System.out.println("메인아이피 : "+mainPingCheck);
+    	System.out.println("서브아이피 : "+subPingCheck);
+*/
     	//2.메인, 백업서버의 포트가 열려있는지 닫혀있는지 테스트
     	boolean mainPortCheck = portTest(MAIN_IP, PORT);
     	boolean subPortCheck = portTest(SUB_IP, PORT);
@@ -61,7 +61,7 @@ public class MainController {
 				OpcDataMap opcDataMap = new OpcDataMap();
 
 				try {
-					Map<String, Object> dataMap = opcDataMap.getOpcDataConnCheck(clientMain, "Transys.$SYSTEM$.$SystemStatus$");
+					Map<String, Object> dataMap = opcDataMap.getOpcDataConnCheck(clientMain, "TKHEAT.$SYSTEM$.$SystemStatus$");
 					tagValueMain = dataMap.get("value").toString();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -88,7 +88,7 @@ public class MainController {
 				OpcDataMap opcDataMap = new OpcDataMap();
 				
 				try {
-					Map<String, Object> dataMap = opcDataMap.getOpcDataConnCheck(clientSub, "Transys.$SYSTEM$.$SystemStatus$");
+					Map<String, Object> dataMap = opcDataMap.getOpcDataConnCheck(clientSub, "TKHEAT.$SYSTEM$.$SystemStatus$");
 					tagValueSub = dataMap.get("value").toString();
 				} catch (InterruptedException e) {
 					e.printStackTrace();

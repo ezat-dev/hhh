@@ -975,6 +975,7 @@ body{
         <div class="btnSaveClose">
         	<button class="delete" type="button" onclick="deleteChim();"  style="display: none;">삭제</button>
             <button class="save" type="button" onclick="save();">저장</button>
+            <button type="button" id="btnSaveAs" style="display:none;" onclick="saveAs()">다른이름저장</button>
             <button class="close" type="button" onclick="window.close();">닫기</button>
     	</div>
      </div>
@@ -1141,7 +1142,8 @@ body{
 
 
 				getChimStandardDetail(data.wstd_code);
-				 $('.delete').show();
+				$("#btnSaveAs").show();
+				$('.delete').show();
 			},
 		});		
 	}
@@ -1231,13 +1233,14 @@ function getChimStandardDetail(wstd_code){
 	const chimStandardModal = document.querySelector('.chimStandardModal');
 	const closeButton = document.querySelector('.close');
 	const headerCloseButton = document.querySelector('.header-close');
-	
+
 	insertButton.addEventListener('click', function() {
 		isEditMode = false;  // 추가 모드
 	    $('#chimStandardForm')[0].reset(); // 폼 초기화
 	    chimStandardModal.style.display = 'block'; // 모달 표시
 
 		$('.delete').hide();
+		$("#btnSaveAs").hide();
 	});
 
 	closeButton.addEventListener('click', function() {
@@ -1361,6 +1364,30 @@ function getChimStandardDetail(wstd_code){
 	        }
 	    });
 	}
+
+    function saveAs() {
+        var formData = new FormData($("#chimStandardForm")[0]);
+        formData.append("mode", "insert");
+        if (!confirm("다른 이름으로 저장하시겠습니까?")) return;
+
+        $.ajax({
+            url: "/tkheat/management/chimStandardInsert/chimStandardInsertSave",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            success: function(result) {
+                alert("다른 이름으로 저장되었습니다.");
+                $(".chimStandardModal").hide();
+                getChimStandardList();
+            },
+            error: function(xhr, status, error) {
+                console.error("다른이름저장 오류:", error);
+            }
+        });
+    }
+    	
 
 
 	function deleteChim() {

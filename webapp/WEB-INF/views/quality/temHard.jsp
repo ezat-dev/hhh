@@ -166,10 +166,25 @@
 			        		  hozAlign: "center", headerFilter: "input",
 			        		  formatter: function(cell) {
 			        		    const el = cell.getElement();
-			        		    el.style.backgroundColor = "#3498db"; // 파란색
-			        		    el.style.color = "#fff"; // 흰색 글자
+			        		    const value = cell.getValue();
+
 			        		    el.style.fontWeight = "bold";
-			        		    return cell.getValue();
+
+			        		    if (value === "합격") {
+			        		      el.style.backgroundColor = "#3498db"; // 파란색
+			        		      el.style.color = "#fff"; // 흰색 글자
+			        		    } else if (value === "불합격") {
+			        		      el.style.backgroundColor = "#e74c3c"; // 빨간색
+			        		      el.style.color = "#fff"; // 흰색 글자
+			        		    } else if (value === "대기") {
+			        		      el.style.backgroundColor = "#f1c40f"; // 노란색
+			        		      el.style.color = "#000"; // 검정 글자
+			        		    } else {
+			        		      el.style.backgroundColor = "#ffffff"; // 기본 흰색
+			        		      el.style.color = "#000";
+			        		    }
+
+			        		    return value;
 			        		  }
 			        		},
 

@@ -55,5 +55,15 @@ public interface WorkJisiService {
 
 	WorkJisi setWorkipgoBarcodeScan(WorkJisi w);
 
-	int getWorkJisiIlboCode(WorkJisi ww);	
+	int getWorkJisiIlboCode(WorkJisi ww);
+
+	void ipgoListDelete(WorkJisi w);
+
+	void workJisiListDelete(WorkJisi w);
+
+	List<WorkJisi> getChulgoList(WorkJisi chulgo);
+
+	List<WorkJisi> getChulgoAddList(WorkJisi chulgo);
+
+	void setChulgoAdd(WorkJisi chulgo);	
 }

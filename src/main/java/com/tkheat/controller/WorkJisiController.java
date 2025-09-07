@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.tkheat.domain.Chulgo;
 import com.tkheat.domain.Ipgo;
 import com.tkheat.domain.Product;
 import com.tkheat.domain.Users;
@@ -199,7 +200,6 @@ public class WorkJisiController {
 
 				JSONArray workData = (JSONArray)workObj.get("ipgoData");
 
-//				//System.out.println(workObj.toString());
 				int result = 0;
 				
 				for(int i=0; i<workData.size(); i++) {
@@ -225,59 +225,46 @@ public class WorkJisiController {
 							ord_mon = prodDang * su;
 						}
 					}
+					int ordRow = Integer.parseInt(jObj.get("ord_row").toString());
+					for(int j=0; j<ordRow; j++) {
+						ipgo.setOrd_code(ordCode);
+						ipgo.setOrd_prn("0");
+						ipgo.setOrd_input(ordDate);
+						ipgo.setProd_code(Integer.parseInt(jObj.get("prod_code").toString()));
+						ipgo.setOrd_date(ordDate);
+						ipgo.setOrd_lot("");
+						ipgo.setOrd_danw(jObj.get("prod_danw").toString());
+						ipgo.setOrd_dang(prodDang);
+						ipgo.setOrd_danj(prodDanj);
+						ipgo.setOrd_su(Integer.parseInt(jObj.get("ord_su").toString()));
+						ipgo.setOrd_amnt(amnt);
+						ipgo.setOrd_mon(ord_mon);
+						ipgo.setOrd_name("김성우");
+						ipgo.setOrd_gyu("");
+						ipgo.setOrd_sunip("선입1");
+						ipgo.setOrd_boxsu(jObj.get("prod_boxsu").toString());
+
+						
+						Product product = workJisiService.getProductData(ipgo);
+						
+						ipgo.setProd_chisu1n(product.getProd_chisu1n());
+						ipgo.setProd_chisu1s(product.getProd_chisu1s());
+						ipgo.setProd_chisu2n(product.getProd_chisu2n());
+						ipgo.setProd_chisu2s(product.getProd_chisu2s());
+						ipgo.setProd_chisu3n(product.getProd_chisu3n());
+						ipgo.setProd_chisu3s(product.getProd_chisu3s());
+						ipgo.setProd_chisu4n(product.getProd_chisu4n());
+						ipgo.setProd_chisu4s(product.getProd_chisu4s());
+						ipgo.setProd_chisu5n(product.getProd_chisu5n());
+						ipgo.setProd_chisu5s(product.getProd_chisu5s());
 					
-					ipgo.setOrd_code(ordCode);
-					ipgo.setOrd_prn("0");
-					ipgo.setOrd_input(ordDate);
-					ipgo.setProd_code(Integer.parseInt(jObj.get("prod_code").toString()));
-					ipgo.setOrd_date(ordDate);
-					ipgo.setOrd_lot("");
-					ipgo.setOrd_danw(jObj.get("prod_danw").toString());
-					ipgo.setOrd_dang(prodDang);
-					ipgo.setOrd_danj(prodDanj);
-					ipgo.setOrd_su(Integer.parseInt(jObj.get("ord_su").toString()));
-					ipgo.setOrd_amnt(amnt);
-					ipgo.setOrd_mon(ord_mon);
-					ipgo.setOrd_name("김성우");
-					ipgo.setOrd_gyu("");
-					ipgo.setOrd_sunip("선입1");
-					ipgo.setOrd_boxsu(jObj.get("prod_boxsu").toString());
-/*
-					//System.out.println(ipgo.getOrd_code());
-					//System.out.println(ipgo.getOrd_prn());
-					//System.out.println(ipgo.getOrd_input());
-					//System.out.println(ipgo.getProd_code());
-					//System.out.println(ipgo.getOrd_date());
-					//System.out.println(ipgo.getOrd_lot());
-					//System.out.println(ipgo.getOrd_danw());
-					//System.out.println(ipgo.getOrd_dang());
-					//System.out.println(ipgo.getOrd_danj());
-					//System.out.println(ipgo.getOrd_su());
-					//System.out.println(ipgo.getOrd_amnt());
-					//System.out.println(ipgo.getOrd_mon());
-					//System.out.println(ipgo.getOrd_name());
-					//System.out.println(ipgo.getOrd_gyu());
-					//System.out.println(ipgo.getOrd_sunip());
-					//System.out.println(ipgo.getOrd_boxsu());
-*/
 					
-					Product product = workJisiService.getProductData(ipgo);
-					
-					ipgo.setProd_chisu1n(product.getProd_chisu1n());
-					ipgo.setProd_chisu1s(product.getProd_chisu1s());
-					ipgo.setProd_chisu2n(product.getProd_chisu2n());
-					ipgo.setProd_chisu2s(product.getProd_chisu2s());
-					ipgo.setProd_chisu3n(product.getProd_chisu3n());
-					ipgo.setProd_chisu3s(product.getProd_chisu3s());
-					ipgo.setProd_chisu4n(product.getProd_chisu4n());
-					ipgo.setProd_chisu4s(product.getProd_chisu4s());
-					ipgo.setProd_chisu5n(product.getProd_chisu5n());
-					ipgo.setProd_chisu5s(product.getProd_chisu5s());
-					
-					result = workJisiService.setIpgoAdd(ipgo);
-					
-					if(result == 1) {
-						workJisiService.setIpgoTest(ipgo);
+						result = workJisiService.setIpgoAdd(ipgo);
+						
+						if(result == 1) {
+							workJisiService.setIpgoTest(ipgo);
+						}
+
 					}
 				}
 
@@ -290,7 +277,7 @@ public class WorkJisiController {
 			return rtnMap;
 		}
 
-	//입고관리 등록
+	//입고관리 출력
 	@RequestMapping(value = "/product/ipgo/ipgoListPrint", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> ipgoListPrint(
@@ -378,6 +365,32 @@ public class WorkJisiController {
     	return rtnMap;	
     }
 	
+	//입고관리 삭제
+	@RequestMapping(value = "/product/ipgo/ipgoListDelete", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> ipgoListDelete(
+			@RequestParam(value="ord_code_array") int[] ordCodeArray,
+			HttpServletRequest request){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		UtilClass util = new UtilClass();
+		
+		Users users = util.getSessionUser(request);
+		
+		if(ordCodeArray.length > 0) {
+			for(int ord_code : ordCodeArray) {
+				WorkJisi w = new WorkJisi();
+				w.setOrd_code(ord_code);
+				w.setUser_name(users.getUser_name());
+				
+				workJisiService.ipgoListDelete(w);
+			}
+		}
+		
+		rtnMap.put("data",ordCodeArray);
+		
+		return rtnMap;
+	}
 	
 	//2025-07-10 작업지시
 
@@ -405,7 +418,7 @@ public class WorkJisiController {
 		
 		for(WorkJisi wj : list) {
 			File file = new File("D:/태경출력파일/작업지시서/"+wj.getJisi_lot_view()+".pdf");
-			File file2 = new File("D:/태경출력파일/공정이동표/"+wj.getOrd_code()+".pdf");
+			File file2 = new File("D:/태경출력파일/공정이동표/"+wj.getJisi_lot_view()+".pdf");
 			
 			if(file.exists()) {
 				wj.setJisi_h_file_yn(1);
@@ -514,6 +527,8 @@ public class WorkJisiController {
 			@RequestParam String ord_edate,
 			@RequestParam int s_ord_sunip_check,
 			@RequestParam String s_ord_sunip_pw,
+			@RequestParam int jisi_h_calc_su_param,
+			@RequestParam(value="ipgo_ord_code_array") int[] ord_code_array,
 			HttpServletRequest request){
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		
@@ -535,8 +550,8 @@ public class WorkJisiController {
 		w.setProd_code(Integer.parseInt(jsonObj.get("prod_code").toString()));
 		w.setJisi_j_su(Integer.parseInt(jsonObj.get("jisi_j_su").toString()));
 		w.setOrd_code(Integer.parseInt(jsonObj.get("ord_code").toString()));
-		
-		
+		w.setJisi_h_calc_su(jisi_h_calc_su_param);
+		w.setOrd_code_array(ord_code_array);
 		
 		//선입제품이 있는지 체크
 		if(s_ord_sunip_check == 0) {
@@ -544,6 +559,7 @@ public class WorkJisiController {
 			
 			if(sunipWork.size() > 0) {
 				rtnMap.put("alert","선입된 제품이 있습니다. 다시 확인하십시오!");
+				rtnMap.put("alertData",sunipWork);
 				return rtnMap;
 			}
 		}else {
@@ -561,34 +577,41 @@ public class WorkJisiController {
 		List<WorkJisi> ipgoList = workJisiService.getWorkJisiHeatIpgoListRegList(w);
 		int jisi_diff_su = 0;
 		int jisi_j_su = Integer.parseInt(jsonObj.get("jisi_j_su").toString());
-		int jisi_h_calc_su = 0;
-		float jisi_h_calc_jung = 0;
 		
 		List<WorkJisi> rtnList = new ArrayList<WorkJisi>();
 		
 		for(WorkJisi wj : ipgoList) {
 			int temp = 0;
-			
-			if(jisi_j_su != jisi_diff_su) {
-				if(wj.getJisi_diff_su() <= (jisi_j_su-jisi_diff_su)) {
-					temp = wj.getJisi_diff_su();
-					
-					jisi_diff_su += wj.getJisi_diff_su();
+
+			jisi_diff_su = wj.getJisi_diff_su(); //행의 잔량
+			if(jisi_j_su != jisi_h_calc_su_param) {
+				if(jisi_h_calc_su_param == 0) {
+						//침탄표준의 적재수량이 더 클 때
+					if(jisi_j_su > jisi_diff_su) {
+						temp = jisi_diff_su;					
+					}else{
+						//침탄표준의 적재수량이 더 작거나 같을 때
+						temp = jisi_j_su;
+					}
 				}else {
-					temp = jisi_j_su - jisi_diff_su;
+						//400, 200 > 50
+					if(jisi_j_su > (jisi_h_calc_su_param + jisi_diff_su)) {
+						temp = jisi_diff_su;
+					}else{
+						//400, 200 < 210
+						temp = jisi_j_su - jisi_h_calc_su_param;
+					}
 					
-					jisi_diff_su += temp;
 				}
 				
-				jisi_h_calc_su += temp;
-				jisi_h_calc_jung += (temp * wj.getOrd_danj());
-				
 				wj.setJisi_h_su(temp);
-				wj.setJisi_h_calc_su(jisi_h_calc_su);
-				wj.setJisi_h_calc_jung(Math.round(jisi_h_calc_jung * 100)/100f);
-
+	
 				rtnList.add(wj);
+			}else {
+				rtnMap.put("alert","총 작업수량을 초과할 수 없습니다!");
+				return rtnMap;				
 			}
+
 		}
 /*		
 		List<WorkJisi> list = workJisiService.workJisiHeatIpgoList(w);
@@ -671,11 +694,11 @@ public class WorkJisiController {
 			String ilbo_lot = "";
 			
 			if(jisi_lot.substring(8).equals("1")) {
-				ilbo_lot = jisi_lot.substring(0,8)+"A";
+				ilbo_lot = "TK"+jisi_lot.substring(0,6)+"-"+jisi_lot.substring(6,8)+"A";
 			}else if(jisi_lot.substring(8).equals("2")) {
-				ilbo_lot = jisi_lot.substring(0,8)+"B";
+				ilbo_lot = "TK"+jisi_lot.substring(0,6)+"-"+jisi_lot.substring(6,8)+"B";
 			}else {
-				ilbo_lot = jisi_lot;
+				ilbo_lot = "TK"+jisi_lot.substring(0,6)+"-"+jisi_lot.substring(6,8)+"0";;
 			}
 			
 //			System.out.println("jisi_lot : "+jisi_lot+"// ilbo_lot : "+ilbo_lot);
@@ -900,72 +923,27 @@ public class WorkJisiController {
 			
 			try {
 				
-				for(WorkJisi wjList : ordList) {
 					
-					String fileName2 = wjList.getOrd_code()+""; // 최종 파일 이름
-					
-					Map<String, Object> reportMap = new HashMap<String, Object>();
-					reportMap.put("ord_code", wjList.getOrd_code());
-					reportMap.put("jisi_h_code", wjList.getJisi_h_code());
-					reportMap.put("corp_name", wjList.getCorp_name());
-					reportMap.put("prod_no", wjList.getProd_no());
-					reportMap.put("prod_name", wjList.getProd_name());
-					reportMap.put("prod_gyu", wjList.getProd_gyu());
-					reportMap.put("prod_jai", wjList.getProd_jai());
-					reportMap.put("tech_te", wjList.getTech_te());
-					reportMap.put("ord_lot", wjList.getOrd_lot());
-					reportMap.put("ord_gyu", wjList.getOrd_gyu());
-					reportMap.put("ord_su", wjList.getOrd_su());
-					reportMap.put("prod_danj", wjList.getProd_danj());
-					reportMap.put("ord_amnt", wjList.getOrd_amnt());
-					reportMap.put("cost_ea", wjList.getCost_ea());
-					reportMap.put("cost_kg", wjList.getCost_kg());
-					reportMap.put("ord_mon", wjList.getOrd_mon());
-					reportMap.put("prod_upjong", wjList.getProd_upjong());
-					reportMap.put("jisi_h_su", wjList.getJisi_h_su());
-					reportMap.put("jisi_h_jung", wjList.getJisi_h_jung());
-					reportMap.put("jisi_h_cost", wjList.getJisi_h_cost());
-					reportMap.put("prod_gd", wjList.getProd_gd());
-					reportMap.put("prod_cd", wjList.getProd_cd());
-					reportMap.put("prod_pg", wjList.getProd_pg());
-					reportMap.put("prod_polish", wjList.getProd_polish());
-					reportMap.put("prod_sg", wjList.getProd_sg());
-					reportMap.put("prod_e1", wjList.getProd_e1());
-					reportMap.put("prod_vnyl", wjList.getProd_vnyl());
-					reportMap.put("prod_plt", wjList.getProd_plt());
-					reportMap.put("prod_pad", wjList.getProd_pad());
-					reportMap.put("prod_danch", wjList.getProd_danch());
-					reportMap.put("prod_bangch", wjList.getProd_bangch());
-					reportMap.put("ord_bigo", wjList.getOrd_bigo());
-					reportMap.put("prod_note", wjList.getProd_note());
-					reportMap.put("ord_name", wjList.getOrd_name());
-					reportMap.put("prod_img", "http://127.0.0.1:8082/tkPrint/"+wjList.getProd_img());
-					reportMap.put("jisi_h_bigo", wjList.getJisi_h_bigo());
-					reportMap.put("fac1", wjList.getFac1());
-					reportMap.put("fac2", wjList.getFac2());
-					reportMap.put("fac3", wjList.getFac3());
-					reportMap.put("fac4", wjList.getFac4());
-					reportMap.put("fac5", wjList.getFac5());
-					reportMap.put("fac6", wjList.getFac6());
-					reportMap.put("fac7", wjList.getFac7());
-					reportMap.put("user_name", wjList.getUser_name());				
-					reportMap.put("jisi_lot", wjList.getJisi_lot());
-					
-					JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(ordList);
-					
-					JasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
-					JasperCompileManager compileManager = JasperCompileManager.getInstance(jasperReportsContext);
-					JasperReport report = JasperCompileManager.compileReport(abPath2);
-					
-					
-					JasperFillManager fillManager = JasperFillManager.getInstance(jasperReportsContext);
-					
-					JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);		
-					
-					JasperExportManager exportManager = JasperExportManager.getInstance(jasperReportsContext); 
-					JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/공정이동표/"+fileName2+".pdf");			
-					rtnMap.put("heatData",fileName+".pdf");
-				}
+				String fileName2 = reportWorkJisi.getJisi_lot_view(); // 최종 파일 이름
+				
+				Map<String, Object> reportMap = new HashMap<String, Object>();
+	            reportMap.put("ord_list", ordList);
+	               
+	            reportMap.put("jisi_lot", reportWorkJisi.getJisi_lot());					
+				JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(ordList);
+				
+				JasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
+				JasperCompileManager compileManager = JasperCompileManager.getInstance(jasperReportsContext);
+				JasperReport report = JasperCompileManager.compileReport(abPath2);
+				
+				
+				JasperFillManager fillManager = JasperFillManager.getInstance(jasperReportsContext);
+				
+				JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);		
+				
+				JasperExportManager exportManager = JasperExportManager.getInstance(jasperReportsContext); 
+				JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/공정이동표/"+fileName2+".pdf");			
+				rtnMap.put("heatData",fileName+".pdf");
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -995,4 +973,130 @@ public class WorkJisiController {
 		return rtnMap;
 	}
 	
+	//작업지시관리 삭제
+	@RequestMapping(value = "/production/workjisi/workJisiListDelete", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> workJisiListDelete(
+			@RequestParam(value="jisi_lot_view_array") String[] jisiLotViewArray,
+			HttpServletRequest request){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		UtilClass util = new UtilClass();
+		
+		Users users = util.getSessionUser(request);
+		
+		if(jisiLotViewArray.length > 0) {
+			for(String jisi_lot_view : jisiLotViewArray) {
+				WorkJisi w = new WorkJisi();
+				w.setJisi_lot_view(jisi_lot_view);
+				w.setUser_name(users.getUser_name());
+				
+				workJisiService.workJisiListDelete(w);
+			}
+		}
+		
+		rtnMap.put("data",jisiLotViewArray);
+		
+		return rtnMap;
+	}
+
+	
+
+	//출고관리 - 화면로드
+	@RequestMapping(value = "/product/chulgo", method = RequestMethod.GET)
+	public String chulgo() {
+		return "/product/chulgo.jsp";
+	}	 
+
+	//출고관리 조회
+	@RequestMapping(value = "/product/chulgo/getChulgoList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getChulgoList(
+			@RequestParam String sdate,
+			@RequestParam String edate,
+			@RequestParam String prod_gubn
+			) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		WorkJisi chulgo = new WorkJisi();
+		chulgo.setSdate(sdate);
+		chulgo.setEdate(edate);
+		chulgo.setProd_gubn(prod_gubn);
+
+		List<WorkJisi> chulgoList = workJisiService.getChulgoList(chulgo);
+
+		rtnMap.put("data",chulgoList);
+
+		return rtnMap; 
+	}
+	
+	//출고관리 - 등록(입고정보 조회)
+	@RequestMapping(value = "/product/chulgo/getChulgoAddList", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getChulgoAddList(
+			@RequestParam String sdate,
+			@RequestParam String edate
+			) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		WorkJisi chulgo = new WorkJisi();
+		chulgo.setSdate(sdate);
+		chulgo.setEdate(edate);
+		
+		List<WorkJisi> chulgoRegList = workJisiService.getChulgoAddList(chulgo);
+		
+		rtnMap.put("data",chulgoRegList);
+		
+		return rtnMap; 
+	}
+	
+	//작업지시 - 등록
+	@RequestMapping(value = "/product/chulgo/chulgoAdd", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> setChulgoAdd(@RequestBody String str){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		JSONParser jParser = new JSONParser();
+
+		try {
+			JSONObject workObj = (JSONObject)jParser.parse(str);
+
+			String ochDate = workObj.get("ochDate").toString();
+
+			JSONArray workData = (JSONArray)workObj.get("chulgoData");
+
+			int result = 0;
+			
+			for(int i=0; i<workData.size(); i++) {
+
+				JSONObject jObj = (JSONObject)workData.get(i);
+
+				WorkJisi chulgo = new WorkJisi();
+				
+				chulgo.setTend_code(i);
+				chulgo.setCorp_name(jObj.get("corp_name").toString());
+				chulgo.setJaego_amnt(Float.parseFloat(jObj.get("jaego_amnt").toString()));
+				chulgo.setJaego_su(Integer.parseInt(jObj.get("jaego_su").toString()));
+				chulgo.setOch_amnt(Float.parseFloat(jObj.get("och_amnt").toString()));
+				chulgo.setOch_bigo(jObj.get("och_amnt").toString());
+				chulgo.setOch_ma(jObj.get("och_ma").toString());
+				chulgo.setOrd_dang(Float.parseFloat(jObj.get("ord_dang").toString()));
+				chulgo.setOrd_danj(Float.parseFloat(jObj.get("ord_danj").toString()));
+				chulgo.setOrd_code(Integer.parseInt(jObj.get("ord_code").toString()));
+				chulgo.setOrd_lot(jObj.get("ord_lot").toString());
+				chulgo.setOch_mon(jObj.get("och_mon").toString());
+				chulgo.setOch_date(ochDate);
+			
+				workJisiService.setChulgoAdd(chulgo);
+			}
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		rtnMap.put("data","succ");
+
+		return rtnMap;
+	}
+
 }

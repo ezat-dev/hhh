@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.tkheat.domain.Monitoring;
+import com.tkheat.domain.WorkJisi;
 import com.tkheat.service.MonitoringService;
 
 
@@ -104,6 +105,20 @@ public class MonitoringController {
 	    }
 	 
 	 
+
+	 
+	 //2025-08-18 추가
+	 @RequestMapping(value = "/monitoring/monitoringDataList", method = RequestMethod.POST)
+	 @ResponseBody
+	 public Map<String, Object> getMonitoringDataList(){
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 
+		 List<WorkJisi> result = monitoringService.getMonitoringDataList();
+		 
+		 rtnMap.put("data",result);
+		 
+		 return rtnMap;
+	 }
 	 
 	 
 	 

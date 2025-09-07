@@ -216,14 +216,15 @@ input[type="date"] {
         </button>
         <button class="insert-button">
             <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
-          
+        </button>
+        <button class="delete">
+            <img src="/tkheat/css/image/delete-icon.png" alt="delete" class="button-image">
         </button>
         <button class="printer-button">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
         </button>
         <button class="excel-button">
-            <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
-            
+            <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">            
         </button>
     </div>
 </div>
@@ -298,6 +299,7 @@ input[type="date"] {
 
 	//전역변수
     var cutumTable;	
+	let now_page_code = "a02";
 
 	//로드
 	$(function(){
@@ -372,6 +374,47 @@ input[type="date"] {
 
 		}		
 
+	});
+	
+	$(".delete").on("click",function(){
+		
+		var selectArray = ipgoListTable.getSelectedData();
+		
+		//체크한 데이터만 조회
+		if(ipgoListTable.getSelectedData().length > 0){
+			
+			if(confirm("선택한 행을 삭제하시겠습니까?")){
+
+				var selectArray = ipgoListTable.getSelectedData();
+				var ordCodeArray = new Array();
+				
+				for(var i=0; i<selectArray.length; i++){
+					
+					if(selectArray[i].ord_code != null){
+						//작업번호가 다를경우 alert창
+						ordCodeArray.push(selectArray[i].ord_code);	
+					}
+	
+				}
+	
+				$.ajax({
+					url:"/tkheat/product/ipgo/ipgoListDelete",
+					type:"post",
+					dataType:"json",
+					traditional: true,
+					data:{
+						"ord_code_array":ordCodeArray
+					},
+					success:function(result){
+						getIpgoList();
+					}
+				});
+			}
+		}else{
+			alert("삭제할 행을 선택해주십시오!!");
+			return false;
+		}
+		
 	});
 	
 	//함수

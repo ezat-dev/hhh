@@ -376,6 +376,10 @@ input[type="date"] {
         <button class="insert-button" id="hAddBtn">
             <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
         </button>
+        <button class="delete">
+            <img src="/tkheat/css/image/delete-icon.png" alt="delete" class="button-image">
+        </button>
+        
 <!--         
         <button class="printer-button" id="jPrintBtn">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
@@ -409,13 +413,14 @@ input[type="date"] {
 	
 		<form id="workHForm" name="workHForm" autocomplete="off">
 			<div class="j_container">
+				<label for="" class="iRowLabel">수주NO</label>
+				<input type="text" id="s_ord_code" name="s_ord_code" class="iRowInput_180"/>
+				<button class="iRowBtn margin_left" type="button" onclick="workHIpgoDataBarcodeScan();">입력</button>				
+				<button class="workHDataBtn iRowBtn margin_left" type="button" onclick="workHDataList();">검색</button>				
 				<label for="" class="iRowLabel">선입선출제외</label>
 				<input type="checkbox" id="s_ord_sunip_check" name="s_ord_sunip_check" class="iRowInput"
 					style="width:40px !important;"/>
 				<input type="password" id="s_ord_sunip_pw" name="s_ord_sunip_pw" class="iRowInput margin_left"/>					
-				<label for="" class="iRowLabel">수주NO</label>
-				<input type="text" id="s_ord_code" name="s_ord_code" class="iRowInput_180" onchange="workHIpgoDataBarcodeScan();"/>
-				<button class="workHDataBtn iRowBtn margin_left" type="button" onclick="workHDataList();">검색</button>				
 			</div>	
 	
 		
@@ -755,7 +760,7 @@ input[type="date"] {
 		
     <div class="j_container" style="justify-content:end;">
     	<div class="j_row1">
-			<button class="iRowBtn" type="button" onclick="workHIpgoDataReg();">적용</button>
+<!--  			<button class="iRowBtn" type="button" onclick="workHIpgoDataReg();">적용</button>-->
 			<button class="workHIpgoClose iRowBtn margin_left" type="button" onclick="workHIpgoCloseBtn();">닫기</button>
 		</div>
     </div>
@@ -1158,6 +1163,7 @@ input[type="date"] {
 <script>
 	//전역변수
     var cutumTable;	
+    let now_page_code = "b01";
 	
 	//로드
 	$(function(){
@@ -1175,7 +1181,7 @@ input[type="date"] {
 		$("#jisi_edate").val(todayDate());
 //		$("#jisi_sdate").val("2024-07-14");
 //		$("#jisi_edate").val("2024-07-20");
-		$("#ord_sdate").val(beforeWeekDate());
+		$("#ord_sdate").val(beforeMonthDate());
 		$("#ord_edate").val(todayDate());
 		
 		getWorkJisiAllListData();
@@ -1229,6 +1235,50 @@ input[type="date"] {
 			});
 		}		
 	});
+	
+	
+	//삭제버튼
+	$(".delete").on("click",function(){
+		
+		var selectArray = workAllDataTable.getSelectedData();
+		
+		//체크한 데이터만 조회
+		if(workAllDataTable.getSelectedData().length > 0){
+			
+			if(confirm("선택한 행을 삭제하시겠습니까?")){
+
+				var selectArray = workAllDataTable.getSelectedData();
+				var jisiLotViewArray = new Array();
+				
+				for(var i=0; i<selectArray.length; i++){
+					
+					if(selectArray[i].jisi_lot_view != null){
+						//작업번호가 다를경우 alert창
+						jisiLotViewArray.push(selectArray[i].jisi_lot_view);	
+					}
+	
+				}
+	
+				$.ajax({
+					url:"/tkheat/production/workjisi/workJisiListDelete",
+					type:"post",
+					dataType:"json",
+					traditional: true,
+					data:{
+						"jisi_lot_view_array":jisiLotViewArray
+					},
+					success:function(result){
+						getWorkInstructionList();
+					}
+				});
+			}
+		}else{
+			alert("삭제할 행을 선택해주십시오!!");
+			return false;
+		}
+		
+	});
+	
 	
 	//함수
 	function getWorkJisiAllListData(){
@@ -1293,21 +1343,19 @@ input[type="date"] {
 		    		}
 		    	},
 				{	headerSort:false,
-		    		formatter:printIconProc, width:60, title:"공정</br>이동표",cellClick:function(e, cell){
-		    			if(cell.getRow().getData().jisi_lot_view != null){
-		    				var ord_code = cell.getRow().getData().ord_code;
-//		    				alert("작업로트 " + jisi_lot_view);
-		    				var fileUrl = "/tkPrint/공정이동표/"+ord_code+".pdf";
+		    		formatter:printIconProc, width:60, title:"작업</br>지시",cellClick:function(e, cell){
+		    			if(cell.getRow().getData().jisi_j_file_yn != 0){
+		    				var jisi_lot_view = cell.getRow().getData().jisi_lot_view;
+		    				var fileUrl = "/tkPrint/공정이동표/"+jisi_lot_view+".pdf";
 		                    $("#workJisi").attr("src",fileUrl);
 		                    workJisiReportModal.style.display = "block";
 		    			}
 		    		}
 				},
 				{	headerSort:false,
-		    		formatter:printIconJisi, width:60, title:"작업</br>지시서",cellClick:function(e, cell){
-		    			if(cell.getRow().getData().jisi_lot_view != null){
+		    		formatter:printIconJisi, width:60, title:"열처리</br>체크시트",cellClick:function(e, cell){
+		    			if(cell.getRow().getData().jisi_h_file_yn != 0){
 		    				var jisi_lot_view = cell.getRow().getData().jisi_lot_view;
-//		    				alert("작업로트 " + jisi_lot_view);
 		    				var fileUrl = "/tkPrint/작업지시서/"+jisi_lot_view+".pdf";
 		                    $("#workJisi").attr("src",fileUrl);
 		                    workJisiReportModal.style.display = "block";
@@ -1461,7 +1509,7 @@ input[type="date"] {
 				"ord_edate":$("#ord_edate").val(),
 				"ord_sunip_chk":$("#s_ord_sunip_check").val()
 			},success:function(result){
-				console.log(result.data);
+//				console.log(result.data);
 				
 				workHIpgoDataTable.setData(result.data);
 			}
@@ -1470,7 +1518,11 @@ input[type="date"] {
 	
 	let workHIpgoSelectData;
 	let workJisiParam;
-	//적용버튼을 눌렀을 때
+	var workHIpgoSelectSunipRtn = true;
+	var workHIpgoSelectOrdCodeArray = new Array();
+	
+	
+	//적용버튼을 눌렀을 때 -> 더블클릭으로 변경
 	function workHIpgoDataReg(){
 		workJisiParam = JSON.stringify(workHIpgoSelectData);
 		//
@@ -1481,8 +1533,6 @@ input[type="date"] {
 	function workHIpgoDataBarcodeScan(){
 		var s_ord_code = $("#s_ord_code").val();
 		if(s_ord_code.length > 0){
-			console.log(s_ord_code);
-			console.log("s_ord_code : 변경");
 			
 			//workJisiParam = JSON.stringify(workHIpgoSelectData);
 			$.ajax({
@@ -1494,6 +1544,7 @@ input[type="date"] {
 				},success:function(result){
 					workJisiParam = JSON.stringify(result.data);
 					workHIpgoDataRegSetting();
+					$("#s_ord_code").val("");
 				}
 			});
 		}
@@ -1506,6 +1557,17 @@ input[type="date"] {
 			sunip_chk = 1;
 		}		
 		
+		var jisi_h_calc_su = $("input[name='jisi_h_calc_su']").val();
+		var jisi_h_calc_jung = $("input[name='jisi_h_calc_jung']").val();
+		
+		if(jisi_h_calc_su.length == 0){
+			jisi_h_calc_su = 0;
+			jisi_h_calc_jung = 0;
+		}
+		
+		if(workHIpgoSelectOrdCodeArray.length == 0){
+			workHIpgoSelectOrdCodeArray.push(0);
+		}
 		
 		$.ajax({
 			url:"/tkheat/production/workInstruction/heat/ipgoListReg",
@@ -1517,11 +1579,14 @@ input[type="date"] {
 				"ord_sdate":$("#ord_sdate").val(),
 				"ord_edate":$("#ord_edate").val(),
 				"s_ord_sunip_check":sunip_chk,
-				"s_ord_sunip_pw":$("#s_ord_sunip_pw").val()
+				"s_ord_sunip_pw":$("#s_ord_sunip_pw").val(),
+				"jisi_h_calc_su_param":jisi_h_calc_su,
+				"ipgo_ord_code_array":workHIpgoSelectOrdCodeArray
 			},
 			success:function(result){
-
 				if(typeof result.alert != "undefined"){
+					workHIpgoSelectSunipRtn = false;
+//					console.log(result.alertData);
 					alert(result.alert);
 					return false;
 				}else{
@@ -1529,11 +1594,11 @@ input[type="date"] {
 					var jisiData = result.data;
 					
 					
-					var jisi_h_calc_su = 0;
-					var jisi_h_calc_jung = 0;
+//					var jisi_h_calc_su = 0;
+					
 					
 					for(var jd in jisiData){
-						console.log(jisiData[jd]);
+//						console.log(jisiData[jd]);
 						var j2Array = jisiData[jd];
 						
 						for(var j2 in j2Array){
@@ -1552,21 +1617,32 @@ input[type="date"] {
 									rowValueCheck = false;
 								}
 							}
-							
-							//열처리작업리스트에 동일한 데이터가 없을경우
-							if(rowValueCheck){
-								tempArray.push(jisiData[jd]);
-								workHDataTable.addData(tempArray);
-							}
-
-						}else{
-							//리스트가 비어있으면 조회된 데이터 적용
-							workHDataTable.addData(result.data);
 						}
-					}
+						
+						
+						
+						//열처리작업리스트에 동일한 데이터가 없을경우
+						if(rowValueCheck){
+							tempArray.push(jisiData[jd]);
+							workHDataTable.addData(tempArray);
+							
+							workHIpgoSelectOrdCodeArray.push(jisiData[jd].ord_code);
+							jisi_h_calc_su = eval(jisi_h_calc_su) + eval(jisiData[jd].jisi_h_su);
+							jisi_h_calc_jung = (eval(jisi_h_calc_jung) + (eval(jisiData[jd].jisi_h_su) * eval(jisiData[jd].ord_danj))).toFixed(2);
+							$("input[name='jisi_h_calc_su']").val(jisi_h_calc_su);
+							$("input[name='jisi_h_calc_jung']").val(jisi_h_calc_jung);
 
-					
-					workHIpgoCloseBtn();
+							workHIpgoDataTable.getRows().forEach(row => {
+							  if (row.getData().ord_code === jisiData[jd].ord_code) {
+							    row.delete();
+							  }
+							});
+							
+						}
+
+
+					}
+//					workHIpgoCloseBtn();
 
 				}
 			}
@@ -1579,6 +1655,7 @@ input[type="date"] {
 	function getWorkHIpgoDataList(){
 		
 		workHIpgoDataTable = new Tabulator("#workHIpgoTabu", {
+			index:"id",
 		    height:"600px",
 		    layout:"fitColumns",
 		    selectable:true,	//로우 선택설정
@@ -1606,7 +1683,7 @@ input[type="date"] {
 		        	hozAlign:"center", headerFilter:"input"},
 		        {title:"입고수량", field:"ord_su", sorter:"string", width:80,
 			        hozAlign:"center"},	
-		        {title:"작업지시수량", field:"jisi_h_su", sorter:"string", width:100,
+		        {title:"작업완료수량", field:"jisi_h_su", sorter:"string", width:100,
 			        hozAlign:"center"},
 		        {title:"잔량", field:"jisi_diff_su", sorter:"string", width:80,
 			        hozAlign:"center"},
@@ -1631,12 +1708,18 @@ input[type="date"] {
 						row.getElement().className += " row_select";	
 					}
 				});
+			},
+			rowDblClick:function(e, row){
 				
 				var rData = row.getData();
 				workHIpgoSelectData = rData;
+				workHIpgoDataReg();
+
+						
 			}
 		});		
 	}
+	
 
 	 //행삭제 버튼
 	var rowDeleteBtn = function(cell, formatterParams){ //plain text value
@@ -1798,6 +1881,7 @@ input[type="date"] {
 //	        	console.log(result.data2);
 				$("#workHForm")[0].reset();
 				workHCloseBtn();
+				workHIpgoSelectOrdCodeArray = new Array();
 				getWorkJisiAllListData();
 	        },
 	        error: function(xhr, status, error) {
@@ -1810,6 +1894,7 @@ input[type="date"] {
 	
 	function workHCloseBtn(){
 		$("#workHForm")[0].reset();
+		workHIpgoSelectOrdCodeArray = new Array();
 		workHModal.style.display = 'none'; // 모달 숨김
 	}
 	function workJisiReportCloseBtn(){
