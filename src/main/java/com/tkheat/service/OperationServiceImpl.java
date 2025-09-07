@@ -75,7 +75,10 @@ public class OperationServiceImpl implements OperationService {
 		return operationDao.getMonthSaleList(chulgo);
 	}
 	
-	
+	@Override
+	public List<Chulgo> getDaySaleList(Chulgo chulgo){
+		return operationDao.getDaySaleList(chulgo);
+	}
 	
 	
 	

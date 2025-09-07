@@ -39,7 +39,7 @@
 	justify-content: right;
 	align-items: center;
 	width: 1500px;
-	margin-left: -760px;
+	margin-left: -1050px;
 }
 
 .box1 select{

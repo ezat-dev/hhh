@@ -131,10 +131,10 @@
     </div>
 </div>
     <main class="main">
-    	<h3>작업실적</h3>
+    	<!-- <h3>작업실적</h3> -->
 		<div class="container">
 			<div id="tab1" class="tabulator"></div>
-		</div>
+		</div><!-- 
 		<h3>입고</h3>
 		<div class="container2">
 			<div id="tab2" class="tabulator"></div>
@@ -150,7 +150,7 @@
 		<h3>출고</h3>
 		<div class="container6">
 			<div id="tab6" class="tabulator"></div>
-		</div>
+		</div> -->
 	</main>
 	    
 	    
@@ -173,7 +173,7 @@
 	//함수
 	function getLotHeatList(){
 		userTable = new Tabulator("#tab1", {
-		    height:"300px",
+		    height:"750px",
 		    layout:"fitColumns",
 		    selectable:true,	//로우 선택설정
 		    tooltips:true,

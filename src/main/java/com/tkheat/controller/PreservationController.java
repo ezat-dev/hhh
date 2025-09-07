@@ -160,13 +160,13 @@ public class PreservationController {
 	}
 
 	//SparePart 삭제 - delete
-	@RequestMapping(value = "/preservation/sparePart/deleteSparePart", method = RequestMethod.POST)
+	@RequestMapping(value = "/preservation/sparePart/sparePartDelete", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> deleteSparePart(@RequestParam("spp_idx") Integer spp_idx) {
 		Map<String, Object> result = new HashMap<>();
 
 		try {
-			preservationService.deleteSparePart(spp_idx);
+			preservationService.sparePartDelete(spp_idx);
 			result.put("status", "success");
 			result.put("message", "삭제 완료");
 		} catch (Exception e) {

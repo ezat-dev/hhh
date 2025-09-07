@@ -145,7 +145,7 @@
 	</select>
 	
 	
-	<delete id="deleteSparePartGrid" parameterType="int">
+	<delete id="sparePartDelete" parameterType="int">
 		SET LOCK_TIMEOUT 10000;
 	    DELETE FROM SPAREPART
 	    WHERE SPP_IDX = #{spp_idx}

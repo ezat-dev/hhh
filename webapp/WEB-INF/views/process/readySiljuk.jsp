@@ -168,7 +168,7 @@
             return response; // return the response data to tabulator
         },
         columns: [
-            {
+            /* {
                 formatter: "rowSelection", // 체크박스 컬럼
                 titleFormatter: "rowSelection", // 헤더 체크박스 (전체선택)
                 hozAlign: "center",
@@ -178,7 +178,7 @@
                 cellClick: function (e, cell) {
                     cell.getRow().toggleSelect();
                 },
-            },
+            }, */
             { title: "NO", field: "idx", sorter: "int", width: 80, hozAlign: "center" },
             { title: "작업일", field: "ilbo_date", sorter: "string", width: 120, hozAlign: "center" },
             { title: "준비코드", field: "ilbo_code", sorter: "string", width: 120, hozAlign: "center" },
@@ -194,7 +194,7 @@
             { title: "작업량", field: "ilbo_su", sorter: "string", width: 100, hozAlign: "center" },
             { title: "작업자", field: "user_name", sorter: "string", width: 150, hozAlign: "center" },
             { title: "담당자", field: "ord_name", sorter: "string", width: 150, hozAlign: "center" },
-            {
+            /* {
                 title: "삭제",
                 formatter: function () {
                     return "<button class='btn-delete'>삭제</button>";
@@ -215,7 +215,7 @@
                     	deleteSiljuk(selectedRows);
                     }
                 }
-            }
+            } */
         ],
         rowFormatter: function (row) {
             row.getElement().style.fontWeight = "700";

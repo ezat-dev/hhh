@@ -211,131 +211,8 @@
                      <a href="#" class="nav__logo"><img class="tkLogo" src="/tkheat/css/sideBar/tkLogo.png"></a>
                 </div>
                 <div class="nav__list">
-                    
-                     <div class="nav__link collapse">
-                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">제품관리</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="aMenu">
-<!--                         
-                             <li><a href="#" class="collapse__sublink" onclick="updateHeader('입고관리')">입고관리</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('출고관리')">출고관리</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('재고현황(상세정보)')">재고현황(상세정보)</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별재고현황')">제품별재고현황</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('출고대기현황')">출고대기현황</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('공정작업현황')">공정작업현황</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('입출고삭제현황')">입출고삭제현황</a></li>
- -->
-                        </ul>
-                    </div>
-
-                    <div class="nav__link collapse">
-                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">생산관리</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="bMenu">
-<!--
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('작업지시')">작업지시</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('작업스케줄')">작업스케줄</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('작업현황')">작업현황</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('부적합보고서')">부적합보고서</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('생산대기현황')">생산대기현황</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('LOT추적 관리(입고)')">LOT추적 관리(입고)</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('LOT추적 관리(열처리LOT)')">LOT추적 관리(열처리LOT)</a></li>
- -->
-                        </ul>
-                    </div>
-
-                    <div class="nav__link collapse">
-                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">생산공정관리</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="cMenu">
-<!-- 
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('준비 작업실적')">준비 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('전세정 작업실적')">전세정 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('침탄 작업실적')">침탄 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('고주파 작업실적')">고주파 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('템퍼링 작업실적')">템퍼링 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('후세정 작업실적')">후세정 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('쇼트/샌딩 작업실적')">쇼트/샌딩 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비별 작업실적')">설비별 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별 불량현황')">제품별 불량현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('소입경도현황')">소입경도현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('템퍼링경도현황')">템퍼링경도현황</a></li>
- -->					        
-                        </ul>
-                    </div>
-
-                    <div class="nav__link collapse">
-                        <ion-icon name="desktop-outline"></ion-icon>
-                        <span class="nav_name">모니터링</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="dMenu">
-                          
-                            <li><a href="/tkheat/monitoring/monitoring" class="collapse__sublink"">통합모니터링</a></li>
-
-                        </ul>
-                    </div>
-
-                    <div class="nav__link collapse">
-                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">설비보존관리</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="eMenu">
-<!-- 
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('SparePart관리')">SparePart관리</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비비가동등록')">설비비가동등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비가동율분석')">설비가동율분석</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비수리이력관리')">설비수리이력관리</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비점검기준등록')">설비점검기준등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비별점검현황(일별)')">설비별점검현황(일별)</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비별점검현황(월별)')">설비별점검현황(월별)</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('측정기기고장이력')">측정기기고장이력</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('측정기기점검관리')">측정기기점검관리</a></li>
- -->
-                        </ul>
-                    </div>
-
-                    <div class="nav__link collapse">
-                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">품질관리</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="fMenu">
-<!-- 
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('수입검사')">수입검사</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('부적합등록')">부적합등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('소입경도현황')">소입경도현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('템퍼링경도현황')">템퍼링경도현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('자주검사불량현황')">자주검사불량현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('자주검사불량조치관리')">자주검사불량조치관리</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('Xbar-R관리도')">Xbar-R관리도</a></li>
- -->
-                        </ul>
-                    </div>
-
-                    <div class="nav__link collapse">
-                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">경영정보</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="gMenu">
-<!--  
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별입고현황')">제품별입고현황</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별출고현황')">제품별출고현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('거래처별입고현황')">거래처별입고현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('거래처별출고현황')">거래처별출고현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('년간매출현황')">년간매출현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('월별불량현황')">월별불량현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('월별거래처별불량현황')">월별거래처별불량현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별작업실적')">제품별작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비별작업실적')">설비별작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('공지사항')">공지사항</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('월매출현황(마감)')">월매출현황(마감)</a></li>
--->					        
-                        </ul>
-                    </div>
-	
-					<div class="nav__link collapse">
+                
+                	<div class="nav__link collapse">
                         <ion-icon name="people-outline" class="nav__icon"></ion-icon>
                         <span class="nav_name">기준정보</span>
                         <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
@@ -355,6 +232,133 @@
  -->					        
                         </ul>
                     </div>
+                    
+                     <div class="nav__link collapse">
+                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
+                        <span class="nav_name">생산관리</span>
+                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+                        <ul class="collapse__menu" id="bMenu">
+
+                            <li><a href="/tkheat/monitoring/monitoring" class="collapse__sublink"">생산모니터링</a></li>
+ 
+                        </ul>
+                    </div>
+                    
+                    
+                    <div class="nav__link collapse">
+                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
+                        <span class="nav_name">공정관리</span>
+                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+                        <ul class="collapse__menu" id="cMenu">
+<!-- 
+                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('준비 작업실적')">준비 작업실적</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('전세정 작업실적')">전세정 작업실적</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('침탄 작업실적')">침탄 작업실적</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('고주파 작업실적')">고주파 작업실적</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('템퍼링 작업실적')">템퍼링 작업실적</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('후세정 작업실적')">후세정 작업실적</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('쇼트/샌딩 작업실적')">쇼트/샌딩 작업실적</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비별 작업실적')">설비별 작업실적</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별 불량현황')">제품별 불량현황</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('소입경도현황')">소입경도현황</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('템퍼링경도현황')">템퍼링경도현황</a></li>
+ -->					        
+                        </ul>
+                    </div>
+                    
+                    
+                     <div class="nav__link collapse">
+                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
+                        <span class="nav_name">품질관리</span>
+                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+                        <ul class="collapse__menu" id="fMenu">
+<!-- 
+                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('수입검사')">수입검사</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('부적합등록')">부적합등록</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('소입경도현황')">소입경도현황</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('템퍼링경도현황')">템퍼링경도현황</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('자주검사불량현황')">자주검사불량현황</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('자주검사불량조치관리')">자주검사불량조치관리</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('Xbar-R관리도')">Xbar-R관리도</a></li>
+ -->
+                        </ul>
+                    </div>
+                    
+                     <div class="nav__link collapse">
+                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
+                        <span class="nav_name">입출고관리</span>
+                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+                        <ul class="collapse__menu" id="aMenu">
+<!--                         
+                             <li><a href="#" class="collapse__sublink" onclick="updateHeader('입고관리')">입고관리</a></li>
+                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('출고관리')">출고관리</a></li>
+                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('재고현황(상세정보)')">재고현황(상세정보)</a></li>
+                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별재고현황')">제품별재고현황</a></li>
+                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('출고대기현황')">출고대기현황</a></li>
+                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('공정작업현황')">공정작업현황</a></li>
+                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('입출고삭제현황')">입출고삭제현황</a></li>
+ -->
+                        </ul>
+                    </div>
+
+                     <div class="nav__link collapse">
+                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
+                        <span class="nav_name">경영정보</span>
+                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+                        <ul class="collapse__menu" id="gMenu">
+<!--  
+                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별입고현황')">제품별입고현황</a></li>
+                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별출고현황')">제품별출고현황</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('거래처별입고현황')">거래처별입고현황</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('거래처별출고현황')">거래처별출고현황</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('년간매출현황')">년간매출현황</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('월별불량현황')">월별불량현황</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('월별거래처별불량현황')">월별거래처별불량현황</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별작업실적')">제품별작업실적</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비별작업실적')">설비별작업실적</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('공지사항')">공지사항</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('월매출현황(마감)')">월매출현황(마감)</a></li>
+-->					        
+                        </ul>
+                    </div>
+
+                     <div class="nav__link collapse">
+                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
+                        <span class="nav_name">설비보존관리</span>
+                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+                        <ul class="collapse__menu" id="eMenu">
+<!-- 
+                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('SparePart관리')">SparePart관리</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('비가동정보')">비가동정보</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비가동율분석')">설비가동율분석</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비수리이력관리')">설비수리이력관리</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비점검기준등록')">설비점검기준등록</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비별점검현황(일별)')">설비별점검현황(일별)</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비별점검현황(월별)')">설비별점검현황(월별)</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('측정기기고장이력')">측정기기고장이력</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('측정기기점검관리')">측정기기점검관리</a></li>
+ -->
+                        </ul>
+                    </div>
+
+                    <div class="nav__link collapse">
+                        <ion-icon name="desktop-outline"></ion-icon>
+                        <span class="nav_name">모니터링</span>
+                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+                        <ul class="collapse__menu" id="dMenu">
+                          
+                            
+
+                        </ul>
+                    </div>
+
+                   
+
+                   
+
+                  
+	
+					
                    
                     
                    

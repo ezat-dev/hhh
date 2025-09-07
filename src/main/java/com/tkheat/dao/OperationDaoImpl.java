@@ -67,7 +67,10 @@ public class OperationDaoImpl implements OperationDao{
 		return sqlSession.selectList("chulgo.getMonthSaleList",chulgo);
 	}
 	
-	
+	@Override
+	public List<Chulgo> getDaySaleList(Chulgo chulgo) {
+		return sqlSession.selectList("chulgo.getDaySaleList",chulgo);
+	}
 	
 	
 	

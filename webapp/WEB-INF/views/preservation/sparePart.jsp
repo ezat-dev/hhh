@@ -372,6 +372,7 @@ textarea {
 			</tbody></table>
 		</div>
 		<div class="btnSaveClose">
+			<button class="delete" type="button" onclick="deleteSparePart();"  style="display: none;">삭제</button>
 			<button class="save" type="button" onclick="save();">저장</button>
 			<button class="close" type="button" onclick="window.close();">닫기</button>
     	 </div>

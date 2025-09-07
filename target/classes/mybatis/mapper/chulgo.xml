@@ -341,7 +341,42 @@
 	ORDER BY CORP.CORP_NAME, OCHULGO.OCH_DATE
 	</select>
 	
-	
+	<select id="getDaySaleList" parameterType="chulgo" resultType="chulgo">
+    SELECT 
+           OCHULGO.OCH_MA, 
+           CORP.CORP_NAME, 
+           LEFT(CONVERT(NVARCHAR, OCHULGO.OCH_DATE, 120), 10) AS OCH_DATE, 
+           PRODUCT.PROD_NAME, 
+           PRODUCT.PROD_NO, 
+           OCHULGO.OCH_LOT, 
+           OCHULGO.OCH_SU, 
+           OCHULGO.OCH_DANG, 
+           OCHULGO.OCH_MON,
+           FLOOR(OCHULGO.OCH_MON * 0.1) AS OCH_MON_TAX,
+           (OCHULGO.OCH_MON + FLOOR(OCHULGO.OCH_MON * 0.1)) AS OCH_MON_TOTAL,
+           OCHULGO.OCH_AMNT 
+    FROM OCHULGO 
+    INNER JOIN ORDERT 
+        ON OCHULGO.ORD_CODE = ORDERT.ORD_CODE 
+    INNER JOIN PRODUCT 
+        ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE 
+    INNER JOIN CORP 
+        ON PRODUCT.CORP_CODE = CORP.CORP_CODE  
+   <where>
+    <if test="sdate != null and sdate != ''">
+        AND CONVERT(VARCHAR(10), OCHULGO.OCH_DATE, 120) &gt;= #{sdate}
+    </if>
+    <if test="edate != null and edate != ''">
+        AND CONVERT(VARCHAR(10), OCHULGO.OCH_DATE, 120) &lt;= #{edate}
+    </if>
+    <if test="corp_name != null and corp_name != ''">
+        AND CORP.CORP_NAME LIKE '%' + #{corp_name} + '%'
+    </if>
+</where>
+
+
+    ORDER BY OCHULGO.OCH_DATE, CORP.CORP_NAME
+</select>
 	
 	
 	

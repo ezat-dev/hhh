@@ -41,7 +41,7 @@ public interface OperationService {
 	
 	List<Chulgo> getMonthSaleList(Chulgo chulgo);
 	
-	
+	List<Chulgo> getDaySaleList(Chulgo chulgo);
 	
 	
 	

@@ -30,7 +30,7 @@ public interface OperationDao {
 	
 	List<Chulgo> getMonthSaleList(Chulgo chulgo);
 	
-	
+	List<Chulgo> getDaySaleList(Chulgo chulgo);
 	
 	
 	

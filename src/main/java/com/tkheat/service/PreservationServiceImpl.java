@@ -45,8 +45,8 @@ public class PreservationServiceImpl implements PreservationService{
 	}
 	
 	@Override
-	public void deleteSparePart(Integer spp_idx) {
-		preservationDao.deleteSparePart(spp_idx);
+	public void sparePartDelete(Integer spp_idx) {
+		preservationDao.sparePartDelete(spp_idx);
 	}
 	
 	@Override

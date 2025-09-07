@@ -12,7 +12,7 @@ import com.tkheat.domain.WorkJisi;
 import com.tkheat.util.OpcDataMap;
 
 @Service
-public class MonitoringServiceBcf5Impl implements MonitoringServiceBcf2{
+public class MonitoringServiceBcf5Impl implements MonitoringServiceBcf5{
 
 	boolean preVirt = true;		//예열
 	boolean chimVirt = true;	//침탄

@@ -369,14 +369,14 @@ th{
    
    
    <!-- 설비목록(검색버튼) 팝업창 -->
-	<div id="facListModal" class="modal-overlay" style="display: none;">
+	<!-- <div id="facListModal" class="modal-overlay" style="display: none;">
 		<div class="modal-content">
 			<div class="modal-header">
 				<span class="modal-title">설비 리스트</span> <span class="modal-close" onclick="closeFacListModal()">&times;</span>
 			</div>
 			<div id="facListTabulator" style="height: 500px;"></div>
 		</div>
-	</div>
+	</div> -->
 	
 	<!-- 불량현황 팝업창 -->
 	<div id="jajuListModal" class="modal-overlay" style="display: none;">
@@ -506,7 +506,7 @@ th{
 
 
 	//설비검색버튼 리스트 모달
-    function openFacListModal() {
+    /* function openFacListModal() {
         document.getElementById('facListModal').style.display = 'flex';
 
         
@@ -551,7 +551,7 @@ th{
     function closeFacListModal() {
         document.getElementById('facListModal').style.display = 'none';
     }
-
+ */
 
 
   //자주현황 검색 리스트 모달

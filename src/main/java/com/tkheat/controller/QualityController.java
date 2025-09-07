@@ -29,7 +29,13 @@ public class QualityController {
 	public String suip() {
 		return "/quality/suip.jsp";
 	}
-
+	
+	//수입검사 - 화면로드
+		@RequestMapping(value = "/quality/report", method = RequestMethod.GET)
+		public String reprot() {
+			return "/quality/report.jsp";
+		}
+		
 	//수입검사 조회
 	@RequestMapping(value = "/quality/suip/getSuipList", method = RequestMethod.POST) 
 	@ResponseBody 

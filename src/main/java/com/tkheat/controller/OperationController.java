@@ -645,5 +645,66 @@ public class OperationController {
 
 		return rtnMap; 
 	}
+	
+	
+	//일일매출현황 조회
+	@RequestMapping(value = "/operation/daySale/getDaySaleList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getDaySaleList(
+	        @RequestParam String sdate,
+	        @RequestParam String edate,        // 추가
+	        @RequestParam String corp_name
+	) {
+	    Map<String, Object> rtnMap = new HashMap<>();
+	    Chulgo chulgo = new Chulgo();
+	    chulgo.setSdate(sdate);
+	    chulgo.setEdate(edate);            // 추가
+	    chulgo.setCorp_name(corp_name);
 
+	    List<Chulgo> daySaleList = operationService.getDaySaleList(chulgo);
+
+	    List<HashMap<String, Object>> rtnList = new ArrayList<>();
+	    for(int i=0; i<daySaleList.size(); i++) {
+	        HashMap<String, Object> rowMap = new HashMap<>();
+	        rowMap.put("idx", i+1);
+	        rowMap.put("och_ma", daySaleList.get(i).getOch_ma());
+	        rowMap.put("och_date", daySaleList.get(i).getOch_date());
+	        rowMap.put("corp_name", daySaleList.get(i).getCorp_name());
+	        rowMap.put("prod_name", daySaleList.get(i).getProd_name());
+	        rowMap.put("prod_no", daySaleList.get(i).getProd_no());
+	        rowMap.put("och_lot", daySaleList.get(i).getOch_lot());
+	        rowMap.put("och_su", daySaleList.get(i).getOch_su());
+	        rowMap.put("och_dang", daySaleList.get(i).getOch_dang());
+	        rowMap.put("och_mon", daySaleList.get(i).getOch_mon());
+	        rowMap.put("och_mon_tax", daySaleList.get(i).getOch_mon_tax());
+	        rowMap.put("och_mon_total", daySaleList.get(i).getOch_mon_total());
+
+	        rtnList.add(rowMap);
+	    }
+
+	    rtnMap.put("last_page",1);
+	    rtnMap.put("data",rtnList);
+
+	    return rtnMap;
+	}
+
+	
+	//KPI - 화면로드
+		@RequestMapping(value = "/operation/kpi", method = RequestMethod.GET)
+		public String kpi() {
+			return "/operation/kpi.jsp";
+		}
+		
+		
+		//일일매출현황 - 화면로드
+		@RequestMapping(value = "/operation/daySale", method = RequestMethod.GET)
+		public String daySale() {
+			return "/operation/daySale.jsp";
+		}	
+		
+		//일일매출현황 - 화면로드
+		@RequestMapping(value = "/operation/ipgoChulgo", method = RequestMethod.GET)
+		public String ipgoChulgo() {
+			return "/operation/ipgoChulgo.jsp";
+		}	
 }

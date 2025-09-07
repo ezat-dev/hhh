@@ -20,7 +20,7 @@ public interface PreservationService {
 	
 	void sparePartUpdateSave(SparePart sparePart);
 	
-	void deleteSparePart(Integer spp_idx);
+	void sparePartDelete(Integer spp_idx);
 	
 	void insertSpareSub(SparePart sparePart);
 	

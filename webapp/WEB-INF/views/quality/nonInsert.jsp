@@ -555,7 +555,7 @@ textarea {
 <script>
 	//전역변수
     var cutumTable;	
-    var isEditMode = false; //수정,최초저장 구분값
+    var isEditMode = false; //저장인지 수정인지
 
     
 	//로드
@@ -568,15 +568,13 @@ textarea {
 		getNonInsertList();
 	});
 
-	//이벤트
-	//함수
-	// 객체는 work
+	// 객체는 work쪽임
 	function getNonInsertList(){
 		
 		userTable = new Tabulator("#tab1", {
 		    height:"750px",
 		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
+		    selectable:true,	
 		    tooltips:true,
 		    selectableRangeMode:"click",
 		    reactiveData:true,
@@ -826,16 +824,16 @@ textarea {
     
  <script>
 		
- 	// 드래그 기능 추가
+ 	
 	const modal = document.querySelector('.nonModal');
-	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
+	const header = document.querySelector('.header');
 
 	header.addEventListener('mousedown', function(e) {
-		// transform 제거를 위한 초기 위치 설정
+		
 		const rect = modal.getBoundingClientRect();
 		modal.style.left = rect.left + 'px';
 		modal.style.top = rect.top + 'px';
-		modal.style.transform = 'none'; // 중앙 정렬 해제
+		modal.style.transform = 'none';
 
 		let offsetX = e.clientX - rect.left;
 		let offsetY = e.clientY - rect.top;
