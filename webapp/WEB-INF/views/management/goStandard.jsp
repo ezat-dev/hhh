@@ -527,7 +527,7 @@
                                         <input type="hidden" name="type" value="standard">
                                             <input type="file" name="imageFile1" title="이미지 찾기" onchange="previewImage(this,'previewId1')">
                                             <!--<input type="button" value="X" title="삭제" class="btnFT" /> -->
-                                        <div class="imgArea" id="previewId1" style="height:100px;border:1px solid #ddd;"><img id="prev_previewId1" src="/resources/images/noimage_01.gif" width="100%" height="100%"></div>
+                                        <div class="imgArea" id="previewId1" style="height:100px;border:1px solid #ddd;"><img id="prev_previewId1" src="/tkheat/css/image/no_image.png" width="100%" height="100%"></div>
                                     </div>
                                 </fieldset>
                                 <fieldset class="popField">
@@ -535,7 +535,7 @@
                                     <div class="findImage">
                                     <input type="hidden" name="type" value="standard">
                                             <input type="file" name="imageFile2" title="이미지 찾기" onchange="previewImage(this,'previewId2')"><!-- <input type="button" value="X" title="삭제" class="btnFT" /> -->
-                                        <div class="imgArea" id="previewId2" style="height:90px;border:1px solid #ddd;"><img id="prev_previewId2" src="/resources/images/noimage_01.gif" width="100%" height="100%"></div>
+                                        <div class="imgArea" id="previewId2" style="height:90px;border:1px solid #ddd;"><img id="prev_previewId2" src="/tkheat/css/image/no_image.png" width="100%" height="100%"></div>
                                     </div>
                                 </fieldset>
                                 <!-- 단취방법 -->

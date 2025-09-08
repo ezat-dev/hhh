@@ -1087,7 +1087,7 @@ body{
 					    cssClass:"rp-img-popup",
 				      	formatterParams:{
 					      	height:"30px", width:"30px",
-					      	urlPrefix:"/excelTest/태경출력파일/사진/침탄로작업표준/"
+					      	urlPrefix:"/tkPrint/사진/침탄로작업표준/"
 					      	}, 
 					    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
 					    },
@@ -1096,7 +1096,7 @@ body{
 						    cssClass:"rp-img-popup",
 					      	formatterParams:{
 						      	height:"30px", width:"30px",
-						      	urlPrefix:"/excelTest/태경출력파일/사진/침탄로작업표준/"
+						      	urlPrefix:"/tkPrint/사진/침탄로작업표준/"
 						      	}, 
 						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
 						    }, */
@@ -1167,13 +1167,13 @@ function getChimStandardDetail(wstd_code){
 			}
 
 			// 이미지 초기화
-			$("#prev_previewId1, #prev_previewId3, #prev_previewId7").attr("src", "/resources/images/noimage_01.gif");
+			$("#prev_previewId1, #prev_previewId3, #prev_previewId7").attr("src", "/tkheat/css/image/no_image.png");
 
 			// 단취사진
 			if (allData.wstd_chim_file_name1) {
 				console.log("원본 파일명:", allData.wstd_chim_file_name1);
 				console.log("인코딩된 경로:", encodeURIComponent(allData.wstd_chim_file_name1));
-				const path = "/excelTest/태경출력파일/사진/침탄로작업표준/" + allData.wstd_chim_file_name1;
+				const path = "/tkPrint/사진/침탄로작업표준/" + allData.wstd_chim_file_name1;
 				console.log("path: ", path);
 				$("#prev_previewId1").attr("src", path);
 				//$(".aphoto").attr("href", path).text(d.product_file_name);
@@ -1182,7 +1182,7 @@ function getChimStandardDetail(wstd_code){
 			if (allData.wstd_chim_file_name2) {
 				console.log("원본 파일명:", allData.wstd_chim_file_name2);
 				console.log("인코딩된 경로:", encodeURIComponent(allData.wstd_chim_file_name2));
-				const path = "/excelTest/태경출력파일/사진/침탄로작업표준/" + allData.wstd_chim_file_name2;
+				const path = "/tkPrint/사진/침탄로작업표준/" + allData.wstd_chim_file_name2;
 				console.log("path: ", path);
 				$("#prev_previewId3").attr("src", path);
 				$("#prev_previewId7").attr("src", path);

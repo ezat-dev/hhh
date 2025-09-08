@@ -417,7 +417,7 @@ textarea {
               <td><input id="prod_dang" name="prod_dang" class="basic valPost valClean" type="text" style="width:90%;" value="0"></td>
               <th class="left">단위</th>
               <td>
-                <select id="prod_dawn" name="prod_dawn" class="basic valPost valClean" style="width:150px;">
+                <select id="prod_danw" name="prod_danw" class="basic valPost valClean" style="width:150px;">
                   <option>EA</option>
                   <option>CH</option>
                   <option>KG</option>
@@ -727,7 +727,7 @@ textarea {
                           <a href="" class="form-control aphoto" download="">다운로드</a>
                         </div>
                         <div class="imgArea" style="width:200px; height:150px; border:1px solid #ddd;">
-                          <img id="img0" class="imgClass rp-img-popup" style="width:100%; height:100%;" src="/resources/images/noimage_01.gif">
+                          <img id="img0" class="imgClass rp-img-popup" style="width:100%; height:100%;" src="/tkheat/css/image/no_image.png">
                         </div>
                       </td>
                     </tr>
@@ -736,11 +736,11 @@ textarea {
                       <td class="tdRight">
                         <div>
                               <input id="imgInput1" class="imgInputClass valClean" type="file" name="apperance_file_url" title="이미지 찾기">
-                              <input type="button" value="X" onclick="$('#img1').attr('src', '/resources/images/noimage_01.gif'); $('#imgInput1').val('');">
+                              <input type="button" value="X" onclick="$('#img1').attr('src', '/tkheat/css/image/no_image.png'); $('#imgInput1').val('');">
                           <a href="" class="form-control bphoto" download="">다운로드</a>
                           </div>
                         <div class="imgArea" style="width:200px; height:150px; border:1px solid #ddd;">
-                          <img id="img1" class="imgClass rp-img-popup" style="width:100%; height:100%;" src="/resources/images/noimage_01.gif">
+                          <img id="img1" class="imgClass rp-img-popup" style="width:100%; height:100%;" src="/tkheat/css/image/no_image.png">
                         </div>
                       </td>
                     </tr>
@@ -749,11 +749,11 @@ textarea {
                       <td class="tdRight">
                         <div>
                               <input id="imgInput2" class="imgInputClass valClean" type="file" name="heat_file_url" title="이미지 찾기">
-                              <input type="button" value="X" onclick="$('#img2').attr('src', '/resources/images/noimage_01.gif'); $('#imgInput2').val('');">
+                              <input type="button" value="X" onclick="$('#img2').attr('src', '/tkheat/css/image/no_image.png'); $('#imgInput2').val('');">
                           <a href="" class="form-control cphoto" download="">다운로드</a>
                           </div>
                         <div class="imgArea" style="width:200px; height:150px; border:1px solid #ddd;">
-                          <img id="img2" class="imgClass rp-img-popup" style="width:100%; height:100%;" src="/resources/images/noimage_01.gif">
+                          <img id="img2" class="imgClass rp-img-popup" style="width:100%; height:100%;" src="/tkheat/css/image/no_image.png">
                         </div>
                       </td>
                     </tr>
@@ -941,7 +941,7 @@ $('.imgInputClass').change(function(event){
 				    cssClass:"rp-img-popup",
 			      	formatterParams:{
 				      	height:"30px", width:"30px",
-				      	urlPrefix:"/excelTest/태경출력파일/사진/제품등록/"
+				      	urlPrefix:"/tkPrint/사진/제품등록/"
 				      	}, 
 				    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
 				    },
@@ -984,7 +984,7 @@ $('.imgInputClass').change(function(event){
 					    cssClass:"rp-img-popup",
 				      	formatterParams:{
 					      	height:"30px", width:"30px",
-					      	urlPrefix:"/excelTest/태경출력파일/사진/제품등록/"
+					      	urlPrefix:"/tkPrint/사진/제품등록/"
 					      	}, 
 					    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
 					    },
@@ -993,7 +993,7 @@ $('.imgInputClass').change(function(event){
 						    cssClass:"rp-img-popup",
 					      	formatterParams:{
 						      	height:"30px", width:"30px",
-						      	urlPrefix:"/excelTest/태경출력파일/사진/제품등록/"
+						      	urlPrefix:"/tkPrint/사진/제품등록/"
 						      	}, 
 						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
 						    }, */
@@ -1077,26 +1077,26 @@ $('.imgInputClass').change(function(event){
 			    }
 			}
             // 이미지 초기화
-            $("#img0, #img1, #img2").attr("src", "/resources/images/noimage_01.gif");
+            $("#img0, #img1, #img2").attr("src", "/tkheat/css/image/no_image.png");
             $(".aphoto, .bphoto, .cphoto").attr("href", "").text("");
 
             // 제품 사진
             if (d.product_file_name) {
-                const path = "/excelTest/태경출력파일/사진/제품등록/" + d.product_file_name;
+                const path = "/tkPrint/사진/제품등록/" + d.product_file_name;
                 $("#img0").attr("src", path);
                 $(".aphoto").attr("href", path).text(d.product_file_name);
             }
 
             // 외형 사진
             if (d.apperance_file_name) {
-                const path = "/excelTest/태경출력파일/사진/제품등록/" + d.apperance_file_name;
+                const path = "/tkPrint/사진/제품등록/" + d.apperance_file_name;
                 $("#img1").attr("src", path);
                 $(".bphoto").attr("href", path).text(d.apperance_file_name);
             }
 
             // 열처리 사진
             if (d.heat_file_name) {
-                const path = "/excelTest/태경출력파일/사진/제품등록/" + d.heat_file_name;
+                const path = "/tkPrint/사진/제품등록/" + d.heat_file_name;
                 $("#img2").attr("src", path);
                 $(".cphoto").attr("href", path).text(d.heat_file_name);
             }
@@ -1156,7 +1156,7 @@ $('.imgInputClass').change(function(event){
 	    $('#productInsertForm')[0].reset(); // 폼 초기화
 
 		// 이미지 초기화
-		$("#img0, #img1, #img2").attr("src", "/resources/images/noimage_01.gif");
+		$("#img0, #img1, #img2").attr("src", "/tkheat/css/image/no_image.png");
 		$(".aphoto, .bphoto, .cphoto").attr("href", "").text("");
 		
 	    productModal.style.display = 'block'; // 모달 표시

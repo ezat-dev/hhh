@@ -132,7 +132,7 @@ public class PreservationController {
 
 		try {
 			
-			String path = "D:/엑셀테스트/태경출력파일/사진/SparePart관리";
+			String path = "D:/태경출력파일/사진/SparePart관리";
 
 			String productFileName = saveFiles(files, path);
 			if (productFileName != null) sparePart.setFile_name(productFileName);
@@ -507,7 +507,7 @@ public class PreservationController {
 
 			try {
 				
-				String path = "D:/엑셀테스트/태경출력파일/사진/설비수리이력관리/";
+				String path = "D:/태경출력파일/사진/설비수리이력관리/";
 
 				String productFileName = saveFiles(files1, path);
 				if (productFileName != null) suri.setFile_name1(productFileName);

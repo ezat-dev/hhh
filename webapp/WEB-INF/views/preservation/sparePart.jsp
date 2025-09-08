@@ -337,11 +337,11 @@ textarea {
 								<td class="tdRight">
 									<div>
 										<input id="imgInput0" class="imgInputClass valClean" type="file" name="file_url" title="이미지 찾기">
-										<!-- <input type="button" value="X" onclick="$('#img0').attr('src', '/resources/images/noimage_01.gif'); $('#imgInput0').val('');"> -->
+										<!-- <input type="button" value="X" onclick="$('#img0').attr('src', '/tkheat/css/image/no_image.png'); $('#imgInput0').val('');"> -->
 										<a href="" class="form-control aphoto" download="">다운로드</a>
 									</div>
 									<div class="imgArea" style="width:200px; height:150px; border:1px solid #ddd;">
-										<img id="img0" class="imgClass rp-img-popup" style="width:100%; height:100%;" src="/resources/images/noimage_01.gif">
+										<img id="img0" class="imgClass rp-img-popup" style="width:100%; height:100%;" src="/tkheat/css/image/no_image.png">
 									</div>
 								</td>
 							</tr>
@@ -530,7 +530,7 @@ textarea {
 				    cssClass:"rp-img-popup",
 			      	formatterParams:{
 				      	height:"30px", width:"30px",
-				      	urlPrefix:"/excelTest/태경출력파일/사진/SparePart관리/"
+				      	urlPrefix:"/tkPrint/사진/SparePart관리/"
 				      	}, 
 				    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
 				    },
@@ -660,12 +660,12 @@ textarea {
 				}
 
 				// 이미지 초기화
-				$("#img0").attr("src", "/resources/images/noimage_01.gif");
+				$("#img0").attr("src", "/tkheat/css/image/no_image.png");
 
 				if (allData.file_name) {
 					console.log("원본 파일명:", allData.file_name);
 					console.log("인코딩된 경로:", encodeURIComponent(allData.file_name));
-					const path = "/excelTest/태경출력파일/사진/SparePart관리/" + allData.file_name;
+					const path = "/tkPrint/사진/SparePart관리/" + allData.file_name;
 					console.log("path: ", path);
 					$("#img0").attr("src", path);
 					//$(".aphoto").attr("href", path).text(d.product_file_name);
@@ -949,7 +949,7 @@ textarea {
 		isEditMode = false;
 		selectedRowData = null;
 
-		$('#img0').attr('src', '/resources/images/noimage_01.gif');
+		$('#img0').attr('src', '/tkheat/css/image/no_image.png');
 		$('#sparePartForm')[0].reset(); // 메인 폼 초기화
 	});
 

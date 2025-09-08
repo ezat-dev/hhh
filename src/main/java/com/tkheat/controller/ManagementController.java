@@ -107,7 +107,7 @@ public class ManagementController {
 
 			try {
 
-				String path = "D:/엑셀테스트/태경출력파일/사진/제품등록";
+				String path = "D:/태경출력파일/사진/제품등록";
 
 				String productFileName = saveFiles(files1, path);
 				if (productFileName != null) product.setProduct_file_name(productFileName);
@@ -253,7 +253,7 @@ public class ManagementController {
 	@RequestMapping(value = "/management/image/product/{filename:.+}", method = RequestMethod.GET)
     public void serveProductImage(@PathVariable String filename, HttpServletResponse response) throws IOException {
 		System.out.println("사진 출력 컨트롤러 도착");
-        String baseDir = "D:/엑셀테스트/태경출력파일/사진/제품등록/";
+        String baseDir = "D:/태경출력파일/사진/제품등록/";
         File file = new File(baseDir + filename);
 
         if (!file.exists()) {
@@ -508,7 +508,7 @@ public class ManagementController {
 
 		try {
 			
-			String path = "D:/엑셀테스트/태경출력파일/사진/설비등록";
+			String path = "D:/태경출력파일/사진/설비등록";
 
 			String productFileName = saveFiles(files1, path);
 			if (productFileName != null) fac.setFac_file_name(productFileName);
@@ -646,7 +646,7 @@ public class ManagementController {
 	@RequestMapping(value = "/management/image/chim/{filename:.+}", method = RequestMethod.GET)
     public void serveeeProductImage(@PathVariable String filename, HttpServletResponse response) throws IOException {
 		System.out.println("사진 출력 컨트롤러 도착");
-        String baseDir = "D:/엑셀테스트/태경출력파일/사진/침탄로작업표준/";
+        String baseDir = "D:/태경출력파일/사진/침탄로작업표준/";
         File file = new File(baseDir + filename);
 
         if (!file.exists()) {
@@ -677,7 +677,7 @@ public class ManagementController {
 
 		try {
 			
-			String path = "D:/엑셀테스트/태경출력파일/사진/침탄로작업표준";
+			String path = "D:/태경출력파일/사진/침탄로작업표준";
 
 			String productFileName1 = saveFiles(files1, path);
 			System.out.println("productFileName1"+productFileName1);
@@ -977,7 +977,7 @@ public class ManagementController {
 
 		try {
 			
-			String path = "D:/엑셀테스트/태경출력파일/사진/측정기기관리";
+			String path = "D:/태경출력파일/사진/측정기기관리";
 
 			String productFileName = saveFiles(files1, path);
 			if (productFileName != null) measure.setFile_name(productFileName);
@@ -1008,7 +1008,7 @@ public class ManagementController {
 	@RequestMapping(value = "/management/measure/image/{filename:.+}", method = RequestMethod.GET)
     public void measureImage(@PathVariable String filename, HttpServletResponse response) throws IOException {
 		System.out.println("사진 출력 컨트롤러 도착");
-        String baseDir = "D:/엑셀테스트/태경출력파일/사진/측정기기관리/";
+        String baseDir = "D:/태경출력파일/사진/측정기기관리/";
         File file = new File(baseDir + filename);
 
         if (!file.exists()) {

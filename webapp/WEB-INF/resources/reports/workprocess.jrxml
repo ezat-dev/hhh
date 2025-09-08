@@ -30,6 +30,7 @@
 	<field name="prod_note" class="java.lang.String"/>
 	<field name="ord_name" class="java.lang.String"/>
 	<field name="prod_img" class="java.lang.String"/>
+	<field name="danch_img" class="java.lang.String"/>
 	<field name="jisi_h_bigo" class="java.lang.String"/>
 	<field name="fac1" class="java.lang.String"/>
 	<field name="fac2" class="java.lang.String"/>
@@ -1086,7 +1087,7 @@
 						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<imageExpression><![CDATA[$F{prod_img}]]></imageExpression>
+					<imageExpression><![CDATA[$F{danch_img}]]></imageExpression>
 				</image>
 				<staticText>
 					<reportElement x="5" y="173" width="51" height="77" uuid="16b0672a-2ac7-432a-ba29-eb27a3d6e0ef">

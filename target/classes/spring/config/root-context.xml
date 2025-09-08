@@ -20,17 +20,31 @@
 	<bean id="commProcessor" class="com.tkheat.async.CommProcessor" />
 	<bean id="monitoringProcessorBcf1" class="com.tkheat.async.MonitoringProcessorBcf1" />
 	<bean id="monitoringProcessorBcf2" class="com.tkheat.async.MonitoringProcessorBcf2" />
+	<bean id="monitoringProcessorBcf3" class="com.tkheat.async.MonitoringProcessorBcf3" />
+	<bean id="monitoringProcessorBcf4" class="com.tkheat.async.MonitoringProcessorBcf4" />
+	<bean id="monitoringProcessorBcf5" class="com.tkheat.async.MonitoringProcessorBcf5" />
 	
 	<task:scheduler id="scheduler" pool-size="4" />
 	<task:executor id="executor" keep-alive="10" pool-size="10-20"
 		queue-capacity="10" rejection-policy="ABORT" />
 
+<!-- 로컬 테스트용 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
 		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" /> 
 		<property name="url" value="jdbc:sqlserver://192.168.1.59:1433;DataBaseName=HEATDB_EZ;" /> 
 		<property name="username" value="sa" /> 
 		<property name="password" value="ezat6695"/>
 	</bean>
+-->
+
+<!-- 서버 적용 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" /> 
+		<property name="url" value="jdbc:sqlserver://192.168.0.201:1433;DataBaseName=HEATDB_EZAT;" /> 
+		<property name="username" value="heatmaster" /> 
+		<property name="password" value="rpn123!!"/>
+	</bean>
+
 
 	<tx:annotation-driven/>
 

@@ -827,12 +827,6 @@
 				</textElement>
 				<text><![CDATA[재질]]></text>
 			</staticText>
-			<componentElement>
-				<reportElement x="200" y="4" width="147" height="34" uuid="b4e62602-0b62-4c34-a31e-0152a5f31116"/>
-				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code39" drawText="false" checksumRequired="false" evaluationGroup="">
-					<jr:codeExpression><![CDATA[$F{ord_code}]]></jr:codeExpression>
-				</jr:barbecue>
-			</componentElement>
 			<staticText>
 				<reportElement x="0" y="320" width="43" height="20" uuid="23e73dc0-117e-429a-9932-8a2f520d61c6"/>
 				<box>
@@ -950,6 +944,16 @@
 				</textElement>
 				<text><![CDATA[잔량]]></text>
 			</staticText>
+			<componentElement>
+				<reportElement x="240" y="2" width="60" height="30" uuid="38746396-7aa1-4949-861b-09be768d5314">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.margin" value="px"/>
+				</reportElement>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" margin="0">
+					<jr:codeExpression><![CDATA[$F{ord_code}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
 		</band>
 	</detail>
 	<columnFooter>

@@ -516,7 +516,7 @@ th{
 											<input type="hidden" name="type" value="facility" />
 											<input id="imgInput0" class="imgInputClass" type="file" name="fac_file_url" title="이미지 찾기" onchange="previewImage(this,'previewId')">
 											<div class="imgArea" id='previewId' style="height:200px;border:1px solid #ddd;">
-												<img id="img0" src="/resources/images/noimage_01.gif" width="100%" height="100%" />
+												<img id="img0" src="/tkheat/css/image/no_image.png" width="100%" height="100%" />
 											</div>
 										</td>
 									</tr>
@@ -630,7 +630,7 @@ th{
 					    cssClass:"rp-img-popup",
 				      	formatterParams:{
 					      	height:"30px", width:"30px",
-					      	urlPrefix:"/excelTest/태경출력파일/사진/설비등록/"
+					      	urlPrefix:"/tkPrint/사진/설비등록/"
 					      	},   
 						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
 				    },		
@@ -698,13 +698,13 @@ th{
 				}
 
 				// 이미지 초기화
-				$("#img0").attr("src", "/resources/images/noimage_01.gif");
+				$("#img0").attr("src", "/tkheat/css/image/no_image.png");
 
 				// 이미지
 				if (allData.fac_file_name) {
 					console.log("원본 파일명:", allData.fac_file_name);
 					console.log("인코딩된 경로:", encodeURIComponent(allData.fac_file_name));
-					const path = "/excelTest/태경출력파일/사진/설비등록/" + allData.fac_file_name;
+					const path = "/tkPrint/사진/설비등록/" + allData.fac_file_name;
 					console.log("path: ", path);
 					$("#img0").attr("src", path);
 					//$(".aphoto").attr("href", path).text(d.product_file_name);
@@ -760,6 +760,9 @@ th{
 	    $('#facInsertForm')[0].reset(); // 폼 초기화
 		facModal.style.display = 'block'; // 모달 표시
 
+		// 이미지 초기화
+		$("#img0").attr("src", "/tkheat/css/image/no_image.png");		
+		
 		$('.delete').hide();
 	});
 

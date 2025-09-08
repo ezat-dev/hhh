@@ -215,7 +215,7 @@ textarea {
                   </tr>
                   <tr>
                     <td class="" colspan="2" rowspan="10">
-                      <img id="img0" class="img-rounded rp-img-popup" src="resources/images/imgs/noimage_click.jpg" alt="사진" style="width: 220px;">
+                      <img id="img0" class="img-rounded rp-img-popup" src="/tkheat/css/image/no_image.png" alt="사진" style="width: 220px;">
                     </td>
                     <th class="">S/N</th>
                     <td class=""><input id="ter_sn" name="ter_sn" class="basic rp-input" type="text" style="width:90%;" value=""></td>
@@ -392,7 +392,7 @@ textarea {
 					    cssClass:"rp-img-popup",
 				      	formatterParams:{
 					      	height:"30px", width:"30px",
-					      	urlPrefix:"/excelTest/태경출력파일/사진/측정기기관리/"
+					      	urlPrefix:"/tkPrint/사진/측정기기관리/"
 					      	}, 
 					    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
 					    },   */   		
@@ -463,13 +463,13 @@ textarea {
 				}
 
 				// 이미지 초기화
-				$("#img0").attr("src", "/resources/images/noimage_01.gif");
+				$("#img0").attr("src", "/tkheat/css/image/no_image.png");
 
 				// 이미지
  				if (allData.file_name) {
 					console.log("원본 파일명:", allData.file_name);
 					console.log("인코딩된 경로:", encodeURIComponent(allData.file_name));
-					const path = "/excelTest/태경출력파일/사진/측정기기관리/" + allData.file_name;
+					const path = "/tkPrint/사진/측정기기관리/" + allData.file_name;
 					console.log("path: ", path);
 					$("#img0").attr("src", path);
 					//$(".aphoto").attr("href", path).text(d.product_file_name);
@@ -525,6 +525,9 @@ textarea {
 	    $('#measurementForm')[0].reset(); // 폼 초기화
 	    measurementModal.style.display = 'block'; // 모달 표시
 
+		// 이미지 초기화
+		$("#img0").attr("src", "/tkheat/css/image/no_image.png");
+	    
 		$('.delete').hide();
 	});
 

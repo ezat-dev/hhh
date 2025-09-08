@@ -163,13 +163,14 @@
 	        prod_gd2, prod_polish, prod_sg, prod_whadeep, itst_wp, prod_vnyl, prod_plt, prod_pad, prod_danch,
 	        prod_bangch, ord_bigo, prod_note, ord_sunip, ord_name, ord_boxsu,
 	        prod_sg1, prod_sg2, prod_pg1, prod_pg2, prod_gd4, prod_gd5, PRODUCT.prod_code, prod_e1,prod_e2,
-	        'http://127.0.0.1:9090/tkPrint/asd.png' AS prod_img
+	        CONCAT('http://127.0.0.1:9090/tkPrint/productImg/',CASE WHEN product_file_name IS NULL OR product_file_name = '' THEN 'no_image.png' ELSE product_file_name END) AS prod_img
 	    FROM ORDERT AS ORDERT
         INNER JOIN PRODUCT AS PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
         INNER JOIN CORP AS 	 CORP 	 ON PRODUCT.CORP_CODE = CORP.CORP_CODE
         INNER JOIN TECHIN AS	 TECHIN  ON PRODUCT.TECH_NO = TECHIN.TECH_NO
         LEFT OUTER JOIN IPTEST AS IPTEST ON ORDERT.ORD_CODE = IPTEST.ORD_CODE
         WHERE ORDERT.ord_code = #{ord_code}
+        
         
         UPDATE ORDERT SET ord_prn = ord_prn+1
         WHERE ord_code = #{ord_code} 
@@ -518,7 +519,8 @@
 			D.corp_name, E.tech_te,
 			CEILING(B.ord_mon / B.ord_su) AS cost_ea,
 			CEILING(B.ord_mon / B.ord_amnt) AS cost_kg,
-			F.user_name, 'http://127.0.0.1:9090/tkPrint/asd.png' AS prod_img,
+			CONCAT('http://127.0.0.1:9090/tkPrint/productImg/',CASE WHEN product_file_name IS NULL OR product_file_name = '' THEN 'no_image.png' ELSE product_file_name END) AS prod_img,
+			CONCAT('http://127.0.0.1:9090/tkPrint/workStdImg/',CASE WHEN wstd_chim_file_name1 IS NULL OR wstd_chim_file_name1 = '' THEN 'no_image.png' ELSE wstd_chim_file_name1 END) AS danch_img,
 			(CEILING(B.ord_mon / B.ord_su) * jisi_h_su) AS jisi_h_cost
 		FROM tb_workheat A
 		LEFT OUTER JOIN
@@ -536,6 +538,19 @@
 		LEFT OUTER JOIN
 			USERT F
 		ON A.jisi_h_user_code = F.user_code
+		LEFT OUTER JOIN
+		(
+			SELECT prod_code,
+			CASE WHEN fac_code = 18 THEN 5
+				 ELSE fac_code
+			END AS fac_code,
+			wstd_chim_file_name1,
+			wstd_chim_file_name2	
+			FROM workstd
+			WHERE fac_code IN (1,2,3,4,18)
+		) G
+		ON A.jisi_h_hogi = G.FAC_CODE
+		AND C.prod_code = G.prod_code
 		WHERE jisi_lot = #{jisi_lot}
 	</select>
 	
