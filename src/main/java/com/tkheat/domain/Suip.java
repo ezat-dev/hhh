@@ -107,6 +107,59 @@ public class Suip {
 	
 	
 	
+
+    //Cpk 조회조건, 기준정보 리스트
+    private String h_regdate;		//측정일
+    private String h_regtime;		//측정시간
+    private String h_sdate;			//조회시작일
+    private String h_edate;			//조회종료일
+    private String h_pnum;			//품번
+    private String h_pname;			//품명
+    private String h_gang;			//강종
+    private String h_t_gb;			//T급
+    private String h_hard_up;		//상한경도값
+    private String h_hard_dw;		//하한경도값
+    
+    //Cpk 측정값 리스트
+    private String h_day;			//일자
+    private String h_time;			//시간
+    private float h_x1;				//측정값 -1
+    private float h_x2;				//측정값 -2
+    private float h_x3;				//측정값 -3
+    private float h_avg;			//평균값
+    private float h_range;			//값 범위
+    
+    //Cpk 계산값 
+    private int n;					//관리도계수표 n
+    private double d2;				//관리도계수표 d2
+    private double a2;				//관리도계수표 a2
+    private double d4;				//관리도계수표 d4
+    
+    private String ucl_x;			//관리상한(UCL - X)
+    private String cl_x;				//평균값(CL - X)
+    private String lcl_x;			//관리하한(LCL - X)
+    private String ucl_r;			//관리상한(UCL - R)
+    private String cl_r;				//평균값(UCL - R)
+    private String lcl_r;			//관리하한(UCL - R)
+    
+    private String r_d2;				//공정능력분석 R/d2
+    private String cp;				//공정능력분석 CP
+    private String k;				//공정능력분석 k
+    private String cpk;				//공정능력분석 CPk
+    
+    //Cpk 트렌드용
+    private double g_ucl_x;
+    private double g_cl_x;
+    private double g_lcl_x;
+    private double g_ucl_r;
+    private double g_cl_r;
+    private double g_max;
+    private double g_min;
+    private double g_avg;
+    private double g_range;
+    private String g_tdatetime;
+    private int g_idx;
+	
 	
 	
 	
@@ -638,6 +691,258 @@ public class Suip {
 	}
 	public void setItst_code(Integer itst_code) {
 		this.itst_code = itst_code;
+	}
+	public String getH_regdate() {
+		return h_regdate;
+	}
+	public void setH_regdate(String h_regdate) {
+		this.h_regdate = h_regdate;
+	}
+	public String getH_regtime() {
+		return h_regtime;
+	}
+	public void setH_regtime(String h_regtime) {
+		this.h_regtime = h_regtime;
+	}
+	public String getH_sdate() {
+		return h_sdate;
+	}
+	public void setH_sdate(String h_sdate) {
+		this.h_sdate = h_sdate;
+	}
+	public String getH_edate() {
+		return h_edate;
+	}
+	public void setH_edate(String h_edate) {
+		this.h_edate = h_edate;
+	}
+	public String getH_pnum() {
+		return h_pnum;
+	}
+	public void setH_pnum(String h_pnum) {
+		this.h_pnum = h_pnum;
+	}
+	public String getH_pname() {
+		return h_pname;
+	}
+	public void setH_pname(String h_pname) {
+		this.h_pname = h_pname;
+	}
+	public String getH_gang() {
+		return h_gang;
+	}
+	public void setH_gang(String h_gang) {
+		this.h_gang = h_gang;
+	}
+	public String getH_t_gb() {
+		return h_t_gb;
+	}
+	public void setH_t_gb(String h_t_gb) {
+		this.h_t_gb = h_t_gb;
+	}
+	public String getH_hard_up() {
+		return h_hard_up;
+	}
+	public void setH_hard_up(String h_hard_up) {
+		this.h_hard_up = h_hard_up;
+	}
+	public String getH_hard_dw() {
+		return h_hard_dw;
+	}
+	public void setH_hard_dw(String h_hard_dw) {
+		this.h_hard_dw = h_hard_dw;
+	}
+	public String getH_day() {
+		return h_day;
+	}
+	public void setH_day(String h_day) {
+		this.h_day = h_day;
+	}
+	public String getH_time() {
+		return h_time;
+	}
+	public void setH_time(String h_time) {
+		this.h_time = h_time;
+	}
+	public float getH_x1() {
+		return h_x1;
+	}
+	public void setH_x1(float h_x1) {
+		this.h_x1 = h_x1;
+	}
+	public float getH_x2() {
+		return h_x2;
+	}
+	public void setH_x2(float h_x2) {
+		this.h_x2 = h_x2;
+	}
+	public float getH_x3() {
+		return h_x3;
+	}
+	public void setH_x3(float h_x3) {
+		this.h_x3 = h_x3;
+	}
+	public float getH_avg() {
+		return h_avg;
+	}
+	public void setH_avg(float h_avg) {
+		this.h_avg = h_avg;
+	}
+	public float getH_range() {
+		return h_range;
+	}
+	public void setH_range(float h_range) {
+		this.h_range = h_range;
+	}
+	public int getN() {
+		return n;
+	}
+	public void setN(int n) {
+		this.n = n;
+	}
+	public double getD2() {
+		return d2;
+	}
+	public void setD2(double d2) {
+		this.d2 = d2;
+	}
+	public double getA2() {
+		return a2;
+	}
+	public void setA2(double a2) {
+		this.a2 = a2;
+	}
+	public double getD4() {
+		return d4;
+	}
+	public void setD4(double d4) {
+		this.d4 = d4;
+	}
+	public String getUcl_x() {
+		return ucl_x;
+	}
+	public void setUcl_x(String ucl_x) {
+		this.ucl_x = ucl_x;
+	}
+	public String getCl_x() {
+		return cl_x;
+	}
+	public void setCl_x(String cl_x) {
+		this.cl_x = cl_x;
+	}
+	public String getLcl_x() {
+		return lcl_x;
+	}
+	public void setLcl_x(String lcl_x) {
+		this.lcl_x = lcl_x;
+	}
+	public String getUcl_r() {
+		return ucl_r;
+	}
+	public void setUcl_r(String ucl_r) {
+		this.ucl_r = ucl_r;
+	}
+	public String getCl_r() {
+		return cl_r;
+	}
+	public void setCl_r(String cl_r) {
+		this.cl_r = cl_r;
+	}
+	public String getLcl_r() {
+		return lcl_r;
+	}
+	public void setLcl_r(String lcl_r) {
+		this.lcl_r = lcl_r;
+	}
+	public String getR_d2() {
+		return r_d2;
+	}
+	public void setR_d2(String r_d2) {
+		this.r_d2 = r_d2;
+	}
+	public String getCp() {
+		return cp;
+	}
+	public void setCp(String cp) {
+		this.cp = cp;
+	}
+	public String getK() {
+		return k;
+	}
+	public void setK(String k) {
+		this.k = k;
+	}
+	public String getCpk() {
+		return cpk;
+	}
+	public void setCpk(String cpk) {
+		this.cpk = cpk;
+	}
+	public double getG_ucl_x() {
+		return g_ucl_x;
+	}
+	public void setG_ucl_x(double g_ucl_x) {
+		this.g_ucl_x = g_ucl_x;
+	}
+	public double getG_cl_x() {
+		return g_cl_x;
+	}
+	public void setG_cl_x(double g_cl_x) {
+		this.g_cl_x = g_cl_x;
+	}
+	public double getG_lcl_x() {
+		return g_lcl_x;
+	}
+	public void setG_lcl_x(double g_lcl_x) {
+		this.g_lcl_x = g_lcl_x;
+	}
+	public double getG_ucl_r() {
+		return g_ucl_r;
+	}
+	public void setG_ucl_r(double g_ucl_r) {
+		this.g_ucl_r = g_ucl_r;
+	}
+	public double getG_cl_r() {
+		return g_cl_r;
+	}
+	public void setG_cl_r(double g_cl_r) {
+		this.g_cl_r = g_cl_r;
+	}
+	public double getG_max() {
+		return g_max;
+	}
+	public void setG_max(double g_max) {
+		this.g_max = g_max;
+	}
+	public double getG_min() {
+		return g_min;
+	}
+	public void setG_min(double g_min) {
+		this.g_min = g_min;
+	}
+	public double getG_avg() {
+		return g_avg;
+	}
+	public void setG_avg(double g_avg) {
+		this.g_avg = g_avg;
+	}
+	public double getG_range() {
+		return g_range;
+	}
+	public void setG_range(double g_range) {
+		this.g_range = g_range;
+	}
+	public String getG_tdatetime() {
+		return g_tdatetime;
+	}
+	public void setG_tdatetime(String g_tdatetime) {
+		this.g_tdatetime = g_tdatetime;
+	}
+	public int getG_idx() {
+		return g_idx;
+	}
+	public void setG_idx(int g_idx) {
+		this.g_idx = g_idx;
 	}
 
 }

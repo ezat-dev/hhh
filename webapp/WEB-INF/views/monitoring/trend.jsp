@@ -110,143 +110,99 @@ $(document).ready(function () {
         autoClose: true
     });
 
-    // 시간 셋팅
+    
     $("#startDate").val(trendStime());
     $("#endDate").val(trendEtime());
-/*    $("#startDate").val("2025-06-25 10:00");
-    $("#endDate").val("2025-06-25 15:00");*/
 
     var hogi = "";
-    // 조회 버튼 클릭 이벤트 정의
+    var seriesArray = [];
+
+    
     function fetchData() {
         const startDate = $('#startDate').val();
         const endDate = $('#endDate').val();
-		hogi = $("#hogiSelect").val();
+        hogi = $("#hogiSelect").val();
+
         $.ajax({
             type: "POST",
             url: "/tkheat/monitoring/trend/trendList",
             data: { startDate, endDate },
             success: function (result) {
-                console.log(" result:", result);
+                console.log("result:", result);
 
+                
+                var t1_pv_save = [];
+                var t2_pv_save = [];
+                var t3_pv_save = [];
+                var t1_sv_save = [];
+                var t2_sv_save = [];
+                var t3_sv_save = [];
 
-				trendData1 = result;
-				
-    			var t1_pv_obj = new Object();
-    			var t2_pv_obj = new Object();
-    			var t3_pv_obj = new Object();
-    			var t1_sv_obj = new Object();
-    			var t2_sv_obj = new Object();
-    			var t3_sv_obj = new Object();
-    			
+                result.forEach(function(data){
+                   
+                    var tdate_val = new Date(data.tdatetime).getTime();
 
-    			var t1_pv_save = new Array();
-    			var t2_pv_save = new Array();
-    			var t3_pv_save = new Array();
-    			var t1_sv_save = new Array();
-    			var t2_sv_save = new Array();
-    			var t3_sv_save = new Array();
-				
-    			
+                    var t1_val = 0, t2_val = 0, t3_val = 0, t4_val = 0, t5_val = 0, t6_val = 0;
 
-    			trendData1.forEach(function(data, i){
-//        			console.log(data, i);
-					var t1_pv = new Array();
-					var t2_pv = new Array();
-					var t3_pv = new Array();
-					var t1_sv = new Array();
-					var t2_sv = new Array();
-					var t3_sv = new Array();
+                    
+                    if(hogi === "BCF1"){						
+                        t1_val = data.bcf1_cf_pv;
+                        t2_val = data.bcf1_oil_pv;
+                        t3_val = data.bcf1_cp_pv;
+                        t4_val = data.bcf1_cf_sv;
+                        t5_val = data.bcf1_oil_sv;
+                        t6_val = data.bcf1_cp_sv;
+                    }else if(hogi === "BCF2"){
+                        t1_val = data.bcf2_cf_pv;
+                        t2_val = data.bcf2_oil_pv;
+                        t3_val = data.bcf2_cp_pv;
+                        t4_val = data.bcf2_cf_sv;
+                        t5_val = data.bcf2_oil_sv;
+                        t6_val = data.bcf2_cp_sv;
+                    }else if(hogi === "BCF3"){
+                        t1_val = data.bcf3_cf_pv;
+                        t2_val = data.bcf3_oil_pv;
+                        t3_val = data.bcf3_cp_pv;
+                        t4_val = data.bcf3_cf_sv;
+                        t5_val = data.bcf3_oil_sv;
+                        t6_val = data.bcf3_cp_sv;
+                    }else if(hogi === "BCF4"){
+                        t1_val = data.bcf4_cf_pv;
+                        t2_val = data.bcf4_oil_pv;
+                        t3_val = data.bcf4_cp_pv;
+                        t4_val = data.bcf4_cf_sv;
+                        t5_val = data.bcf4_oil_sv;
+                        t6_val = data.bcf4_cp_sv;
+                    }else if(hogi === "BCF5"){
+                        t1_val = data.bcf5_cf_pv;
+                        t2_val = data.bcf5_oil_pv;
+                        t3_val = data.bcf5_cp_pv;
+                    }else if(hogi === "TF1"){
+                        t1_val = data.tf1_zone1;
+                        t2_val = data.tf1_zone2;
+                        t3_val = data.tf1_zone3;
+                    }
 
-					var tdate_val = "";
-					var t1_val = 0;
-					var t2_val = 0;
-					var t3_val = 0;
-					var t4_val = 0;
-					var t5_val = 0;
-					var t6_val = 0;
-					tdate_val = data.tdatetime;
-					
-					//호기 구분
-					if(hogi == "BCF1"){						
-						t1_val = data.bcf1_cf_pv;
-						t2_val = data.bcf1_oil_pv;
-						t3_val = data.bcf1_cp_pv;
-						t4_val = data.bcf1_cf_sv;
-						t5_val = data.bcf1_oil_sv;
-						t6_val = data.bcf1_cp_sv;
-					}else if(hogi == "BCF2"){
-						t1_val = data.bcf2_cf_pv;
-						t2_val = data.bcf2_oil_pv;
-						t3_val = data.bcf2_cp_pv;
-						t4_val = data.bcf2_cf_sv;
-						t5_val = data.bcf2_oil_sv;
-						t6_val = data.bcf2_cp_sv;						
-					}else if(hogi == "BCF3"){
-						t1_val = data.bcf3_cf_pv;
-						t2_val = data.bcf3_oil_pv;
-						t3_val = data.bcf3_cp_pv;
-						t4_val = data.bcf3_cf_sv;
-						t5_val = data.bcf3_oil_sv;
-						t6_val = data.bcf3_cp_sv;
-					}else if(hogi == "BCF4"){
-						t1_val = data.bcf4_cf_pv;
-						t2_val = data.bcf4_oil_pv;
-						t3_val = data.bcf4_cp_pv;
-						t4_val = data.bcf4_cf_sv;
-						t5_val = data.bcf4_oil_sv;
-						t6_val = data.bcf4_cp_sv;
-					}else if(hogi == "BCF5"){
-						t1_val = data.bcf5_cf_pv;
-						t2_val = data.bcf5_oil_pv;
-						t3_val = data.bcf5_cp_pv;
-					}else if(hogi == "TF1"){
-						t1_val = data.t1_zone1;
-						t2_val = data.t1_zone2;
-						t3_val = data.t1_zone3;
-					}
+                    
+                    t1_pv_save.push([tdate_val, t1_val]);
+                    t2_pv_save.push([tdate_val, t2_val]);
+                    t3_pv_save.push([tdate_val, t3_val]);
+                    t1_sv_save.push([tdate_val, t4_val]);
+                    t2_sv_save.push([tdate_val, t5_val]);
+                    t3_sv_save.push([tdate_val, t6_val]);
+                });
 
-					t1_pv.push(tdate_val);
-					t1_pv.push(t1_val);
-					t2_pv.push(tdate_val);
-					t2_pv.push(t2_val);
-					t3_pv.push(tdate_val);
-					t3_pv.push(t3_val);
-					t1_sv.push(tdate_val);
-					t1_sv.push(t4_val);
-					t2_sv.push(tdate_val);
-					t2_sv.push(t5_val);
-					t3_sv.push(tdate_val);
-					t3_sv.push(t6_val);
-
-					t1_pv_save.push(t1_pv);
-					t2_pv_save.push(t2_pv);
-					t3_pv_save.push(t3_pv);
-					t1_sv_save.push(t1_sv);
-					t2_sv_save.push(t2_sv);
-					t3_sv_save.push(t3_sv);
-					
-    			});
-
-    			t1_pv_obj = {"name":"cf_pv", "data":t1_pv_save, "color":"red"};
-    			t2_pv_obj = {"name":"oil_pv", "data":t2_pv_save, "color":"blue"};
-    			t3_pv_obj = {"name":"cp_pv", "data":t3_pv_save, "color":"green"};
-    			t1_sv_obj = { name: "cf_sv", data: t1_sv_save, color: "red", dashStyle: "ShortDash" };
-    			t2_sv_obj = { name: "oil_sv", data: t2_sv_save, color: "blue", dashStyle: "ShortDash" };
-    			t3_sv_obj = { name: "cp_sv", data: t3_sv_save, color: "green", dashStyle: "ShortDash" };
-
-
-                seriesArray[0] = t1_pv_obj;
-                seriesArray[1] = t2_pv_obj;
-                seriesArray[2] = t3_pv_obj;
-
-                seriesArray[3] = t1_sv_obj;
-                seriesArray[4] = t2_sv_obj;
-                seriesArray[5] = t3_sv_obj;
+                
+                seriesArray = [
+                    { name: "t1_pv", data: t1_pv_save, color: "red" },
+                    { name: "t2_pv", data: t2_pv_save, color: "blue" },
+                    { name: "t3_pv", data: t3_pv_save, color: "green" },
+                    { name: "t1_sv", data: t1_sv_save, color: "red", dashStyle: "ShortDash" },
+                    { name: "t2_sv", data: t2_sv_save, color: "blue", dashStyle: "ShortDash" },
+                    { name: "t3_sv", data: t3_sv_save, color: "green", dashStyle: "ShortDash" }
+                ];
 
                 getTrendView();
-                
-
             },
             error: function (xhr, status, error) {
                 console.error("❌ 에러:", error);
@@ -255,35 +211,34 @@ $(document).ready(function () {
         });
     }
 
+    
+    function getTrendView(){
+        Highcharts.chart('container', {
+            chart: { type: 'line' },
+            title: { text: '온도 트렌드' },
+            xAxis: {
+                type: 'datetime',  
+                title: { text: '시간' },
+                labels: { rotation: -45 }
+            },
+            yAxis: {
+                title: { text: '값' }
+            },
+            tooltip: {
+                shared: true,
+                crosshairs: true,
+                xDateFormat: '%Y-%m-%d %H:%M:%S'
+            },
+            series: seriesArray
+        });
+    }
+
     $('.select-button').click(fetchData);
-	
 
     fetchData();
 });
-
-var seriesArray = new Array();
-function getTrendView(){
-    Highcharts.chart('container', {
-        chart: { type: 'line' },
-        title: { text: '온도 트렌드' },
-        xAxis: {
-//            categories: categories,
-            title: { text: '시간' },
-            labels: { rotation: -45 }
-        },
-        yAxis: {
-            title: { text: '값' }
-        },
-        tooltip: {
-            shared: true,
-            crosshairs: true
-        },
-        series: seriesArray
-    });
-	
-}
-
 </script>
+
 
 	</body>
 </html>

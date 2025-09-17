@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tkheat.dao.QualityDao;
+import com.tkheat.domain.Product;
 import com.tkheat.domain.Suip;
 import com.tkheat.domain.Work;
 
@@ -89,6 +90,21 @@ public class QualityServiceImpl implements QualityService {
 	@Override
 	public List<Work> getJajuJochiList(Work work){
 		return qualityDao.getJajuJochiList(work);
+	}
+
+	@Override
+	public Suip cpkStandardList(Suip quality) {
+		return qualityDao.cpkStandardList(quality);
+	}
+
+	@Override
+	public List<Suip> cpkValueList(Suip quality) {
+		return qualityDao.cpkValueList(quality);
+	}
+
+	@Override
+	public List<Product> xBarPumbunList(Product p) {
+		return qualityDao.xBarPumbunList(p);
 	}
 
 }

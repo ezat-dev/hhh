@@ -945,13 +945,14 @@
 				<text><![CDATA[잔량]]></text>
 			</staticText>
 			<componentElement>
-				<reportElement x="210" y="3" width="137" height="30" uuid="7ad0a0db-34d5-4ab2-a7c4-fe968659674b">
-					<property name="com.jaspersoft.studio.unit.barWidth" value="px"/>
-					<property name="com.jaspersoft.studio.unit.barHeight" value="px"/>
+				<reportElement x="240" y="2" width="60" height="30" uuid="38746396-7aa1-4949-861b-09be768d5314">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.margin" value="px"/>
 				</reportElement>
-				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code128A" drawText="false" checksumRequired="false" barHeight="70">
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" margin="0">
 					<jr:codeExpression><![CDATA[$F{ord_code}]]></jr:codeExpression>
-				</jr:barbecue>
+				</jr:QRCode>
 			</componentElement>
 		</band>
 	</detail>

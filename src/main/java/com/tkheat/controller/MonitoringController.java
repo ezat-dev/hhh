@@ -5,18 +5,24 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.milo.opcua.stack.core.UaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.tkheat.domain.AlarmHistory;
+import com.tkheat.domain.AlarmRanking;
 import com.tkheat.domain.Monitoring;
 import com.tkheat.domain.WorkJisi;
 import com.tkheat.service.MonitoringService;
+import com.tkheat.util.OpcDataMap;
 
 
 
@@ -55,6 +61,21 @@ public class MonitoringController {
 	 @RequestMapping(value = "/monitoring/trend", method = RequestMethod.GET)
 	 public String trend() {
 		 return "/monitoring/trend.jsp";
+	 }
+	 
+	 //1페이지알람
+	 @RequestMapping(value = "/monitoring/alarm/alarmList1", method = RequestMethod.POST)
+	 @ResponseBody
+	 public Map<String, Object> alarmView1() throws UaException, InterruptedException, ExecutionException {
+		 OpcDataMap opcDataMap = new OpcDataMap();
+		 return opcDataMap.getOpcDataListMap("TKHEAT.MODBUS.ALARM");    
+	 }
+	 //2페이지알람
+	 @RequestMapping(value = "/monitoring/alarm/alarmList2", method = RequestMethod.POST)
+	 @ResponseBody
+	 public Map<String, Object> alarmView2() throws UaException, InterruptedException, ExecutionException {
+		 OpcDataMap opcDataMap = new OpcDataMap();
+		 return opcDataMap.getOpcDataListMap("TKHEAT.MODBUS.ALARM");    
 	 }
 	 
 	 //트렌드 - 화면로드
@@ -121,10 +142,51 @@ public class MonitoringController {
 	 }
 	 
 	 
+	 @RequestMapping(value = "/monitoring/alarmHistory1", method = RequestMethod.POST)
+	 @ResponseBody
+	 public Map<String, Object> alarmHistory1(
+	         @RequestParam(required = false) String sdateTime,
+	         @RequestParam(required = false) String edateTime
+	 ) {
+	     Map<String, Object> rtnMap = new HashMap<>();
+
+	     AlarmHistory alarmHistory = new AlarmHistory();
+	     alarmHistory.setSdateTime(sdateTime);
+	     alarmHistory.setEdateTime(edateTime);
+
+	    
+	     List<AlarmHistory> alarmHistoryList = monitoringService.alarmHistory1(alarmHistory);
+
+	     rtnMap.put("last_page", 1);
+	     rtnMap.put("data", alarmHistoryList);
+
+	     return rtnMap;
+	 }
 	 
 	 
 	 
-	 
+	 @RequestMapping(value = "/monitoring/alarmRanking1", method = RequestMethod.POST)
+	    @ResponseBody
+	    public Map<String, Object> alarmRanking1(
+	    		@RequestParam(required = false) String sdateTime,
+	    		@RequestParam(required = false) String edateTime
+	    		){
+	    	Map<String, Object> rtnMap = new HashMap<String, Object>();
+	    	
+	    	AlarmRanking alarmRanking = new AlarmRanking();
+	    	alarmRanking.setSdateTime(sdateTime);
+	    	alarmRanking.setEdateTime(edateTime);
+	    	
+	    	
+	    	List<AlarmRanking> alarmRankingList = monitoringService.alarmRanking1(alarmRanking);
+
+	    	
+	    	
+	    	rtnMap.put("last_page",1);
+	    	rtnMap.put("data", alarmRankingList);
+	    	
+	    	return rtnMap;
+	    }
 	 
 	 
 	 

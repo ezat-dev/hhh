@@ -11,31 +11,32 @@
 	</select>
 
 
-	<select id="gettrend" parameterType="Monitoring"
-		resultType="Monitoring">
-		SELECT
-		tdatetime,
-		bcf1_cf_pv,
-		bcf1_oil_pv,
-		(bcf1_cp_pv * 0.001) AS bcf1_cp_pv,
-		bcf2_cf_pv,
-		(bcf2_cp_pv * 0.001) AS bcf2_cp_pv,
-		bcf3_cf_pv,
-		bcf3_oil_pv,
-		(bcf3_cp_pv * 0.001) AS bcf3_cp_pv,
-		bcf4_cf_pv,
-		bcf4_oil_pv,
-		(bcf4_cp_pv * 0.001) AS bcf4_cp_pv,
-		bcf5_cf_pv,
-		bcf5_oil_pv,
-		bcf5_cp_pv,
-		tf1_zone1,
-		tf1_zone2,
-		tf1_zone3
-		FROM tb_temp
-		WHERE tdatetime BETWEEN #{startDate} AND #{endDate}
-		ORDER BY tdatetime
-	</select>
+	<select id="gettrend" parameterType="monitoring" resultType="monitoring">
+    SELECT
+        tdatetime,
+        bcf1_cf_pv,
+        bcf1_oil_pv,
+        (bcf1_cp_pv * 0.001) AS bcf1_cp_pv,
+        bcf2_cf_pv,
+        (bcf2_cp_pv * 0.001) AS bcf2_cp_pv,
+        bcf3_cf_pv,
+        bcf3_oil_pv,
+        (bcf3_cp_pv * 0.001) AS bcf3_cp_pv,
+        bcf4_cf_pv,
+        bcf4_oil_pv,
+        (bcf4_cp_pv * 0.001) AS bcf4_cp_pv,
+        bcf5_cf_pv,
+        bcf5_oil_pv,
+        bcf5_cp_pv,
+        tf1_zone1,
+        tf1_zone2,
+        tf1_zone3
+    FROM tb_temp
+    WHERE CONVERT(DATETIME, tdatetime, 120) 
+          BETWEEN CONVERT(DATETIME, #{startDate}, 120)
+              AND CONVERT(DATETIME, #{endDate}, 120)
+    ORDER BY tdatetime
+</select>
 
 <!-- 2025-08-18 추가 -->
 	<select id="getMonitoringDupChk" parameterType="workjisi" resultType="workjisi">
@@ -138,5 +139,48 @@
 			diff = #{diff}, gang = #{gang}, cold = #{cold}
 		WHERE hogi = #{hogi}
 	</update>
-
+	
+	
+	<select id="alarmHistoryList" parameterType="alarmHistory" resultType="alarmHistory">
+		SELECT *
+		FROM (	
+			SELECT *
+			FROM(	
+				SELECT *,
+				LEAD(alarmstate) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmstate,
+				LEAD(time) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmtime
+				FROM ALARMDATA
+				WHERE 1=1
+				AND alarmgroup = 'ALARM'
+				AND time BETWEEN #{sdateTime} AND #{edateTime}
+				ORDER BY time
+			) AS aa
+			WHERE 1=1
+			AND alarmstate != 'Clear'
+		) AS bb
+		ORDER BY time DESC
+	</select>
+	
+	<select id="alarmRankingList" parameterType="alarmRanking" resultType="alarmRanking">
+		SELECT tagname, alarmgroup, alarmdesc, COUNT(*) AS alarmcount
+		FROM (	
+			SELECT *
+			FROM(	
+				SELECT tagname, tagvalue, alarmstate, alarmlevel, alarmgroup, alarmname, alarmdesc, trigger, 
+				time, strftime('%T',time) AS time2,
+				LEAD(alarmstate) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmstate,
+				LEAD(time) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmtime
+				FROM ALARMDATA
+				WHERE 1=1
+				AND alarmgroup = 'ALARM'
+				AND time BETWEEN #{sdateTime} AND #{edateTime}
+				ORDER BY time
+			) AS aa
+			WHERE 1=1
+			AND alarmstate != 'Clear'
+		) AS bb
+		GROUP BY tagname
+		ORDER BY alarmcount DESC
+	</select>
+	
 </mapper>

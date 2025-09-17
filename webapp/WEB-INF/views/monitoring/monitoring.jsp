@@ -358,15 +358,15 @@ function getMonitoringData(){
 				}
 				
 				//출구
-				if(data[d].cold != null){
-					coldSplit = data[d].cold.split(";");
+				if(data[d].chul != null){
+					chulSplit = data[d].chul.split(";");
 					
-					if(coldSplit != null){
-						for(var i8=0; i8<coldSplit.length; i8++){
-							cold_ += "<span>"+coldSplit[i8]+"</span>";
+					if(chulSplit != null){
+						for(var i8=0; i8<chulSplit.length; i8++){
+							chul_ += "<span>"+chulSplit[i8]+"</span>";
 							
-							if(i8 < coldSplit.length){
-								cold_ += "<br/>";
+							if(i8 < chulSplit.length){
+								chul_ += "<br/>";
 							}
 						}
 					}

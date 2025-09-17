@@ -2,6 +2,7 @@ package com.tkheat.dao;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import com.tkheat.domain.Jaego;
 import com.tkheat.domain.Product;
 @Repository
 public class ProductDaoImpl implements ProductDao {
-	 @Autowired
+	@Resource(name="session")
 	 private SqlSession sqlSession;
 
 	@Override

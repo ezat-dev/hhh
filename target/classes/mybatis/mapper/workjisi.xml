@@ -163,7 +163,7 @@
 	        prod_gd2, prod_polish, prod_sg, prod_whadeep, itst_wp, prod_vnyl, prod_plt, prod_pad, prod_danch,
 	        prod_bangch, ord_bigo, prod_note, ord_sunip, ord_name, ord_boxsu,
 	        prod_sg1, prod_sg2, prod_pg1, prod_pg2, prod_gd4, prod_gd5, PRODUCT.prod_code, prod_e1,prod_e2,
-	        CONCAT('http://127.0.0.1:9090/tkPrint/productImg/',CASE WHEN product_file_name IS NULL OR product_file_name = '' THEN 'no_image.png' ELSE product_file_name END) AS prod_img
+	        CONCAT('http://127.0.0.1:8082/tkPrint/productImg/',CASE WHEN product_file_name IS NULL OR product_file_name = '' THEN 'no_image.png' ELSE product_file_name END) AS prod_img
 	    FROM ORDERT AS ORDERT
         INNER JOIN PRODUCT AS PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
         INNER JOIN CORP AS 	 CORP 	 ON PRODUCT.CORP_CODE = CORP.CORP_CODE
@@ -519,8 +519,8 @@
 			D.corp_name, E.tech_te,
 			CEILING(B.ord_mon / B.ord_su) AS cost_ea,
 			CEILING(B.ord_mon / B.ord_amnt) AS cost_kg,
-			CONCAT('http://127.0.0.1:9090/tkPrint/productImg/',CASE WHEN product_file_name IS NULL OR product_file_name = '' THEN 'no_image.png' ELSE product_file_name END) AS prod_img,
-			CONCAT('http://127.0.0.1:9090/tkPrint/workStdImg/',CASE WHEN wstd_chim_file_name1 IS NULL OR wstd_chim_file_name1 = '' THEN 'no_image.png' ELSE wstd_chim_file_name1 END) AS danch_img,
+			CONCAT('http://127.0.0.1:8082/tkPrint/productImg/',CASE WHEN product_file_name IS NULL OR product_file_name = '' THEN 'no_image.png' ELSE product_file_name END) AS prod_img,
+			CONCAT('http://127.0.0.1:8082/tkPrint/workStdImg/',CASE WHEN wstd_chim_file_name1 IS NULL OR wstd_chim_file_name1 = '' THEN 'no_image.png' ELSE wstd_chim_file_name1 END) AS danch_img,
 			(CEILING(B.ord_mon / B.ord_su) * jisi_h_su) AS jisi_h_cost
 		FROM tb_workheat A
 		LEFT OUTER JOIN

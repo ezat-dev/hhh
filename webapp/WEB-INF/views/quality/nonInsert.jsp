@@ -335,9 +335,9 @@ textarea {
                                         </tr>
                                         <tr>
                                             <th class="">발생일자</th>
-                                            <td class=""><input id="werr_wdate" class="date js-datepicker hasDatepicker" type="text" style="width:100px;" value="" maxlength="20" size="20" name="werr_wdate" readonly=""></td>
+                                            <td class=""><input id="werr_wdate" class="date js-datepicker hasDatepicker" type="text" style="width:100px;" value="" maxlength="20" size="20" name="werr_wdate"></td>
                                             <th class="">열처리LOT</th>
-                                            <td class=""><input id="tech_te" class="basic" type="text" style="width:90%;" value="" name="tech_te" readonly=""></td>
+                                            <td class=""><input id="tech_te" class="basic" type="text" style="width:90%;" value="" name="tech_te"></td>
                                         </tr>
                                         <tr>
                                             <th class="">발생자</th>
@@ -352,7 +352,7 @@ textarea {
                                             <td class="">
                                             <input id="fac_name" class="basic" type="text" style="width:90%;" value="" name="fac_name" readonly="readonly"/></td>
                                             <input id="ilbo_code" class="basic" type="hidden" style="width:90%; display:none;" value="0" name="ilbo_code"/>
-                                            <input id="ilbo_no" class="basic" type="hidden" style="width:90%; display:none;" value="" name="ilbo_no"/>
+                                            <input id="ilbo_no" class="basic" type="hidden" style="width:90%; display:none;" value="0" name="ilbo_no"/>
                                             <input id="werr_code" class="basic" type="hidden" style="width:90%; display:none;" value="0" name="werr_code" />
                                             <input id="ilbo_lot" class="basic" type="hidden" style="width:90%; display:none;" value="" name="ilbo_lot" />
                                         </tr>
@@ -387,7 +387,7 @@ textarea {
                                            </td>
                                            <th class="">부서</th>
                                            <td class="">
-                                            <select id="werr_buso" name="werr_buso" class="basic" style="width: 100%" value="">									
+                                            <select id="werr_buso" name="werr_buso" class="basic" style="width: 100%">									
                                                 
                                                     <option value="" selected="selected"></option>
                                                   
@@ -545,8 +545,10 @@ textarea {
 		<div class="modal-content">
 			<div class="modal-header">
 			<input type="date" class="subsdate" id="subsdate" style="font-size: 16px;" autocomplete="off"> ~ 
-		<input type="date" class="subedate" id="subedate" style="font-size: 16px;" autocomplete="off">
-				<span class="modal-title">설비 리스트</span> <span class="modal-close" onclick="closeCorpListModal()">&times;</span>
+			<input type="date" class="subedate" id="subedate" style="font-size: 16px;" autocomplete="off">
+			<input type="text" id="subilbo_lot" /> 	
+			<button type="button" onclick="openCorpListModal();">조회 </button>	
+				<span class="modal-title">설비 리스트</span> <span class="modal-close" onclick="openCorpListModalData()">&times;</span>
 			</div>
 			<div id="corpListTabulator" style="height: 500px;"></div>
 		</div>
@@ -562,9 +564,13 @@ textarea {
 	$(function(){
 		var tdate = todayDate();
 		var ydate = yesterDate();
+		var beforeMonth = beforeMonthDate();
 		
 		$("#sdate").val(ydate);
 		$("#edate").val(tdate);
+		$("#subsdate").val();
+		$("#subsdate").val(beforeMonth);
+		$("#subedate").val(tdate);
 		getNonInsertList();
 	});
 
@@ -752,10 +758,14 @@ textarea {
 		});
 	}
 
+	function openCorpListModal(){
+		document.getElementById('corpListModal').style.display = 'flex';
+		openCorpListModalData();
+	}
 
 	//설비검색버튼 리스트 모달
-    function openCorpListModal() {
-        document.getElementById('corpListModal').style.display = 'flex';
+    function openCorpListModalData() {
+        
 
         
         let facListTable = new Tabulator("#corpListTabulator", {
@@ -771,8 +781,10 @@ textarea {
                 "ilbo_code": $("#ilbo_code").val() || 0,
                 "ilbo_no": $("#ilbo_no").val() || 0,
                 "corp_code": $("#corp_code").val() || 0,
-                "werr_wdate": $("#werr_wdate").val() || 0,
-                "ilbo_lot": $("#ilbo_lot").val() || 0
+/*                "werr_wdate": $("#werr_wdate").val() || 0,*/
+                "ilbo_lot": $("#subilbo_lot").val(),
+                "sdate":$("#subsdate").val(),
+                "edate":$("#subedate").val()
                    
             },
 		    ajaxResponse:function(url, params, response){
@@ -804,12 +816,14 @@ textarea {
                 let data = row.getData();
                 
                 console.log("선택된 설비:", data);
-                document.getElementById('werr_wdate').value = data.werr_wdate;
+                
+                document.getElementById('werr_wdate').value = data.ilbo_date;
                 document.getElementById('corp_name').value = data.corp_name;
                 document.getElementById('prod_name').value = data.prod_name;
                 document.getElementById('prod_no').value = data.prod_no;
                 document.getElementById('fac_name').value = data.fac_name;
                 document.getElementById('ilbo_lot').value = data.ilbo_lot;
+                document.getElementById('tech_te').value = data.tech_te;
                 document.getElementById('corpListModal').style.display = 'none';
             }
         });

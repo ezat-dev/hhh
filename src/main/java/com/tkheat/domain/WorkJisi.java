@@ -229,6 +229,7 @@ public class WorkJisi {
 	private String prod_bangch;
 	private String prod_note;
 	private String prod_img;
+	private String danch_img;
 	private String jisi_h_bigo;
 	private String fac1;
 	private String fac2;
@@ -2238,5 +2239,11 @@ public class WorkJisi {
 	}
 	public void setJaego_amnt(float jaego_amnt) {
 		this.jaego_amnt = jaego_amnt;
+	}
+	public String getDanch_img() {
+		return danch_img;
+	}
+	public void setDanch_img(String danch_img) {
+		this.danch_img = danch_img;
 	}
 }

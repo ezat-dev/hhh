@@ -2,6 +2,8 @@ package com.tkheat.dao;
 
 import java.util.List;
 
+import com.tkheat.domain.AlarmHistory;
+import com.tkheat.domain.AlarmRanking;
 import com.tkheat.domain.Monitoring;
 import com.tkheat.domain.WorkJisi;
 
@@ -22,4 +24,8 @@ public interface MonitoringDao {
 	List<WorkJisi> getMonitoringDataList();
 
 	void setMonitoringDataReSet(WorkJisi setWork);
+	
+	List<AlarmHistory> alarmHistory1(AlarmHistory alarmHistory);
+	
+	List<AlarmRanking> alarmRanking1(AlarmRanking alarmRanking);
 }

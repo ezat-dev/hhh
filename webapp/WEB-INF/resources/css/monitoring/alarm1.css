@@ -15,7 +15,7 @@
   object-fit: cover;
   aspect-ratio: 1920/954;
 }
-.alarm-big-box-1 {
+.alarm_big_box_1 {
   background: #f1f1f1;
   border-radius: 5px;
   border-style: solid;
@@ -27,7 +27,7 @@
   left: 23px;
   top: 36px;
 }
-.alarm-1 {
+.alarm_1 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -39,7 +39,7 @@
   left: 33px;
   top: 51px;
 }
-.alarm-2 {
+.alarm_2 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -51,7 +51,7 @@
   left: 33px;
   top: 86px;
 }
-.alarm-3 {
+.alarm_3 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -63,7 +63,7 @@
   left: 33px;
   top: 121px;
 }
-.alarm-4 {
+.alarm_4 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -75,7 +75,7 @@
   left: 33px;
   top: 156px;
 }
-.alarm-5 {
+.alarm_5 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -87,7 +87,7 @@
   left: 33px;
   top: 191px;
 }
-.alarm-6 {
+.alarm_6 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -99,7 +99,7 @@
   left: 33px;
   top: 226px;
 }
-.alarm-7 {
+.alarm_7 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -111,7 +111,7 @@
   left: 33px;
   top: 261px;
 }
-.alarm-8 {
+.alarm_8 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -123,7 +123,7 @@
   left: 33px;
   top: 296px;
 }
-.alarm-9 {
+.alarm_9 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -135,7 +135,7 @@
   left: 33px;
   top: 331px;
 }
-.alarm-10 {
+.alarm_10 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -147,7 +147,7 @@
   left: 33px;
   top: 366px;
 }
-.alarm-11 {
+.alarm_11 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -159,7 +159,7 @@
   left: 33px;
   top: 401px;
 }
-.alarm-12 {
+.alarm_12 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -171,7 +171,7 @@
   left: 33px;
   top: 436px;
 }
-.alarm-13 {
+.alarm_13 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -183,7 +183,7 @@
   left: 33px;
   top: 471px;
 }
-.alarm-14 {
+.alarm_14 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -195,7 +195,7 @@
   left: 33px;
   top: 506px;
 }
-.alarm-15 {
+.alarm_15 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -207,7 +207,7 @@
   left: 33px;
   top: 541px;
 }
-.alarm-16 {
+.alarm_16 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -219,7 +219,7 @@
   left: 33px;
   top: 576px;
 }
-.alarm-17 {
+.alarm_17 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -231,7 +231,7 @@
   left: 33px;
   top: 611px;
 }
-.alarm-18 {
+.alarm_18 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -243,7 +243,7 @@
   left: 33px;
   top: 646px;
 }
-.alarm-19 {
+.alarm_19 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -255,7 +255,7 @@
   left: 33px;
   top: 681px;
 }
-.alarm-20 {
+.alarm_20 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -267,7 +267,7 @@
   left: 33px;
   top: 716px;
 }
-.alarm-21 {
+.alarm_21 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -279,7 +279,7 @@
   left: 33px;
   top: 751px;
 }
-.alarm-22 {
+.alarm_22 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -291,7 +291,7 @@
   left: 33px;
   top: 786px;
 }
-.alarm-23 {
+.alarm_23 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -303,7 +303,7 @@
   left: 193px;
   top: 51px;
 }
-.alarm-24 {
+.alarm_24 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -315,7 +315,7 @@
   left: 193px;
   top: 86px;
 }
-.alarm-25 {
+.alarm_25 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -327,7 +327,7 @@
   left: 193px;
   top: 121px;
 }
-.alarm-26 {
+.alarm_26 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -339,7 +339,7 @@
   left: 193px;
   top: 156px;
 }
-.alarm-27 {
+.alarm_27 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -351,7 +351,7 @@
   left: 193px;
   top: 191px;
 }
-.alarm-28 {
+.alarm_28 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -363,7 +363,7 @@
   left: 193px;
   top: 226px;
 }
-.alarm-29 {
+.alarm_29 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -375,7 +375,7 @@
   left: 193px;
   top: 261px;
 }
-.alarm-30 {
+.alarm_30 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -387,7 +387,7 @@
   left: 193px;
   top: 296px;
 }
-.alarm-31 {
+.alarm_31 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -399,7 +399,7 @@
   left: 193px;
   top: 331px;
 }
-.alarm-32 {
+.alarm_32 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -411,7 +411,7 @@
   left: 193px;
   top: 366px;
 }
-.alarm-33 {
+.alarm_33 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -423,7 +423,7 @@
   left: 193px;
   top: 401px;
 }
-.alarm-34 {
+.alarm_34 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -435,7 +435,7 @@
   left: 193px;
   top: 436px;
 }
-.alarm-35 {
+.alarm_35 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -447,7 +447,7 @@
   left: 193px;
   top: 471px;
 }
-.alarm-36 {
+.alarm_36 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -459,7 +459,7 @@
   left: 193px;
   top: 506px;
 }
-.alarm-37 {
+.alarm_37 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -471,7 +471,7 @@
   left: 193px;
   top: 541px;
 }
-.alarm-38 {
+.alarm_38 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -483,7 +483,7 @@
   left: 193px;
   top: 576px;
 }
-.alarm-39 {
+.alarm_39 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -495,7 +495,7 @@
   left: 193px;
   top: 611px;
 }
-.alarm-40 {
+.alarm_40 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -507,7 +507,7 @@
   left: 193px;
   top: 646px;
 }
-.alarm-41 {
+.alarm_41 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -519,7 +519,7 @@
   left: 193px;
   top: 681px;
 }
-.alarm-42 {
+.alarm_42 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -531,7 +531,7 @@
   left: 193px;
   top: 716px;
 }
-.alarm-43 {
+.alarm_43 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -543,7 +543,7 @@
   left: 193px;
   top: 751px;
 }
-.alarm-44 {
+.alarm_44 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -555,7 +555,7 @@
   left: 193px;
   top: 786px;
 }
-.alarm-45 {
+.alarm_45 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -567,7 +567,7 @@
   left: 351px;
   top: 51px;
 }
-.alarm-46 {
+.alarm_46 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -579,7 +579,7 @@
   left: 351px;
   top: 86px;
 }
-.alarm-47 {
+.alarm_47 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -591,7 +591,7 @@
   left: 351px;
   top: 121px;
 }
-.alarm-48 {
+.alarm_48 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -603,7 +603,7 @@
   left: 351px;
   top: 156px;
 }
-.alarm-49 {
+.alarm_49 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -615,7 +615,7 @@
   left: 351px;
   top: 191px;
 }
-.alarm-50 {
+.alarm_50 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -627,7 +627,7 @@
   left: 351px;
   top: 226px;
 }
-.alarm-51 {
+.alarm_51 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -639,7 +639,7 @@
   left: 351px;
   top: 261px;
 }
-.alarm-52 {
+.alarm_52 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -651,7 +651,7 @@
   left: 351px;
   top: 296px;
 }
-.alarm-53 {
+.alarm_53 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -663,7 +663,7 @@
   left: 351px;
   top: 331px;
 }
-.alarm-big-box-12 {
+.alarm_big_box_12 {
   background: #f1f1f1;
   border-radius: 5px;
   border-style: solid;
@@ -675,7 +675,7 @@
   left: 514.52px;
   top: 36px;
 }
-.alarm-54 {
+.alarm_54 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -687,7 +687,7 @@
   left: 523px;
   top: 51px;
 }
-.alarm-55 {
+.alarm_55 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -699,7 +699,7 @@
   left: 523px;
   top: 86px;
 }
-.alarm-56 {
+.alarm_56 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -711,7 +711,7 @@
   left: 523px;
   top: 121px;
 }
-.alarm-57 {
+.alarm_57 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -723,7 +723,7 @@
   left: 523px;
   top: 156px;
 }
-.alarm-58 {
+.alarm_58 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -735,7 +735,7 @@
   left: 523px;
   top: 191px;
 }
-.alarm-59 {
+.alarm_59 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -747,7 +747,7 @@
   left: 523px;
   top: 226px;
 }
-.alarm-60 {
+.alarm_60 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -759,7 +759,7 @@
   left: 523px;
   top: 261px;
 }
-.alarm-61 {
+.alarm_61 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -771,7 +771,7 @@
   left: 523px;
   top: 296px;
 }
-.alarm-62 {
+.alarm_62 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -783,7 +783,7 @@
   left: 523px;
   top: 331px;
 }
-.alarm-63 {
+.alarm_63 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -795,7 +795,7 @@
   left: 523px;
   top: 366px;
 }
-.alarm-64 {
+.alarm_64 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -807,7 +807,7 @@
   left: 523px;
   top: 401px;
 }
-.alarm-65 {
+.alarm_65 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -819,7 +819,7 @@
   left: 523px;
   top: 436px;
 }
-.alarm-66 {
+.alarm_66 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -831,7 +831,7 @@
   left: 523px;
   top: 471px;
 }
-.alarm-67 {
+.alarm_67 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -843,7 +843,7 @@
   left: 523px;
   top: 506px;
 }
-.alarm-68 {
+.alarm_68 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -855,7 +855,7 @@
   left: 523px;
   top: 541px;
 }
-.alarm-69 {
+.alarm_69 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -867,7 +867,7 @@
   left: 523px;
   top: 576px;
 }
-.alarm-70 {
+.alarm_70 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -879,7 +879,7 @@
   left: 523px;
   top: 611px;
 }
-.alarm-71 {
+.alarm_71 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -891,7 +891,7 @@
   left: 523px;
   top: 646px;
 }
-.alarm-72 {
+.alarm_72 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -903,7 +903,7 @@
   left: 523px;
   top: 681px;
 }
-.alarm-73 {
+.alarm_73 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -915,7 +915,7 @@
   left: 523px;
   top: 716px;
 }
-.alarm-74 {
+.alarm_74 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -927,7 +927,7 @@
   left: 523px;
   top: 751px;
 }
-.alarm-75 {
+.alarm_75 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -939,7 +939,7 @@
   left: 523px;
   top: 786px;
 }
-.alarm-76 {
+.alarm_76 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -951,7 +951,7 @@
   left: 682px;
   top: 51px;
 }
-.alarm-77 {
+.alarm_77 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -963,7 +963,7 @@
   left: 682px;
   top: 86px;
 }
-.alarm-78 {
+.alarm_78 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -975,7 +975,7 @@
   left: 682px;
   top: 121px;
 }
-.alarm-79 {
+.alarm_79 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -987,7 +987,7 @@
   left: 682px;
   top: 156px;
 }
-.alarm-80 {
+.alarm_80 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -999,7 +999,7 @@
   left: 682px;
   top: 191px;
 }
-.alarm-81 {
+.alarm_81 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1011,7 +1011,7 @@
   left: 682px;
   top: 226px;
 }
-.alarm-82 {
+.alarm_82 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1023,7 +1023,7 @@
   left: 682px;
   top: 261px;
 }
-.alarm-83 {
+.alarm_83 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1035,7 +1035,7 @@
   left: 682px;
   top: 296px;
 }
-.alarm-84 {
+.alarm_84 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1047,7 +1047,7 @@
   left: 682px;
   top: 331px;
 }
-.alarm-85 {
+.alarm_85 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1059,7 +1059,7 @@
   left: 682px;
   top: 366px;
 }
-.alarm-86 {
+.alarm_86 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1071,7 +1071,7 @@
   left: 682px;
   top: 401px;
 }
-.alarm-87 {
+.alarm_87 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1083,7 +1083,7 @@
   left: 682px;
   top: 436px;
 }
-.alarm-88 {
+.alarm_88 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1095,7 +1095,7 @@
   left: 682px;
   top: 471px;
 }
-.alarm-89 {
+.alarm_89 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1107,7 +1107,7 @@
   left: 682px;
   top: 506px;
 }
-.alarm-90 {
+.alarm_90 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1119,7 +1119,7 @@
   left: 682px;
   top: 541px;
 }
-.alarm-91 {
+.alarm_91 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1131,7 +1131,7 @@
   left: 682px;
   top: 576px;
 }
-.alarm-92 {
+.alarm_92 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1143,7 +1143,7 @@
   left: 682px;
   top: 611px;
 }
-.alarm-93 {
+.alarm_93 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1155,7 +1155,7 @@
   left: 682px;
   top: 646px;
 }
-.alarm-94 {
+.alarm_94 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1167,7 +1167,7 @@
   left: 682px;
   top: 681px;
 }
-.alarm-95 {
+.alarm_95 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1179,7 +1179,7 @@
   left: 682px;
   top: 716px;
 }
-.alarm-96 {
+.alarm_96 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1191,7 +1191,7 @@
   left: 682px;
   top: 751px;
 }
-.alarm-97 {
+.alarm_97 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1203,7 +1203,7 @@
   left: 682px;
   top: 786px;
 }
-.alarm-98 {
+.alarm_98 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1215,7 +1215,7 @@
   left: 841px;
   top: 51px;
 }
-.alarm-99 {
+.alarm_99 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1227,7 +1227,7 @@
   left: 841px;
   top: 86px;
 }
-.alarm-100 {
+.alarm_100 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1239,7 +1239,7 @@
   left: 841px;
   top: 121px;
 }
-.alarm-101 {
+.alarm_101 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1251,7 +1251,7 @@
   left: 841px;
   top: 156px;
 }
-.alarm-102 {
+.alarm_102 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1263,7 +1263,7 @@
   left: 841px;
   top: 191px;
 }
-.alarm-103 {
+.alarm_103 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1275,7 +1275,7 @@
   left: 841px;
   top: 226px;
 }
-.alarm-104 {
+.alarm_104 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1287,7 +1287,7 @@
   left: 841px;
   top: 261px;
 }
-.alarm-105 {
+.alarm_105 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1299,7 +1299,7 @@
   left: 841px;
   top: 296px;
 }
-.alarm-106 {
+.alarm_106 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1311,7 +1311,7 @@
   left: 841px;
   top: 331px;
 }
-.alarm-big-box-3 {
+.alarm_big_box_3 {
   background: #f1f1f1;
   border-radius: 5px;
   border-style: solid;
@@ -1323,7 +1323,7 @@
   left: 1005.07px;
   top: 36px;
 }
-.alarm-107 {
+.alarm_107 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1335,7 +1335,7 @@
   left: 1014px;
   top: 51px;
 }
-.alarm-108 {
+.alarm_108 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1347,7 +1347,7 @@
   left: 1014px;
   top: 86px;
 }
-.alarm-109 {
+.alarm_109 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1359,7 +1359,7 @@
   left: 1014px;
   top: 121px;
 }
-.alarm-110 {
+.alarm_110 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1371,7 +1371,7 @@
   left: 1014px;
   top: 156px;
 }
-.alarm-111 {
+.alarm_111 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1383,7 +1383,7 @@
   left: 1014px;
   top: 191px;
 }
-.alarm-112 {
+.alarm_112 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1395,7 +1395,7 @@
   left: 1014px;
   top: 226px;
 }
-.alarm-113 {
+.alarm_113 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1407,7 +1407,7 @@
   left: 1014px;
   top: 261px;
 }
-.alarm-114 {
+.alarm_114 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1419,7 +1419,7 @@
   left: 1014px;
   top: 296px;
 }
-.alarm-115 {
+.alarm_115 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1431,7 +1431,7 @@
   left: 1014px;
   top: 331px;
 }
-.alarm-116 {
+.alarm_116 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1443,7 +1443,7 @@
   left: 1014px;
   top: 366px;
 }
-.alarm-117 {
+.alarm_117 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1455,7 +1455,7 @@
   left: 1014px;
   top: 401px;
 }
-.alarm-118 {
+.alarm_118 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1467,7 +1467,7 @@
   left: 1014px;
   top: 436px;
 }
-.alarm-119 {
+.alarm_119 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1479,7 +1479,7 @@
   left: 1014px;
   top: 471px;
 }
-.alarm-120 {
+.alarm_120 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1491,7 +1491,7 @@
   left: 1014px;
   top: 506px;
 }
-.alarm-121 {
+.alarm_121 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1503,7 +1503,7 @@
   left: 1014px;
   top: 541px;
 }
-.alarm-122 {
+.alarm_122 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1515,7 +1515,7 @@
   left: 1014px;
   top: 576px;
 }
-.alarm-123 {
+.alarm_123 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1527,7 +1527,7 @@
   left: 1014px;
   top: 611px;
 }
-.alarm-124 {
+.alarm_124 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1539,7 +1539,7 @@
   left: 1014px;
   top: 646px;
 }
-.alarm-125 {
+.alarm_125 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1551,7 +1551,7 @@
   left: 1014px;
   top: 681px;
 }
-.alarm-126 {
+.alarm_126 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1563,7 +1563,7 @@
   left: 1014px;
   top: 716px;
 }
-.alarm-127 {
+.alarm_127 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1575,7 +1575,7 @@
   left: 1014px;
   top: 751px;
 }
-.alarm-128 {
+.alarm_128 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1587,7 +1587,7 @@
   left: 1014px;
   top: 786px;
 }
-.alarm-129 {
+.alarm_129 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1599,7 +1599,7 @@
   left: 1173px;
   top: 51px;
 }
-.alarm-130 {
+.alarm_130 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1611,7 +1611,7 @@
   left: 1173px;
   top: 86px;
 }
-.alarm-131 {
+.alarm_131 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1623,7 +1623,7 @@
   left: 1173px;
   top: 121px;
 }
-.alarm-132 {
+.alarm_132 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1635,7 +1635,7 @@
   left: 1173px;
   top: 156px;
 }
-.alarm-133 {
+.alarm_133 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1647,7 +1647,7 @@
   left: 1173px;
   top: 191px;
 }
-.alarm-134 {
+.alarm_134 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1659,7 +1659,7 @@
   left: 1173px;
   top: 226px;
 }
-.alarm-135 {
+.alarm_135 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1671,7 +1671,7 @@
   left: 1173px;
   top: 261px;
 }
-.alarm-136 {
+.alarm_136 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1683,7 +1683,7 @@
   left: 1173px;
   top: 296px;
 }
-.alarm-big-box-4 {
+.alarm_big_box_4 {
   background: #f1f1f1;
   border-radius: 5px;
   border-style: solid;
@@ -1695,7 +1695,7 @@
   left: 1335.09px;
   top: 36px;
 }
-.alarm-137 {
+.alarm_137 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1707,7 +1707,7 @@
   left: 1343px;
   top: 51px;
 }
-.alarm-138 {
+.alarm_138 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1719,7 +1719,7 @@
   left: 1343px;
   top: 86px;
 }
-.alarm-139 {
+.alarm_139 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1731,7 +1731,7 @@
   left: 1343px;
   top: 121px;
 }
-.alarm-140 {
+.alarm_140 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1743,7 +1743,7 @@
   left: 1343px;
   top: 156px;
 }
-.alarm-141 {
+.alarm_141 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1755,7 +1755,7 @@
   left: 1343px;
   top: 191px;
 }
-.alarm-142 {
+.alarm_142 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1767,7 +1767,7 @@
   left: 1343px;
   top: 226px;
 }
-.alarm-143 {
+.alarm_143 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1779,7 +1779,7 @@
   left: 1343px;
   top: 261px;
 }
-.alarm-144 {
+.alarm_144 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1791,7 +1791,7 @@
   left: 1343px;
   top: 296px;
 }
-.alarm-145 {
+.alarm_145 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1803,7 +1803,7 @@
   left: 1343px;
   top: 331px;
 }
-.alarm-146 {
+.alarm_146 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1815,7 +1815,7 @@
   left: 1343px;
   top: 366px;
 }
-.alarm-147 {
+.alarm_147 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1827,7 +1827,7 @@
   left: 1343px;
   top: 401px;
 }
-.alarm-148 {
+.alarm_148 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1839,7 +1839,7 @@
   left: 1343px;
   top: 436px;
 }
-.alarm-149 {
+.alarm_149 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1851,7 +1851,7 @@
   left: 1343px;
   top: 471px;
 }
-.alarm-150 {
+.alarm_150 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1863,7 +1863,7 @@
   left: 1343px;
   top: 506px;
 }
-.alarm-151 {
+.alarm_151 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1875,7 +1875,7 @@
   left: 1343px;
   top: 541px;
 }
-.alarm-152 {
+.alarm_152 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1887,7 +1887,7 @@
   left: 1343px;
   top: 576px;
 }
-.alarm-153 {
+.alarm_153 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1899,7 +1899,7 @@
   left: 1343px;
   top: 611px;
 }
-.alarm-154 {
+.alarm_154 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1911,7 +1911,7 @@
   left: 1343px;
   top: 646px;
 }
-.alarm-155 {
+.alarm_155 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1923,7 +1923,7 @@
   left: 1343px;
   top: 681px;
 }
-.alarm-156 {
+.alarm_156 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1935,7 +1935,7 @@
   left: 1343px;
   top: 716px;
 }
-.alarm-157 {
+.alarm_157 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1947,7 +1947,7 @@
   left: 1343px;
   top: 751px;
 }
-.alarm-158 {
+.alarm_158 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1959,7 +1959,7 @@
   left: 1343px;
   top: 786px;
 }
-.alarm-159 {
+.alarm_159 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1971,7 +1971,7 @@
   left: 1502px;
   top: 51px;
 }
-.alarm-160 {
+.alarm_160 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1983,7 +1983,7 @@
   left: 1502px;
   top: 86px;
 }
-.alarm-161 {
+.alarm_161 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -1995,7 +1995,7 @@
   left: 1502px;
   top: 121px;
 }
-.alarm-162 {
+.alarm_162 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -2007,7 +2007,7 @@
   left: 1502px;
   top: 156px;
 }
-.alarm-163 {
+.alarm_163 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -2019,7 +2019,7 @@
   left: 1502px;
   top: 191px;
 }
-.alarm-164 {
+.alarm_164 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -2031,7 +2031,7 @@
   left: 1502px;
   top: 226px;
 }
-.alarm-165 {
+.alarm_165 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;
@@ -2043,7 +2043,7 @@
   left: 1502px;
   top: 261px;
 }
-.alarm-166 {
+.alarm_166 {
   background: #c3c3c3;
   border-radius: 5px;
   border-style: solid;

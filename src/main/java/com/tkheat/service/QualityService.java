@@ -2,7 +2,7 @@ package com.tkheat.service;
 
 import java.util.List;
 
-
+import com.tkheat.domain.Product;
 import com.tkheat.domain.Suip;
 import com.tkheat.domain.Work;
 
@@ -40,5 +40,11 @@ public interface QualityService {
 	List<Work> getJajuStatusList(Work work);
 	
 	List<Work> getJajuJochiList(Work work);
+
+	Suip cpkStandardList(Suip quality);
+
+	List<Suip> cpkValueList(Suip quality);
+
+	List<Product> xBarPumbunList(Product p);
 
 }

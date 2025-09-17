@@ -55,13 +55,14 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 		boolean chul = Boolean.parseBoolean(chulMap.get("value").toString());
 
 		WorkJisi w = new WorkJisi();
-		
+		//System.out.println(qrBuff);
 		//바코드버퍼의 값이 0이 아닐때
 		if(qrBuff != 0) {
 			//스캔한 바코드의 값이 적용할 호기와 일치할때만
 			//불일치시 미적용
-			if("1".equals((qrBuff+"").substring(6,7))){
+			if("4".equals((qrBuff+"").substring(6,7))){
 				if(qr == 0) {
+					//System.out.println(qrBuff+"_sss");
 					//실 적용 바코드의 값이 0이면 버퍼의 값을 실제 적용 바코드로 값 쓰기.
 					opcData.setOpcData("TKHEAT.MODBUS.MONITORING.WRITE_BUFF_BCF4", true);
 				}				
@@ -74,7 +75,7 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 
 		Thread.sleep(300);
 
-//		System.out.println("QR : "+qr+"// BUFF_QR : "+qrBuff+"// 출고변수 : "+chul+"// 출고 가상변수 : "+chulVirt);
+//		//System.out.println("QR : "+qr+"// BUFF_QR : "+qrBuff+"// 출고변수 : "+chul+"// 출고 가상변수 : "+chulVirt);
 		if(qr != 0) {
 			//실 적용 바코드의 값이 0이 아니면 버퍼의 값은 유지
 			//실 적용 바코드값으로 정보 매핑
@@ -86,11 +87,11 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 					www.setLot_qr(qr);
 					List<WorkJisi> wList = monitoringDao.getMonitoringData(www);
 					
-//					System.out.println("출구만 신호 들어옴 : "+chul+"// : "+qr);
+//					//System.out.println("출구만 신호 들어옴 : "+chul+"// : "+qr);
 					
 					WorkJisi setWork = new WorkJisi();
 					setWork.setLot_qr(0);
-					setWork.setHogi("BCF4");
+					setWork.setHogi("bcf4");
 					setWork.setCutum("");
 					setWork.setPum("");
 					setWork.setLot("");
@@ -120,7 +121,7 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 				if(!pre && !chim 
 						&& !diff && !gang && !cold) {
 					//테이블에 중복되는 QR이 있는지 비교
-					w.setHogi("BCF4");
+					w.setHogi("bcf4");
 					w.setLot_qr(qr);
 					
 					WorkJisi dupChk = monitoringDao.getMonitoringDupChk(w);
@@ -129,12 +130,12 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 					if(dupChk == null) {
 						
 						List<WorkJisi> wList = monitoringDao.getMonitoringData(w);
-//						System.out.println("wListSize : "+wList.size());
+//						//System.out.println("wListSize : "+wList.size());
 						int hogi_idx = 1;
 						for(WorkJisi ww : wList) {					
 							WorkJisi setWork = new WorkJisi();
 							setWork.setLot_qr(qr);
-							setWork.setHogi("BCF4");
+							setWork.setHogi("bcf4");
 							setWork.setCutum(ww.getCorp_name());
 							setWork.setPum(ww.getProd_name());
 							setWork.setLot(ww.getJisi_lot_view());
@@ -174,7 +175,7 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 		Map<String, Object> preMap = opcData.getOpcData("TKHEAT.MODBUS.MONITORING.PRE_BCF4");
 		
 		boolean pre = Boolean.parseBoolean(preMap.get("value").toString());
-//		System.out.println("예열 : "+bcf2Pre);
+//		//System.out.println("예열 : "+bcf2Pre);
 		if(pre) {
 //			if(preVirt) {
 				chulVirt = true;	//예열구간 이동시 출구 가상변수 true
@@ -193,7 +194,7 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 					for(WorkJisi ww : wList) {
 						WorkJisi setWork = new WorkJisi();
 						setWork.setLot_qr(qr);
-						setWork.setHogi("BCF4");
+						setWork.setHogi("bcf4");
 						setWork.setCutum(ww.getCorp_name());
 						setWork.setPum(ww.getProd_name());
 						setWork.setLot(ww.getJisi_lot_view());
@@ -247,7 +248,7 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 					for(WorkJisi ww : wList) {
 						WorkJisi setWork = new WorkJisi();
 						setWork.setLot_qr(qr);
-						setWork.setHogi("BCF4");
+						setWork.setHogi("bcf4");
 						setWork.setCutum(ww.getCorp_name());
 						setWork.setPum(ww.getProd_name());
 						setWork.setLot(ww.getJisi_lot_view());
@@ -302,7 +303,7 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 					for(WorkJisi ww : wList) {
 						WorkJisi setWork = new WorkJisi();
 						setWork.setLot_qr(qr);
-						setWork.setHogi("BCF4");
+						setWork.setHogi("bcf4");
 						setWork.setCutum(ww.getCorp_name());
 						setWork.setPum(ww.getProd_name());
 						setWork.setLot(ww.getJisi_lot_view());
@@ -357,7 +358,7 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 					for(WorkJisi ww : wList) {
 						WorkJisi setWork = new WorkJisi();
 						setWork.setLot_qr(qr);
-						setWork.setHogi("BCF4");
+						setWork.setHogi("bcf4");
 						setWork.setCutum(ww.getCorp_name());
 						setWork.setPum(ww.getProd_name());
 						setWork.setLot(ww.getJisi_lot_view());
@@ -412,7 +413,7 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 					for(WorkJisi ww : wList) {
 						WorkJisi setWork = new WorkJisi();
 						setWork.setLot_qr(qr);
-						setWork.setHogi("BCF4");
+						setWork.setHogi("bcf4");
 						setWork.setCutum(ww.getCorp_name());
 						setWork.setPum(ww.getProd_name());
 						setWork.setLot(ww.getJisi_lot_view());
@@ -450,7 +451,7 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 		
 		
 		boolean chul = Boolean.parseBoolean(chulMap.get("value").toString());
-		System.out.println("출구 ON : "+chul);
+//		//System.out.println("출구 ON : "+chul);
 		
 		if(chul) {
 //			if(chulVirt) {
@@ -458,7 +459,7 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 				Map<String, Object> qrMap = opcData.getOpcData("TKHEAT.MODBUS.MONITORING.QR_BCF4");
 				
 				int qr = Integer.parseInt(qrMap.get("value").toString());
-				System.out.println("출구 ON : "+qr);
+//				//System.out.println("출구 ON : "+qr);
 				
 				if(qr != 0) {
 					//공정정보 DB 업데이트
@@ -471,7 +472,7 @@ public class MonitoringServiceBcf4Impl implements MonitoringServiceBcf4{
 					for(WorkJisi ww : wList) {
 						WorkJisi setWork = new WorkJisi();
 						setWork.setLot_qr(qr);
-						setWork.setHogi("BCF4");
+						setWork.setHogi("bcf4");
 						setWork.setCutum("");
 						setWork.setPum("");
 						setWork.setLot("");

@@ -7,6 +7,8 @@ import javax.annotation.Resource;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.tkheat.domain.AlarmHistory;
+import com.tkheat.domain.AlarmRanking;
 import com.tkheat.domain.Monitoring;
 import com.tkheat.domain.WorkJisi;
 
@@ -15,6 +17,9 @@ public class MonitoringDaoImpl implements MonitoringDao{
 
 	@Resource(name="session")
 	private SqlSession sqlSession;
+	
+	@Resource(name="sessionSQLite")
+	private SqlSession sqlSessionSqlite;
 	
 	@Override
     public List<Monitoring> getMonitoringList() {
@@ -54,6 +59,16 @@ public class MonitoringDaoImpl implements MonitoringDao{
 	@Override
 	public void setMonitoringDataReSet(WorkJisi setWork) {
 		sqlSession.update("monitoring.setMonitoringDataReSet",setWork);
+	}
+	
+	@Override
+	public List<AlarmHistory> alarmHistory1(AlarmHistory alarmHistory) {
+		return sqlSessionSqlite.selectList("monitoring.alarmHistoryList", alarmHistory);
+	}
+	
+	@Override
+	public List<AlarmRanking> alarmRanking1(AlarmRanking alarmRanking) {
+		return sqlSessionSqlite.selectList("monitoring.alarmRankingList", alarmRanking);
 	}
 
 }

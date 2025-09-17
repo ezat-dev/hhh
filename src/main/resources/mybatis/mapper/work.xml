@@ -434,41 +434,19 @@
 	
 	
 	<select id="getNonCorpList" parameterType="work" resultType="work">
-		SELECT ROW_NUMBER()OVER(ORDER BY WORKERR.WERR_DATE,CORP.CORP_NAME, PRODUCT.PROD_NAME ) AS ROW_NUM ,  
-			   LEFT(CONVERT(VARCHAR, CONVERT(datetime, WORKERR.WERR_WDATE, 120), 120), 10) as WERR_WDATE,
-			   LEFT(CONVERT(VARCHAR, CONVERT(datetime, WORKERR.WERR_DATE, 120), 120), 10) as WERR_DATE,
-			   CORP.CORP_NAME,
-			   PRODUCT.PROD_NAME,
-			   PRODUCT.PROD_NO,
-			   LEFT(CONVERT(VARCHAR, CONVERT(datetime, ORDERT.ORD_DATE, 120), 120), 10)          as ORD_DATE,
-			   FACILITY.FAC_NAME,
-			   WORKERR.WERR_AMNT,
-			   WORKERR.WERR_GUBN,
-			   WORKERR.WERR_MON,
-			   WORKERR.WERR_CODE,
-			   WORKILBO.ILBO_LOT,
-			   CASE WORKILBO.ILBO_GUBN
-				   WHEN 'A'
-					   THEN '침탄'
-				   WHEN 'P'
-					   THEN '전세정'
-				   WHEN 'B'
-					   THEN '방탄'
-				   WHEN 'H'
-					   THEN '고주파'
-				   WHEN 'F'
-					   THEN '후세정'
-				   WHEN 'S'
-					   THEN '쇼트'
-				   WHEN 'V'
-					   THEN '진공'
-				   END                                                                           as ILBO_GUBN,
-			   WORKERR.WERR_FAC
-		FROM   WORKERR
-		INNER JOIN  WORKILBO ON  WORKERR.ILBO_CODE =  WORKILBO.ILBO_CODE AND   WORKERR.ILBO_NO =  WORKILBO.ILBO_NO
-		INNER JOIN  ORDERT ON  WORKILBO.ORD_CODE =  ORDERT.ORD_CODE INNER JOIN  PRODUCT ON  ORDERT.PROD_CODE =  PRODUCT.PROD_CODE
-		INNER JOIN  CORP ON  PRODUCT.CORP_CODE =  CORP.CORP_CODE LEFT OUTER JOIN  FACILITY ON  WORKILBO.FAC_CODE =  FACILITY.FAC_CODE
-		
+		SET LOCK_TIMEOUT 10000;
+		SELECT ROW_NUMBER()OVER(ORDER BY ILBO_STRT) AS ROW_NUM, LEFT(CONVERT(VARCHAR, ILBO_STRT, 120), 10) as ILBO_DATE, LEFT(CONVERT(VARCHAR, ORDERT.ORD_DATE, 120), 10) as ORD_DATE,
+			   WORKILBO.ORD_CODE,CORP.CORP_CODE,CORP_NAME,PROD_NAME,PROD_NO,CONVERT(nvarchar(20), ILBO_SU) as ILBO_SU,ORD_SU,ORD_LOT,TECHIN.TECH_TE,ORD_LOT,ILBO_LOT,FAC_NAME, ILBO_CODE, ILBO_NO
+		FROM WORKILBO WITH(NOLOCK)
+				 INNER JOIN ORDERT WITH(NOLOCK) ON WORKILBO.ORD_CODE = ORDERT.ORD_CODE
+				 INNER JOIN PRODUCT WITH(NOLOCK) ON ORDERT.PROD_CODE=PRODUCT.PROD_CODE
+				 INNER JOIN CORP WITH(NOLOCK) ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+				 INNER JOIN TECHIN WITH(NOLOCK) ON TECHIN.TECH_NO= PRODUCT.TECH_NO
+				 LEFT OUTER JOIN FACILITY ON WORKILBO.FAC_CODE = FACILITY.FAC_CODE
+		where ILBO_STRT between #{sdate}+' 00:00.000' and #{edate}+' 23:59.999'	
+		<if test="ilbo_lot != '' and ilbo_lot != null">
+			AND ILBO_LOT LIKE CONCAT('%',#{ilbo_lot},'%')
+		</if>		
 	</select>
 	
 	
@@ -1533,9 +1511,138 @@
 		) origin
 			group by x
 	</select>
+
 	
+<!-- 2025-09-08 xBar R 관리도 -->
+	<select id="cpkStandardList" parameterType="suip" resultType="suip">
+		SELECT 
+			prod_no AS h_pnum,
+			prod_name AS h_pname,
+			prod_gyu AS h_gang,
+			prod_jai AS h_t_gb,
+			CASE
+			WHEN PROD_PG1 = '' AND PROD_PG2 = '' THEN 0
+			WHEN PROD_PG2 = '' THEN PRODUCT.PROD_PG1
+			WHEN PROD_PG1 = '' THEN PRODUCT.PROD_PG2
+			ELSE
+				PRODUCT.PROD_PG1
+			END AS h_hard_up,
+			CASE
+			WHEN PROD_PG1 = '' AND PROD_PG2 = '' THEN 0
+			WHEN PROD_PG2 = '' THEN PRODUCT.PROD_PG2
+			WHEN PROD_PG1 = '' THEN PRODUCT.PROD_PG1
+			ELSE
+				PRODUCT.PROD_PG2
+			END AS h_hard_dw
+		FROM PRODUCT
+		WHERE prod_pg = 'HRA' 
+		AND prod_no = #{h_pnum} 
+	</select>
+	<select id="cpkValueList" parameterType="suip" resultType="suip">
+		SELECT TOP 30 *,
+			(h_max - h_min) AS h_range
+		FROM (
+			SELECT *,
+			TRY_CONVERT(FLOAT, ilbo_pg1_f) AS h_x1,
+			TRY_CONVERT(FLOAT, ilbo_pg2_f) AS h_x2,
+			TRY_CONVERT(FLOAT, ilbo_pg3_f) AS h_x3,
+			CASE WHEN TRY_CONVERT(FLOAT, ilbo_pg1_f) = 0 AND TRY_CONVERT(FLOAT, ilbo_pg2_f) = 0 AND TRY_CONVERT(FLOAT, ilbo_pg3_f) = 0 THEN 0
+				 ELSE 
+				 	CASE WHEN TRY_CONVERT(FLOAT, ilbo_pg1_f) = 0 THEN
+							CASE WHEN TRY_CONVERT(FLOAT, ilbo_pg2_f) <![CDATA[<]]> TRY_CONVERT(FLOAT, ilbo_pg3_f) THEN TRY_CONVERT(FLOAT, ilbo_pg2_f)
+								 ELSE TRY_CONVERT(FLOAT, ilbo_pg3_f)
+							END
+						WHEN TRY_CONVERT(FLOAT, ilbo_pg2_f) = 0 THEN
+							CASE WHEN TRY_CONVERT(FLOAT, ilbo_pg1_f) <![CDATA[<]]> TRY_CONVERT(FLOAT, ilbo_pg3_f) THEN TRY_CONVERT(FLOAT, ilbo_pg1_f)
+								 ELSE TRY_CONVERT(FLOAT, ilbo_pg3_f)
+							END
+						WHEN TRY_CONVERT(FLOAT, ilbo_pg3_f) = 0 THEN
+							CASE WHEN TRY_CONVERT(FLOAT, ilbo_pg1_f) <![CDATA[<]]> TRY_CONVERT(FLOAT, ilbo_pg2_f) THEN TRY_CONVERT(FLOAT, ilbo_pg1_f)
+								 ELSE TRY_CONVERT(FLOAT, ilbo_pg2_f)
+							END
+						ELSE 
+							CASE WHEN TRY_CONVERT(FLOAT, ilbo_pg1_f) <![CDATA[<]]> TRY_CONVERT(FLOAT, ilbo_pg2_f) AND TRY_CONVERT(FLOAT, ilbo_pg1_f) <![CDATA[<]]> TRY_CONVERT(FLOAT, ilbo_pg3_f) THEN TRY_CONVERT(FLOAT, ilbo_pg1_f)
+								 WHEN TRY_CONVERT(FLOAT, ilbo_pg2_f) <![CDATA[<]]> TRY_CONVERT(FLOAT, ilbo_pg1_f) AND TRY_CONVERT(FLOAT, ilbo_pg2_f) <![CDATA[<]]> TRY_CONVERT(FLOAT, ilbo_pg3_f) THEN TRY_CONVERT(FLOAT, ilbo_pg2_f)
+								 WHEN TRY_CONVERT(FLOAT, ilbo_pg3_f) <![CDATA[<]]> TRY_CONVERT(FLOAT, ilbo_pg1_f) AND TRY_CONVERT(FLOAT, ilbo_pg3_f) <![CDATA[<]]> TRY_CONVERT(FLOAT, ilbo_pg2_f) THEN TRY_CONVERT(FLOAT, ilbo_pg3_f)
+							END
+					END					
+			END AS h_min,
+			CASE WHEN TRY_CONVERT(FLOAT, ilbo_pg1_f) = 0 AND TRY_CONVERT(FLOAT, ilbo_pg2_f) = 0 AND TRY_CONVERT(FLOAT, ilbo_pg3_f) = 0 THEN 0
+				 ELSE 
+				 	CASE WHEN TRY_CONVERT(FLOAT, ilbo_pg1_f) = 0 THEN
+							CASE WHEN TRY_CONVERT(FLOAT, ilbo_pg2_f) > TRY_CONVERT(FLOAT, ilbo_pg3_f) THEN TRY_CONVERT(FLOAT, ilbo_pg2_f)
+								 ELSE TRY_CONVERT(FLOAT, ilbo_pg3_f)
+							END
+						WHEN TRY_CONVERT(FLOAT, ilbo_pg2_f) = 0 THEN
+							CASE WHEN TRY_CONVERT(FLOAT, ilbo_pg1_f) > TRY_CONVERT(FLOAT, ilbo_pg3_f) THEN TRY_CONVERT(FLOAT, ilbo_pg1_f)
+								 ELSE TRY_CONVERT(FLOAT, ilbo_pg3_f)
+							END
+						WHEN TRY_CONVERT(FLOAT, ilbo_pg3_f) = 0 THEN
+							CASE WHEN TRY_CONVERT(FLOAT, ilbo_pg1_f) > TRY_CONVERT(FLOAT, ilbo_pg2_f) THEN TRY_CONVERT(FLOAT, ilbo_pg1_f)
+								 ELSE TRY_CONVERT(FLOAT, ilbo_pg2_f)
+							END
+						ELSE 
+							CASE WHEN TRY_CONVERT(FLOAT, ilbo_pg1_f) > TRY_CONVERT(FLOAT, ilbo_pg2_f) AND TRY_CONVERT(FLOAT, ilbo_pg1_f) > TRY_CONVERT(FLOAT, ilbo_pg3_f) THEN TRY_CONVERT(FLOAT, ilbo_pg1_f)
+								 WHEN TRY_CONVERT(FLOAT, ilbo_pg2_f) > TRY_CONVERT(FLOAT, ilbo_pg1_f) AND TRY_CONVERT(FLOAT, ilbo_pg2_f) > TRY_CONVERT(FLOAT, ilbo_pg3_f) THEN TRY_CONVERT(FLOAT, ilbo_pg2_f)
+								 WHEN TRY_CONVERT(FLOAT, ilbo_pg3_f) > TRY_CONVERT(FLOAT, ilbo_pg1_f) AND TRY_CONVERT(FLOAT, ilbo_pg3_f) > TRY_CONVERT(FLOAT, ilbo_pg2_f) THEN TRY_CONVERT(FLOAT, ilbo_pg3_f)
+							END
+					END					
+			END AS h_max
+			FROM (
+				SELECT *,
+					CASE WHEN ilbo_pg1_chk = 1 THEN CONVERT(VARCHAR, ilbo_pg1) ELSE CONVERT(VARCHAR, '0.0') END AS ilbo_pg1_f,
+					CASE WHEN ilbo_pg2_chk = 1 THEN CONVERT(VARCHAR, ilbo_pg2) ELSE CONVERT(VARCHAR, '0.0') END AS ilbo_pg2_f,
+					CASE WHEN ilbo_pg3_chk = 1 THEN CONVERT(VARCHAR, ilbo_pg3) ELSE CONVERT(VARCHAR, '0.0') END AS ilbo_pg3_f
+				FROM (
+					SELECT 
+					WORKILBO.ord_code,ilbo_lot,ilbo_gubn, WORKILBO.ILBO_STRT,
+					ilbo_pg1, ilbo_pg2, ilbo_pg3, ilbo_pg4,ilbo_pg5,
+					ORDERT.PROD_CODE, 
+					PRODUCT.PROD_NAME, PRODUCT.PROD_NO, PRODUCT.PROD_PG, PRODUCT.PROD_PG1, PRODUCT.PROD_PG2,
+					CASE WHEN ISNUMERIC(ilbo_pg1) != 1 THEN 0 ELSE 1 END ilbo_pg1_chk,
+					CASE WHEN ilbo_pg2 IS NULL OR ilbo_pg2 = '' THEN 0 ELSE 1 END ilbo_pg2_chk,
+					CASE WHEN ilbo_pg3 IS NULL OR ilbo_pg3 = '' THEN 0 ELSE 1 END ilbo_pg3_chk,
+					CASE WHEN ilbo_pg4 IS NULL OR ilbo_pg4 = '' THEN 0 ELSE 1 END ilbo_pg4_chk,
+					CASE WHEN ilbo_pg5 IS NULL OR ilbo_pg5 = '' THEN 0 ELSE 1 END ilbo_pg5_chk
+					FROM WORKILBO
+					LEFT OUTER JOIN
+						ORDERT
+					ON WORKILBO.ORD_CODE = ORDERT.ORD_CODE
+					LEFT OUTER JOIN
+						PRODUCT
+					ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+					WHERE 1=1
+					AND ilbo_gubn = 'A'
+					AND PROD_PG = 'HRA'
+					--AND PROD_NO = ''
+					--AND 
+				) AS A
+			) AS B
+		) AS C			   
+		WHERE 1=1 
+		AND ilbo_strt >= CONCAT(#{h_sdate},' 00:00:00') 
+		AND ilbo_strt <![CDATA[ <= ]]> CONCAT(#{h_edate},' 23:59:59') 
+		AND prod_no = #{h_pnum} 
+	</select>
+
+	<select id="xBarPumbunList" parameterType="product" resultType="product">
+		SELECT *
+		FROM PRODUCT
+		LEFT OUTER JOIN
+			CORP
+		ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+		WHERE 1=1
+		<if test="corp_name != null and corp_name != ''">
+			AND CORP_NAME LIKE CONCAT('%',#{corp_name},'%')
+		</if>
+		<if test="prod_name != null and prod_name != ''">
+			AND PROD_NAME LIKE CONCAT('%',#{prod_name},'%')
+		</if>
+		<if test="prod_gyu != null and prod_gyu != ''">
+			AND PROD_GYU LIKE CONCAT('%',#{prod_gyu},'%')
+		</if>
+	</select>
+
 	
-	
-	
-	
+		
 </mapper>

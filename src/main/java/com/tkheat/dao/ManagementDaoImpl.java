@@ -2,10 +2,9 @@ package com.tkheat.dao;
 
 import java.util.List;
 
-
+import javax.annotation.Resource;
 
 import org.apache.ibatis.session.SqlSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.tkheat.domain.Corp;
@@ -17,7 +16,8 @@ import com.tkheat.domain.Standard;
 import com.tkheat.domain.Users;
 @Repository
 public class ManagementDaoImpl implements ManagementDao {
-	 @Autowired
+	
+	@Resource(name="session")
 	 private SqlSession sqlSession;
 	 
 	 //사용자 리스트 조회

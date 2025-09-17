@@ -327,7 +327,7 @@
 	
 	
 	<update id="productUpdateSave" parameterType="product">
-    UPDATE PRODUCT 
+    UPDATE PRODUCT
     <trim prefix="SET" suffixOverrides=",">
         prod_date       = #{prod_date},
         prod_gubn       = #{prod_gubn},
@@ -368,13 +368,13 @@
         tech_seq        = #{tech_seq},
         tech_pattern    = #{tech_pattern},
         prod_file       = #{prod_file},
-        prod_fac1       = #{prod_fac1},
-        prod_fac2       = #{prod_fac2},
-        prod_fac3       = #{prod_fac3},
-        prod_fac4       = #{prod_fac4},
-        prod_fac5       = #{prod_fac5},
-        prod_fac6       = #{prod_fac6},
-        prod_fac7       = #{prod_fac7},
+        prod_fac1       = REPLACE(#{prod_fac1},',',''),
+        prod_fac2       = REPLACE(#{prod_fac2},',',''),
+        prod_fac3       = REPLACE(#{prod_fac3},',',''),
+        prod_fac4       = REPLACE(#{prod_fac4},',',''),
+        prod_fac5       = REPLACE(#{prod_fac5},',',''),
+        prod_fac6       = REPLACE(#{prod_fac6},',',''),
+        prod_fac7       = REPLACE(#{prod_fac7},',',''),
         prod_chisu1n    = #{prod_chisu1n},
         prod_chisu2n    = #{prod_chisu2n},
         prod_chisu3n    = #{prod_chisu3n},

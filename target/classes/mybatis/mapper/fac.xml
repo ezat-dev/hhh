@@ -19,7 +19,7 @@
            FAC_MAKE, 
            FAC_CBUY,
            FAC_DAN,
-           FAC_FILE_NAME 
+           CASE WHEN FAC_FILE_NAME IS NULL OR FAC_FILE_NAME = '' THEN 'no_image.png' ELSE FAC_FILE_NAME END AS FAC_FILE_NAME 
 		    FROM FACILITY 
 		    WHERE 1=1
     <!-- <if test="fac_no != null and fac_no != ''">

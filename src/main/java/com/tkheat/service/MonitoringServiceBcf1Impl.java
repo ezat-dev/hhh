@@ -74,7 +74,7 @@ public class MonitoringServiceBcf1Impl implements MonitoringServiceBcf1{
 
 		Thread.sleep(300);
 
-//		System.out.println("QR : "+qr+"// BUFF_QR : "+qrBuff+"// 출고변수 : "+chul+"// 출고 가상변수 : "+chulVirt);
+//		//System.out.println("QR : "+qr+"// BUFF_QR : "+qrBuff+"// 출고변수 : "+chul+"// 출고 가상변수 : "+chulVirt);
 		if(qr != 0) {
 			//실 적용 바코드의 값이 0이 아니면 버퍼의 값은 유지
 			//실 적용 바코드값으로 정보 매핑
@@ -86,7 +86,7 @@ public class MonitoringServiceBcf1Impl implements MonitoringServiceBcf1{
 					www.setLot_qr(qr);
 					List<WorkJisi> wList = monitoringDao.getMonitoringData(www);
 					
-//					System.out.println("출구만 신호 들어옴 : "+chul+"// : "+qr);
+//					//System.out.println("출구만 신호 들어옴 : "+chul+"// : "+qr);
 					
 					WorkJisi setWork = new WorkJisi();
 					setWork.setLot_qr(0);
@@ -129,7 +129,7 @@ public class MonitoringServiceBcf1Impl implements MonitoringServiceBcf1{
 					if(dupChk == null) {
 						
 						List<WorkJisi> wList = monitoringDao.getMonitoringData(w);
-//						System.out.println("wListSize : "+wList.size());
+//						//System.out.println("wListSize : "+wList.size());
 						int hogi_idx = 1;
 						for(WorkJisi ww : wList) {					
 							WorkJisi setWork = new WorkJisi();
@@ -174,7 +174,7 @@ public class MonitoringServiceBcf1Impl implements MonitoringServiceBcf1{
 		Map<String, Object> preMap = opcData.getOpcData("TKHEAT.MODBUS.MONITORING.PRE_BCF1");
 		
 		boolean pre = Boolean.parseBoolean(preMap.get("value").toString());
-//		System.out.println("예열 : "+bcf2Pre);
+//		//System.out.println("예열 : "+bcf2Pre);
 		if(pre) {
 //			if(preVirt) {
 				chulVirt = true;	//예열구간 이동시 출구 가상변수 true
@@ -450,7 +450,7 @@ public class MonitoringServiceBcf1Impl implements MonitoringServiceBcf1{
 		
 		
 		boolean chul = Boolean.parseBoolean(chulMap.get("value").toString());
-		System.out.println("출구 ON : "+chul);
+//		//System.out.println("출구 ON : "+chul);
 		
 		if(chul) {
 //			if(chulVirt) {
@@ -458,7 +458,7 @@ public class MonitoringServiceBcf1Impl implements MonitoringServiceBcf1{
 				Map<String, Object> qrMap = opcData.getOpcData("TKHEAT.MODBUS.MONITORING.QR_BCF1");
 				
 				int qr = Integer.parseInt(qrMap.get("value").toString());
-				System.out.println("출구 ON : "+qr);
+//				//System.out.println("출구 ON : "+qr);
 				
 				if(qr != 0) {
 					//공정정보 DB 업데이트

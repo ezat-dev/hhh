@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
+import com.tkheat.domain.Product;
 import com.tkheat.domain.Suip;
 import com.tkheat.domain.Work;
 import com.tkheat.service.QualityService;
+import com.tkheat.util.CpkCalc;
 
 @Controller
 public class QualityController {
@@ -186,10 +187,12 @@ public class QualityController {
 			  @RequestParam Integer ilbo_code,
 			  @RequestParam Integer ilbo_no,
 			  @RequestParam Integer corp_code,
-			  @RequestParam String ilbo_lot
+			  @RequestParam String ilbo_lot,
+			  @RequestParam String sdate,
+			  @RequestParam String edate
 			  ) {
 		  Map<String, Object> rtnMap = new HashMap<String, Object>();
-
+System.out.println("subilbo_lot : "+ilbo_lot);
 		  Work work = new Work();
 		  work.setFac_code(fac_code);
 		  work.setOrd_code(ord_code);
@@ -197,6 +200,9 @@ public class QualityController {
 		  work.setIlbo_code(ilbo_code);
 		  work.setIlbo_no(ilbo_no);
 		  work.setCorp_code(corp_code);
+		  work.setIlbo_lot(ilbo_lot);
+		  work.setSdate(sdate);
+		  work.setEdate(edate);
 
 		  List<Work> workList = qualityService.getNonCorpList(work);
 
@@ -415,6 +421,178 @@ public class QualityController {
 		return "/quality/xBar.jsp";
 	}
 
+
+	//Xbar-R 관리도 품번조회
+	@RequestMapping(value = "/quality/xBar/pumbun/list", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> xBarPumbunList(
+    		@RequestParam(required = false) String w_client,
+    		@RequestParam(required = false) String w_pname,
+    		@RequestParam(required = false) String w_spec) {
+		
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		Product p = new Product();
+		p.setCorp_name(w_client);
+		p.setProd_name(w_pname);
+		p.setProd_gyu(w_spec);
+		
+		List<Product> pList = qualityService.xBarPumbunList(p);
+		
+		rtnMap.put("data",pList);
+		
+		return rtnMap;
+	}	
+	
+	
+	//Xbar-R 관리도 - 데이터조회
+	@RequestMapping(value = "/quality/xBar/list", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> xBarList(
+    		@RequestParam String h_pnum,
+    		@RequestParam String h_sdate,
+    		@RequestParam String h_edate) {
+    	Map<String, Object> rtnMap = new HashMap<String, Object>();
+	 
+    	//선택한 품번의 기준정보
+    	Suip quality = new Suip();
+    	quality.setH_pnum(h_pnum);
+    	quality.setH_sdate(h_sdate);
+    	quality.setH_edate(h_edate);
+    	
+    	Suip standardQuality = qualityService.cpkStandardList(quality);
+    	List<Suip> rtnList = new ArrayList<Suip>();
+
+		HashMap<String, Object> rowMap = new HashMap<String, Object>();
+		rowMap.put("h_pnum", standardQuality.getH_pnum());
+		rowMap.put("h_pname", standardQuality.getH_pname());
+		rowMap.put("h_gang", standardQuality.getH_gang());
+		rowMap.put("h_t_gb", standardQuality.getH_t_gb());
+		rowMap.put("h_hard_up", standardQuality.getH_hard_up());
+		rowMap.put("h_hard_dw", standardQuality.getH_hard_dw());
+    		
+		rtnList.add(standardQuality);
+    	rtnMap.put("standardData",rtnList);
+    	
+    	CpkCalc cpkCalc = new CpkCalc();
+    	int n = 3;
+    	double d2 = 0;
+    	double a2 = 0;
+    	double d4 = 0;
+    	
+    	
+    	
+    	String xm_average = "";
+    	String xm_avgList = "";
+    	String xm_range = "";
+    	String rm_rangeList = "";
+    	
+    	double x_ucl = 0;
+    	double x_cl = 0;
+    	double x_lcl = 0;
+    	
+    	double r_ucl = 0;
+    	double r_cl = 0;
+    	
+    	//선택한 품번의 기간내에 입력한 경도값
+    	List<Suip> cpkList = qualityService.cpkValueList(quality);
+    	rtnMap.put("cpkValueData",cpkList);
+    	
+    	d2 = cpkCalc.d2(n);
+    	a2 = cpkCalc.a2(n);
+    	d4 = cpkCalc.d4(n);
+		double max_val = 0.0;
+		double min_val = 0.0;
+		
+		max_val = Double.parseDouble(standardQuality.getH_hard_up());
+		min_val = Double.parseDouble(standardQuality.getH_hard_dw());
+		
+		List<Suip> trendList = new ArrayList<Suip>();
+    	for(int i=0; i<cpkList.size(); i++) {
+    		Suip rowQuality = new Suip();
+    		int xm_av_idx = 0;
+    		int x_max = 0;
+    		int x_min = 0;
+    		
+
+    		
+    		
+    		float h_x1 = cpkList.get(i).getH_x1();
+    		float h_x2 = cpkList.get(i).getH_x2();
+    		float h_x3 = cpkList.get(i).getH_x3();
+    		
+    		if(h_x1 != 0) {xm_av_idx++;}
+    		if(h_x2 != 0) {xm_av_idx++;}
+    		if(h_x3 != 0) {xm_av_idx++;}
+    		
+    		xm_average = cpkCalc.xm_average((h_x1 + h_x2 + h_x3), xm_av_idx);
+    		xm_avgList = cpkCalc.xm_average2((h_x1 + h_x2 + h_x3), xm_av_idx);
+    		
+    		rm_rangeList = cpkCalc.xm_range(h_x1,h_x2,h_x3);
+    		xm_range = cpkCalc.xm_range2(h_x1,h_x2,h_x3);
+    		
+    		x_ucl = Double.parseDouble(cpkCalc.x_Bar_UCL(n));
+    		x_cl = Double.parseDouble(cpkCalc.x_Bar_CL());
+    		x_lcl = Double.parseDouble(cpkCalc.x_Bar_LCL(n));
+    		
+    		r_ucl = Double.parseDouble(cpkCalc.r_UCL(n));
+    		r_cl = Double.parseDouble(cpkCalc.r_CL());
+    		
+    		
+    		rowQuality.setG_ucl_x(x_ucl);
+    		rowQuality.setG_cl_x(x_cl);
+    		rowQuality.setG_lcl_x(x_lcl);
+    		
+    		rowQuality.setG_ucl_r(r_ucl);
+    		rowQuality.setG_cl_r(r_cl);
+    		rowQuality.setG_max(max_val);
+    		rowQuality.setG_min(min_val);
+    		rowQuality.setG_avg(cpkList.get(i).getH_avg());
+    		rowQuality.setG_range(cpkList.get(i).getH_range());
+//    		rowQuality.setG_tdatetime(cpkList.get(i).getH_day()+" "+);
+    		trendList.add(rowQuality);
+    	}
+    	
+    	Suip quaCpk = new Suip();
+    	
+    	String xbar_average = cpkCalc.xbar_average();
+    	String range_average = cpkCalc.range_average();
+    	String xbar_ucl = (Math.round(Double.parseDouble(cpkCalc.x_Bar_UCL(n)) * 100)/100.0)+"";
+    	String xbar_cl = (Math.round(Double.parseDouble(cpkCalc.x_Bar_CL()) * 100)/100.0)+"";
+    	String xbar_lcl = (Math.round(Double.parseDouble(cpkCalc.x_Bar_LCL(n)) * 100)/100.0)+"";
+    	
+    	String rbar_ucl = (Math.round(Double.parseDouble(cpkCalc.r_UCL(n)) * 100)/100.0)+"";
+    	String rbar_cl = (Math.round(Double.parseDouble(cpkCalc.r_CL()) * 100)/100.0)+"";
+    	String r_bar_d2 = cpkCalc.r_Bar_d2(n);
+    	String cp = cpkCalc.cp(max_val, min_val, n);
+    	String k = cpkCalc.k(max_val, min_val);
+    	String cpk = cpkCalc.cpk(max_val, min_val, n);
+    	
+    	quaCpk.setN(n);
+    	quaCpk.setD2(d2);
+    	quaCpk.setA2(a2);
+    	quaCpk.setD4(d4);
+    	
+    	quaCpk.setUcl_x(xbar_ucl);
+    	quaCpk.setCl_x(xbar_cl);
+    	quaCpk.setLcl_x(xbar_lcl);
+    	
+    	quaCpk.setUcl_r(rbar_ucl);
+    	quaCpk.setCl_r(rbar_cl);
+    	quaCpk.setLcl_r("-");
+    	
+    	quaCpk.setR_d2(r_bar_d2);
+    	quaCpk.setCp(cp);
+    	quaCpk.setK(k);
+    	quaCpk.setCpk(cpk);
+    	
+    	
+    	rtnMap.put("cpkValueCalcData",quaCpk);
+    	rtnMap.put("trendData",trendList);
+    	
+    	return rtnMap;
+}
+	
 
 	//소입경도 - 화면로드
 	@RequestMapping(value = "/quality/queHard", method = RequestMethod.GET)

@@ -1069,7 +1069,7 @@ $('.imgInputClass').change(function(event){
 			        const checkbox = $("#" + key);
 			        if (checkbox.length) {
 			            const val = d[key] || "";
-			            checkbox.prop("checked", val.includes("Y"));
+			            checkbox.prop("checked", val.includes("1"));
 			        }
 			    } else {
 			        $("[name='" + key + "']").val(d[key]);
@@ -1235,10 +1235,10 @@ $('.imgInputClass').change(function(event){
                 type: "hidden",
                 id: "hidden_" + field,
                 name: field,
-                value: checked ? "Y" : "N"
+                value: checked ? "1" : "0"
             }).appendTo("#productInsertForm");
         } else {
-            $("#hidden_" + field).val(checked ? "Y" : "N");
+            $("#hidden_" + field).val(checked ? "1" : "0");
         }
     });
 
@@ -1286,10 +1286,10 @@ $('.imgInputClass').change(function(event){
 	                type: "hidden",
 	                id: "hidden_" + field,
 	                name: field,
-	                value: checked ? "Y" : "N"
+	                value: checked ? "1" : "0"
 	            }).appendTo("#productInsertForm");
 	        } else {
-	            $("#hidden_" + field).val(checked ? "Y" : "N");
+	            $("#hidden_" + field).val(checked ? "1" : "0");
 	        }
 	    });
 

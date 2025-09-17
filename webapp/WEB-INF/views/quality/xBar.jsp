@@ -26,6 +26,9 @@
     transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
     z-index: 1000; /* 다른 요소 위에 표시 */
 }
+.row_select {
+	    background-color: #ffeeba !important;
+	    }
 #editPop {
     background: #ffffff;
     border: 1px solid #000000;
@@ -119,419 +122,773 @@
     .btnSaveClose button:hover {
         background: #0056b3; /* 호버 시 색상 변경 */
     }
-    
-    
+ 
+
+/*품번모달*/
+        .pumbunModal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s ease-in-out;
+        }
+	    .pumbun-modal-content {
+	        background: white;
+	        width: 60%;
+	        max-width: 1200px;
+	        height: 80vh; 
+	        overflow-y: auto; 
+	        margin: 6% auto 0;
+	        padding: 20px;
+	        border-radius: 10px;
+	        position: relative;
+	        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+	        transform: scale(0.8);
+	        transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+	        opacity: 0;
+	    }
+        .pumbunModal.show {
+            display: block;
+            opacity: 1;
+        }
+        .pumbunModal.show .pumbun-modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+
+        .pumbun-modal-content button {
+            background-color: #d3d3d3;
+            color: black;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .pumbun-modal-content button:hover {
+            background-color: #a9a9a9;
+        }
+        .pumbun-modal-content form {
+            display: flex;
+            flex-direction: column;
+        }
+        .pumbun-modal-content label {
+            font-weight: bold;
+            margin: 10px 0 5px;
+        }
+        .pumbun-modal-content input, .pumbun-modal-content textarea {
+            width: 97%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .dayselect {
+            width: 20%;
+            text-align: center;
+            font-size: 15px;
+        }
+        .daySet {
+        	width: 20%;
+      		text-align: center;
+            height: 16px;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+        .daylabel {
+            margin-right: 10px;
+            margin-bottom: 13px;
+            font-size: 18px;
+            margin-left: 20px;
+        }
+
+   
     </style>
     
     
     <body>
-    
-    <div class="tab">
-    
-    <div class="button-container">
-        <button class="select-button">
-            <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
-           조회
-        </button>
-        <button class="insert-button">
-            <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
-         입력 
-        </button>
-        <button class="excel-button">
-            <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
-        엑셀    
-        </button>
-        <button class="printer-button">
-            <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
-       보고서출력     
-        </button>
-    </div>
-</div>
     <main class="main">
-		<div class="container">
-			<div id="tab1" class="tabulator"></div>
-		</div>
-	</main>
-	    
-	 <div class="xbarModal">   
-	  <form name="searchForm" target="_self" method="post" action="">
-			<div id="searchPop">
-				<div class="detail">
-					<div class="header">
-						Xbar-R관리도
-					</div>
-					<table cellspacing="0" cellpadding="0" width="100%">
-						<tr>
-							<td class="">
-								<div class="subTitle">
-									<div style=" position:absolute; width:40px; left:110px;">
-										<input type="button" id="" name="" title="검색" class="btnSearchSmall" onclick="MM_openBrWindow('etcSub_popup_06_1','Srch','width=1024,height=720,scrollbars=yes')" style="margin-top:2px;" />
-									</div>
-									<div class="h3">제품정보</div>
-								</div>
-								<table cellspacing="0" cellpadding="0" width="100%" class="">
-									<tr>
-										<th class="">작성일</th>
-										<td class="">
-											<input type="text" id="ordDate" name="ordDate" value="2025-04-09" class="date js-datepicker" style="width:85px;" readonly="readonly" />
-											<input type="button" id="" name="" value="공정능력 계산" class="btnFT2" onclick="xbarCalc();" />
-										</td>
-									</tr>
-									<tr>
-										<th class="">거래처</th>
-										<td class=""><input id="corpName" class="basic" type="text" style="width:100%;" value="" name="corpName" readonly="readonly"/></td>
-										<th class="">품명</th>
-										<td class=""><input id="prodName" class="basic" type="text" style="width:100%;" value="" name="prodName" readonly="readonly"/></td>
-										<th class="">품번</th>
-										<td class=""><input id="prodNo" class="basic" type="text" style="width:100%;" value="" name="prodNo" readonly="readonly"/></td>
-									</tr>
-									<tr>
-										<th class="">규격</th>
-										<td class="">
-											<input id="prodGyu" class="basic" type="text" style="width:100%;" value="" name="prodGyu" readonly="readonly"/>
-											<input id="prodE1" class="basic hidden" type="text" style="width:100%;" value="" name="prodE1" readonly="readonly"/>
-											<input id="prodDanj" name="prodDanj" class="basic hidden" type="text" style="width:100%;" value="" readonly="readonly"/>
-											<input id="prodDang" name="prodDang" class="basic hidden" type="text" style="width:100%;" value="" readonly="readonly"/>
-											<input id="prodCno" name="prodCno" class="basic hidden" type="text" style="width:100%;" value="" readonly="readonly"/>
-											<input id="prodGd1" name="prodGd1" class="basic hidden" type="text" style="width:100%;" value="" readonly="readonly"/>
-											<input id="prodGd2" name="prodGd2" class="basic hidden" type="text" style="width:100%;" value="" readonly="readonly"/>
-											<input id="prodGd3" name="prodGd3" class="basic hidden" type="text" style="width:100%;" value="" readonly="readonly"/>
-											<input id="prodE3" name="prodE3" class="basic hidden" type="text" style="width:100%;" value="" readonly="readonly"/>
-											<input id="prodGD1" name="prodGD1" class="basic hidden" type="text" style="width:100%;" value="" readonly="readonly"/>
-											<input id="prodGD2" name="prodGD2" class="basic hidden" type="text" style="width:100%;" value="" readonly="readonly"/>
-											<input id="prodGD5" name="prodGD5" class="basic hidden" type="text" style="width:100%;" value="" readonly="readonly"/>
-										</td>
-										<th class="">재질</th>
-										<td class=""><input id="prodJai" class="basic" type="text" style="width:100%;" value="" name="prodJai" readonly="readonly"/></td>
-										<th class="">공정</th>
-										<td class="">
-											<input id="techTe" class="basic" type="text" style="width:100%;" value="" name="techTe" readonly="readonly"/>
-											<input id="prodPg" class="basic" type="hidden" style="width:100%;" value="" name="prodPg" />
-											<input id="prodSg" class="basic" type="hidden" style="width:100%;" value="" name="prodSg" />
-											<input id="ProdCd" class="basic" type="hidden" style="width:100%;" value="" name="ProdCd" />
-											<input id="prodCode" class="basic" type="hidden" style="width:100%;" value="" name="prodCode" />
-										</td>
-									</tr>
-									<tr>
-										<th class="">설비</th>
-										<td class="">
-											<select id="facCode" name="facCode" class="basic" style="width:190px;">
-												<option value="">전체</option>
-												
-													<option value="고주파 1호기(폐기)">고주파 1호기(폐기)</option>
-												
-													<option value="고주파 2호기 (폐기)">고주파 2호기 (폐기)</option>
-												
-													<option value="고주파 5호기">고주파 5호기</option>
-												
-													<option value="급수시설">급수시설</option>
-												
-													<option value="변성로 1호기">변성로 1호기</option>
-												
-													<option value="변성로 2호기">변성로 2호기</option>
-												
-													<option value="쇼트 1호기">쇼트 1호기</option>
-												
-													<option value="쇼트 2호기">쇼트 2호기</option>
-												
-													<option value="쇼트 3호기">쇼트 3호기</option>
-												
-													<option value="쇼트 4호기">쇼트 4호기</option>
-												
-													<option value="전기시설">전기시설</option>
-												
-													<option value="진공세정기 2호기">진공세정기 2호기</option>
-												
-													<option value="침탄로 1호기">침탄로 1호기</option>
-												
-													<option value="침탄로 2호기">침탄로 2호기</option>
-												
-													<option value="침탄로 3호기">침탄로 3호기</option>
-												
-													<option value="침탄로 4호기">침탄로 4호기</option>
-												
-													<option value="침탄로 5호기">침탄로 5호기</option>
-												
-													<option value="콤프레샤">콤프레샤</option>
-												
-													<option value="템퍼링기 1호기">템퍼링기 1호기</option>
-												
-													<option value="템퍼링기 2호기">템퍼링기 2호기</option>
-												
+        <div class="tab">
+        
 
-											</select>
-										</td>
-										<th class="">기간</th>
-										<td class=""><input type="text" id="fromDate" name="fromDate" value="2025-04-09" class="date js-datepicker" style="width:85px;" readonly="readonly" /> ~
-											<input type="text" id="toDate" name="toDate" value="2025-04-09" class="date js-datepicker" style="width:85px;" readonly="readonly" /></td>
-										<th class="">관리항목</th>
-										<td class="">
-											<select id="prodGubn" name="prodGubn" class="basic" style="width:150px;" >
-												<option>제품 검색 후 선택</option>
-												<option>소려경도</option>
-												<option>소입경도</option>
-												<option>초중종검사</option>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<th class="">SL</th>
-										<td class=""><input id="SL" class="basic" type="text" style="width:100%;" value="" name="SL" /></td>
-										<th class="">SU</th>
-										<td class=""><input id="SU" class="basic" type="text" style="width:100%;" value="" name="SU" /></td>
-									</tr>
-									<tr>
-										<th class="">검사일수</th>
-										<td class=""><input id="daySu" class="basic" type="text" style="width:100%;" value="25" name="daySu" /></td>
-										<th class="">샘플수</th>
-										<td class=""><input id="sampleSu" class="basic" type="text" style="width:100%;" value="5" name="sampleSu" /></td>
-										<td class=""><input type="button" id="" name="" value="데이터 로딩" class="btnFT" onclick="dataLoading();"/></td>
-										<td class=""></td>
-									</tr>
-								</table>
-
-								<p style="margin-top:4px; padding:4px 0;"></p></td>
-						</tr>
-					</table>
-				</div>
-
-				<div id="tabs">
-					<ul>
-						<li><a href="#tabs-1">데이터 입력/결과</a></li>
-						<li><a href="#tabs-2" onclick="xbarandRCalc();">Xbar-R관리도</a></li>
-						<li><a href="#tabs-3" onclick="xbarandRCalc();">추이도</a></li>
-					</ul>
-
-					<div id="tabs-1">
-						<div class="searchResult">
-							<div class="resultAreaXY150" style="height:313px;"></div>
-						</div>
-
-						<p style="padding:10px 0"></p>
-
-						<!-- Detail List -->
-						<div class="detail">
-							<table cellspacing="0" cellpadding="0" width="100%">
-								<tr>
-									<td class="">
-										<table cellspacing="0" cellpadding="0" class="insideTable2" style="width:100%">
-											<colgroup span="5">
-												<col width="15%" />
-												<col width="20%" />
-												<col width="20%" />
-												<col width="25%" />
-												<col width="10%" />
-											</colgroup>
-											<thead>
-											<tr>
-												<td scope="col" class="left thSub">상수</td>
-												<td scope="col" class="thSub">X 관리도</td>
-												<td scope="col" class="thSub">R 관리도</td>
-												<td scope="col" class="thSub">공정능력지수</td>
-												<td scope="col" class="thSub">평가 / 조치</td>
-											</tr>
-											</thead>
-											<tbody>
-											<tr>
-												<td valign="top" class="left">
-													<table cellspacing="0" cellpadding="0" class="noLineTable">
-														<tr>
-															<td style="height:10px"><p style="height:2px">_</p><p style="height:-8px">_</p>X = </td>
-															<td valign="bottom"><input id="varVarX" class="basic" type="text"  style="width:90px;" value="" name="varVarX" /></td>
-														</tr>
-														<tr>
-															<td><p style="height:15px">_</p>R = </td>
-															<td valign="bottom"><input id="varR" class="basic" type="text" style="width:90px;" value="" name="varR" /></td>
-														</tr>
-													</table>
-												</td>
-												<td  valign="top">
-													<table cellspacing="0" cellpadding="0" class="noLineTable">
-														<tr>
-															<td><p style="height:2px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_</p>
-																<p style="height:-8px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_</p>CL = X = </td>
-															<td valign="bottom"><input id="CLX" class="basic" type="text" style="width:90px;;" value="" name="CLX" /></td>
-														</tr>
-														<tr>
-															<td><p style="height:2px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_</p>
-																<p style="height:-8px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp_</p>UCL = X + A2R = </td>
-															<td valign="bottom"><input id="UCLX" class="basic" type="text" style="width:90px;;" value="" name="UCLX" /></td>
-														</tr>
-														<tr>
-															<td><p style="height:2px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_</p>
-																<p style="height:-8px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_</p>LCL = X - A2R = </td>
-															<td valign="bottom"><input id="LCLX" class="basic" type="text" style="width:90px;" value="" name="LCLX" /></td>
-														</tr>
-														<tr>
-															<td><p style="height:15px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_</p>
-																σ = R / d2 = </td>
-															<td valign="bottom"><input id="sigma" class="basic" type="text" style="width:90px;;" value="" name="sigma" /></td>
-														</tr>
-													</table>
-												</td>
-												<td valign="top" >
-													<table cellspacing="0" cellpadding="0" class="noLineTable">
-														<tr>
-															<td><p style="height:15px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_</p>
-																CL = R = </td>
-															<td valign="bottom"><input id="CLR" class="basic" type="text" style="width:90px;;" value="" name="CLR" /></td>
-														</tr>
-														<tr>
-															<td><p style="height:15px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-																&nbsp;&nbsp;&nbsp;_</p>
-																UCL = X + D4R = </td>
-															<td valign="bottom"><input id="UCLR" class="basic" type="text" style="width:90px;;" value="" name="UCLR" /></td>
-														</tr>
-														<tr>
-															<td><p style="height:15px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-																&nbsp;&nbsp;_</p>
-																LCL = X + D3R = </td>
-															<td valign="bottom"><input id="LCLR" class="basic" type="text" style="width:90px;;" value="" name="LCLR" /></td>
-														</tr>
-													</table>
-												</td>
-												<td valign="top" >
-													<table cellspacing="0" cellpadding="0" class="noLineTable">
-														<tr>
-															<td>Cp(Pp) = (SU-SL)/6σ = </td>
-															<td valign="bottom"><input id="Cp" class="basic" type="text" style="width:90px;;" value="" name="Cp" /></td>
-														</tr>
-														<tr>
-															<td>Cpk(Ppk) = (1-K)XCp = </td>
-															<td valign="bottom"><input id="Cpk" class="basic" type="text" style="width:90px;;" value="" name="Cpk" /></td>
-														</tr>
-														<tr>
-															<td>치우침계수 K = 2IM-XI/T = </td>
-															<td valign="bottom"><input id="KRate" class="basic" type="text" style="width:90px;;" value="" name="KRate" /></td>
-														</tr>
-													</table>
-												</td>
-												<td valign="top"><textarea name="estimate" id="estimate" class="basic" style="width:96%; height:84px;"></textarea></td>
-											</tr>
-											</tbody>
-										</table>
-									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-					<div id="tabs-2">
-						<!-- <a>그래프는 준비중입니다.</a> -->
-						<canvas id="myChart1" width="950" height="250"></canvas>
-						<canvas id="myChart2" width="950" height="250"></canvas>
-					</div>
-					<div id="tabs-3">
-						<canvas id="myChart3" width="950" height="450"></canvas>
-					</div>
-				</div>
-
-
+            <div class="button-container">
+            
+               <div class="box1">
+	
+	            <label class="daylabel">조회일자 :</label>
+	            <input type="text" id="s_sdate" class="dayselect daySet"/>
+	            <label for="">~</label>
+	            <input type="text" id="s_edate" class="dayselect daySet"/>
+			    <label>품번</label>
+			      
+				<input type="text" name="w_pnum" class="dayselect" readonly="readonly" 
+				style="cursor:pointer; border-color:red; padding:8px; margin-bottom:10px;" onclick="pumbunSelect();">
 			</div>
+		        <button class="select-button">
+		            <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
+		           조회
+		        </button>
+		        <button class="insert-button">
+		            <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
+		         입력 
+		        </button>
+		        <button class="excel-button">
+		            <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
+		        엑셀    
+		        </button>
+		        <button class="printer-button">
+		            <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
+		       보고서출력     
+		        </button>
+            </div>
+        </div>
 
+        <div class="view">
+        	<div id="standardTable"></div>
+        </div>
+        	<!-- 하이차트 - 1 -->
+        	<div id="xBar"></div>
+        	<!-- 하이차트 - 2 -->
+        	<div id="rBar"></div>
+        <div class="view">
+            <div id="dataTable"></div>
+             <div id="cpkCalcTable" style="margin-left:160px;"></div> 
 
-		</form>
+	
 		</div>
+    </main>
+	    
+<div id="pumbunModal" class="pumbunModal">
+  <div class="pumbun-modal-content">
+    <span class="closePumbun">&times;</span>
+    <!-- 추가, 수정 -->
+    <h2>품번선택</h2>
+    	<hr />
+    	<div style="display:inline-block;">
+			<label style="display:inline-block; width:40px;">거래처</label>
+			<input type="text" id="s_client" class="pumModalEnter" style="text-align:left; display:inline-block; width:100px;">    	
+			<label style="display:inline-block; width:40px;">품명</label>
+			<input type="text" id="s_pname" class="pumModalEnter" style="text-align:left; display:inline-block; width:50px;">    	
+			<label style="display:inline-block; width:40px;">규격</label>
+			<input type="text" id="s_spec" class="pumModalEnter" style="text-align:left; display:inline-block; width:50px;">
+			<button type="button" onclick="getPumbunData();">조회</button>			    	
+    	</div>
+    	<hr />
+    
+    <div id="pumbunTabu"></div>
+    <hr />
+	<button type="button" class="closePumbunModal">닫기</button>
+  </div>
+</div>
+		
 		
 		  
 <script>
-	//전역변수
-    var cutumTable;	
 
-	//로드
-	$(function(){
-		//전체 거래처목록 조회
-		getCutumList();
+var cpkListTable;
+var selectedRowData = null;
+
+$(function() {
+	$("#s_sdate").val(yesterDate());
+	$("#s_edate").val(todayDate());
+
+	getStandardTable();	
+	getCpkDataList();
+	getCpkCalcList();
+	getXbar();
+	getRbar();
+});
+
+//이벤트
+  $('.select-button').click(function() {	  
+	  dataSearch();
+  });
+  
+
+  $(".closePumbunModal, .closePumbun").click(function(){
+	  $('#pumbunModal').removeClass('show').hide();
+  });
+
+//엑셀 다운로드
+ $('.excel-download-button').click(function() {
+	    dataTable.download("xlsx", "스페어부품 관리.xlsx", {sheetName:"스페어부품 관리",
+	    	 visibleColumnsOnly: false //숨겨진 데이터도 출력
+	    	 });
 	});
 
-	//이벤트
-	//함수
-	function getCutumList(){
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    /*		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/management/authority/productList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{},
-*/		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
+ $(".excel-upload-button").on("click", function () {
+     $("#fileInput").click(); 
+ });
+
+//함수
+
+function dataSearch(){
+	$.ajax({
+		url:"/tkheat/quality/xBar/list",
+		type:"post",
+		dataType:"json",
+		data:{
+			"h_pnum" : $("input[name='w_pnum']").val(),
+			"h_sdate" : $("#s_sdate").val(),
+			"h_edate" : $("#s_edate").val()
+		},success:function(result){
+			console.log(result);
+			standardTable.setData(result.standardData);
+			cpkListTable.setData(result.cpkValueData);
+			
+			cpkCalc = result.cpkValueCalcData;
+//			console.log(cpkCalc);
+			var objArray = new Array();
+			var obj1 = {"value1":"관리도계수표 - n", "value2":cpkCalc.n};
+			var obj2 = {"value1":"관리도계수표 - d2", "value2":cpkCalc.d2};
+			var obj3 = {"value1":"관리도계수표 - a2", "value2":cpkCalc.a2};
+			var obj4 = {"value1":"관리도계수표 - d4", "value2":cpkCalc.d4};
+			var obj5 = {"value1":"X관리도 - 관리상한(UCL)", "value2":cpkCalc.ucl_x};
+			var obj6 = {"value1":"X관리도 - 평균값(CL=X)", "value2":cpkCalc.cl_x};
+			var obj7 = {"value1":"X관리도 - 관리하한(LCL)", "value2":cpkCalc.lcl_x};
+			var obj8 = {"value1":"R관리도 - 관리상한(UCL)", "value2":cpkCalc.ucl_r};
+			var obj9 = {"value1":"R관리도 - 평균값(CL=R)", "value2":cpkCalc.cl_r};
+			var obj10 = {"value1":"R관리도 - 관리하한(LCL)", "value2":"-"};
+			var obj11 = {"value1":"공정능력분석 - R/d2", "value2":cpkCalc.r_d2};
+			var obj12 = {"value1":"공정능력분석 - CP", "value2":cpkCalc.cp};
+			var obj13 = {"value1":"공정능력분석 - k", "value2":cpkCalc.k};
+			var obj14 = {"value1":"공정능력분석 - CPk", "value2":cpkCalc.cpk};
+			
+			
+			objArray.push(obj1);
+			objArray.push(obj2);
+			objArray.push(obj3);
+			objArray.push(obj4);
+			objArray.push(obj5);
+			objArray.push(obj6);
+			objArray.push(obj7);
+			objArray.push(obj8);
+			objArray.push(obj9);
+			objArray.push(obj10);
+			objArray.push(obj11);
+			objArray.push(obj12);
+			objArray.push(obj13);
+			objArray.push(obj14);
+			
+			cpkCalcTable.setData(objArray);
+			
+			var trendData = result.trendData;
+			
+			var x_avgObj = new Object();
+			var x_uclObj = new Object();
+			var x_clObj = new Object();
+			var x_lclObj = new Object();
+			var x_maxObj = new Object();
+			var x_minObj = new Object();
+			var r_uclObj = new Object();
+			var r_clObj = new Object();
+			var r_rmObj = new Object();
+
+			var x_avg_save = new Array();
+			var x_ucl_save = new Array();
+			var x_cl_save = new Array();
+			var x_lcl_save = new Array();
+			var x_max_save = new Array();
+			var x_min_save = new Array();
+			var r_ucl_save = new Array();
+			var r_cl_save = new Array();
+			var r_rm_save = new Array();
+
+			
+			trendData.forEach(function(data, i){
+				console.log(data);
+				var x_avg = new Array();
+				var x_ucl = new Array();
+				var x_cl = new Array();
+				var x_lcl = new Array();
+				var x_max = new Array();
+				var x_min = new Array();
+				var r_ucl = new Array();
+				var r_cl = new Array();
+				var r_rm = new Array();
+				
+				
+				x_avg.push(i);
+				x_avg.push(data.g_avg)
+				
+				x_ucl.push(i);
+				x_ucl.push(data.g_ucl_x);
+				
+				x_cl.push(i);
+				x_cl.push(data.g_cl_x);
+				
+				x_lcl.push(i);
+				x_lcl.push(data.g_lcl_x);
+				
+				x_max.push(i);
+				x_max.push(data.g_max);
+				
+				x_min.push(i);
+				x_min.push(data.g_min);
+				
+				r_ucl.push(i);
+				r_ucl.push(data.g_ucl_r);
+				
+				r_cl.push(i);
+				r_cl.push(data.g_cl_r);
+				
+				r_rm.push(i);
+				r_rm.push(data.g_range);
+				
+				x_avg_save.push(x_avg);
+				x_ucl_save.push(x_ucl);
+				x_cl_save.push(x_cl);
+				x_lcl_save.push(x_lcl);
+				x_max_save.push(x_max);
+				x_min_save.push(x_min);
+				r_ucl_save.push(r_ucl);
+				r_cl_save.push(r_cl);
+				r_rm_save.push(r_rm);
+			});
+
+			x_avgObj = {"name":"X_AVG", "data":x_avg_save, "color":"black"};
+			x_uclObj = {"name":"X_UCL", "data":x_ucl_save, "color":"blue"};
+			x_clObj = {"name":"X_CL", "data":x_cl_save, "color":"green"};
+			x_lclObj = {"name":"X_LCL", "data":x_lcl_save, "color":"blue"};
+			x_maxObj = {"name":"X_MAX", "data":x_max_save, "color":"red"};
+			x_minObj = {"name":"X_MIN", "data":x_min_save, "color":"red"};
+			r_uclObj = {"name":"R_UCL", "data":r_ucl_save, "color":"red"};
+			r_clObj = {"name":"R_CL", "data":r_cl_save, "color":"blue"};
+			r_rmObj = {"name":"R_RANGE", "data":r_rm_save, "color":"black"};
+			
+			
+			seriesArray[0] = x_avgObj;
+			seriesArray[1] = x_uclObj;
+			seriesArray[2] = x_clObj;
+			seriesArray[3] = x_lclObj;
+			seriesArray[4] = x_maxObj;
+			seriesArray[5] = x_minObj;
+			seriesArrayR[0] = r_uclObj;
+			seriesArrayR[1] = r_clObj;
+			seriesArrayR[2] = r_rmObj;
+			
+			getXbar();
+			getRbar();
+		}
+	})
+}
+
+
+var standardTable;
+function getStandardTable(){
+	standardTable = new Tabulator('#standardTable', {
+		    height: '80px',
+		    layout: 'fitDataFill',
+		    headerSort: false,
+		    reactiveData: true,
+		    columnHeaderVertAlign: "middle",
+		    rowVertAlign: "middle",
+		    headerHozAlign: 'center',
+		    ajaxConfig: { method: 'POST' },
+		    ajaxProgressiveLoad:"scroll",    
 		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","29px");
+				$("#standardTable .tabulator-col.tabulator-sortable").css("height","55px");
 		        return response; //return the response data to tabulator
 		    },
-		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},
-		        {title:"코드", field:"prod_code", sorter:"string", width:120,
-			        hozAlign:"center"},	
-			    {title:"등록일", field:"prod_date", sorter:"string", width:120,
-				    hozAlign:"center"},     
-				{title:"거래처명", field:"corp_name", sorter:"string", width:120,
-				    hozAlign:"center"}, 
-				{title:"품명", field:"prod_name", sorter:"string", width:150,
-				    hozAlign:"center"}, 
-		        {title:"품번", field:"prod_no", sorter:"string", width:120,
-		        	hozAlign:"center"},		        
-		        {title:"규격", field:"prod_gyu", sorter:"string", width:100,
-		        	hozAlign:"center"},
-		        {title:"재질", field:"prod_jai", sorter:"string", width:100,
-		        	hozAlign:"center"},
-		        {title:"공정", field:"tech_te", sorter:"string", width:100,
-			        hozAlign:"center"},	
-		        {title:"단중", field:"prod_danj", sorter:"int", width:100,
-		        	hozAlign:"center"},  	
-		        {title:"단위", field:"prod_danw", sorter:"int", width:100,
-			        hozAlign:"center"},	
-			    {title:"단가(EA)", field:"prod_danw", sorter:"int", width:100,
-				    hozAlign:"center"},	
-				{title:"단가(kG)", field:"prod_danw", sorter:"int", width:100,
-				    hozAlign:"center"},
-				{title:"표면경도", field:"prod_danw", sorter:"int", width:100,
-					hozAlign:"center"},
-			    {title:"경화깊이", field:"prod_danw", sorter:"int", width:100,
-					hozAlign:"center"},
- 			    {title:"심부경도", field:"prod_danw", sorter:"int", width:100,
-					hozAlign:"center"},
-				    
+		    placeholder: "조회된 데이터가 없습니다.",
+		    columns: [
+		        //{ title: "no", field: "no", visible: false }, 
+		      { title: "품번",field: "h_pnum",width: 300, hozAlign: "center" },		      
+		      { title: "품명",field: "h_pname",width: 300, hozAlign: "center" },
+		      { title: "규격",field: "h_gang",width: 200, hozAlign: "center" },
+		      { title: "재질",field: "h_t_gb",width: 200, hozAlign: "center" },
+		      { title: "상한",field: "h_hard_up",width: 200, hozAlign: "center" },
+		      { title: "하한",field: "h_hard_dw",width: 200, hozAlign: "center" },
 		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+		    rowClick: function(e, row) {
+		      $('#standardTable .tabulator-row').removeClass('row_select');
+		      row.getElement().classList.add('row_select');
+		      selectedRowData = row.getData();
+		    },
+		  });
+}
 
-				var rowData = row.getData();
-				
-			},
-		});		
-	}
+function getCpkDataList(){
 	
+	
+	cpkListTable = new Tabulator('#dataTable', {
+		    height: '400px',
+		    layout: 'fitDataFill',	    
+		    headerSort: false,
+		    reactiveData: true,
+		    columnHeaderVertAlign: "middle",
+		    rowVertAlign: "middle",
+		    headerHozAlign: 'center',    
+		    ajaxResponse:function(url, params, response){
+				$("#dataTable .tabulator-col.tabulator-sortable").css("height","55px");
+		        return response; //return the response data to tabulator
+		    },
+		    placeholder: "조회된 데이터가 없습니다.",
+		    columns: [
+		        //{ title: "no", field: "no", visible: false }, 
+		      { title: "일자", field: "h_day",width: 100, hozAlign: "center" },
+		      { title: "시간", field: "h_time",width: 100, hozAlign: "center" },
+		      { title: "측정값-1",field: "h_x1",width: 100, hozAlign: "center" },		      
+		      { title: "측정값-2",field: "h_x2",width: 100, hozAlign: "center" },
+		      { title: "측정값-3",field: "h_x3",width: 100, hozAlign: "center" },
+		      { title: "X 평균",field: "h_avg",width: 100, hozAlign: "center" },
+		      { title: "Range",field: "h_range",width: 100, hozAlign: "center" },
+		    ],
 
-    </script>
+		    rowClick: function(e, row) {
+		      $('#dataTable .tabulator-row').removeClass('row_select');
+		      row.getElement().classList.add('row_select');
+		    },
+		  });
+}
+
+
+var cpkCalcTable;
+function getCpkCalcList(){
+	cpkCalcTable = new Tabulator('#cpkCalcTable', {
+		    height: '400px',
+		    layout: 'fitDataFill',
+		    headerSort: false,
+		    reactiveData: true,
+		    columnHeaderVertAlign: "middle",
+		    rowVertAlign: "middle",
+		    headerHozAlign: 'center',
+		    ajaxConfig: { method: 'POST' },
+		    ajaxProgressiveLoad:"scroll", 
+		    ajaxResponse:function(url, params, response){
+				$("#cpkCalcTable .tabulator-col.tabulator-sortable").css("height","55px");
+		        return response; //return the response data to tabulator
+		    },
+		    placeholder: "조회된 데이터가 없습니다.",
+		    columns: [
+		      { title: "기준", field: "value1", width: 300, hozAlign: "center" },  	
+		   	  { title: "값", field: "value2", width: 200, hozAlign: "center" }, 
+		    ],
+
+		    rowClick: function(e, row) {
+		      $('#cpkCalcTable .tabulator-row').removeClass('row_select');
+		      row.getElement().classList.add('row_select');
+		    },
+		  });
+}
+
+
+
+
+function pumbunSelect(){
+
+	$("#pumbunModal").show().addClass('show');
+	getPumbunList();
+	getPumbunData();
+}
+var pumbunTabu;
+
+function getPumbunData(){
+	$.ajax({
+		url: "/tkheat/quality/xBar/pumbun/list",
+		type:"post",
+		dataType:"json",
+		data:{
+	    	"w_client": $("#s_client").val(),
+	    	"w_pname": $("#s_pname").val(),		    	
+	    	"w_spec": $("#s_spec").val()			
+		},success:function(result){
+		console.log(result);
+			pumbunTabu.setData(result.data);
+		}
+	})
+	
+}
+function getPumbunList(){
+	pumbunTabu = new Tabulator('#pumbunTabu', {
+		    height: '300px',
+		    layout: 'fitDataFill',
+		    headerSort: false,
+		    reactiveData: true,
+		    columnHeaderVertAlign: "middle",
+		    rowVertAlign: "middle",
+		    headerHozAlign: 'center',
+/*		    ajaxConfig: { method: 'POST' },
+		    ajaxURL: "/tkheat/quality/xBar/pumbun/list",
+		    ajaxProgressiveLoad:"scroll",
+		    ajaxParams: { 
+		    	"w_client": $("#s_client").val(),
+		    	"w_pnum": $("#s_pnum").val(),		    	
+		    	"w_spec": $("#s_spec").val()	    	
+		    },	*/	    
+		    ajaxResponse:function(url, params, response){
+				$("#pumbunTabu .tabulator-col.tabulator-sortable").css("height","55px");
+		        return response; //return the response data to tabulator
+		    },
+		    placeholder: "조회된 데이터가 없습니다.",
+		    columns: [
+		        //{ title: "no", field: "no", visible: false }, 
+		      { title: "업체명", field: "corp_name",width: 120, hozAlign: "center" },
+		      { title: "품명", field: "prod_name",width: 150, hozAlign: "center" },
+		      { title: "품번", field: "prod_no",width: 150, hozAlign: "center" },
+		      { title: "규격",field: "prod_gyu",width: 80, hozAlign: "center" },
+		      { title: "재질",field: "prod_jai",width: 80, hozAlign: "center" },
+/*		      { title: "소입온도(℃)",field: "w_qf",width: 110, hozAlign: "center" },
+		      { title: "소려온도(℃)",field: "w_tf",width: 110, hozAlign: "center" },
+		      { title: "CP(%)",field: "w_cp",width: 110, hozAlign: "center" },
+		      { title: "장입기준량(kg)",field: "w_std_weight",width: 110, hozAlign: "center" },
+		      { title: "요구경도",field: "w_hardness",width: 110, hozAlign: "center" },*/
+		    ],
+
+		    rowClick: function(e, row) {
+		      $('#pumbunTabu .tabulator-row').removeClass('row_select');
+		      row.getElement().classList.add('row_select');
+		      selectedRowData = row.getData();
+		    },
+
+		    //더블클릭 했을때 
+		    rowDblClick: function(e, row) {
+		  	  var d = row.getData();
+		  	  $("input[name='w_pnum']").val(d.prod_no);
+		  		$('#pumbunModal').removeClass('show').hide();
+		  			  
+		  	}
+
+		  });
+}
+
+//하이차트 설정
+var seriesArray = new Array();
+function getXbar(){	
+    const chart = Highcharts.chart('xBar', {    	
+    	chart: {
+    		type:"line",        		
+    		panning:true,
+            panKey:"shift",
+            zoomType:"x",
+			styleMode: true,
+			height:200
+    	},
+    	title: {
+    		text:null
+    	},
+    	time:{
+    		timezone: "Asia/Seoul",
+    		useUTC: false
+    	},
+        yAxis: [{
+        	crosshair:{
+        		width:3,
+        		color:'#5D5D5D',
+        		zIndex:5
+        	},
+            title: {
+                text: '값'
+            },
+            labels:{
+            	style:{
+            		fontSize:"10pt"
+            	}
+            }
+        }],
+        xAxis: {
+        	crosshair:{
+        		width:3,
+        		color:'#5D5D5D',
+        		zIndex:5
+        	},
+//			tickAmount:11,
+        	labels:{
+        		style:{
+        			fontSize:"11pt"
+        		}
+        	},
+        	allowDecimals:false
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+        plotOptions: {
+            series: {
+            	selected:true,
+            	marker:{
+                	radius:1
+            	}
+            }
+        },
+        series: seriesArray,
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 1200
+                },
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
+                    }
+                }
+            }]
+        },
+        exporting:{
+            menuItemDefinitions: {
+                // Custom definition
+                label: {
+                    onclick: function () {
+                        this.renderer.label(
+                            'You just clicked a custom menu item',
+                            100,
+                            100
+                        )
+                            .attr({
+                                fill: '#a4edba',
+                                r: 5,
+                                padding: 10,
+                                zIndex: 10
+                            })
+                            .css({
+                                fontSize: '1.5em'
+                            })
+                            .add();
+                    },
+                    text: 'Show label'
+                }
+            },
+            buttons: {
+                contextButton: {
+                    menuItems: ['downloadPNG', 'downloadPDF', 'downloadXLS', 'separator']
+                }
+            }
+        },
+        legend:{
+            itemStyle:{
+                fontSize: "11pt"
+            }
+		}
+    });
     
+}
+
+var seriesArrayR = new Array();
+function getRbar(){	
+    const chart = Highcharts.chart('rBar', {    	
+    	chart: {
+    		type:"line",        		
+    		panning:true,
+            panKey:"shift",
+            zoomType:"x",
+			styleMode: true,
+			height:200
+    	},
+    	title: {
+    		text:null
+    	},
+    	time:{
+    		timezone: "Asia/Seoul",
+    		useUTC: false
+    	},
+        yAxis: [{
+        	crosshair:{
+        		width:3,
+        		color:'#5D5D5D',
+        		zIndex:5
+        	},
+            title: {
+                text: '값'
+            },
+            labels:{
+            	style:{
+            		fontSize:"10pt"
+            	}
+            }
+        }],
+        xAxis: {
+        	crosshair:{
+        		width:3,
+        		color:'#5D5D5D',
+        		zIndex:5
+        	},
+//			tickAmount:11,
+        	labels:{
+        		style:{
+        			fontSize:"11pt"
+        		}
+        	},
+        	allowDecimals:false
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+        plotOptions: {
+            series: {
+            	selected:true,
+            	marker:{
+                	radius:1
+            	}
+            }
+        },
+        series: seriesArrayR,
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 1200
+                },
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
+                    }
+                }
+            }]
+        },
+        exporting:{
+            menuItemDefinitions: {
+                // Custom definition
+                label: {
+                    onclick: function () {
+                        this.renderer.label(
+                            'You just clicked a custom menu item',
+                            100,
+                            100
+                        )
+                            .attr({
+                                fill: '#a4edba',
+                                r: 5,
+                                padding: 10,
+                                zIndex: 10
+                            })
+                            .css({
+                                fontSize: '1.5em'
+                            })
+                            .add();
+                    },
+                    text: 'Show label'
+                }
+            },
+            buttons: {
+                contextButton: {
+                    menuItems: ['downloadPNG', 'downloadPDF', 'downloadXLS', 'separator']
+                }
+            }
+        },
+        legend:{
+            itemStyle:{
+                fontSize: "11pt"
+            }
+		}
+    });
     
-    
-    <script>
+}
 		
  // 드래그 기능 추가
 	const modal = document.querySelector('.xbarModal');

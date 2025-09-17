@@ -45,6 +45,10 @@
 		<property name="password" value="rpn123!!"/>
 	</bean>
 
+	<bean id="dataSourceSQLite" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
+		<property name="driverClassName" value="org.sqlite.JDBC" /> 
+		<property name="url" value="jdbc:sqlite://DESKTOP-EGTIDRQ\Users\admin\Documents\Autonics\SCADAMaster\Project\TKHEAT\Data\Alarm\TKHEAT_AlarmData.db" />
+	</bean>
 
 	<tx:annotation-driven/>
 
@@ -61,5 +65,14 @@
 	       <property name="dataSource" ref="dataSource"/>
 	   </bean>
 
+	<!-- SQLite -->
+	 <bean id="sqlSessionFactorySQLite" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceSQLite" />
+		<property name="configLocation" value="classpath:mybatis/config/mybatis-context.xml"></property>
+	 </bean>
+	 <bean id="sessionSQLite" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactorySQLite" />
+	 </bean>
+	 
 	<context:component-scan base-package="com.tkheat.dao com.tkheat.service"/>
 </beans>

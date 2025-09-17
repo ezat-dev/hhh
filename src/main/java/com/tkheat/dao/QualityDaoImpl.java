@@ -1,18 +1,20 @@
 package com.tkheat.dao;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-
+import com.tkheat.domain.Product;
 import com.tkheat.domain.Suip;
 import com.tkheat.domain.Work;
 
 @Repository
 public class QualityDaoImpl implements QualityDao{
 
-	@Autowired
+	@Resource(name="session")
 	private SqlSession sqlSession;
 	
 	@Override
@@ -89,6 +91,21 @@ public class QualityDaoImpl implements QualityDao{
 	@Override
 	public List<Work> getJajuJochiList(Work work) {
 		return sqlSession.selectList("work.getJajuJochiList",work);
+	}
+
+	@Override
+	public Suip cpkStandardList(Suip quality) {
+		return sqlSession.selectOne("work.cpkStandardList",quality);
+	}
+
+	@Override
+	public List<Suip> cpkValueList(Suip quality) {
+		return sqlSession.selectList("work.cpkValueList",quality);
+	}
+
+	@Override
+	public List<Product> xBarPumbunList(Product p) {
+		return sqlSession.selectList("work.xBarPumbunList",p);
 	}
 
 }
