@@ -279,6 +279,7 @@
             const rowData = row.getData();
             const corp_name = rowData.corp_name;
 
+            
             if (corp_name) {
                 yearChart(corp_name);
             }
@@ -291,6 +292,9 @@
 
 
 	function yearChart(corp_name) {
+
+		console.log(corp_name);
+		
 	    $.ajax({
 	        type: "POST",
 	        url: "/tkheat/operation/yearSale/getYearData",

@@ -40,7 +40,7 @@
 <!-- 서버 적용 -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
 		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" /> 
-		<property name="url" value="jdbc:sqlserver://192.168.0.201:1433;DataBaseName=HEATDB_EZAT;" /> 
+		<property name="url" value="jdbc:sqlserver://192.168.0.201:1433;DataBaseName=HEATDB;" /> 
 		<property name="username" value="heatmaster" /> 
 		<property name="password" value="rpn123!!"/>
 	</bean>
