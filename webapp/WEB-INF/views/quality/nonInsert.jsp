@@ -437,7 +437,7 @@ textarea {
                                                 <option>사양오적용(혼입)</option>
                                                 <option>변형</option>
                                             </select>
-                                            <select class="basic" id="werr_in_out_gubn" name="werr_in_out_gubn" style="width:100px;">												
+                                            <select class="basic" id="werr_inoutgubn" name="werr_inoutgubn" style="width:100px;">												
                                                 <option selected="selected">사내</option>
                                                 <option>사외</option>
                                             </select>
@@ -548,7 +548,7 @@ textarea {
 			<input type="date" class="subedate" id="subedate" style="font-size: 16px;" autocomplete="off">
 			<input type="text" id="subilbo_lot" /> 	
 			<button type="button" onclick="openCorpListModal();">조회 </button>	
-				<span class="modal-title">설비 리스트</span> <span class="modal-close" onclick="openCorpListModalData()">&times;</span>
+				<span class="modal-title">제품 검색</span> <span class="modal-close" onclick="openCorpListModalData()">&times;</span>
 			</div>
 			<div id="corpListTabulator" style="height: 500px;"></div>
 		</div>
@@ -664,26 +664,28 @@ textarea {
 
 
 	//부적합등록 저장
-    function save() {
+	    function save() {
 	    var formData = new FormData($("#nonInsertForm")[0]);
-
 	    let confirmMsg = "";
-
+	
 	    if (isEditMode && selectedRowData && selectedRowData.werr_code) {
 	        formData.append("mode", "update");
 	        formData.append("werr_code", selectedRowData.werr_code);
 	        confirmMsg = "수정하시겠습니까?";
 	    } else {
 	        formData.append("mode", "insert");
+	        // formData.append("werr_code", ""); // 삭제
 	        confirmMsg = "저장하시겠습니까?";
 	    }
-
-	    if (!confirm(confirmMsg)) {
-	        return;
-	    }
-
-		console.log($("#nonInsertForm")[0].werr_code);
-	    
+	
+	    formData.set("werr_amnt", $("#werr_amnt").val() || 0);
+	    formData.set("werr_mon", $("#werr_mon").val() || 0);
+	    formData.append("werr_alert", $("#werr_alert").is(":checked") ? "Y" : "N");
+	
+	    console.log([...formData.entries()]); // ✅ 추가
+	
+	    if (!confirm(confirmMsg)) return;
+	
 	    $.ajax({
 	        url: "/tkheat/quality/nonInsert/nonInsertSave",
 	        type: "POST",
@@ -697,10 +699,12 @@ textarea {
 	            getNonInsertList();
 	        },
 	        error: function(xhr, status, error) {
-	            console.error("저장 오류:", error);
+	            console.error("저장 오류:", xhr.status, error);
+	            console.log(xhr.responseText); // ✅ 자세한 원인 확인
 	        }
 	    });
 	}
+
 
 
 	function deleteNon() {
@@ -874,7 +878,19 @@ textarea {
 	const headerCloseButton = document.querySelector('.header-close');
 
 	insertButton.addEventListener('click', function() {
-		nonModal.style.display = 'block'; // 모달 표시
+		// ✅ 모드 초기화
+	    isEditMode = false;
+	    selectedRowData = null;
+
+	    // ✅ 폼 초기화
+	    $('#nonInsertForm')[0].reset();
+
+	    // ✅ 수정 관련 버튼 숨기기, 저장 관련 버튼 보이기
+	    $('.delete').hide();
+	    $("#btnSaveAs").hide(); // 혹시 사용 중이라면
+
+	    // ✅ 모달 표시
+	    nonModal.style.display = 'block';
 	});
 
 	closeButton.addEventListener('click', function() {

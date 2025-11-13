@@ -80,7 +80,6 @@
 	display: flex;
 	justify-content: center; /* 가운데 정렬 */
 	gap: 20px; /* 버튼 사이 여백 */
-	margin-top: 30px; /* 모달 내용과의 간격 */
 	margin-bottom: 20px; /* 모달 하단과 버튼 사이 간격  */
 }
 .btnSaveClose button {
@@ -535,9 +534,9 @@ th{
 						</tr>
 					</table>
 					<div class="btnSaveClose">
-					<button class="delete" type="button" onclick="deleteFac();"  style="display: none;">삭제</button>
-		            <button class="save" type="button" onclick="save();">저장</button>
-		            <button class="close" type="button" onclick="window.close();">닫기</button>
+						<button class="delete" type="button" onclick="deleteFac();"  style="display: none;">삭제</button>
+			            <button class="save" type="button" onclick="save();">저장</button>
+			            <button class="close" type="button" onclick="window.close();">닫기</button>
 	    			</div>
 				</div>
 				

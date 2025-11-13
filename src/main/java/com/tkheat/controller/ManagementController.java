@@ -89,56 +89,56 @@ public class ManagementController {
 
 
 	//제품등록, 수정 - insert,update
-		@RequestMapping(value = "/management/productInsert/productInsertSave", method = RequestMethod.POST)
-		@ResponseBody
-		public Map<String, Object> productInsertSave(
-				@ModelAttribute Product product,
-				@RequestParam("mode") String mode,
-				@RequestParam(value = "product_file_url", required = false) MultipartFile[] files1,
-				@RequestParam(value = "apperance_file_url", required = false) MultipartFile[] files2,
-				@RequestParam(value = "heat_file_url", required = false) MultipartFile[] files3) { 
-			
-			System.out.println("저장 컨트롤러 도착");
+	@RequestMapping(value = "/management/productInsert/productInsertSave", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> productInsertSave(
+			@ModelAttribute Product product,
+			@RequestParam("mode") String mode,
+			@RequestParam(value = "product_file_url", required = false) MultipartFile[] files1,
+			@RequestParam(value = "apperance_file_url", required = false) MultipartFile[] files2,
+			@RequestParam(value = "heat_file_url", required = false) MultipartFile[] files3) { 
 
-			Map<String, Object> result = new HashMap<>();
+		System.out.println("저장 컨트롤러 도착");
 
-			System.out.println(product.getProd_code());
-			System.out.println(product.getProd_date());
+		Map<String, Object> result = new HashMap<>();
 
-			try {
+		System.out.println(product.getProd_code());
+		System.out.println(product.getProd_date());
 
-				String path = "D:/태경출력파일/사진/제품등록";
+		try {
 
-				String productFileName = saveFiles(files1, path);
-				if (productFileName != null) product.setProduct_file_name(productFileName);
+			String path = "D:/태경출력파일/사진/제품등록";
 
-				String appearanceFileName = saveFiles(files2, path);
-				if (appearanceFileName != null) product.setApperance_file_name(appearanceFileName);
+			String productFileName = saveFiles(files1, path);
+			if (productFileName != null) product.setProduct_file_name(productFileName);
 
-				String heatFileName = saveFiles(files3, path);
-				if (heatFileName != null) product.setHeat_file_name(heatFileName);
+			String appearanceFileName = saveFiles(files2, path);
+			if (appearanceFileName != null) product.setApperance_file_name(appearanceFileName);
 
-				if ("insert".equalsIgnoreCase(mode)) {
-					managementService.productInsertSave(product);
-				} else if ("update".equalsIgnoreCase(mode)) {
-					managementService.productUpdateSave(product);  
-				} else {
-					throw new IllegalArgumentException("Invalid mode: " + mode);
-				}
+			String heatFileName = saveFiles(files3, path);
+			if (heatFileName != null) product.setHeat_file_name(heatFileName);
 
-				result.put("status", "success");
-				result.put("message", "OK");
-
-			} catch (Exception e) {
-				result.put("status", "error");
-				result.put("message", e.getMessage());
-				e.printStackTrace();
+			if ("insert".equalsIgnoreCase(mode)) {
+				managementService.productInsertSave(product);
+			} else if ("update".equalsIgnoreCase(mode)) {
+				managementService.productUpdateSave(product);  
+			} else {
+				throw new IllegalArgumentException("Invalid mode: " + mode);
 			}
 
-			System.out.println(result.get("status"));
-			System.out.println(result.get("message"));
+			result.put("status", "success");
+			result.put("message", "OK");
 
-			return result;
+		} catch (Exception e) {
+			result.put("status", "error");
+			result.put("message", e.getMessage());
+			e.printStackTrace();
+		}
+
+		System.out.println(result.get("status"));
+		System.out.println(result.get("message"));
+
+		return result;
 		}
 
 
@@ -168,11 +168,11 @@ public class ManagementController {
 		@RequestMapping(value = "/management/productInsert/productList", method = RequestMethod.POST) 
 		@ResponseBody 
 		public Map<String, Object> getProductList(
-				) {
+				@RequestParam String corp_name) {
 			Map<String, Object> rtnMap = new HashMap<String, Object>();
 
 			Product product = new Product();
-
+			product.setCorp_name(corp_name);
 
 
 			List<Product> productList = managementService.getProductList(product);

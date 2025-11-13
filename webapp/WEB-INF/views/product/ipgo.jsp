@@ -299,7 +299,7 @@ input[type="date"] {
 
 	//전역변수
     var cutumTable;	
-	let now_page_code = "a02";
+	let now_page_code = "a01";
 
 	//로드
 	$(function(){

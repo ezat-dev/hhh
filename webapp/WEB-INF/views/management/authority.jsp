@@ -688,11 +688,11 @@
 	    </div>
 	    <div class="save">저장</div>
 	    <div class="close">종료</div> -->
-	    <div class="aa-text">제품입출고관리</div>
+	    <div class="aa-text">제품관리</div>
 	    <div class="bb-text">생산관리</div>
 	    <div class="cc-text">생산공정관리</div>
-	    <div class="dd-text">설비보존관리</div>
-	    <div class="ee-text">감사시스템</div>
+	    <div class="dd-text">모니터링</div>
+	    <div class="ee-text">설비보존관리</div>
 	    <div class="ff-text">품질관리</div>
 	    <div class="gg-text">경영정보</div>
 	    <div class="hh-text">기준정보</div>

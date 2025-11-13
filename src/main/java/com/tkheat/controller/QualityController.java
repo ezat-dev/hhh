@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -247,37 +249,34 @@ System.out.println("subilbo_lot : "+ilbo_lot);
 	  @RequestMapping(value = "/quality/nonInsert/nonInsertSave", method = RequestMethod.POST)
 	  @ResponseBody
 	  public Map<String, Object> nonInsertSave(
-			  @ModelAttribute Work work,
-			  @RequestParam("mode") String mode) { 
+	          @ModelAttribute Work work,
+	          HttpServletRequest req) {
+	      String mode = req.getParameter("mode");
+	      System.out.println("🔥 Controller 들어옴!");
+	      System.out.println("mode = " + mode);
+	      System.out.println("werr_code = " + work.getWerr_code());
+	      System.out.println("werr_alert = " + work.getWerr_alert());
 
-		  System.out.println("mode = " + mode);
-		  System.out.println("werr_code = " + work.getWerr_code());
-		  System.out.println("werr_alert = " + work.getWerr_alert());
-		  Map<String, Object> result = new HashMap<>();
+	      Map<String, Object> result = new HashMap<>();
+	      try {
+	          if ("insert".equalsIgnoreCase(mode)) {
+	              qualityService.nonInsertSave(work);
+	          } else if ("update".equalsIgnoreCase(mode)) {
+	              qualityService.nonUdateSave(work);
+	          } else {
+	              throw new IllegalArgumentException("Invalid mode: " + mode);
+	          }
 
-		  try {
-			  if ("insert".equalsIgnoreCase(mode)) {
-				  qualityService.nonInsertSave(work);
-			  } else if ("update".equalsIgnoreCase(mode)) {
-				  qualityService.nonUdateSave(work);  
-			  } else {
-				  throw new IllegalArgumentException("Invalid mode: " + mode);
-			  }
+	          result.put("status", "success");
+	          result.put("message", "OK");
+	      } catch (Exception e) {
+	          e.printStackTrace();
+	          result.put("status", "error");
+	          result.put("message", e.getMessage());
+	      }
+	      return result;
+	  }
 
-			  result.put("status", "success");
-			  result.put("message", "OK");
-
-		  } catch (Exception e) {
-			  result.put("status", "error");
-			  result.put("message", e.getMessage());
-		  }
-
-		  System.out.println(result.get("status"));
-		  System.out.println(result.get("message"));
-
-
-		  return result;
-	  } 
 	  
 	  
 	//부적합등록 더블클릭조회

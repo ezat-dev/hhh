@@ -183,6 +183,7 @@ public class Work {
 	private String werr_alert;     // 알림 체크박스
 	private String werr_buso;       // 부서 (select)
 	private String werr_in_out_gubn; // 출입 구분 (select)
+	private String werr_inoutgubn; // 출입 구분 (select)
 	private String werr_gnote;      // 불량내용
 	private String werr_case;       // 발생원인 및 원인분석
 	private String werr_jgubn;      // 조치구분 (select)
@@ -2237,5 +2238,13 @@ public class Work {
 
 	public void setNcmSu(int ncmSu) {
 		this.ncmSu = ncmSu;
+	}
+
+	public String getWerr_inoutgubn() {
+		return werr_inoutgubn;
+	}
+
+	public void setWerr_inoutgubn(String werr_inoutgubn) {
+		this.werr_inoutgubn = werr_inoutgubn;
 	}
 }

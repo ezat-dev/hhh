@@ -19,19 +19,61 @@
 	display: flex;
 	justify-content: space-between;
 }
+.productModal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    display: none;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
 
 .detail {
-	background: #ffffff;
-	border: 1px solid #000000;
-	width: 1200px; /* 가로 길이 고정 */
-	height: 720px; /* 세로 길이 고정 */
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-	margin: 20px auto; /* 중앙 정렬 */
-	padding: 20px;
-	border-radius: 5px; /* 모서리 둥글게 */
-	overflow-y: auto; /* 세로 스크롤 추가 */
-	position: relative; /* 자식 요소의 절대 위치 설정을 위한 기준 */
+    background: #ffffff;
+    border: 1px solid #000000;
+    width: 1200px;
+    height: 720px; /* 원래 높이 유지 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    margin: 0 auto;
+    border-radius: 5px;
+    position: relative; /* 헤더 absolute 기준 */
+    overflow: hidden; /* 전체 스크롤 방지 */
 }
+
+.header {
+    position: absolute; /* 모달 상단 고정 */
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: #33363d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 20px;
+    z-index: 10;
+}
+
+.header-close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: white;
+}
+
+.modal-body {
+    position: absolute;
+    top: 50px; /* 헤더 높이만큼 아래 시작 */
+    left: 0;
+    right: 0;
+    bottom: 0; /* 모달 하단까지 */
+    overflow-y: auto; /* 내용만 스크롤 */
+    padding: 20px;
+}
+
 
 .insideTable {
 	width: 100%; /* 내부 테이블 너비 100% */
@@ -112,36 +154,6 @@ textarea {
 	border-radius: 3px; /* 둥근 모서리 */
 }
 
-.productModal {
-	position: fixed; /* 화면에 고정 */
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 1000; /* 다른 요소 위에 표시 */
-}
-
-.header {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: relative; /* 닫기버튼의 절대 위치 기준 */
-	margin-bottom: 10px;
-	background-color: #33363d;
-	height: 50px;
-	color: white;
-	font-size: 20px;
-	text-align: center;
-}
-
-.header-close {
-	position: absolute;
-	right: 15px;
-	top: 10px;
-	cursor: pointer;
-	font-size: 20px;
-	color: white;
-}
 .btnSaveClose {
 	display: flex;
 	justify-content: center; /* 가운데 정렬 */
@@ -232,6 +244,31 @@ textarea {
   cursor: pointer;
   font-size: 24px;
 }
+/* 페이지네이션 중앙정렬 */
+.tabulator-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+}
+
+/* 커스텀 페이지 버튼 */
+.custom-pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background: #f8f8f8;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+.custom-pagination button:hover {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
 </style>
     
     
@@ -242,7 +279,8 @@ textarea {
     <div class="box1">
            <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>
         
-        
+        	<label class="daylabel">업체명 :</label>
+			<input type="text" class="corp_name" id="corp_name" style="font-size: 16px;" autocomplete="off">
 			<!-- <label class="daylabel">업체명 :</label>
 			<input type="text" class="corp_name" id="corp_name" style="font-size: 16px;" autocomplete="off">
 			
@@ -354,6 +392,7 @@ textarea {
  	제품등록
  	<span class="header-close">&times;</span>
  </div>
+ 	<div class="modal-body">
     <table cellspacing="0" cellpadding="0" width="100%">
       <tbody><tr>
         <td>
@@ -859,6 +898,7 @@ textarea {
 	            <button id="btnSaveAs" class="saveAs" type="button" onclick="saveAsNew();" style="display:none;">다른이름저장</button>
 	            <button class="close" type="button" onclick="window.close();">닫기</button>
 	    </div>
+	    </div>
 	  </div>
 	</div>
 </form>
@@ -906,145 +946,91 @@ $('.imgInputClass').change(function(event){
 	//이벤트
 	//함수
 	function getProductList(){
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/management/productInsert/productList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	/* "corp_name": $("#corp_name").val(),
-                "prod_name": $("#prod_name").val(),
-                "prod_no": $("#prod_no").val(),
-                "prod_gyu": $("#prod_gyu").val(),
-                "prod_jai": $("#prod_jai").val(),
-                "prod_pg": $("#prod_pg").val(),
-                "prod_gd3": $("#prod_gd3").val(),
-                "prod_sg": $("#prod_sg").val(),
-                "tech_te": $("#tech_te").val(), */
+	userTable = new Tabulator("#tab1", {
+	    height:"750px",
+	    layout:"fitColumns",
+	    selectable:true,
+	    tooltips:true,
+	    selectableRangeMode:"click",
+	    reactiveData:true,
+	    headerHozAlign:"center",
+	    ajaxConfig:"POST",
+	    ajaxLoader:false,
+	    ajaxURL:"/tkheat/management/productInsert/productList",
+	    // ❌ ajaxProgressiveLoad 제거 (스크롤 페이징이 아니라 클라이언트 페이징 사용)
+	    // ajaxProgressiveLoad:"scroll",
+	    ajaxParams:{"corp_name": $("#corp_name").val(),},
+	    placeholder:"조회된 데이터가 없습니다.",
+
+	    // ✅ [추가] Tabulator 기본 페이징 설정
+	    pagination:"local",               // 클라이언트 사이드 페이징
+	    paginationSize:20,                // 기본 페이지당 표시 개수
+	    paginationSizeSelector:[20,50,100,500,1000],  // 사용자가 개수 선택 가능
+	    paginationCounter:"rows",         // "rows" = 현재 페이지 범위/전체 행수 표시
+
+	    ajaxResponse:function(url, params, response){
+	        $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
+	        /* return response; // 데이터 그대로 반환 */
+	        return response.data ? response.data : response;
+	    },
+
+	    columns:[
+	    	{title:"제품", field:"product_file_name", width:70,
+				hozAlign:"center", formatter:"image",
+			    cssClass:"rp-img-popup",
+		      	formatterParams:{
+			      	height:"30px", width:"30px",
+			      	urlPrefix:"/tkPrint/사진/제품등록/"
+			      	}, 
+			    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
 			    },
-     	    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		    	{title:"제품", field:"product_file_name", width:70,
-					hozAlign:"center", formatter:"image",
-				    cssClass:"rp-img-popup",
-			      	formatterParams:{
-				      	height:"30px", width:"30px",
-				      	urlPrefix:"/tkPrint/사진/제품등록/"
-				      	}, 
-				    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
-				    },
-		        {title:"NO", field:"idx", sorter:"int", width:50,
-		        	hozAlign:"center"},
-		        {title:"코드", field:"prod_code", sorter:"string", width:120,
-			        hozAlign:"center", headerFilter:"input", visible:false},	
-			    {title:"등록일", field:"prod_date", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"},     
-				{title:"거래처명", field:"corp_name", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"}, 
-				{title:"품명", field:"prod_name", sorter:"string", width:150,
-				    hozAlign:"center", headerFilter:"input"}, 
-		        {title:"품번", field:"prod_no", sorter:"string", width:120,
-		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"규격", field:"prod_gyu", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"재질", field:"prod_jai", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"공정", field:"tech_te", sorter:"string", width:100,
-			        hozAlign:"center", editor:"list", editorParams:{values:{"male":"Male", "female":"Female", clearable:true}}, 
-			        headerFilter:true, headerFilterParams:{values:{"male":"Male", "female":"Female", "":""}, clearable:true}},	
-		        {title:"단중", field:"prod_danj", sorter:"int", width:70,
-		        	hozAlign:"center", headerFilter:"input"},  	
-		        {title:"단위", field:"prod_danw", sorter:"int", width:70,
-			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"단가(EA)", field:"prod_dang", sorter:"int", width:100,
-				    hozAlign:"center", headerFilter:"input"},	
-				{title:"단가(kG)", field:"prod_dang", sorter:"int", width:100,
-				    hozAlign:"center", headerFilter:"input"},
-				{title:"표면경도", field:"prod_pg", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},
-			    {title:"경화깊이", field:"prod_gd3", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},
- 			    {title:"심부경도", field:"prod_sg", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},
-				/* 
-					{title:"외형사진 및 분석위치", field:"apperance_file_name", width:100,
-						hozAlign:"center", formatter:"image",
-					    cssClass:"rp-img-popup",
-				      	formatterParams:{
-					      	height:"30px", width:"30px",
-					      	urlPrefix:"/tkPrint/사진/제품등록/"
-					      	}, 
-					    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
-					    },
-						{title:"열처리공정", field:"heat_file_name", width:100,
-							hozAlign:"center", formatter:"image",
-						    cssClass:"rp-img-popup",
-					      	formatterParams:{
-						      	height:"30px", width:"30px",
-						      	urlPrefix:"/tkPrint/사진/제품등록/"
-						      	}, 
-						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
-						    }, */
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
+	        {title:"NO", field:"idx", sorter:"int", width:50, hozAlign:"center"},
+	        {title:"코드", field:"prod_code", sorter:"string", width:120, hozAlign:"center", headerFilter:"input", visible:false},	
+		    {title:"등록일", field:"prod_date", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},     
+			{title:"거래처명", field:"corp_name", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"}, 
+			{title:"품명", field:"prod_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"}, 
+	        {title:"품번", field:"prod_no", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},		        
+	        {title:"규격", field:"prod_gyu", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
+	        {title:"재질", field:"prod_jai", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
+	        {title:"공정", field:"tech_te", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},	
+	        {title:"단중", field:"prod_danj", sorter:"int", width:70, hozAlign:"center", headerFilter:"input"},  	
+	        {title:"단위", field:"prod_danw", sorter:"int", width:70, hozAlign:"center", headerFilter:"input"},	
+		    {title:"단가(EA)", field:"prod_dang", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},	
+			{title:"단가(kG)", field:"prod_dang", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
+			{title:"표면경도", field:"prod_pg", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
+		    {title:"경화깊이", field:"prod_gd3", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
+ 		    {title:"심부경도", field:"prod_sg", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
+	    ],
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+	    rowFormatter:function(row){
+		    row.getElement().style.fontWeight = "700";
+			row.getElement().style.backgroundColor = "#FFFFFF";
+		},
 
-				var rowData = row.getData();
-				
-			},
-			rowDblClick:function(e, row){
+		rowClick:function(e, row){
+			$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
+				if($(this).hasClass("row_select")){							
+					$(this).removeClass('row_select');
+					row.getElement().className += " row_select";
+				}else{
+					$("#tab1 div.row_select").removeClass("row_select");
+					row.getElement().className += " row_select";	
+				}
+			});
+		},
 
- 				var data = row.getData();
-				selectedRowData = data;
-				isEditMode = true;
-				$('#productInsertForm')[0].reset();
-				
+		rowDblClick:function(e, row){
+			var data = row.getData();
+			selectedRowData = data;
+			isEditMode = true;
+			$('#productInsertForm')[0].reset();
+			productInsertDetail(data.prod_code);
+			$("#btnSaveAs").show();
+			$('.delete').show();
+		},
+	});		
+}
 
-				console.log(data);
-				
-/* 				productInsertDetail(data.prod_code);	
-				 $('.delete').show();  */
-
-				    const d = row.getData();
-				    selectedRowData = d;
-				    $('#productInsertForm')[0].reset();
-				    
-				    // 상세조회 Ajax 요청 실행
-				    productInsertDetail(d.prod_code);
-				    
-				    $("#btnSaveAs").show();
-				    $('.delete').show();  // 필요 시
-			},
-		});		
-	}
 	
 
 	// 상세 조회

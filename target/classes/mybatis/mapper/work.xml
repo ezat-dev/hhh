@@ -354,7 +354,7 @@
 	values (#{werr_code},#{ilbo_code},#{ilbo_no},#{werr_lot}, #{werr_team},
 	#{werr_user}, #{werr_amnt}, #{werr_gubn}, #{werr_jgubn}, #{werr_gnote},
 	#{werr_jnote}, #{werr_case}, #{werr_note}, #{werr_date},
-	#{werr_wdate},#{werr_fac},#{werr_fname},#{werr_in_out_gubn})
+	#{werr_wdate},#{werr_fac},#{werr_fname},#{werr_inoutgubn})
 	</insert>
 	
 	<!-- 부적합보고서 수정-->
@@ -374,7 +374,7 @@
 			WERR_FAC = #{werr_fac},
 			WERR_TEAM = #{werr_team},
 			WERR_FNAME = #{werr_fname},
-			WERR_INOUTGUBN = #{werr_in_out_gubn}
+			WERR_INOUTGUBN = #{werr_inoutgubn}
 			where WERR_CODE = #{werr_code}
 	</update>
 	
@@ -491,15 +491,30 @@
 		WHERE WERR_CODE=#{werr_code}
 	</select>
 	
-	<insert id="nonInsertSave" parameterType="work">
-		insert into workerr (WERR_CODE,ILBO_CODE,ILBO_NO,WERR_DATE,WERR_YU,WERR_WDATE,WERR_MON,WERR_LOT,WERR_USER,WERR_REP,WERR_AMNT,WERR_GUBN,WERR_GNOTE,WERR_CASE,
-		WERR_JGUBN,WERR_JNOTE,CHECK_DATEA,CHECK_DATEB,CHECK_DATEC,WERR_USER1,WERR_USER2,WERR_USER3,WERR_NOTE1,WERR_NOTE2,WERR_NOTE3,WERR_BIGO1,WERR_BIGO2,WERR_BIGO3,WERR_ALERT,WERR_FNAME
-		,WERR_INOUTGUBN, WERR_BUSO) 
-		
-		values((select isnull(max(WERR_CODE), 0)+1 from workerr),#{ilbo_code},#{ilbo_no},#{werr_date},#{werr_yu},#{werr_wdate},#{werr_mon},#{werr_lot},#{werr_user},#{werr_rep},#{werr_amnt},
-		#{werr_gubn},#{werr_gnote},#{werr_case},#{werr_jgubn},#{werr_jnote},#{check_date_a},#{check_date_b},#{check_date_c},#{werr_user1},#{werr_user2},#{werr_user3},
-		#{werr_note1},#{werr_note2},#{werr_note3},#{werr_bigo1},#{werr_bigo2},#{werr_bigo3},#{werr_alert},#{werr_fname},#{werr_in_out_gubn},#{werr_buso})
-	</insert>
+	<insert id="nonInsertSave" parameterType="work" useGeneratedKeys="false">
+
+    <selectKey keyProperty="werr_code" resultType="int" order="BEFORE">
+        SELECT ISNULL(MAX(WERR_CODE), 0) + 1 FROM WORKERR
+    </selectKey>
+
+    INSERT INTO WORKERR (
+        WERR_CODE, ILBO_CODE, ILBO_NO, WERR_DATE, WERR_YU, WERR_WDATE, WERR_MON, 
+        WERR_LOT, WERR_USER, WERR_REP, WERR_AMNT, WERR_GUBN, WERR_GNOTE, WERR_CASE,
+        WERR_JGUBN, WERR_JNOTE, CHECK_DATEA, CHECK_DATEB, CHECK_DATEC,
+        WERR_USER1, WERR_USER2, WERR_USER3, WERR_NOTE1, WERR_NOTE2, WERR_NOTE3,
+        WERR_BIGO1, WERR_BIGO2, WERR_BIGO3, WERR_ALERT, WERR_FNAME,
+        WERR_INOUTGUBN, WERR_BUSO
+    )
+    VALUES (
+        #{werr_code}, #{ilbo_code}, #{ilbo_no}, #{werr_date}, #{werr_yu}, #{werr_wdate}, #{werr_mon},
+        #{werr_lot}, #{werr_user}, #{werr_rep}, #{werr_amnt}, #{werr_gubn}, #{werr_gnote}, #{werr_case},
+        #{werr_jgubn}, #{werr_jnote}, #{check_date_a}, #{check_date_b}, #{check_date_c},
+        #{werr_user1}, #{werr_user2}, #{werr_user3}, #{werr_note1}, #{werr_note2}, #{werr_note3},
+        #{werr_bigo1}, #{werr_bigo2}, #{werr_bigo3}, #{werr_alert}, #{werr_fname},
+        #{werr_inoutgubn}, #{werr_buso}
+    )
+</insert>
+
 	
 	
 	<update id="nonUdateSave" parameterType="work">
@@ -507,7 +522,7 @@
 			WERR_REP= #{werr_rep},WERR_AMNT= #{werr_amnt},WERR_GUBN= #{werr_gubn},WERR_GNOTE= #{werr_gnote},WERR_CASE= #{werr_case},WERR_JGUBN= #{werr_jgubn},WERR_JNOTE= #{werr_jnote},
 			CHECK_DATEA= #{check_date_a},CHECK_DATEB= #{check_date_b},CHECK_DATEC= #{check_date_c}, WERR_USER1= #{werr_user1},  WERR_USER2= #{werr_user2}, WERR_USER3= #{werr_user3},  WERR_NOTE1= #{werr_note1},
 			 WERR_NOTE2= #{werr_note2}, WERR_NOTE3= #{werr_note3}, WERR_BIGO1= #{werr_bigo1}, WERR_BIGO2= #{werr_bigo2}, WERR_BIGO3= #{werr_bigo3},WERR_ALERT= #{werr_alert}, WERR_FNAME = #{werr_fname},
-			 WERR_INOUTGUBN = #{werr_in_out_gubn}, WERR_BUSO = #{werr_buso}
+			 WERR_INOUTGUBN = #{werr_inoutgubn}, WERR_BUSO = #{werr_buso}
 		where WERR_CODE = #{werr_code}
 	</update>
 	
@@ -1352,7 +1367,7 @@
 					 INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
 			where 1 = 1
 			  and LEFT(CONVERT(VARCHAR, WORKERR.WERR_WDATE, 120), 7) = #{sdate}
-			  and WORKERR.WERR_INOUTGUBN = #{werr_in_out_gubn}
+			  and WORKERR.WERR_INOUTGUBN = #{werr_inoutgubn}
 				GROUP BY CORP.CORP_CODE
 				, WORKERR.WERR_GUBN
 		), corp_werr_pivot_list as ( /*부적합 구분 피벗*/
@@ -1381,7 +1396,7 @@
 			where 1 = 1
 			  and LEFT(CONVERT(VARCHAR, OCHULGO.OCH_DATE, 120), 7) = #{sdate}
 			  and WORKERR.WERR_GUBN like '%외관%'
-			  and WORKERR.WERR_INOUTGUBN = #{werr_in_out_gubn}
+			  and WORKERR.WERR_INOUTGUBN = #{werr_inoutgubn}
 				GROUP BY CORP.CORP_CODE
 		) , corp_och_sum as ( /*거래처별 출고 수량, 금액 가져오기*/
 			select CORP.CORP_CODE,
@@ -1408,7 +1423,7 @@
 					 INNER JOIN CORP ON CORP.CORP_CODE = PRODUCT.CORP_CODE
 			where 1 = 1
 			  and LEFT(CONVERT(VARCHAR, WORKERR.WERR_WDATE, 120), 7) = #{sdate}
-			  and WORKERR.WERR_INOUTGUBN = #{werr_in_out_gubn}
+			  and WORKERR.WERR_INOUTGUBN = #{werr_inoutgubn}
 				group by CORP.CORP_CODE
 		)
 		select
@@ -1457,7 +1472,7 @@
 			from WORKERR tn
 			where 1 = 1
 			  and LEFT(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 4) = #{sdate}
-			  and tn.WERR_INOUTGUBN = #{werr_in_out_gubn}
+			  and tn.WERR_INOUTGUBN = #{werr_inoutgubn}
 			group by subString(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6,2)
 		), getAVG as(
 			select 'AVG'                                                                                                                              as month

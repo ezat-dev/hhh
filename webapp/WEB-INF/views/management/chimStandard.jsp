@@ -30,15 +30,47 @@
 #editPop {
     background: #ffffff;
     border: 1px solid #000000;
-    width: 1300px; /* 가로 길이 고정 */
-    height: 720px; /* 세로 길이 고정 */
+    width: 1300px;
+    height: 720px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-    margin: 20px auto; /* 중앙 정렬 */
-    padding: 20px;
-    border-radius: 5px; /* 모서리 둥글게 */
-    overflow-y: auto; /* 세로 스크롤 추가 */
+    margin: 20px auto;
+    border-radius: 5px;
+    position: relative;
+    display: flex;
+    flex-direction: column; /* 헤더 + 내용 수직 배치 */
 }
 
+.header {
+    position: absolute; /* 모달 내부 상단에 고정 */
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #33363d;
+    height: 50px;
+    color: white;
+    font-size: 20px;
+    text-align: center;
+    z-index: 10;
+}
+
+.header-close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    color: white;
+}
+
+#editPop .modal-body {
+    flex: 1; /* 남은 공간 차지 */
+    overflow-y: auto; /* 내용만 스크롤 */
+    margin-top: 50px; /* 헤더 높이만큼 여백 */
+    padding: 20px; /* 내부 여백 */
+}
 .popField {
     margin-bottom: 20px; /* 각 필드셋 간의 여백 */
     border: 1px solid #ccc; /* 테두리 */
@@ -92,26 +124,7 @@
     height: 100%; /* 이미지 높이 */
     object-fit: cover; /* 이미지 비율 유지 */
 }
-.header {
-    display: flex; /* 플렉스 박스 사용 */
-    justify-content: center; /* 중앙 정렬 */
-    align-items: center; /* 수직 중앙 정렬 */
-    margin-bottom: 10px; /* 상단 여백 */
-    background-color: #33363d; /* 배경색 */
-    height: 50px; /* 높이 */
-    color: white; /* 글자색 */
-    font-size: 20px; /* 글자 크기 */
-    text-align: center; /* 텍스트 정렬 */
-    position: relative;
-}
-.header-close {
-	position: absolute;
-	right: 15px;
-	top: 10px;
-	cursor: pointer;
-	font-size: 20px;
-	color: white;
-}
+
 .btnSaveClose {
 	display: flex;
 	justify-content: center; /* 가운데 정렬 */
@@ -205,6 +218,30 @@ body{
 .modal-close {
   cursor: pointer;
   font-size: 24px;
+}
+/* 페이지네이션 중앙정렬 */
+.tabulator-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+}
+
+/* 커스텀 페이지 버튼 */
+.custom-pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background: #f8f8f8;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+.custom-pagination button:hover {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
 }     
     </style>
     
@@ -264,6 +301,8 @@ body{
        			침탄로표준등록
        			<span class="header-close">&times;</span>
        </div>
+       
+       <div class="modal-body">
         <fieldset class="popField">
           <legend>제품정보</legend>
           <fieldset class="popField">
@@ -972,6 +1011,7 @@ body{
             </tbody></table>
           </fieldset>
         </div>
+        </div>
         <div class="btnSaveClose">
         	<button class="delete" type="button" onclick="deleteChim();"  style="display: none;">삭제</button>
             <button class="save" type="button" onclick="save();">저장</button>
@@ -1037,118 +1077,84 @@ body{
 	//이벤트
 	//함수
 	function getChimStandardList(){
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    selectableRows:true,
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/management/chimStandardInsert/getChimStandardList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	/* "corp_name": $("#corp_name").val(),
-                "prod_name": $("#prod_name").val(),
-                "prod_no": $("#prod_no").val(),
-                "fac_name": $("#fac_name").val(), */
-			    },
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},
-		        {title:"고객명", field:"corp_name", sorter:"string", width:120,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"품명", field:"prod_name", sorter:"string", width:220,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"도번/품번", field:"prod_no", sorter:"string", width:200,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"기종", field:"prod_kijong", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"재질", field:"prod_jai", sorter:"int", width:200,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"단가", field:"prod_dang", sorter:"int", width:200,
-			        hozAlign:"center", headerFilter:"input"},
-			    {title:"설비", field:"fac_name", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"},
-				{title:"공정", field:"tech_te", sorter:"int", width:150,
-					hozAlign:"center", headerFilter:"input"},
-					{title:"", field:"wstd_code", visible:false},
-					/* {title:"단취사진", field:"wstd_chim_file_name1", width:100,
-						hozAlign:"center", formatter:"image",
-					    cssClass:"rp-img-popup",
-				      	formatterParams:{
-					      	height:"30px", width:"30px",
-					      	urlPrefix:"/tkPrint/사진/침탄로작업표준/"
-					      	}, 
-					    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
-					    },
-						{title:"사진-3", field:"wstd_chim_file_name2", width:100,
-							hozAlign:"center", formatter:"image",
-						    cssClass:"rp-img-popup",
-					      	formatterParams:{
-						      	height:"30px", width:"30px",
-						      	urlPrefix:"/tkPrint/사진/침탄로작업표준/"
-						      	}, 
-						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
-						    }, */
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
+    userTable = new Tabulator("#tab1", {
+        height:"750px",
+        layout:"fitColumns",
+        selectable:true, // 로우 선택
+        tooltips:true,
+        selectableRangeMode:"click",
+        selectableRows:true,
+        reactiveData:true,
+        headerHozAlign:"center",
+        ajaxConfig:"POST",
+        ajaxLoader:false,
+        ajaxURL:"/tkheat/management/chimStandardInsert/getChimStandardList",
+        ajaxParams:{
+            /* 필요한 경우 검색 조건 추가 가능 */
+            /* "corp_name": $("#corp_name").val(), */
+        },
+        placeholder:"조회된 데이터가 없습니다.",
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+        // ✅ 클라이언트 페이징 설정
+        pagination:"local",               // 클라이언트 사이드 페이징
+        paginationSize:20,                // 기본 페이지당 표시 개수
+        paginationSizeSelector:[20,50,100,500,1000],  // 페이지당 표시 선택 가능
+        paginationCounter:"rows",         // "rows" = 현재 페이지 범위/전체 행수 표시
 
-				var rowData = row.getData();
-				
-			},
-			rowDblClick:function(e, row){
+        ajaxResponse:function(url, params, response){
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
+            return response.data ? response.data : response; // data 유무 체크
+        },
 
-				var data = row.getData();
-				selectedRowData = data;
-				isEditMode = true;
-				$('#chimStandardForm')[0].reset();
+        columns:[
+            {title:"NO", field:"idx", sorter:"int", width:80, hozAlign:"center"},
+            {title:"고객명", field:"corp_name", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"품명", field:"prod_name", sorter:"string", width:220, hozAlign:"center", headerFilter:"input"},
+            {title:"도번/품번", field:"prod_no", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"기종", field:"prod_kijong", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"재질", field:"prod_jai", sorter:"int", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"단가", field:"prod_dang", sorter:"int", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"설비", field:"fac_name", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"공정", field:"tech_te", sorter:"int", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"", field:"wstd_code", visible:false},
+        ],
 
-/*
-				Object.keys(data).forEach(function (key) {
-			        const field = $('#chimStandardForm [name="' + key + '"]');
+        rowFormatter:function(row){
+            var data = row.getData();
+            row.getElement().style.fontWeight = "700";
+            row.getElement().style.backgroundColor = "#FFFFFF";
+        },
 
-			        if (field.length) {
-			            field.val(data[key]);
-			        }
-				});
-*/
+        rowClick:function(e, row){
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
+                if($(this).hasClass("row_select")){							
+                    $(this).removeClass('row_select');
+                    row.getElement().className += " row_select";
+                } else {
+                    $("#tab1 div.row_select").removeClass("row_select");
+                    row.getElement().className += " row_select";	
+                }
+            });
+        },
+
+        rowDblClick:function(e, row){
+            var data = row.getData();
+            selectedRowData = data;
+            isEditMode = true;
+            $('#chimStandardForm')[0].reset();
+
+            getChimStandardDetail(data.wstd_code);
+            $("#btnSaveAs").show();
+            $('.delete').show();
+        },
+    });		
+}
 
 
-				getChimStandardDetail(data.wstd_code);
-				$("#btnSaveAs").show();
-				$('.delete').show();
-			},
-		});		
-	}
+
+
+
 	
-
 function getChimStandardDetail(wstd_code){
 	$.ajax({
 		url:"/tkheat/management/chimStandardInsert/getChimStandardDetail",
@@ -1322,6 +1328,8 @@ function getChimStandardDetail(wstd_code){
             }
         });
     }
+
+    
 
     function closeProductListModal() {
         document.getElementById('productListModal').style.display = 'none';

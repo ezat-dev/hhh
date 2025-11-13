@@ -28,23 +28,23 @@
 	<task:executor id="executor" keep-alive="10" pool-size="10-20"
 		queue-capacity="10" rejection-policy="ABORT" />
 
-<!-- 로컬 테스트용 
+<!-- 로컬 테스트용 -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
 		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" /> 
-		<property name="url" value="jdbc:sqlserver://192.168.1.59:1433;DataBaseName=HEATDB_EZ;" /> 
-		<property name="username" value="sa" /> 
-		<property name="password" value="ezat6695"/>
+		<property name="url" value="jdbc:sqlserver://192.168.0.201:1433;DataBaseName=HEATDB_EZAT;" /> 
+		<property name="username" value="heatmaster" /> 
+		<property name="password" value="rpn123!!"/>
 	</bean>
--->
 
-<!-- 서버 적용 -->
+
+<!-- 서버 적용
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
 		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" /> 
 		<property name="url" value="jdbc:sqlserver://192.168.0.201:1433;DataBaseName=HEATDB;" /> 
 		<property name="username" value="heatmaster" /> 
 		<property name="password" value="rpn123!!"/>
 	</bean>
-
+ -->
 	<bean id="dataSourceSQLite" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
 		<property name="driverClassName" value="org.sqlite.JDBC" /> 
 		<property name="url" value="jdbc:sqlite://DESKTOP-EGTIDRQ\Users\admin\Documents\Autonics\SCADAMaster\Project\TKHEAT\Data\Alarm\TKHEAT_AlarmData.db" />
