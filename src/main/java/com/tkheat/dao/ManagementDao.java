@@ -85,6 +85,7 @@ public interface ManagementDao {
 	List<Standard> getGoStandardList(Standard standard);
 	
 	void insertUser(Users users);
-
+	
+	void updateUser(Users users);
 	
 }

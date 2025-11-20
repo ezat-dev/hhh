@@ -279,8 +279,8 @@ textarea {
     <div class="box1">
            <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>
         
-        	<label class="daylabel">업체명 :</label>
-			<input type="text" class="corp_name" id="corp_name" style="font-size: 16px;" autocomplete="off">
+        	<!-- <label class="daylabel">업체명 :</label>
+			<input type="text" class="corp_name" id="corp_name" style="font-size: 16px;" autocomplete="off"> -->
 			<!-- <label class="daylabel">업체명 :</label>
 			<input type="text" class="corp_name" id="corp_name" style="font-size: 16px;" autocomplete="off">
 			
@@ -827,9 +827,12 @@ textarea {
               <th>도면파일</th>
               <td>
                 <div>
-                      <input id="file" class="valClean" type="file" title="파일 찾기">
+                      <input id="file" class="valClean" type="file" title="파일 찾기" name="drawing_file_url">
                   <input type="button" value="X" onclick="$('#fileLink').text('');">
                   </div>
+                  <div>
+    				<a href="#" id="fileLink" class="valClean" onclick="openDrawingModal(event)"></a> 
+				</div>
                 <div>
                   <a href="" id="fileLink" class="valClean" target="_blank"></a> 
                 </div>
@@ -917,7 +920,18 @@ textarea {
     
 	    
 
-	    
+	  <!-- pdf 미리보기 모달창 -->  
+<div id="drawingFileModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 90%; height: 90%;">
+        <div class="modal-header">
+            <span class="modal-title">도면 파일: <span id="drawingFileName"></span></span> 
+            <span class="modal-close" onclick="closeDrawingModal()">&times;</span>
+        </div>
+        <div class="modal-body" style="height: calc(100% - 60px);">
+            <iframe id="pdfViewer" src="" frameborder="0" width="100%" height="100%"></iframe>
+        </div>
+    </div>
+</div>
 <script>
 
 
@@ -1085,6 +1099,14 @@ $('.imgInputClass').change(function(event){
                 const path = "/tkPrint/사진/제품등록/" + d.heat_file_name;
                 $("#img2").attr("src", path);
                 $(".cphoto").attr("href", path).text(d.heat_file_name);
+            }
+
+            //도면파일
+            if (d.drawing_file_name) {
+                const path = "/tkPrint/사진/제품등록/" + d.drawing_file_name;
+                $("#fileLink")
+                    .attr("href", path)
+                    .text(d.drawing_file_name); // 파일명을 텍스트로 표시
             }
 
             // 모달 열기
@@ -1347,8 +1369,30 @@ $('.imgInputClass').change(function(event){
 	    userTable.download("xlsx", filename, { sheetName: "제품등록" });
 	});
 
+//pdf 미리보기
+function openDrawingModal(event) {
+    event.preventDefault(); // 링크의 기본 동작 방지
+    
+    const fileLink = $("#fileLink");
+    const filePath = fileLink.attr("href");
+    const fileName = fileLink.text();
 
+    if (!filePath || filePath === "#" || fileName === "") {
+        alert("저장된 도면 파일이 없습니다.");
+        return;
+    }
 
+    $("#drawingFileName").text(fileName);
+    $("#pdfViewer").attr("src", filePath);
+    
+    // 모달 표시
+    $('#drawingFileModal').show();
+}
+//pdf 모달 닫기
+function closeDrawingModal() {
+    $('#drawingFileModal').hide()
+    $("#pdfViewer").attr("src", ""); 
+}
 	
 	
 

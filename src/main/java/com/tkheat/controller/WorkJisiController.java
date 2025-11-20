@@ -1,6 +1,7 @@
 package com.tkheat.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +12,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -24,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.tkheat.domain.Chulgo;
 import com.tkheat.domain.Ipgo;
 import com.tkheat.domain.Product;
 import com.tkheat.domain.Users;
@@ -184,7 +186,7 @@ public class WorkJisiController {
 			return rtnMap; 
 		}
 
-		//작업지시 - 등록
+		//입고관리 - 등록
 		@RequestMapping(value = "/product/ipgo/ipgoAdd", method = RequestMethod.POST) 
 		@ResponseBody 
 		public Map<String, Object> setIpgoAdd(@RequestBody String str){
@@ -291,8 +293,22 @@ public class WorkJisiController {
 		List<Ipgo> ipgoList = null;
 
         String fileName = ""; //파일명
+        String fileNameGb = ""; //열처리수주서, 열후TAG, 입고현황표 구분
 		
 		String abPath = ""; //파일경로
+		
+		switch(ord_print_gb) {
+			case 1: fileNameGb = "열처리수주서/"; break;
+			case 2: fileNameGb = "열후TAG/"; break;
+			case 3: fileNameGb = "입고현황표/"; break;
+		}
+		
+		String mergePath = "D:/태경출력파일/"+fileNameGb;
+		String mergePathFileName = "";
+		
+		//PDF파일병합 추가
+		PDFMergerUtility merge = new PDFMergerUtility();
+		
 		
 		
 		if(ordCodeArray.length > 0) {
@@ -303,16 +319,18 @@ public class WorkJisiController {
 				if(ord_print_gb == 1) {
 					ipgoList = workJisiService.ipgoListPrintBeforeHeat(ipgo);
 					abPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/BeforeHeat.jrxml");
-					fileName = "열처리수주서/"+ord_code;
+					fileName = fileNameGb+ord_code;
 				}else if(ord_print_gb == 2) {
 					ipgoList = workJisiService.ipgoListPrintAfterHeat(ipgo);
 					abPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/AfterHeat.jrxml");
-					fileName = "열후TAG/"+ord_code;
+					fileName = fileNameGb+ord_code;
 				}else if(ord_print_gb == 3) {
 					ipgoList = workJisiService.ipgoListPrintManager(ipgo);
 					abPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/repIbgoManager.jrxml");
-					fileName = "입고현황표/"+ord_code;
+					fileName = fileNameGb+ord_code;
 				}
+				
+				mergePathFileName = ord_code+"_"+ordCodeArray.length;
 				
 				try {
 					JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(ipgoList);
@@ -331,14 +349,24 @@ public class WorkJisiController {
 					
 					JasperExportManager exportManager = JasperExportManager.getInstance(jasperReportsContext); 
 					JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/"+fileName+".pdf");			
-					rtnMap.put("heatData",fileName+".pdf");
+					
 
+					merge.addSource("D:/태경출력파일/"+fileName+".pdf");
+					
 				}catch(Exception e) {
 					e.printStackTrace();
 				}
 				
 				
+			}			
+			merge.setDestinationFileName(mergePath+mergePathFileName+".pdf");
+			try {
+				merge.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
+				rtnMap.put("heatData",mergePathFileName+".pdf");
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+			
 		}
 		
 		return rtnMap;
@@ -529,6 +557,7 @@ public class WorkJisiController {
 			@RequestParam String s_ord_sunip_pw,
 			@RequestParam int jisi_h_calc_su_param,
 			@RequestParam(value="ipgo_ord_code_array") int[] ord_code_array,
+			@RequestParam(value="selectOrdCodeArray") int[] selectOrdCodeArray,
 			HttpServletRequest request){
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		
@@ -552,13 +581,14 @@ public class WorkJisiController {
 		w.setOrd_code(Integer.parseInt(jsonObj.get("ord_code").toString()));
 		w.setJisi_h_calc_su(jisi_h_calc_su_param);
 		w.setOrd_code_array(ord_code_array);
+		w.setSelectOrdCodeArray(selectOrdCodeArray);
 		
 		//선입제품이 있는지 체크
 		if(s_ord_sunip_check == 0) {
 			List<WorkJisi> sunipWork = workJisiService.getWorkJisiHeatIpgoListRegSunip(w);
 			
 			if(sunipWork.size() > 0) {
-				rtnMap.put("alert","선입된 제품이 있습니다. 다시 확인하십시오!");
+				rtnMap.put("alert","선입제품이 있습니다. 다시 확인하십시오!");
 				rtnMap.put("alertData",sunipWork);
 				return rtnMap;
 			}
@@ -571,48 +601,72 @@ public class WorkJisiController {
 			}
 		}
 		
+		//배열로 가지고 있는 수주번호로 품번이 동일한지 아닌지 구분
+		List<WorkJisi> prodCodeList = workJisiService.getWorkJisiHeatProdCodeList(w);
+		//동일할경우 작업표준의 '총 작업수량'의 값보다 크면 안됨
 		
 		
-		//선입제품이 없다면 총 단취수량의 합까지 모든 리스트 조회
 		List<WorkJisi> ipgoList = workJisiService.getWorkJisiHeatIpgoListRegList(w);
+		System.out.println("선택한 제품의 품번 수 : "+prodCodeList.size());
 		int jisi_diff_su = 0;
+		//작업표준의 총 작업수량
 		int jisi_j_su = Integer.parseInt(jsonObj.get("jisi_j_su").toString());
 		
+		//화면에 리턴할 리스트
 		List<WorkJisi> rtnList = new ArrayList<WorkJisi>();
 		
-		for(WorkJisi wj : ipgoList) {
-			int temp = 0;
+		if(prodCodeList != null) {
+			//작업지시 등록할 제품의 품번이 동일할 때
+			if(prodCodeList.size() <= 1) {
+				//선입제품이 없다면 총 단취수량의 합까지 모든 리스트 조회
+				
+				for(WorkJisi wj : ipgoList) {
+					int temp = 0;
+	
+					jisi_diff_su = wj.getJisi_diff_su(); //행의 잔량
+					if(jisi_j_su != jisi_h_calc_su_param) {
+						if(jisi_h_calc_su_param == 0) {
+								//침탄표준의 적재수량이 더 클 때
+							if(jisi_j_su > jisi_diff_su) {
+								temp = jisi_diff_su;					
+							}else{
+								//침탄표준의 적재수량이 더 작거나 같을 때
+								temp = jisi_j_su;
+							}
+						}else {
+								//400, 200 > 50
+							if(jisi_j_su > (jisi_h_calc_su_param + jisi_diff_su)) {
+								temp = jisi_diff_su;
+							}else{
+								//400, 200 < 210
+								temp = jisi_j_su - jisi_h_calc_su_param;
+							}
+							
+						}
+						
+						wj.setJisi_h_su(temp);
+			
+						rtnList.add(wj);
+					}else {
+						rtnMap.put("alert","총 작업수량을 초과할 수 없습니다!");
+						return rtnMap;				
+					}
+	
+				}
+			}else {
+				for(WorkJisi wj : ipgoList) {
+					int temp = 0;
 
-			jisi_diff_su = wj.getJisi_diff_su(); //행의 잔량
-			if(jisi_j_su != jisi_h_calc_su_param) {
-				if(jisi_h_calc_su_param == 0) {
-						//침탄표준의 적재수량이 더 클 때
-					if(jisi_j_su > jisi_diff_su) {
-						temp = jisi_diff_su;					
-					}else{
-						//침탄표준의 적재수량이 더 작거나 같을 때
-						temp = jisi_j_su;
-					}
-				}else {
-						//400, 200 > 50
-					if(jisi_j_su > (jisi_h_calc_su_param + jisi_diff_su)) {
-						temp = jisi_diff_su;
-					}else{
-						//400, 200 < 210
-						temp = jisi_j_su - jisi_h_calc_su_param;
-					}
+					temp += jisi_h_calc_su_param;
+					
+					wj.setJisi_h_su(temp);
+		
+					rtnList.add(wj);
 					
 				}
-				
-				wj.setJisi_h_su(temp);
-	
-				rtnList.add(wj);
-			}else {
-				rtnMap.put("alert","총 작업수량을 초과할 수 없습니다!");
-				return rtnMap;				
 			}
-
 		}
+		
 /*		
 		List<WorkJisi> list = workJisiService.workJisiHeatIpgoList(w);
 		
@@ -826,11 +880,9 @@ public class WorkJisiController {
 	}		
 
 	//작업지시 - 공정이동식별표 출력
-	
-	//작업지시 - 작업지시서 출력
-	@RequestMapping(value = "/production/workjisi/heat/workHeatListPrint", method = RequestMethod.POST)
+	@RequestMapping(value = "/production/workjisi/heat/workHeatListProcPrint", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> workHeatListPrint(
+	public Map<String, Object> workHeatListProcPrint(
 			@RequestParam(value="jisi_lot_array") String[] jisiLotArray,
 			HttpServletRequest request){
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
@@ -843,8 +895,15 @@ public class WorkJisiController {
 			}			
 		}
 		
-		Iterator<String> setList = lotSet.iterator();
 		
+		String mergePathProc = "D:/태경출력파일/공정이동표/";
+		String fileName = "";
+		
+		//PDF파일병합 추가
+		PDFMergerUtility mergeProc = new PDFMergerUtility();
+		
+		Iterator<String> setList = lotSet.iterator();
+
 		while(setList.hasNext()) {
 //			System.out.println(setList.next());
 			WorkJisi w = new WorkJisi();
@@ -863,7 +922,92 @@ public class WorkJisiController {
 			}
 			
 			//JasperReports 연동
-	        String fileName = reportWorkJisi.getJisi_lot_view(); // 최종 파일 이름
+	        fileName = reportWorkJisi.getJisi_lot_view()+"_"+jisiLotArray.length; // 최종 파일 이름
+			
+			//공정이동표 출력
+			List<WorkJisi> ordList = workJisiService.workHeatListProcessPrint(w);
+	        
+			
+			String abPath2 = request.getServletContext().getRealPath("/WEB-INF/resources/reports/workprocess.jrxml");
+			
+			try {
+				
+					
+				
+				Map<String, Object> reportMap = new HashMap<String, Object>();
+	            reportMap.put("ord_list", ordList);
+	               
+	            reportMap.put("jisi_lot", reportWorkJisi.getJisi_lot());					
+				JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(ordList);
+				
+				JasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
+				JasperCompileManager compileManager = JasperCompileManager.getInstance(jasperReportsContext);
+				JasperReport report = JasperCompileManager.compileReport(abPath2);
+				
+				
+				JasperFillManager fillManager = JasperFillManager.getInstance(jasperReportsContext);
+				
+				JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);		
+				
+				JasperExportManager exportManager = JasperExportManager.getInstance(jasperReportsContext); 
+				JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/공정이동표/"+fileName+".pdf");			
+				rtnMap.put("heatData",fileName+".pdf");
+				
+				mergeProc.addSource("D:/태경출력파일/공정이동표/"+fileName+".pdf");
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		mergeProc.setDestinationFileName(mergePathProc+fileName+".pdf");
+		return rtnMap;
+	}
+	
+	//작업지시 - 작업지시서 출력
+	@RequestMapping(value = "/production/workjisi/heat/workHeatListWorkPrint", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> workHeatListPrint(
+			@RequestParam(value="jisi_lot_array") String[] jisiLotArray,
+			HttpServletRequest request){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+	
+		Set<String> lotSet = new HashSet<String>();
+		
+		if(jisiLotArray != null) {
+			for(String s : jisiLotArray) {
+				lotSet.add(s);	
+			}			
+		}
+		
+		
+		String mergePathWork = "D:/태경출력파일/작업지시서/";
+		String fileName = "";
+		
+		//PDF파일병합 추가
+		PDFMergerUtility mergeWork = new PDFMergerUtility();
+		
+		Iterator<String> setList = lotSet.iterator();
+
+		while(setList.hasNext()) {
+//			System.out.println(setList.next());
+			WorkJisi w = new WorkJisi();
+			w.setJisi_lot(setList.next());
+			
+			//선택한 작업번호에 대한 상세정보
+			List<WorkJisi> lotList = workJisiService.workHeatListPrint(w);
+			int jisi_h_su_sum = 0;
+			float jisi_h_jung_sum = 0;
+			
+			WorkJisi reportWorkJisi = null;
+			for(WorkJisi wj : lotList) {
+				reportWorkJisi = wj;
+				jisi_h_su_sum += wj.getJisi_h_su();
+				jisi_h_jung_sum += wj.getJisi_h_jung();
+			}
+			
+			//JasperReports 연동
+	        fileName = reportWorkJisi.getJisi_lot_view()+"_"+jisiLotArray.length; // 최종 파일 이름
 			
 			String abPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/workheat.jrxml");
 			
@@ -911,44 +1055,13 @@ public class WorkJisiController {
 				JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/작업지시서/"+fileName+".pdf");			
 				rtnMap.put("heatData",fileName+".pdf");
 
+				mergeWork.addSource("D:/태경출력파일/작업지시서/"+fileName+".pdf");
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
-			
-			//공정이동표 출력
-			List<WorkJisi> ordList = workJisiService.workHeatListProcessPrint(w);
-	        
-			
-			String abPath2 = request.getServletContext().getRealPath("/WEB-INF/resources/reports/workprocess.jrxml");
-			
-			try {
-				
-					
-				String fileName2 = reportWorkJisi.getJisi_lot_view(); // 최종 파일 이름
-				
-				Map<String, Object> reportMap = new HashMap<String, Object>();
-	            reportMap.put("ord_list", ordList);
-	               
-	            reportMap.put("jisi_lot", reportWorkJisi.getJisi_lot());					
-				JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(ordList);
-				
-				JasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
-				JasperCompileManager compileManager = JasperCompileManager.getInstance(jasperReportsContext);
-				JasperReport report = JasperCompileManager.compileReport(abPath2);
-				
-				
-				JasperFillManager fillManager = JasperFillManager.getInstance(jasperReportsContext);
-				
-				JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);		
-				
-				JasperExportManager exportManager = JasperExportManager.getInstance(jasperReportsContext); 
-				JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/공정이동표/"+fileName2+".pdf");			
-				rtnMap.put("heatData",fileName+".pdf");
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
-			
 		}
+		
+		mergeWork.setDestinationFileName(mergePathWork+fileName+".pdf");
 		return rtnMap;
 	}
 	

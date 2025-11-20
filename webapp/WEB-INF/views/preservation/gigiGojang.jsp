@@ -193,7 +193,36 @@ textarea {
 th{
 	font-size : 14px;
 }
-    
+    /* 화면 전체를 덮는 오버레이 */
+.modal-overlay {
+    /* ✨ 필수: 화면에 고정 */
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+    z-index: 9999; /* gojangModal(z-index: 1000)보다 높게 설정 */
+    display: none;
+    /* 추가: flex로 중앙 정렬 준비 */
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+}
+
+/* 모달 내용 컨테이너 */
+.modal-content {
+    background: #ffffff;
+    border: 1px solid #000000;
+    width: 50%;
+    max-width: 100%; 
+    height: 90%; 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    border-radius: 5px;
+    /* 모달 자체의 위치 조정 불필요 (부모 .modal-overlay의 flex 덕분) */
+    position: relative; 
+    overflow: hidden; /* 내부 스크롤을 위해 overflow 처리 */
+}
     </style>
     
     
@@ -391,14 +420,14 @@ th{
                                 <tr>
                                     <th class="left">수리전사진</th>
                                     <td>
-                                                <input id="terr_bphoto" name="terr_bphoto" type="file" class="rp-input" onchange="rpReadImageURL(this); $(this).parent().find('img').removeClass('rp-file-del');" style="float:left;width: 220px;">
+                                                <input id="terr_bphoto" name="terr_bphoto_url" type="file" class="rp-input" onchange="rpReadImageURL(this); $(this).parent().find('img').removeClass('rp-file-del');" style="float:left;width: 220px;">
                                                 <button onclick="imageDelete(this)" style="float:left">X</button><br><br>
                                                 <img id="terr_bphoto_before" name="terr_bphoto_before" height="220" width="100%" align="center"  style="display: none;">
                                             
                                     </td>
                                     <th class="left">수리후사진</th>
                                     <td>
-                                                <input id="terr_aphoto" name="terr_aphoto" type="file" class="rp-input" onchange="rpReadImageURL(this); $(this).parent().find('img').removeClass('rp-file-del');" style="float:left;width: 220px;">
+                                                <input id="terr_aphoto" name="terr_aphoto_url" type="file" class="rp-input" onchange="rpReadImageURL(this); $(this).parent().find('img').removeClass('rp-file-del');" style="float:left;width: 220px;">
                                                 <button onclick="imageDelete(this)" style="float:left">X</button><br><br>
                                                 <img id="terr_aphoto_after" name="terr_aphoto_after" height="220" width="100%" align="center"  style="display: none;">
                                             
@@ -417,7 +446,19 @@ th{
         </div>
    </div>
 </form>   
-   
+
+   	  <!-- 미리보기 모달창 -->  
+<div id="drawingFileModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="height: 90%;">
+        <div class="modal-header">
+            <span class="modal-title">도면 파일: <span id="drawingFileName"></span></span> 
+            <span class="modal-close" onclick="closeDrawingModal()">&times;</span>
+        </div>
+        <div class="modal-body" style="height: calc(100% - 60px);">
+            <iframe id="pdfViewer" src="" frameborder="0" width="100%" height="100%"></iframe>
+        </div>
+    </div>
+</div>
    
    
        
@@ -481,6 +522,24 @@ th{
 			        hozAlign:"center", headerFilter:"input"},	
 		        {title:"소요비용", field:"terr_cost", sorter:"string", width:100,
 		        	hozAlign:"center", headerFilter:"input"},
+					{title:"수리 전 사진", field:"terr_bphoto", width:100,
+						hozAlign:"center", formatter:"image",
+					    cssClass:"rp-img-popup",
+				      	formatterParams:{
+					      	height:"30px", width:"30px",
+					      	urlPrefix:"/tkPrint/사진/측정기기고장이력/"
+					      	}, 
+					    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+					    },
+						{title:"수리 전 사진", field:"terr_aphoto", width:100,
+							hozAlign:"center", formatter:"image",
+						    cssClass:"rp-img-popup",
+					      	formatterParams:{
+						      	height:"30px", width:"30px",
+						      	urlPrefix:"/tkPrint/사진/측정기기고장이력/"
+						      	}, 
+						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+						    },
 		        {title:"기기코드", field:"terr_code", sorter:"string", width:100,
 			        hozAlign:"center", headerFilter:"input", visible:false},
 			    {title:"기기코드", field:"ter_code", sorter:"string", width:100,
@@ -685,7 +744,28 @@ th{
 		gojangModal.style.display = 'none';
 	});
 	
-		
+	//미리보기
+	function openDrawingModal(event, fileName) {
+	    event.preventDefault(); // 링크의 기본 동작 방지
+	    const FILE_PREFIX_PATH = "/tkPrint/사진/측정기기고장이력/";
+
+	    if (!fileName) {
+	        alert("저장된 파일이 없습니다.");
+	        return;
+	    }
+	    const filePath = FILE_PREFIX_PATH + fileName;
+
+	    $("#drawingFileName").text(fileName);
+	    $("#pdfViewer").attr("src", filePath);
+	    
+	    // 모달 표시
+	    $('#drawingFileModal').show();
+	}
+	//모달 닫기
+	function closeDrawingModal() {
+	    $('#drawingFileModal').hide()
+	    $("#pdfViewer").attr("src", ""); 
+	}	
 
 
     </script>

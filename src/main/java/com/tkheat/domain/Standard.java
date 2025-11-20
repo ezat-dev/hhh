@@ -349,8 +349,15 @@ public class Standard {
 	private String fac_state;
 	private String wstd_chim_file_name1; //단취사진 이름
 	private String wstd_chim_file_name2; //사진-3
+	private String drawing_file_name;
 	
 	
+	public String getDrawing_file_name() {
+		return drawing_file_name;
+	}
+	public void setDrawing_file_name(String drawing_file_name) {
+		this.drawing_file_name = drawing_file_name;
+	}
 	public String getWstd_chim_file_name1() {
 		return wstd_chim_file_name1;
 	}

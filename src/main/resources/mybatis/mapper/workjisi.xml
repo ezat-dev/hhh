@@ -800,6 +800,10 @@
 			 CONVERT(VARCHAR(20),GETDATE(),20), #{fac_code}
 			 );
 
+			INSERT INTO tb_worktracking (tracking_regdate, tracking_lot, tracking_ord_code, tracking_ilbo_lot)
+			VALUES
+			(CONVERT(VARCHAR(23),GETDATE(),21),#{jisi_lot},#{ord_code},#{ilbo_lot});
+
 	</insert>
 	
 	
@@ -843,12 +847,25 @@
 	<!-- 작업지시리스트 삭제(tb_workheat테이블 삭제) -->
 	<delete id="workJisiListDeletWorkHeat" parameterType="workjisi">
 		DELETE FROM tb_workheat WHERE jisi_lot_view = #{jisi_lot_view}
+		
+		DELETE FROM tb_worktracking WHERE tracking_lot = #{jisi_lot_view}
 	</delete>
 	
 	<!-- 작업지시리스트 삭제(WORKILBO테이블 삭제) -->
 	<delete id="workJisiListDeletWorkIlbo" parameterType="workjisi">
 		DELETE FROM WORKILBO WHERE ILBO_LOT = #{jisi_lot_view}
 	</delete>
+	
+	<!-- 작업지시 수주번호 기준 품번의 갯수 조회 -->
+	<select id="getWorkJisiHeatProdCodeList" parameterType="workJisi" resultType="workJisi">
+		SELECT prod_code
+		FROM ORDERT
+		WHERE ord_code IN
+		<foreach collection="selectOrdCodeArray" item="ord_code" open="(" separator="," close=")">
+			#{ord_code}
+		</foreach>
+		GROUP BY prod_code
+	</select>
 	
 	<!-- 출고관리  -->
 
@@ -1024,5 +1041,24 @@ SELECT
            )
 		
 	</insert>
+	
+	<!-- 모니터링 -->
+	<select id="barcodeDataCheck" parameterType="workJisi" resultType="workJisi">
+		SELECT *
+		FROM tb_workheat
+		WHERE 1=1
+		AND jisi_lot = #{jisi_lot}
+	</select>	
+
+	<select id="barcodeDataDupCheck" parameterType="workJisi" resultType="workJisi">
+		SELECT *
+		FROM tb_monitoring
+		WHERE 1=1
+		AND lot_qr = #{jisi_lot}
+	</select>
+	
+	<update id="barcodeDataProc" parameterType="workJisi">
+		EXEC BARCODE_DATA_PROC #{jisi_lot}, #{jisi_lot_view}, #{hogi}, #{proc_gb}, #{proc_gb_detail}
+	</update>
 	
 </mapper>

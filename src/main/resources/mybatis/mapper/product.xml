@@ -72,7 +72,8 @@
 		           product_file_name,
 		           apperance_file_name,
 		           heat_file_name,
-		           PROD_WHADEEP
+		           PROD_WHADEEP,
+		           drawing_file_name
 
 		       )
 		       VALUES 
@@ -143,7 +144,8 @@
 					#{product_file_name},
 					#{apperance_file_name},
 					#{heat_file_name},
-					#{prod_whadeep}
+					#{prod_whadeep},
+					#{drawing_file_name}
 	          )
 	</insert>
 	
@@ -404,6 +406,9 @@
         </if>
         <if test="heat_file_name != null">
             heat_file_name = #{heat_file_name},
+        </if>
+        <if test="drawing_file_name != null">
+            drawing_file_name = #{drawing_file_name},
         </if>
     </trim>
     WHERE PROD_CODE = #{prod_code}

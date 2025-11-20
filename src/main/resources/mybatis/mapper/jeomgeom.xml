@@ -43,7 +43,8 @@
         CHS_MAX,
         CHS_DANW,
         CHS_CHKMETHOD,
-        CHS_STEPMETHOD
+        CHS_STEPMETHOD,
+        CHS_IMG
         )
         VALUES
         (
@@ -59,7 +60,8 @@
         #{chs_max},
         #{chs_danw},
         #{chs_chkmethod},
-        #{chs_stepmethod}
+        #{chs_stepmethod},
+        #{chs_img}
         )
     </insert>
     
@@ -77,7 +79,8 @@
         CHS_MAX         = #{chs_max},
         CHS_DANW        = #{chs_danw},
         CHS_CHKMETHOD   = #{chs_chkmethod},
-        CHS_STEPMETHOD  = #{chs_stepmethod}
+        CHS_STEPMETHOD  = #{chs_stepmethod},
+        CHS_IMG  = #{chs_img}
     	WHERE
         CHS_CODE = #{chs_code}
     </update>

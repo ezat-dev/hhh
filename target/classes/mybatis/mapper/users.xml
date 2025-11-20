@@ -98,6 +98,26 @@
 				  #{user_phone}
 		          )
 	</insert>
+	
+	
+	<update id="updateUser" parameterType="users">
+    UPDATE USERT
+       SET 
+           USER_NAME = #{user_name},
+           USER_NO = #{user_no},
+           USER_BUSO = #{user_buso},
+           USER_JICK = #{user_jick},
+           USER_JDATE = #{user_jdate},
+           USER_ODATE = #{user_odate},
+           USER_ID = #{user_id},
+           USER_PWD = #{user_pwd},
+           USER_ADD = #{user_add},
+           USER_BIGO = #{user_bigo},
+           USER_RET = #{user_ret},
+           USER_PHONE = #{user_phone}
+     WHERE USER_CODE = #{user_code}
+</update>
+	
 
 	<!-- 선택한 사용자 권한조회 -->
 	<select id="authorityUserSelect" parameterType="permission" resultType="permission">

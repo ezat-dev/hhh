@@ -76,7 +76,7 @@ public interface ManagementService {
 	
 	void insertUser(Users users);
 	
-	
+	void updateUser(Users users);
 
 	
 }

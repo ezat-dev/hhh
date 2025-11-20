@@ -440,16 +440,20 @@ public class PreservationController {
 				@RequestParam String sdate,
 				@RequestParam String edate
 				) {
+			System.out.println("설비수리이력관리 조회 컨트롤러 도착");
 			Map<String, Object> rtnMap = new HashMap<String, Object>();
 
 			Suri suri = new Suri();
 
 			suri.setSdate(sdate);
 			suri.setEdate(edate);
-
+			System.out.println("날짜 세팅 완료");
+			System.out.println("시작날짜: " + sdate);
+			System.out.println("종료날짜: " + edate);
 
 			List<Suri> suriHistoryList = preservationService.getSuriHistoryList(suri);
-
+			System.out.println("데이터 조회 완료");
+			
 			List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
 			for(int i=0; i<suriHistoryList.size(); i++) {
 				HashMap<String, Object> rowMap = new HashMap<String, Object>();
@@ -468,6 +472,7 @@ public class PreservationController {
 
 				rtnList.add(rowMap);
 			}
+			System.out.println("데이터 준비 완료");
 
 			rtnMap.put("last_page",1);
 			rtnMap.put("data",rtnList);
@@ -632,10 +637,17 @@ public class PreservationController {
 		@ResponseBody
 		public Map<String, Object> jeomgeomInsertSave(
 				@ModelAttribute Jeomgeom jeomgeom,
-				@RequestParam("mode") String mode) { 
+				@RequestParam("mode") String mode,
+				@RequestParam(value = "image_url", required = false) MultipartFile[] files1) { 
 			Map<String, Object> result = new HashMap<>();
 
 			try {
+				String path = "D:/태경출력파일/사진/설비점검기준등록";
+
+				String productFileName1 = saveFiles(files1, path);
+				System.out.println("저장할 파일 이름"+productFileName1);
+				if (productFileName1 != null) jeomgeom.setChs_img(productFileName1);
+				
 				if ("insert".equalsIgnoreCase(mode)) {
 					preservationService.jeomgeomInsertSave(jeomgeom);
 				} else if ("update".equalsIgnoreCase(mode)) {
@@ -978,13 +990,23 @@ public class PreservationController {
 	@ResponseBody
 	public Map<String, Object> gigiGojangSave(
 			@ModelAttribute Measure measure,
-			@RequestParam("mode") String mode) { 
+			@RequestParam("mode") String mode,
+			@RequestParam(value = "terr_bphoto_url", required = false) MultipartFile[] files1,
+			@RequestParam(value = "terr_aphoto_url", required = false) MultipartFile[] files2) { 
 
 		System.out.println("mode = " + mode);
 		System.out.println("terr_code = " + measure.getTerr_code());
 		Map<String, Object> result = new HashMap<>();
 
 		try {
+			String path = "D:/태경출력파일/사진/측정기기고장이력";
+
+			String productFileName1 = saveFiles(files1, path);
+			if (productFileName1 != null) measure.setTerr_bphoto(productFileName1);
+			String productFileName2 = saveFiles(files2, path);
+			if (productFileName2 != null) measure.setTerr_aphoto(productFileName2);
+			
+			
 			if ("insert".equalsIgnoreCase(mode)) {
 				preservationService.gigiGojangInsert(measure);
 			} else if ("update".equalsIgnoreCase(mode)) {

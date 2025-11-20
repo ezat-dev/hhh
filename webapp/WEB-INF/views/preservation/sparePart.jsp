@@ -290,7 +290,9 @@ textarea {
 								<th class="" style="width: 20%;">품번</th>
 								<td>
 									<input id="spp_no" name="spp_no" class="basic valPost valClean" type="text" style="width:90%;" value="">
-									<input id="spp_idx" name="spp_idx" class="basic valPost valClean" type="hidden" value="0">
+									<!-- 
+									<input id="spp_idx" name="spp_idx" class="basic valPost valClean" type="hidden" value="">
+									 -->
 								</td>
 							</tr>
 							<tr>
@@ -407,7 +409,7 @@ textarea {
 											<th class="" style="width: 20%;">품번</th>
 											<td>
 												<input id="spp_no_his" name="spp_no_his" class="basic valPost valClean" type="text" style="width:90%;" value="">
-												<input id="spp_idx" name="spp_idx" class="basic valPost valClean" type="hidden" value="0">
+												<input id="spp_idx" name="spp_idx"  type="hidden">
 											</td>
 										</tr>
 										<tr>
@@ -655,7 +657,7 @@ textarea {
 				var allData = result.data;
 				
 				for(let key in allData){
-//					console.log(allData, key);	
+					console.log(allData, key);	
 					$("input[name='"+key+"']").val(allData[key]);
 				}
 
@@ -752,6 +754,10 @@ textarea {
 	}
 
 
+
+	
+
+
 	function getSpareSubList(spp_idx){
 		
 		subTable = new Tabulator("#sub", {
@@ -799,6 +805,8 @@ textarea {
 			        hozAlign:"center"},	
 			    {title:"담당자", field:"sph_user", sorter:"int", width:100,
 				    hozAlign:"center"},	
+				    {title:"NO", field:"spp_idx", sorter:"int", width:80,
+			        	hozAlign:"center",visible:false},
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
@@ -857,6 +865,8 @@ textarea {
 	function saveSpareSub() {
 	    var formData = new FormData($("#sparePartHisForm")[0]);
 
+	    console.log(formData);
+	    console.log($("#spp_idx").val());
 	    if (!formData.get("spp_idx")) {
 	        alert("대상이 선택되지 않았습니다.");
 	        return;
@@ -893,19 +903,6 @@ textarea {
 	
 
     </script>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     <script>
@@ -1001,6 +998,7 @@ textarea {
 		isSubEditMode = false;
 		selectedSubRowData = null;
 
+//		$("#spp_idx").val('');
 		$("#sph_input").val('');
 		$("#sph_suriout").val('');
 		$("#sph_jasanout").val('');

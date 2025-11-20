@@ -161,4 +161,9 @@ public class WorkJisiServiceImpl implements WorkJisiService{
 		workJisiDao.setChulgoAdd(chulgo);
 	}
 
+	@Override
+	public List<WorkJisi> getWorkJisiHeatProdCodeList(WorkJisi w) {
+		return workJisiDao.getWorkJisiHeatProdCodeList(w);
+	}
+
 }

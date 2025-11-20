@@ -48,16 +48,32 @@
 	justify-content: right;
 	align-items: center;
 	width: 1500px;
-	margin-left: -780px;
+	margin-left: -350px;
 }
 
-.box1 input{
-	width : 5%;
-}
 .box1 select{
 	width: 5%
-}    
-    
+}  
+.box1 input[type="text"] {
+	width: 100px;
+	padding: 5px 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	color: #333;
+	outline: none;
+	transition: border 0.3s ease;
+}
+
+.box1 input[type="text"]:focus {
+	border: 1px solid #007bff;
+	background-color: #fff;
+}  
+.box1 label,
+.box1 input {
+	margin-right: 10px; /* 요소 사이 간격 */
+}  
     </style>
     
     
@@ -158,11 +174,6 @@
 		//전체 사용자목록 조회
 		getAllUserList();
 	});
-	
-	
-	
-	
-	
 	//함수
 	function getAllUserList(){
 		
@@ -238,8 +249,27 @@
 			rowDblClick:function(e, row){
 
 
-				var rowData = row.getData();
-				$(".userName").text(rowData.user_name);
+				var d = row.getData();
+
+			    $('.userModal').attr('data-mode', 'edit');
+			    $('.userModal').attr('data-code', d.user_code);
+
+			    $('.user-no').val(d.user_no);
+			    $('.user-name').val(d.user_name);
+			    $('.user-buso').val(d.user_buso);
+			    $('.user-jick').val(d.user_jick);
+
+			    // ★ 날짜 데이터는 YYYY-MM-DD 형태로 변환 필요
+			    $('.user-jdate').val(d.user_jdate ? d.user_jdate.substring(0,10) : '');
+			    $('.user-odate').val(d.user_odate ? d.user_odate.substring(0,10) : '');
+
+			    $('.user-id').val(d.user_id);
+			    $('.user-pwd').val(d.user_pwd);
+			    $('.user-phone').val(d.user_phone);
+			    $('.user-add').val(d.user_add);
+			    $('.user-bigo').val(d.user_bigo);
+
+			    $('.userModal').show();
 				
 				
 			},			
@@ -247,8 +277,6 @@
 	}
 	
 	
-
-
 	// 드래그 기능 추가
 	const modal = document.querySelector('.userModal');
 	const header = document.querySelector('.user-inser-header'); // 헤더를 드래그할 요소로 사용
@@ -278,6 +306,7 @@
 	const closeButton = document.querySelector('.close');
 
 	insertButton.addEventListener('click', function() {
+		resetModal();
 	    userModal.style.display = 'block'; // 모달 표시
 	});
 
@@ -286,50 +315,69 @@
 	});
 
 
-
-
-	// 사용자 등록 모달 ajax
 	
+	// 사용자 등록 모달 ajax
 	$('.save').click(function() {
+
+    const mode = $('.userModal').attr('data-mode');  
+    const user_code = $('.userModal').attr('data-code');  
+
+    
+    const user_ret_val = $('.user-odate').val() ? 1 : 0;
+
     const userData = {
+        user_code: user_code,
         user_no: $('.user-no').val(),
         user_name: $('.user-name').val(),
         user_buso: $('.user-buso').val(),
         user_jick: $('.user-jick').val(),
-        user_jdate: $('.user-jdate input').val(), 
-        user_odate: $('.user-odate input').val(), 
+        user_jdate: $('.user-jdate').val(),
+        user_odate: $('.user-odate').val(),
         user_id: $('.user-id').val(),
         user_pwd: $('.user-pwd').val(),
         user_phone: $('.user-phone').val(),
         user_add: $('.user-add').val(),
-        user_bigo: $('.user-bigo').val()
+        user_bigo: $('.user-bigo').val(),
+        user_ret: user_ret_val
     };
 
     $.ajax({
         type: "POST",
-        url: "/tkheat/management/userinsert/save",
+        url: mode === 'edit'
+            ? "/tkheat/management/userinsert/update"
+            : "/tkheat/management/userinsert/save",
         contentType: "application/json",
         data: JSON.stringify(userData),
         success: function(response) {
-        	alert(response.message);        
-            $('.userModal').hide();          
-            location.reload(); 
+            alert(response.message);
+            $('.userModal').hide();
+            getAllUserList();    // 리스트 새로고침
         },
         error: function(xhr) {
-            alert("등록 실패: " + xhr.responseText);
+            alert("저장 실패: " + xhr.responseText);
         }
     });
 });
-	
 
 
 
 
+	function resetModal() {
+	    $('.userModal').attr('data-mode', 'insert');   // 신규 입력 모드
+	    $('.userModal').attr('data-code', '');         // PK 초기화
 
-
-
-
-
+	    $('.user-no').val('');
+	    $('.user-name').val('');
+	    $('.user-buso').val('');
+	    $('.user-jick').val('');
+	    $('.user-jdate').val('');
+	    $('.user-odate').val('');
+	    $('.user-id').val('');
+	    $('.user-pwd').val('');
+	    $('.user-phone').val('');
+	    $('.user-add').val('');
+	    $('.user-bigo').val('');
+	}
 
 
 

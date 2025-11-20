@@ -202,4 +202,9 @@ public class ManagementServiceImpl implements ManagementService {
         managementDao.insertUser(users); 
     
     }
+	
+	@Override
+	public void updateUser(Users users) {
+	    managementDao.updateUser(users);
+	}
 }

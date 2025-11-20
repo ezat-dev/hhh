@@ -223,10 +223,14 @@ public class ManagementDaoImpl implements ManagementDao {
 	 }
 	
 	 @Override
-	    public void insertUser(Users users) {
-	        sqlSession.insert("users.insertUser", users); 
-	    }
-
+	 public void insertUser(Users users) {
+		 sqlSession.insert("users.insertUser", users); 
+	 }
+	 
+	 @Override
+	 public void updateUser(Users users) {
+	     sqlSession.update("users.updateUser", users);
+	 }
 
 	
 }

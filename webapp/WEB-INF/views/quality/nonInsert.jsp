@@ -680,9 +680,10 @@ textarea {
 	
 	    formData.set("werr_amnt", $("#werr_amnt").val() || 0);
 	    formData.set("werr_mon", $("#werr_mon").val() || 0);
+	    formData.delete("werr_alert");
 	    formData.append("werr_alert", $("#werr_alert").is(":checked") ? "Y" : "N");
 	
-	    console.log([...formData.entries()]); // ✅ 추가
+	    console.log("보내는 데이터: ", [...formData.entries()]); // ✅ 추가
 	
 	    if (!confirm(confirmMsg)) return;
 	

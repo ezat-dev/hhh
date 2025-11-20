@@ -380,15 +380,16 @@ input[type="date"] {
             <img src="/tkheat/css/image/delete-icon.png" alt="delete" class="button-image">
         </button>
         
-<!--         
         <button class="printer-button" id="jPrintBtn">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
 			 공정이동표            
         </button>
- -->
+        
         <button class="printer-button" id="hPrintBtn">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
-        </button>
+            체크시트
+        </button>        
+
         <button class="excel-button">
             <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
             
@@ -1194,6 +1195,46 @@ input[type="date"] {
 	//공정이동식별표 파일저장
 	$("#jPrintBtn").on("click",function(){
 		
+		workPrintStatusModal.style.display = "block";
+		
+		//체크한 데이터만 조회
+		if(workAllDataTable.getSelectedData().length > 0){
+			
+			var selectArray = workAllDataTable.getSelectedData();
+			var jisiLotArray = new Array();
+			
+			for(var i=0; i<selectArray.length; i++){
+				
+				if(selectArray[i].jisi_lot != null){
+					//작업번호가 다를경우 alert창
+					jisiLotArray.push(selectArray[i].jisi_lot);	
+				}else{
+					alert("작업지시 등록진행 후 파일을 저장해주십시오!");
+					return false;
+				}
+
+			}
+			
+			$.ajax({
+				url:"/tkheat/production/workjisi/heat/workHeatListProcPrint",
+				type:"post",
+				dataType:"json",
+				traditional: true,
+				data:{
+					"jisi_lot_array":jisiLotArray
+				},
+				success:function(result){
+					
+					workPrintStatusCloseBtn();
+					getWorkJisiAllListData();
+    				var fileUrl = "/tkPrint/workProc/"+result.heatData;
+                    $("#workJisi").attr("src",fileUrl);
+                    workJisiReportModal.style.display = "block";
+					
+				}
+			});
+		}		
+		
 	});
 	
 	//작업지시서 파일저장
@@ -1220,7 +1261,7 @@ input[type="date"] {
 			}
 			
 			$.ajax({
-				url:"/tkheat/production/workjisi/heat/workHeatListPrint",
+				url:"/tkheat/production/workjisi/heat/workHeatListWorkPrint",
 				type:"post",
 				dataType:"json",
 				traditional: true,
@@ -1231,6 +1272,10 @@ input[type="date"] {
 					
 					workPrintStatusCloseBtn();
 					getWorkJisiAllListData();
+    				var fileUrl = "/tkPrint/workJisi/"+result.heatData;
+                    $("#workJisi").attr("src",fileUrl);
+                    workJisiReportModal.style.display = "block";
+					
 				}
 			});
 		}		
@@ -1342,6 +1387,7 @@ input[type="date"] {
 						
 		    		}
 		    	},
+/*
 				{	headerSort:false,
 		    		formatter:printIconProc, width:60, title:"작업</br>지시",cellClick:function(e, cell){
 		    			if(cell.getRow().getData().jisi_j_file_yn != 0){
@@ -1362,6 +1408,7 @@ input[type="date"] {
 		    			}
 		    		}
 				},
+*/
 		        {title:"NO", field:"jisi_j_code", sorter:"int", width:80,
 		        	hozAlign:"center", visible:false},
 		        {title:"NO", field:"jisi_h_code", sorter:"int", width:80,
@@ -1456,6 +1503,7 @@ input[type="date"] {
 	//작업등록 선택
 	function workSelectFunc(wGubun){
 		//wGubun : J(준비), A(열처리), R(템퍼링)
+		workHSelectOrdCodeArray = new Array();
 		if(wGubun == 'J'){
 		}else if(wGubun = 'H'){
 			$("#workHForm")[0].reset();
@@ -1542,13 +1590,20 @@ input[type="date"] {
 				data:{
 					"ord_code":s_ord_code
 				},success:function(result){
-					workJisiParam = JSON.stringify(result.data);
-					workHIpgoDataRegSetting();
-					$("#s_ord_code").val("");
+					if(result.data != null){
+						workJisiParam = JSON.stringify(result.data);
+						workHIpgoDataRegSetting();
+						$("#s_ord_code").val("");
+					}else{
+						alert("바코드를 확인해주십시오!!!");
+						return false;
+					}
 				}
 			});
 		}
 	}
+	
+	var workHSelectOrdCodeArray = new Array();
 	
 	function workHIpgoDataRegSetting(){
 		var sunip_chk = 0;
@@ -1569,6 +1624,8 @@ input[type="date"] {
 			workHIpgoSelectOrdCodeArray.push(0);
 		}
 		
+		workHSelectOrdCodeArray.push(workHIpgoSelectData.ord_code)
+		
 		$.ajax({
 			url:"/tkheat/production/workInstruction/heat/ipgoListReg",
 			type:"post",
@@ -1581,7 +1638,8 @@ input[type="date"] {
 				"s_ord_sunip_check":sunip_chk,
 				"s_ord_sunip_pw":$("#s_ord_sunip_pw").val(),
 				"jisi_h_calc_su_param":jisi_h_calc_su,
-				"ipgo_ord_code_array":workHIpgoSelectOrdCodeArray
+				"ipgo_ord_code_array":workHIpgoSelectOrdCodeArray,
+				"selectOrdCodeArray":workHSelectOrdCodeArray
 			},
 			success:function(result){
 				if(typeof result.alert != "undefined"){

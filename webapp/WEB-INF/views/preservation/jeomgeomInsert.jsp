@@ -193,7 +193,36 @@ textarea {
   cursor: pointer;
   font-size: 24px;
 }
-    
+      /* 화면 전체를 덮는 오버레이 */
+.modal-overlay {
+    /* ✨ 필수: 화면에 고정 */
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+    z-index: 9999; /* gojangModal(z-index: 1000)보다 높게 설정 */
+    display: none;
+    /* 추가: flex로 중앙 정렬 준비 */
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+}
+
+/* 모달 내용 컨테이너 */
+.modal-content {
+    background: #ffffff;
+    border: 1px solid #000000;
+    width: 50%;
+    max-width: 100%; 
+    height: 90%; 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+    border-radius: 5px;
+    /* 모달 자체의 위치 조정 불필요 (부모 .modal-overlay의 flex 덕분) */
+    position: relative; 
+    overflow: hidden; /* 내부 스크롤을 위해 overflow 처리 */
+}  
     
     </style>
     
@@ -327,10 +356,10 @@ textarea {
                                 </tr>
                                 <tr>
                                     <th>이미지</th>
-                                    <!-- <td>
-                                        <input id="chs_img" name="chs_img" type="file" style="width:96%;" value="" accept="image/*">
-    
-                                    </td> -->
+                                     <td>
+                                        <input id="chs_img" name="image_url" type="file" style="width:96%;" value="" accept="image/*">
+                                        <input id="chs_img_name_display" type="text" class="basic" style="width:96%; margin-top: 5px;" value="" readonly>
+                                    </td> 
                                 </tr>
     
                             </tbody></table>
@@ -357,7 +386,18 @@ textarea {
 			<div id="facListTabulator" style="height: 500px;"></div>
 		</div>
 	</div>
-	    
+	       	  <!-- 미리보기 모달창 -->  
+<div id="drawingFileModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="height: 90%;">
+        <div class="modal-header">
+            <span class="modal-title">도면 파일: <span id="drawingFileName"></span></span> 
+            <span class="modal-close" onclick="closeDrawingModal()">&times;</span>
+        </div>
+        <div class="modal-body" style="height: calc(100% - 60px);">
+            <iframe id="pdfViewer" src="" frameborder="0" width="100%" height="100%"></iframe>
+        </div>
+    </div>
+</div>
 <script>
 	//전역변수
     var cutumTable;	
@@ -367,6 +407,11 @@ textarea {
 	$(function(){
 		//전체 거래처목록 조회
 		getJeomgeomInsertList();
+	});
+
+	//모달 닫기
+	closeButton.addEventListener('click', function() {
+    jgInsertModal.style.display = 'none'; // 모달 숨김
 	});
 
 	//이벤트
@@ -451,8 +496,15 @@ textarea {
 			        hozAlign:"center", headerFilter:"input"},	
 			    {title:"단위", field:"chs_danw", sorter:"string", width:100,
 				    hozAlign:"center", headerFilter:"input"},	
-				{title:"사진", field:"chs_img", sorter:"string", width:100,
-				    hozAlign:"center", headerFilter:"input"},
+					{title:"사진", field:"chs_img", width:100,
+						hozAlign:"center", formatter:"image",
+					    cssClass:"rp-img-popup",
+				      	formatterParams:{
+					      	height:"30px", width:"30px",
+					      	urlPrefix:"/tkPrint/사진/설비점검기준등록/"
+					      	}, 
+					    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+					    },
 				    {title:"사진", field:"chs_code", sorter:"int", width:100,
 					    hozAlign:"center", headerFilter:"input",visible:false}    
 				    
@@ -519,11 +571,39 @@ textarea {
 	//					console.log(allData, key);	
 						$("input[name='"+key+"']").val(allData[key]);
 					}
+					if (allData.chs_img) {
+		                $("#chs_img_name_display").val(allData.chs_img); 
+		            } else {
+		                $("#chs_img_name_display").val(""); 
+		            }
 	
 					$('.jgInsertModal').show().addClass('show');
 				}
 			});
 		}
+		
+		//미리보기
+		function openDrawingModal(event, fileName) {
+		    event.preventDefault(); // 링크의 기본 동작 방지
+		    const FILE_PREFIX_PATH = "/tkPrint/사진/설비점검기준등록/";
+
+		    if (!fileName) {
+		        alert("저장된 파일이 없습니다.");
+		        return;
+		    }
+		    const filePath = FILE_PREFIX_PATH + fileName;
+
+		    $("#drawingFileName").text(fileName);
+		    $("#pdfViewer").attr("src", filePath);
+		    
+		    // 모달 표시
+		    $('#drawingFileModal').show();
+		}
+		//모달 닫기
+		function closeDrawingModal() {
+		    $('#drawingFileModal').hide()
+		    $("#pdfViewer").attr("src", ""); 
+		}	
 
 	
 
@@ -698,11 +778,10 @@ textarea {
 
 		$('.delete').hide();
 	});
-
+	
 	closeButton.addEventListener('click', function() {
-		jgInsertModal.style.display = 'none'; // 모달 숨김
+		jgInsertModal.style.display = 'none';
 	});
-
 	headerCloseButton.addEventListener('click', function() {
 		jgInsertModal.style.display = 'none';
 	});
@@ -713,7 +792,23 @@ textarea {
 	    const filename = "설비점검기준등록_" + today + ".xlsx";
 	    userTable.download("xlsx", filename, { sheetName: "설비점검기준등록" });
 	});
-    
+/* 	// 모달 열기
+	const insertButton = document.querySelector('.insert-button');
+	const gojangModal = document.querySelector('.gojangModal');
+	const closeButton = document.querySelector('.close');
+	const headerCloseButton = document.querySelector('.header-close');
+	
+	insertButton.addEventListener('click', function() {
+		gojangModal.style.display = 'block'; // 모달 표시
+	});
+
+	closeButton.addEventListener('click', function() {
+		gojangModal.style.display = 'none'; // 모달 숨김
+	});
+
+	headerCloseButton.addEventListener('click', function() {
+		gojangModal.style.display = 'none';
+	}); */
 
     </script>
 

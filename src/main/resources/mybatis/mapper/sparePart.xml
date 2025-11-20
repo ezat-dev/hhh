@@ -157,29 +157,28 @@
   
   
    <insert id="insertSpareSub" parameterType="sparePart">
-    INSERT INTO [dbo].[SPAREHISTORY]
-       (
-        [SPH_IDX],
-        [SPP_IDX],
-        [SPH_INPUT],
-        [SPH_TIME],
-        [SPH_SURIOUT],
-        [SPH_JASANOUT],
-        [SPH_BIGO],
-        [SPH_USER]
-       )
-SELECT 
-       ISNULL(MAX(SPH_IDX), 0) + 1,
-       #{spp_idx},
-       #{sph_input},
-       #{sph_time},
-       #{sph_suriout},
-       #{sph_jasanout},
-       #{sph_bigo},
-       #{sph_user}
-FROM [dbo].[SPAREHISTORY];
+	    INSERT INTO [dbo].[SPAREHISTORY]
+	       (
+	        [SPP_IDX],
+	        [SPH_TIME],
+	        [SPH_INPUT],
+	        [SPH_SURIOUT],
+	        [SPH_JASANOUT],
+	        [SPH_BIGO],
+	        [SPH_USER]
+	       )
+	    VALUES
+	       (
+	        #{spp_idx},
+	        #{sph_time},
+	        #{sph_input},
+	        #{sph_suriout},
+	        #{sph_jasanout},
+	        #{sph_bigo},
+	        #{sph_user}
+	       )
+	</insert>
 
-</insert>
 
 
   <update id="updateSpareSub" parameterType="sparePart">

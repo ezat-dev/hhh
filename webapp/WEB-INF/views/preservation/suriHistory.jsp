@@ -494,7 +494,7 @@
 						    cssClass:"rp-img-popup",
 					      	formatterParams:{
 						      	height:"30px", width:"30px",
-						      	urlPrefix:"/excelTest/태경출력파일/사진/설비수리이력관리/"
+						      	urlPrefix:"/tkPrint/사진/설비수리이력관리/"
 						      	}, 
 						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
 						    },
@@ -503,7 +503,7 @@
 							    cssClass:"rp-img-popup",
 						      	formatterParams:{
 							      	height:"30px", width:"30px",
-							      	urlPrefix:"/excelTest/태경출력파일/사진/설비수리이력관리/"
+							      	urlPrefix:"/tkPrint/사진/설비수리이력관리/"
 							      	}, 
 							    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
 							    },

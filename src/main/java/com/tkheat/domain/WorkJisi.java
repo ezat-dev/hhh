@@ -95,6 +95,7 @@ public class WorkJisi {
 	private String jisi_code_string;
 	private int[] jisi_code_array;
 	private int[] ord_code_array;
+	private int[] selectOrdCodeArray;
 	
 	private String jisi_h_work_q_hard_std;
 	private String jisi_h_work_q_hard_std2;
@@ -313,6 +314,12 @@ public class WorkJisi {
 	private String chul;		//출구정보
 	private String spare;		//대기정보
 	private int lot_qr;		//작업지시의 작업번호 ex)250805110
+	private int qr_wait;
+	private int qr_now;
+	private boolean qr_wait_bit;
+	private boolean qr_now_bit;
+	private String proc_gb;			//진행,대기 / 예열~출구인지 구분
+	private String proc_gb_detail;	//진행, 대기, 예열, 승온 등 상세구분
 	
 	
 	/*출고관리*/
@@ -2245,5 +2252,47 @@ public class WorkJisi {
 	}
 	public void setDanch_img(String danch_img) {
 		this.danch_img = danch_img;
+	}
+	public int[] getSelectOrdCodeArray() {
+		return selectOrdCodeArray;
+	}
+	public void setSelectOrdCodeArray(int[] selectOrdCodeArray) {
+		this.selectOrdCodeArray = selectOrdCodeArray;
+	}
+	public int getQr_wait() {
+		return qr_wait;
+	}
+	public void setQr_wait(int qr_wait) {
+		this.qr_wait = qr_wait;
+	}
+	public int getQr_now() {
+		return qr_now;
+	}
+	public void setQr_now(int qr_now) {
+		this.qr_now = qr_now;
+	}
+	public boolean isQr_wait_bit() {
+		return qr_wait_bit;
+	}
+	public void setQr_wait_bit(boolean qr_wait_bit) {
+		this.qr_wait_bit = qr_wait_bit;
+	}
+	public boolean isQr_now_bit() {
+		return qr_now_bit;
+	}
+	public void setQr_now_bit(boolean qr_now_bit) {
+		this.qr_now_bit = qr_now_bit;
+	}
+	public String getProc_gb() {
+		return proc_gb;
+	}
+	public void setProc_gb(String proc_gb) {
+		this.proc_gb = proc_gb;
+	}
+	public String getProc_gb_detail() {
+		return proc_gb_detail;
+	}
+	public void setProc_gb_detail(String proc_gb_detail) {
+		this.proc_gb_detail = proc_gb_detail;
 	}
 }

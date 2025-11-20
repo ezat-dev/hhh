@@ -103,8 +103,16 @@ public class Product {
 	private String product_file_name;	//제품 사진
 	private String apperance_file_name;	//외형 사진
 	private String heat_file_name;		//열처리 사진
+	private String drawing_file_name;	//도면파일
 	
 	
+	
+	public String getDrawing_file_name() {
+		return drawing_file_name;
+	}
+	public void setDrawing_file_name(String drawing_file_name) {
+		this.drawing_file_name = drawing_file_name;
+	}
 	public String getProduct_file_name() {
 		return product_file_name;
 	}

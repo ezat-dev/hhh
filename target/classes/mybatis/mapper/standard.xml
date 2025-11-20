@@ -225,7 +225,8 @@
 				      WSTD_GJ85,
 				      FAC_CODE3,
 				      WSTD_CHIM_FILE_NAME1,
-				      WSTD_CHIM_FILE_NAME2
+				      WSTD_CHIM_FILE_NAME2,
+				      drawing_file_name
 				      
 		       ) 
 		       VALUES 
@@ -372,7 +373,8 @@
 						  #{wstd_gj85},
 						  #{fac_code3},
 						  #{wstd_chim_file_name1},
-						  #{wstd_chim_file_name2}
+						  #{wstd_chim_file_name2},
+						  #{drawing_file_name}
 						  						  			    						     			  
 		          ) 
 	</insert>
@@ -524,6 +526,9 @@
         </if>
         <if test="wstd_chim_file_name2 != null">
             WSTD_CHIM_FILE_NAME2 = #{wstd_chim_file_name2},
+        </if>
+        <if test="drawing_file_name != null">
+            drawing_file_name = #{drawing_file_name},
         </if>
         </set> 
     WHERE WSTD_CODE = #{wstd_code}

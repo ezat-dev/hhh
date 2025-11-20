@@ -47,7 +47,8 @@
 		TESTER_ERR_LIST.TERR_REWARD, TESTER_ERR_LIST.TERR_STRT,
 		TESTER_ERR_LIST.TERR_END, TESTER_ERR_LIST.TERR_TIME,
 		TESTER_ERR_LIST.TERR_MAN, TESTER_ERR_LIST.TERR_CONTENT,
-		TESTER_ERR_LIST.TER_CODE, TESTER_ERR_LIST.TERR_COST
+		TESTER_ERR_LIST.TER_CODE, TESTER_ERR_LIST.TERR_COST,
+		TESTER_ERR_LIST.TERR_BPHOTO, TESTER_ERR_LIST.TERR_APHOTO
 		FROM TESTER_ERR_LIST WITH(NOLOCK) INNER JOIN
 		TESTER WITH(NOLOCK) ON TESTER_ERR_LIST.TER_CODE = TESTER.TER_CODE
 		WHERE TESTER_ERR_LIST.TERR_DATE BETWEEN #{sdate} AND #{edate}
@@ -85,7 +86,9 @@
         terr_bigo,
         terr_condi,
         terr_date,
-        ter_code
+        ter_code,
+        terr_bphoto,
+        terr_aphoto
     ) VALUES (
     	<!-- (SELECT ISNULL(MAX(TERR_CODE), 0) + 1 FROM TESTER_ERR_LIST), -->
         #{terr_name},
@@ -101,7 +104,9 @@
         #{terr_bigo},
         #{terr_condi},
         #{terr_date},
-        #{ter_code}
+        #{ter_code},
+        #{terr_bphoto},
+        #{terr_aphoto}
     )
 	</insert>
 	
@@ -123,6 +128,8 @@
           ,TERR_CONDI = #{terr_condi}
           ,TERR_DATE = #{terr_date}
           ,TER_CODE = #{ter_code}
+          ,TERR_BPHOTO = #{terr_bphoto}
+          ,TERR_APHOTO = #{terr_aphoto}
         WHERE TERR_CODE = #{terr_code}
     </update>
 	

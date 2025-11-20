@@ -185,6 +185,26 @@ public class WorkJisiDaoImpl implements WorkJisiDao{
 	public void setChulgoAdd(WorkJisi chulgo) {
 		sqlSession.insert("workjisi.setChulgoAdd",chulgo);
 	}
+
+	@Override
+	public List<WorkJisi> getWorkJisiHeatProdCodeList(WorkJisi w) {
+		return sqlSession.selectList("workjisi.getWorkJisiHeatProdCodeList",w);
+	}
 	
-	
+
+	//모니터링 데이터
+	@Override
+	public List<WorkJisi> barcodeDataCheck(WorkJisi workJisi) {
+		return sqlSession.selectList("workjisi.barcodeDataCheck",workJisi);
+	}
+
+	@Override
+	public List<WorkJisi> barcodeDataDupCheck(WorkJisi workJisi) {
+		return sqlSession.selectList("workjisi.barcodeDataDupCheck",workJisi);
+	}
+
+	@Override
+	public void barcodeDataProc(WorkJisi ww) {
+		sqlSession.update("workJisi.barcodeDataProc",ww);
+	}	
 }

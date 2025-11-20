@@ -65,5 +65,12 @@ public interface WorkJisiDao {
 	List<WorkJisi> getChulgoAddList(WorkJisi chulgo);
 
 	void setChulgoAdd(WorkJisi chulgo);
-	
+
+	List<WorkJisi> getWorkJisiHeatProdCodeList(WorkJisi w);
+
+	List<WorkJisi> barcodeDataCheck(WorkJisi workJisi);
+
+	List<WorkJisi> barcodeDataDupCheck(WorkJisi workJisi);
+
+	void barcodeDataProc(WorkJisi ww);	
 }

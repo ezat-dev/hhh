@@ -12,7 +12,7 @@ public class Suri {
 	private String ffx_note; //수리내용
 	private String ffx_prt; //소요부품
 	private String ffx_wrk; //수리처
-	private int ffx_cost; //수리비용
+	private String ffx_cost; //수리비용
 	private String ffx_man; //담당자
 	private String ffx_next_date; //차기점검일
 	private float ffx_check; //수리완료여부
@@ -24,8 +24,16 @@ public class Suri {
 	
 	private String file_name1; //수리 전 사진 이름
 	private String file_name2; //수리 후 사진 이름
+	private String row_num;
 	
 	
+	
+	public String getRow_num() {
+		return row_num;
+	}
+	public void setRow_num(String row_num) {
+		this.row_num = row_num;
+	}
 	public String getFile_name1() {
 		return file_name1;
 	}
@@ -74,10 +82,10 @@ public class Suri {
 	public void setFfx_prt(String ffx_prt) {
 		this.ffx_prt = ffx_prt;
 	}
-	public int getFfx_cost() {
+	public String getFfx_cost() {
 		return ffx_cost;
 	}
-	public void setFfx_cost(int ffx_cost) {
+	public void setFfx_cost(String ffx_cost) {
 		this.ffx_cost = ffx_cost;
 	}
 	public String getFfx_man() {

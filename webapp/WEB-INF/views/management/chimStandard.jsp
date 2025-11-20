@@ -806,7 +806,10 @@ body{
             <fieldset class="popField">
               <legend>도면</legend>
               <input type="hidden" name="type" value="pdffile">
-              <input type="file" name="wstdfile" title="" onchange="" style=" width: 140px;" accept=".pdf">
+              <input type="file" name="drawing_file_url" title="" onchange="" style=" width: 140px;" accept=".pdf"">
+               <div>
+    				<a href="#" id="fileLink" class="valClean" onclick="openDrawingModal(event)"></a> 
+				</div>
             </fieldset>
             <fieldset class="popField">
               <legend>사진-3</legend>
@@ -1034,7 +1037,18 @@ body{
 		</div>
 	</div>
 	    
-	    
+	  	  <!-- pdf 미리보기 모달창 -->  
+<div id="drawingFileModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 90%; height: 90%;">
+        <div class="modal-header">
+            <span class="modal-title">도면 파일: <span id="drawingFileName"></span></span> 
+            <span class="modal-close" onclick="closeDrawingModal()">&times;</span>
+        </div>
+        <div class="modal-body" style="height: calc(100% - 60px);">
+            <iframe id="pdfViewer" src="" frameborder="0" width="100%" height="100%"></iframe>
+        </div>
+    </div>
+</div>  
 	    
 	    
 	    
@@ -1174,7 +1188,8 @@ function getChimStandardDetail(wstd_code){
 
 			// 이미지 초기화
 			$("#prev_previewId1, #prev_previewId3, #prev_previewId7").attr("src", "/tkheat/css/image/no_image.png");
-
+			//도면파일 초기화
+			$("#fileLink").attr("href", "#").text("");
 			// 단취사진
 			if (allData.wstd_chim_file_name1) {
 				console.log("원본 파일명:", allData.wstd_chim_file_name1);
@@ -1194,6 +1209,14 @@ function getChimStandardDetail(wstd_code){
 				$("#prev_previewId7").attr("src", path);
 				//$(".aphoto").attr("href", path).text(d.product_file_name);
 			}
+
+            //도면파일
+            if (allData.drawing_file_name) {
+                const path = "/tkPrint/사진/침탄로작업표준/" + allData.drawing_file_name;
+                $("#fileLink")
+                    .attr("href", path)
+                    .text(allData.drawing_file_name); // 파일명을 텍스트로 표시
+            }
 
 			$('.chimStandardModal').show().addClass('show');
 		}
@@ -1511,7 +1534,30 @@ function getChimStandardDetail(wstd_code){
 		  };
 		});
 
-	
+	//pdf 미리보기
+	function openDrawingModal(event) {
+	    event.preventDefault(); // 링크의 기본 동작 방지
+	    
+	    const fileLink = $("#fileLink");
+	    const filePath = fileLink.attr("href");
+	    const fileName = fileLink.text();
+
+	    if (!filePath || filePath === "#" || fileName === "") {
+	        alert("저장된 도면 파일이 없습니다.");
+	        return;
+	    }
+
+	    $("#drawingFileName").text(fileName);
+	    $("#pdfViewer").attr("src", filePath);
+	    
+	    // 모달 표시
+	    $('#drawingFileModal').show();
+	}
+	//pdf 모달 닫기
+	function closeDrawingModal() {
+	    $('#drawingFileModal').hide()
+	    $("#pdfViewer").attr("src", ""); 
+	}
 
     </script>
 

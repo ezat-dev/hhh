@@ -260,7 +260,7 @@
             <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
            조회
         </button>
-        <button class="insert-button" style="pointer-events: none; opacity: 0.5; cursor: not-allowed; filter: grayscale(100%);">
+        <button class="insert-button">
             <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
          입력 
         </button>

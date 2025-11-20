@@ -366,6 +366,9 @@ input[type="date"] {
 					"ord_print_gb":ord_print_gb
 				},
 				success:function(result){
+    				var fileUrl = "/tkPrint/ipgoPdf/"+result.heatData;
+                    $("#orderReport").attr("src",fileUrl);
+                    orderReportModal.style.display = "block";
 					
 					orderPrintStatusCloseBtn();
 					getIpgoList();
@@ -525,7 +528,8 @@ input[type="date"] {
 		    		cellClick:function(e, cell){
 //		    			cell.getRow().toggleSelect();
 		    		}
-		    	},		    	
+		    	},
+/*
 				{	headerSort:false,
 		    		formatter:beforePrintIcon, width:60, title:"열처리</br>수주서",cellClick:function(e, cell){
 		    			if(cell.getRow().getData().ord_code != null){
@@ -537,6 +541,7 @@ input[type="date"] {
 		    			}
 		    		}
 				},
+*/
 /*
 				{	headerSort:false,
 		    		formatter:afterPrintIcon, width:60, title:"열후</br>TAG",cellClick:function(e, cell){

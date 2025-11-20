@@ -96,7 +96,8 @@ public class ManagementController {
 			@RequestParam("mode") String mode,
 			@RequestParam(value = "product_file_url", required = false) MultipartFile[] files1,
 			@RequestParam(value = "apperance_file_url", required = false) MultipartFile[] files2,
-			@RequestParam(value = "heat_file_url", required = false) MultipartFile[] files3) { 
+			@RequestParam(value = "heat_file_url", required = false) MultipartFile[] files3,
+			@RequestParam(value = "drawing_file_url", required = false) MultipartFile[] files4) { 
 
 		System.out.println("저장 컨트롤러 도착");
 
@@ -117,6 +118,9 @@ public class ManagementController {
 
 			String heatFileName = saveFiles(files3, path);
 			if (heatFileName != null) product.setHeat_file_name(heatFileName);
+			
+			String drawingFileName = saveFiles(files4, path);
+			if (drawingFileName != null) product.setDrawing_file_name(drawingFileName);
 
 			if ("insert".equalsIgnoreCase(mode)) {
 				managementService.productInsertSave(product);
@@ -672,7 +676,8 @@ public class ManagementController {
 			@ModelAttribute Standard standard,
 			@RequestParam("mode") String mode,
 			@RequestParam(value = "wstd_chim_file_url1", required = false) MultipartFile[] files1,
-			@RequestParam(value = "wstd_chim_file_url2", required = false) MultipartFile[] files2) { 
+			@RequestParam(value = "wstd_chim_file_url2", required = false) MultipartFile[] files2,
+			@RequestParam(value = "drawing_file_url", required = false) MultipartFile[] files3) { 
 		Map<String, Object> result = new HashMap<>();
 
 		try {
@@ -686,6 +691,10 @@ public class ManagementController {
 			String productFileName2 = saveFiles(files2, path);
 			System.out.println("productFileName2"+productFileName2);
 			if (productFileName2 != null) standard.setWstd_chim_file_name2(productFileName2);
+			
+			String productFileName3 = saveFiles(files3, path);
+			System.out.println("productFileName2"+productFileName3);
+			if (productFileName3 != null) standard.setDrawing_file_name(productFileName3);
 			
 			if ("insert".equalsIgnoreCase(mode)) {
 				managementService.chimStandardInsertSave(standard);
@@ -734,28 +743,7 @@ public class ManagementController {
 
 
 
-	//작업자등록 - 화면로드
-	@RequestMapping(value = "/management/userinsert", method = RequestMethod.GET)
-	public String userinsert(Users users) {
-		return "/management/userinsert.jsp";	       
-	}
-
-	//작업자등록 - 저장
-	@RequestMapping(value = "/management/userinsert/save", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> insertUser(@RequestBody Users users) {
-		Map<String, Object> rtnMap = new HashMap<>();
-		try {
-			managementService.insertUser(users); 
-			rtnMap.put("status", "success");
-			rtnMap.put("message", "사용자 등록 성공");
-		} catch (Exception e) {
-			e.printStackTrace();
-			rtnMap.put("status", "error");
-			rtnMap.put("message", "사용자 등록 실패: " + e.getMessage());
-		}
-		return rtnMap; 
-	}
+	
 
 	//고주파로작업표준 - 화면로드
 	@RequestMapping(value = "/management/goStandard", method = RequestMethod.GET)
@@ -816,83 +804,117 @@ public class ManagementController {
 
 
 
-
-
-
-
-	/*
-	 * //전체 제품목록 조회
-	 * 
-	 * @RequestMapping(value = "/management/authority/productList", method =
-	 * RequestMethod.POST)
-	 * 
-	 * @ResponseBody public Map<String, Object> getproductList() { Map<String,
-	 * Object> rtnMap = new HashMap<String, Object>();
-	 * 
-	 * List<Product> prodList = managementService.getProductList();
-	 * 
-	 * List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String,
-	 * Object>>(); for(int i=0; i<prodList.size(); i++) { HashMap<String, Object>
-	 * rowMap = new HashMap<String, Object>(); rowMap.put("idx", (i+1));
-	 * rowMap.put("prod_no", prodList.get(i).getProd_no()); rowMap.put("prod_name",
-	 * prodList.get(i).getProd_name()); rowMap.put("prod_gyu",
-	 * prodList.get(i).getProd_gyu()); rowMap.put("prod_jai",
-	 * prodList.get(i).getProd_jai()); rowMap.put("prod_model",
-	 * prodList.get(i).getProd_model());
-	 * 
-	 * rtnList.add(rowMap); }
-	 * 
-	 * rtnMap.put("last_page",1); rtnMap.put("data",rtnList);
-	 * 
-	 * return rtnMap; }
-	 */ 
-
 	//사원별 권한등록 화면 로드
 	@RequestMapping(value = "/management/authority", method = RequestMethod.GET)
 	public String authority(Users users) {
 
 		return "/management/authority.jsp";	       
 	}
-
-	//전체 사용자목록 조회
-	@RequestMapping(value = "/management/authority/userList", method = RequestMethod.POST) 
-	@ResponseBody 
-	public Map<String, Object> getUserList(
-			@RequestParam String user_buso,
-			@RequestParam String user_jick,
-			@RequestParam String user_name,
-			@RequestParam String user_ret) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-
-		Users user = new Users();
-		user.setUser_buso(user_buso);
-		user.setUser_jick(user_jick);
-		user.setUser_name(user_name);
-		user.setUser_ret(user_ret);
-
-		List<Users> userList = managementService.getUserList(user);
-
-
-		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
-		for(int i=0; i<userList.size(); i++) {
-			HashMap<String, Object> rowMap = new HashMap<String, Object>();
-			rowMap.put("idx", (i+1));
-			rowMap.put("user_no", userList.get(i).getUser_no());
-			rowMap.put("user_buso", userList.get(i).getUser_buso());
-			rowMap.put("user_code", userList.get(i).getUser_code());
-			rowMap.put("user_jick", userList.get(i).getUser_jick());
-			rowMap.put("user_name", userList.get(i).getUser_name());
-			rowMap.put("user_jdate", userList.get(i).getUser_jdate());
-			rowMap.put("user_ret", userList.get(i).getUser_ret());
-			rtnList.add(rowMap);
-		}
-
-		rtnMap.put("last_page",1);
-		rtnMap.put("data",rtnList);
-
-		return rtnMap; 
+	
+	//작업자등록 - 화면로드
+	@RequestMapping(value = "/management/userinsert", method = RequestMethod.GET)
+	public String userinsert(Users users) {
+		return "/management/userinsert.jsp";	       
 	}
 
+	// 작업자 등록 - 저장
+	@RequestMapping(value = "/management/userinsert/save", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> insertUser(@RequestBody Users users) {
+	    Map<String, Object> rtnMap = new HashMap<>();
+	    try {
+	        managementService.insertUser(users);
+	        rtnMap.put("status", "success");
+	        rtnMap.put("message", "사용자 등록 성공");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        rtnMap.put("status", "error");
+	        rtnMap.put("message", "사용자 등록 실패: " + e.getMessage());
+	    }
+	    return rtnMap;
+	}
+
+	// 작업자 수정 - 업데이트
+	@RequestMapping(value = "/management/userinsert/update", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> updateUser(@RequestBody Users users) {
+	    Map<String, Object> rtnMap = new HashMap<>();
+	    try {
+	        managementService.updateUser(users);
+	        rtnMap.put("status", "success");
+	        rtnMap.put("message", "사용자 정보가 수정되었습니다.");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        rtnMap.put("status", "error");
+	        rtnMap.put("message", "수정 실패: " + e.getMessage());
+	    }
+	    return rtnMap;
+	}
+
+
+	// 전체 사용자 목록 조회
+	@RequestMapping(value = "/management/authority/userList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getUserList(
+	        @RequestParam String user_buso,
+	        @RequestParam String user_jick,
+	        @RequestParam String user_name,
+	        @RequestParam String user_ret) {
+
+	    Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+	    Users user = new Users();
+	    user.setUser_buso(user_buso);
+	    user.setUser_jick(user_jick);
+	    user.setUser_name(user_name);
+	    user.setUser_ret(user_ret);
+
+	    List<Users> userList = managementService.getUserList(user);
+
+	    List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+	    for (int i = 0; i < userList.size(); i++) {
+	        Users u = userList.get(i);
+	        HashMap<String, Object> rowMap = new HashMap<String, Object>();
+
+	        rowMap.put("idx", i + 1);
+	        rowMap.put("user_no", u.getUser_no());
+	        rowMap.put("user_buso", u.getUser_buso());
+	        rowMap.put("user_code", u.getUser_code());
+	        rowMap.put("user_jick", u.getUser_jick());
+	        rowMap.put("user_name", u.getUser_name());
+	        rowMap.put("user_jdate", u.getUser_jdate());
+	        rowMap.put("user_odate", u.getUser_odate());
+	        rowMap.put("user_ret", u.getUser_ret());
+	        rowMap.put("user_id", u.getUser_id()); 
+	        rowMap.put("user_pwd", u.getUser_pwd());
+	        rowMap.put("user_phone", u.getUser_phone()); 
+	        rowMap.put("user_add", u.getUser_add()); 
+	        rowMap.put("user_bigo", u.getUser_bigo()); 
+
+	        rtnList.add(rowMap);
+	    }
+
+	    rtnMap.put("last_page", 1);
+	    rtnMap.put("data", rtnList);
+
+	    return rtnMap;
+	}
+
+
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	//사원별 권한등록 사용자 선택
 	@RequestMapping(value = "/management/authority/userSelect", method = RequestMethod.POST)
 	@ResponseBody

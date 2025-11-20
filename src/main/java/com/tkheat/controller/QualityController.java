@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.tkheat.domain.Product;
 import com.tkheat.domain.Suip;
@@ -250,7 +251,10 @@ System.out.println("subilbo_lot : "+ilbo_lot);
 	  @ResponseBody
 	  public Map<String, Object> nonInsertSave(
 	          @ModelAttribute Work work,
-	          HttpServletRequest req) {
+	          HttpServletRequest req,
+				@RequestParam(value = "imageFile1", required = false) MultipartFile[] files1,
+				@RequestParam(value = "imageFile2", required = false) MultipartFile[] files2,
+				@RequestParam(value = "werr_fname", required = false) MultipartFile[] files3) {
 	      String mode = req.getParameter("mode");
 	      System.out.println("🔥 Controller 들어옴!");
 	      System.out.println("mode = " + mode);

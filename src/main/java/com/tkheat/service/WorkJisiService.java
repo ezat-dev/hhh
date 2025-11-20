@@ -65,5 +65,7 @@ public interface WorkJisiService {
 
 	List<WorkJisi> getChulgoAddList(WorkJisi chulgo);
 
-	void setChulgoAdd(WorkJisi chulgo);	
+	void setChulgoAdd(WorkJisi chulgo);
+
+	List<WorkJisi> getWorkJisiHeatProdCodeList(WorkJisi w);	
 }
