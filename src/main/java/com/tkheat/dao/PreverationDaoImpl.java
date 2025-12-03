@@ -58,7 +58,10 @@ public class PreverationDaoImpl implements PreservationDao {
 		 sqlSession.update("sparePart.updateSpareSub", sparePart);
 	 }
 	
-	
+	@Override
+	 public void spareSubDelete(Integer sph_idx) {
+		 sqlSession.delete("sparePart.spareSubDelete", sph_idx);
+	 }
 	
 	
 	

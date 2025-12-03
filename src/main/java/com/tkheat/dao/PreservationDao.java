@@ -28,6 +28,7 @@ public interface PreservationDao {
 	
 	void updateSpareSub(SparePart sparePart);
 	
+	void spareSubDelete(Integer sph_idx);
 	
 	
 	

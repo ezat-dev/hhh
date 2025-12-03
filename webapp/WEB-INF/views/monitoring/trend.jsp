@@ -102,6 +102,10 @@
 			
 <script>
 $(document).ready(function () {
+    Highcharts.setOptions({
+        time: { useUTC: false }
+    });
+
     $(".datetimeSet").datepicker({
         language: 'ko',
         timepicker: true,
@@ -110,14 +114,12 @@ $(document).ready(function () {
         autoClose: true
     });
 
-    
     $("#startDate").val(trendStime());
     $("#endDate").val(trendEtime());
 
     var hogi = "";
     var seriesArray = [];
 
-    
     function fetchData() {
         const startDate = $('#startDate').val();
         const endDate = $('#endDate').val();
@@ -130,77 +132,54 @@ $(document).ready(function () {
             success: function (result) {
                 console.log("result:", result);
 
-                
-                var t1_pv_save = [];
-                var t2_pv_save = [];
-                var t3_pv_save = [];
-                var t1_sv_save = [];
-                var t2_sv_save = [];
-                var t3_sv_save = [];
+                let cfArr = [];
+                let oilArr = [];
+                let cpArr = [];
 
                 result.forEach(function(data){
-                   
-                    var tdate_val = new Date(data.tdatetime).getTime();
+                    const t = new Date(data.tdatetime).getTime();
 
-                    var t1_val = 0, t2_val = 0, t3_val = 0, t4_val = 0, t5_val = 0, t6_val = 0;
-
-                    
                     if(hogi === "BCF1"){						
-                        t1_val = data.bcf1_cf_pv;
-                        t2_val = data.bcf1_oil_pv;
-                        t3_val = data.bcf1_cp_pv;
-                        t4_val = data.bcf1_cf_sv;
-                        t5_val = data.bcf1_oil_sv;
-                        t6_val = data.bcf1_cp_sv;
+                        cfArr.push([t, data.bcf1_cf_pv]);
+                        oilArr.push([t, data.bcf1_oil_pv]);
+                        cpArr.push([t, data.bcf1_cp_pv * 1000]);
                     }else if(hogi === "BCF2"){
-                        t1_val = data.bcf2_cf_pv;
-                        t2_val = data.bcf2_oil_pv;
-                        t3_val = data.bcf2_cp_pv;
-                        t4_val = data.bcf2_cf_sv;
-                        t5_val = data.bcf2_oil_sv;
-                        t6_val = data.bcf2_cp_sv;
+                        cfArr.push([t, data.bcf2_cf_pv]);
+                        oilArr.push([t, data.bcf2_oil_pv]);
+                        cpArr.push([t, data.bcf2_cp_pv * 1000]);
                     }else if(hogi === "BCF3"){
-                        t1_val = data.bcf3_cf_pv;
-                        t2_val = data.bcf3_oil_pv;
-                        t3_val = data.bcf3_cp_pv;
-                        t4_val = data.bcf3_cf_sv;
-                        t5_val = data.bcf3_oil_sv;
-                        t6_val = data.bcf3_cp_sv;
+                        cfArr.push([t, data.bcf3_cf_pv]);
+                        oilArr.push([t, data.bcf3_oil_pv]);
+                        cpArr.push([t, data.bcf3_cp_pv * 1000]);
                     }else if(hogi === "BCF4"){
-                        t1_val = data.bcf4_cf_pv;
-                        t2_val = data.bcf4_oil_pv;
-                        t3_val = data.bcf4_cp_pv;
-                        t4_val = data.bcf4_cf_sv;
-                        t5_val = data.bcf4_oil_sv;
-                        t6_val = data.bcf4_cp_sv;
+                        cfArr.push([t, data.bcf4_cf_pv]);
+                        oilArr.push([t, data.bcf4_oil_pv]);
+                        cpArr.push([t, data.bcf4_cp_pv * 1000]);
                     }else if(hogi === "BCF5"){
-                        t1_val = data.bcf5_cf_pv;
-                        t2_val = data.bcf5_oil_pv;
-                        t3_val = data.bcf5_cp_pv;
+                        cfArr.push([t, data.bcf5_cf_pv]);
+                        oilArr.push([t, data.bcf5_oil_pv]);
+                        cpArr.push([t, data.bcf5_cp_pv * 1000]);
                     }else if(hogi === "TF1"){
-                        t1_val = data.tf1_zone1;
-                        t2_val = data.tf1_zone2;
-                        t3_val = data.tf1_zone3;
+                        cfArr.push([t, data.tf1_zone1]);
+                        oilArr.push([t, data.tf1_zone2]);
+                        cpArr.push([t, data.tf1_zone3]);
                     }
-
-                    
-                    t1_pv_save.push([tdate_val, t1_val]);
-                    t2_pv_save.push([tdate_val, t2_val]);
-                    t3_pv_save.push([tdate_val, t3_val]);
-                    t1_sv_save.push([tdate_val, t4_val]);
-                    t2_sv_save.push([tdate_val, t5_val]);
-                    t3_sv_save.push([tdate_val, t6_val]);
                 });
 
-                
-                seriesArray = [
-                    { name: "t1_pv", data: t1_pv_save, color: "red" },
-                    { name: "t2_pv", data: t2_pv_save, color: "blue" },
-                    { name: "t3_pv", data: t3_pv_save, color: "green" },
-                    { name: "t1_sv", data: t1_sv_save, color: "red", dashStyle: "ShortDash" },
-                    { name: "t2_sv", data: t2_sv_save, color: "blue", dashStyle: "ShortDash" },
-                    { name: "t3_sv", data: t3_sv_save, color: "green", dashStyle: "ShortDash" }
-                ];
+                // ✅ 설비에 따른 시리즈별 이름 처리
+                if(hogi === "TF1"){
+                    seriesArray = [
+                        { name: "TF1 ZONE1", data: cfArr, color: "red" },
+                        { name: "TF1 ZONE2", data: oilArr, color: "green" },
+                        { name: "TF1 ZONE3", data: cpArr, color: "blue"}
+                    ];
+                } else {
+                    seriesArray = [
+                        { name: hogi + " CF(PV)", data: cfArr, color: "red" },
+                        { name: hogi + " OIL(PV)", data: oilArr, color: "green" },
+                        { name: hogi + " CP(PV)", data: cpArr, color: "blue", yAxis: 1 }
+                    ];
+                }
 
                 getTrendView();
             },
@@ -211,24 +190,43 @@ $(document).ready(function () {
         });
     }
 
-    
     function getTrendView(){
         Highcharts.chart('container', {
             chart: { type: 'line' },
-            title: { text: '온도 트렌드' },
+            title: { text: hogi + ' 설비 트렌드' },
             xAxis: {
-                type: 'datetime',  
+                type: 'datetime',
                 title: { text: '시간' },
                 labels: { rotation: -45 }
             },
-            yAxis: {
-                title: { text: '값' }
-            },
+            yAxis: (hogi === "TF1")
+                ? {
+                    title: { text: '온도(℃)' },
+                    min: 0,
+                    max: 1200,
+                    tickInterval: 100
+                }
+                : [
+                    {
+                        title: { text: '온도(℃)' },
+                        min: 0,
+                        max: 1200,
+                        tickInterval: 100
+                    },
+                    {
+                        title: { text: 'CP' },
+                        opposite: true,
+                        min: 0,
+                        max: 2.5,
+                        tickInterval: 0.1 
+                    }
+                ],
             tooltip: {
                 shared: true,
                 crosshairs: true,
                 xDateFormat: '%Y-%m-%d %H:%M:%S'
             },
+            legend: { enabled: true },
             series: seriesArray
         });
     }
@@ -238,6 +236,8 @@ $(document).ready(function () {
     fetchData();
 });
 </script>
+
+
 
 
 	</body>

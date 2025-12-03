@@ -187,6 +187,10 @@ textarea {
 	transform: scale(1.05);
 }
     
+    .row_select {
+    background-color: #ffd700 !important; /* 노란색 강조 */
+    color: #000;
+}
     </style>
     
     
@@ -221,7 +225,7 @@ textarea {
 			<button class="sparePartHisInsert">
             	입력
         	</button>
-        	<button class="">
+        	<button class="deleteSub">
             	삭제
         	</button>
 		</h4>
@@ -410,6 +414,7 @@ textarea {
 											<td>
 												<input id="spp_no_his" name="spp_no_his" class="basic valPost valClean" type="text" style="width:90%;" value="">
 												<input id="spp_idx" name="spp_idx"  type="hidden">
+												<input type="hidden" id="sph_idx" name="sph_idx">
 											</td>
 										</tr>
 										<tr>
@@ -497,14 +502,12 @@ textarea {
     var isEditMode = false; //수정,최초저장 구분값
     let isSubEditMode = false;
     let selectedSubRowData = null;
+    let subTable = null;
 	//로드
 	$(function(){
-		//전체 거래처목록 조회
 		getSparePartList();
 	});
 
-	//이벤트
-	//함수
 	function getSparePartList(){
 		
 		userTable = new Tabulator("#tab1", {
@@ -602,11 +605,11 @@ textarea {
 			    var rowData = row.getData();
 			    $("#spp_purchase_his").val(rowData.spp_purchase);
 			    $("#spp_no_his").val(rowData.spp_no);
-			    $("#spp_idx").val(rowData.spp_idx);  // hidden input
+			    $("#spp_idx").val(rowData.spp_idx);
 			    $("#spp_name_his").val(rowData.spp_name);
 			    $("#spp_gyu_his").val(rowData.spp_gyu);
 			    $("#spp_yong_his").val(rowData.spp_yong);
-			    $("#sph_user").val(rowData.sph_user); // 담당자 필드
+			    $("#sph_user").val(rowData.sph_user);
 
 			    const now = new Date();
 			    const formatted = now.getFullYear() + '-' +
@@ -639,10 +642,6 @@ textarea {
 			},
 		});		
 	}
-
-
-
-	
 
 	function sparePartDetail(spp_idx){
 		$.ajax({
@@ -677,11 +676,6 @@ textarea {
 			}
 		});
 	}
-
-
-
-
-	
 
 	//SparePart 저장
     function save() {
@@ -753,159 +747,169 @@ textarea {
 	    });
 	}
 
+    function getSpareSubList(spp_idx) {
+        subTable = new Tabulator("#sub", {
+            height: "330px",
+            layout: "fitColumns",
+            selectable: true,
+            tooltips: true,
+            selectableRangeMode: "click",
+            reactiveData: true,
+            headerHozAlign: "center",
+            ajaxConfig: "POST",
+            ajaxLoader: false,
+            ajaxURL: "/tkheat/preservation/sparePart/getSpareSubList",
+            ajaxProgressiveLoad: "scroll",
+            ajaxParams: { spp_idx: spp_idx },
+            placeholder: "조회된 데이터가 없습니다.",
+            paginationSize: 20,
+            ajaxResponse: function(url, params, response) {
+                $("#sub .tabulator-col.tabulator-sortable").css("height", "55px");
+                return response;
+            },
+            columns: [
+                { title: "NO", field: "idx", sorter: "int", width: 80, hozAlign: "center" },
+                { title: "매입처", field: "spp_purchase_his", sorter: "string", width: 120, hozAlign: "center" },
+                { title: "품번", field: "spp_no_his", sorter: "string", width: 120, hozAlign: "center" },
+                { title: "품명", field: "spp_name_his", sorter: "string", width: 120, hozAlign: "center" },
+                { title: "규격", field: "spp_gyu_his", sorter: "string", width: 150, hozAlign: "center" },
+                { title: "교체주기", field: "spp_yong_his", sorter: "string", width: 120, hozAlign: "center" },
+                { title: "입고", field: "sph_input", sorter: "int", width: 100, hozAlign: "center" },
+                { title: "수리출고", field: "sph_suriout", sorter: "string", width: 100, hozAlign: "center" },
+                { title: "자산출고", field: "sph_jasanout", sorter: "int", width: 100, hozAlign: "center" },
+                { title: "비고", field: "sph_bigo", sorter: "string", width: 100, hozAlign: "center" },
+                { title: "입력시간", field: "sph_time", sorter: "string", width: 100, hozAlign: "center" },
+                { title: "담당자", field: "sph_user", sorter: "string", width: 100, hozAlign: "center" },
+                { field: "spp_idx_his", visible: false },
+                { field: "spp_idx", visible: false },
+                { field: "sph_idx", visible: false }
+            ],
+            rowFormatter: function(row) {
+                row.getElement().style.fontWeight = "700";
+                row.getElement().style.backgroundColor = "#FFFFFF";
+            },
+            rowClick: function(e, row) {
+                $("#sub .tabulator-tableHolder > .tabulator-table > .tabulator-row").removeClass("row_select");
+                
+                row.getElement().classList.add("row_select");
+                
+                selectedSubRowData = row.getData();
+                
+                isSubEditMode = true;
+            },
+            rowDblClick: function(e, row) {
+                const rowData = row.getData();
+                
+                console.log("Row Double Click Data:", rowData); // sph_idx 확인용
 
+                // sph_idx가 null이면 경고
+                if (!rowData.sph_idx) {
+                    alert("이 데이터는 수정할 수 없습니다. sph_idx가 없습니다.");
+                    return;
+                }
 
-	
+                $("#sph_idx").val(rowData.sph_idx);
+                selectedSubRowData = rowData;
+                isSubEditMode = true;
+                
+                $('#sparePartHisForm')[0].reset();
+                $("#spp_purchase_his").val(rowData.spp_purchase_his);
+                $("#spp_no_his").val(rowData.spp_no_his);
+                $("#spp_name_his").val(rowData.spp_name_his);
+                $("#spp_gyu_his").val(rowData.spp_gyu_his);
+                $("#spp_yong_his").val(rowData.spp_yong_his);
+                $("#sph_input").val(rowData.sph_input);
+                $("#sph_suriout").val(rowData.sph_suriout);
+                $("#sph_jasanout").val(rowData.sph_jasanout);
+                $("#sph_bigo").val(rowData.sph_bigo);
+                $("#sph_time").val(rowData.sph_time);
+                $("#sph_user").val(rowData.sph_user);
 
+                $("#spp_idx").val(rowData.spp_idx);
+                $("#spp_idx_his").val(rowData.spp_idx_his);
+                
+                $(".spareHisModal").show().addClass("show");
+            }
+        });
+    }
 
-	function getSpareSubList(spp_idx){
-		
-		subTable = new Tabulator("#sub", {
-		    height:"330px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/preservation/sparePart/getSpareSubList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{spp_idx: spp_idx},
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#sub .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		    	
-		        {title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},
-		        {title:"매입처", field:"spp_purchase_his", sorter:"string", width:120,
-			        hozAlign:"center"},	
-			    {title:"품번", field:"spp_no_his", sorter:"string", width:120,
-				    hozAlign:"center"},     
-				{title:"품명", field:"spp_name_his", sorter:"string", width:120,
-				    hozAlign:"center"}, 
-				{title:"규격", field:"spp_gyu_his", sorter:"string", width:150,
-				    hozAlign:"center"}, 
-		        {title:"교체주기", field:"spp_yong_his", sorter:"string", width:120,
-		        	hozAlign:"center"},		        
-		        {title:"입고", field:"sph_input", sorter:"int", width:100,
-		        	hozAlign:"center"},
-		        {title:"수리출고", field:"sph_suriout", sorter:"string", width:100,
-		        	hozAlign:"center"},
-		        {title:"자산출고", field:"sph_jasanout", sorter:"int", width:100,
-			        hozAlign:"center"},	
-		        {title:"비고", field:"sph_bigo", sorter:"int", width:100,
-		        	hozAlign:"center"},  	
-		        {title:"입력시간", field:"sph_time", sorter:"int", width:100,
-			        hozAlign:"center"},	
-			    {title:"담당자", field:"sph_user", sorter:"int", width:100,
-				    hozAlign:"center"},	
-				    {title:"NO", field:"spp_idx", sorter:"int", width:80,
-			        	hozAlign:"center",visible:false},
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
+    function saveSpareSub() {
+        var formData = new FormData($("#sparePartHisForm")[0]);
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+        // update 모드 시 sph_idx 체크
+        if (isSubEditMode && !formData.get("sph_idx")) {
+            alert("대상이 선택되지 않았습니다.");
+            return;
+        }
 
-				var rowData = row.getData();
-				
-			},
-			rowDblClick:function(e, row){
-			    const rowData = row.getData();
+        let confirmMsg = isSubEditMode ? "수정하시겠습니까?" : "저장하시겠습니까?";
+        if (!confirm(confirmMsg)) return;
 
-			    // 모드 설정
-			    isSubEditMode = true;
-			    selectedSubRowData = rowData;
+        formData.append("mode", isSubEditMode ? "update" : "insert");
 
-			    $('#sparePartHisForm')[0].reset();
-			    // 값 채우기
-			    $("#spp_purchase_his").val(rowData.spp_purchase_his);
-			    $("#spp_no_his").val(rowData.spp_no_his);
-			    $("#spp_name_his").val(rowData.spp_name_his);
-			    $("#spp_gyu_his").val(rowData.spp_gyu_his);
-			    $("#spp_yong_his").val(rowData.spp_yong_his);
-			    $("#sph_input").val(rowData.sph_input);
-			    $("#sph_suriout").val(rowData.sph_suriout);
-			    $("#sph_jasanout").val(rowData.sph_jasanout);
-			    $("#sph_bigo").val(rowData.sph_bigo);
-			    $("#sph_time").val(rowData.sph_time);
-			    $("#sph_user").val(rowData.sph_user);
-			    $("#spp_idx").val(rowData.spp_idx);
-			    $(".spareHisModal").show().addClass("show");
-			},
-		});		
-	}
+        $.ajax({
+            url: "/tkheat/preservation/sparePart/spareSubSave",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            success: function(res) {
+                alert("저장되었습니다.");
+                $(".spareHisModal").hide();
 
+                const topIdx = formData.get("spp_idx");
 
+                getSpareSubList(topIdx);
+                getSparePartList();
 
+                setTimeout(() => {
+                    const row = userTable.getRow(topIdx);
+                    if (row) row.select();
+                }, 300);
 
+                isSubEditMode = false;
+            },
+            error: function(xhr, status, error) {
+                console.error("저장 오류:", error);
+            }
+        });
+    }
 
-
-
-	function saveSpareSub() {
-	    var formData = new FormData($("#sparePartHisForm")[0]);
-
-	    console.log(formData);
-	    console.log($("#spp_idx").val());
-	    if (!formData.get("spp_idx")) {
-	        alert("대상이 선택되지 않았습니다.");
+    	
+  /*   $(".deleteSub").click(function() {
+	    if (!selectedRowData || !selectedRowData.sph_idx) {
+	        alert("삭제할 대상을 선택하세요.");
 	        return;
 	    }
 
-	    let confirmMsg = isSubEditMode ? "수정하시겠습니까?" : "저장하시겠습니까?";
-	    if (!confirm(confirmMsg)) return;
-
-	    if (isSubEditMode) {
-	        formData.append("mode", "update");
-	    } else {
-	        formData.append("mode", "insert");
+	    if (!confirm("삭제하시겠습니까?")) {
+	        return;
 	    }
 
 	    $.ajax({
-	        url: "/tkheat/preservation/sparePart/spareSubSave",
+	    	 url: "/tkheat/preservation/sparePart/spareSubDelete",
 	        type: "POST",
-	        data: formData,
-	        contentType: false,
-	        processData: false,
-	        dataType: "json",
-	        success: function (res) {
-	            alert("저장되었습니다.");
-	            $(".spareHisModal").hide();
-	            getSpareSubList(formData.get("spp_idx")); 
-	            isSubEditMode = false;
+	        data: {
+	        	sph_idx: selectedRowData.sph_idx
 	        },
-	        error: function (xhr, status, error) {
-	            console.error("저장 오류:", error);
+	        dataType: "json",
+	        success: function(result) {
+	            if (result.status === "success") {
+	                alert("삭제되었습니다.");
+	                getSparePartList();
+	            } else {
+	                alert("삭제 중 오류가 발생했습니다: " + result.message);
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("삭제 오류:", error);
+	            alert("삭제 요청 중 오류가 발생했습니다.");
 	        }
 	    });
-	}
+	} */
 
-	
-
-    </script>
     
-    
-    <script>
 		
  	// 드래그 기능 추가
 	const modal = document.querySelector('.spareModal');

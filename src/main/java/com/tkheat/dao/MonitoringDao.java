@@ -28,4 +28,6 @@ public interface MonitoringDao {
 	List<AlarmHistory> alarmHistory1(AlarmHistory alarmHistory);
 	
 	List<AlarmRanking> alarmRanking1(AlarmRanking alarmRanking);
+	
+	List<Monitoring> getCurrentAlarmList();
 }

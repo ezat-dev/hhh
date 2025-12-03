@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="monitoring">
+
+	<select id="getMonitoringList" parameterType="monitoring"
+		resultType="monitoring">
+		SELECT *
+		FROM v_monitoring
+	</select>
+
+
+	<select id="gettrend" parameterType="monitoring" resultType="monitoring">
+    SELECT
+        tdatetime,
+        bcf1_cf_pv,
+        bcf1_oil_pv,
+        (bcf1_cp_pv * 0.001) AS bcf1_cp_pv,
+        bcf2_cf_pv,
+        (bcf2_cp_pv * 0.001) AS bcf2_cp_pv,
+        bcf3_cf_pv,
+        bcf3_oil_pv,
+        (bcf3_cp_pv * 0.001) AS bcf3_cp_pv,
+        bcf4_cf_pv,
+        bcf4_oil_pv,
+        (bcf4_cp_pv * 0.001) AS bcf4_cp_pv,
+        bcf5_cf_pv,
+        bcf5_oil_pv,
+        bcf5_cp_pv,
+        tf1_zone1,
+        tf1_zone2,
+        tf1_zone3
+    FROM tb_temp
+    WHERE CONVERT(DATETIME, tdatetime, 120) 
+          BETWEEN CONVERT(DATETIME, #{startDate}, 120)
+              AND CONVERT(DATETIME, #{endDate}, 120)
+    ORDER BY tdatetime
+</select>
+
+<!-- 2025-08-18 추가 -->
+	<select id="getMonitoringDupChk" parameterType="workjisi" resultType="workjisi">
+		SELECT *
+		FROM tb_monitoring_real
+		WHERE hogi = #{hogi}
+		AND lot_qr = #{lot_qr}		
+	</select>
+
+	<select id="getMonitoringData" parameterType="workjisi" resultType="workjisi">
+		SELECT jisi_lot, jisi_lot_view, prod_name, corp_name,
+			CONCAT(now_temp,';',pre) AS pre,
+			CONCAT(now_temp,';',chim) AS chim,
+			CONCAT(now_temp,';',diff) AS diff,
+			CONCAT(now_temp,';',gang) AS gang,
+			CONCAT(now_temp,';',cold) AS cold
+		FROM (
+			SELECT jisi_lot, jisi_lot_view, prod_name, corp_name,
+				pre, chim, diff, gang, cold,
+				CASE WHEN SUBSTRING(jisi_lot,7,1) = 1 THEN CONCAT('로내온도:',bcf1_cf_pv,';유조온도:',bcf1_oil_pv,';CP:',bcf1_cp_pv)
+					 WHEN SUBSTRING(jisi_lot,7,1) = 2 THEN CONCAT('로내온도:',bcf2_cf_pv,';유조온도:',bcf2_oil_pv,';CP:',bcf2_cp_pv)
+					 WHEN SUBSTRING(jisi_lot,7,1) = 3 THEN CONCAT('로내온도:',bcf3_cf_pv,';유조온도:',bcf3_oil_pv,';CP:',bcf3_cp_pv)
+					 WHEN SUBSTRING(jisi_lot,7,1) = 4 THEN CONCAT('로내온도:',bcf4_cf_pv,';유조온도:',bcf4_oil_pv,';CP:',bcf4_cp_pv)
+					 WHEN SUBSTRING(jisi_lot,7,1) = 5 THEN CONCAT('로내온도:',bcf5_cf_pv,';유조온도:',bcf5_oil_pv,';CP:',bcf5_cp_pv)
+				END AS now_temp
+			FROM (
+				SELECT A.jisi_lot, A.jisi_lot_view, C.prod_name, D.corp_name, 
+				CONCAT('설정온도:',A.jisi_h_pre_temp,';','설정시간:',A.jisi_h_pre_time,';', CASE WHEN A.jisi_h_pre_cp = NULL THEN '' ELSE CONCAT('설정CP:',A.jisi_h_pre_cp) END) AS pre, 
+				CONCAT('설정온도:',A.jisi_h_chim_temp,';','설정시간:',A.jisi_h_chim_time,';',CASE WHEN A.jisi_h_chim_cp = NULL THEN '' ELSE CONCAT('설정CP:',A.jisi_h_chim_cp) END) AS chim,
+				CONCAT('설정온도:',A.jisi_h_diff_temp,';','설정시간:',A.jisi_h_diff_time,';',CASE WHEN A.jisi_h_diff_cp = NULL THEN '' ELSE CONCAT('설정CP:',A.jisi_h_diff_cp) END) AS diff,
+				CONCAT('설정온도:',A.jisi_h_gang_temp,';','설정시간:',A.jisi_h_gang_time,';',CASE WHEN A.jisi_h_gang_cp = NULL THEN '' ELSE CONCAT('설정CP:',A.jisi_h_gang_cp) END) AS gang,
+				CONCAT('설정온도:',A.jisi_h_cold_temp,';','설정시간:',A.jisi_h_cold_time,';',CASE WHEN A.jisi_h_cold_cp = NULL THEN '' ELSE CONCAT('설정CP:',A.jisi_h_cold_cp) END) AS cold,
+				(SELECT TOP 1 bcf1_cf_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf1_cf_pv,
+				(SELECT TOP 1 bcf1_oil_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf1_oil_pv,
+				(SELECT TOP 1 bcf1_cp_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf1_cp_pv,
+				(SELECT TOP 1 bcf2_cf_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf2_cf_pv,
+				(SELECT TOP 1 bcf2_oil_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf2_oil_pv,
+				(SELECT TOP 1 bcf2_cp_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf2_cp_pv,
+				(SELECT TOP 1 bcf3_cf_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf3_cf_pv,
+				(SELECT TOP 1 bcf3_oil_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf3_oil_pv,
+				(SELECT TOP 1 bcf3_cp_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf3_cp_pv,
+				(SELECT TOP 1 bcf4_cf_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf4_cf_pv,
+				(SELECT TOP 1 bcf4_oil_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf4_oil_pv,
+				(SELECT TOP 1 bcf4_cp_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf4_cp_pv,
+				(SELECT TOP 1 bcf5_cf_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf5_cf_pv,
+				(SELECT TOP 1 bcf5_oil_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf5_oil_pv,
+				(SELECT TOP 1 bcf5_cp_pv FROM tb_temp ORDER BY tdatetime DESC) AS bcf5_cp_pv,
+				(SELECT TOP 1 tf1_zone1 FROM tb_temp ORDER BY tdatetime DESC) AS tf1_zone_1,
+				(SELECT TOP 1 tf1_zone2 FROM tb_temp ORDER BY tdatetime DESC) AS tf1_zone_2,
+				(SELECT TOP 1 tf1_zone3 FROM tb_temp ORDER BY tdatetime DESC) AS tf1_zone_3
+					FROM tb_workheat A
+					LEFT OUTER JOIN
+						ORDERT B
+					ON A.jisi_ord_code = B.ord_code
+					LEFT OUTER JOIN
+						PRODUCT C
+					ON B.prod_code = C.prod_code
+					LEFT OUTER JOIN
+						CORP D
+					ON C.corp_code = D.corp_code
+					WHERE jisi_lot = #{lot_qr}
+			) AS A
+		) AS B	
+	</select>
+	
+	<update id="setMonitoringDataSet" parameterType="workjisi">
+		UPDATE tb_monitoring_real SET 
+			lot_qr = #{lot_qr}, cutum = #{cutum},
+			pum = #{pum}, lot = #{lot},
+			pre = #{pre}, chim = #{chim},
+			diff = #{diff}, gang = #{gang}, cold = #{cold}
+		WHERE hogi = #{hogi} AND hogi_idx = #{hogi_idx}
+	</update>
+	
+	<select id="getMonitoringDataList" resultType="workjisi">
+		SELECT *
+		FROM (
+			SELECT hogi,
+			MIN(hogi_idx) AS hogi_idx,
+			STUFF( (SELECT ';'+cutum FROM tb_monitoring_real A WHERE A.hogi = B.hogi FOR xml PATH('') ),1,1,'') AS cutum,
+			STUFF( (SELECT ';'+pum FROM tb_monitoring_real A WHERE A.hogi = B.hogi FOR xml PATH('') ),1,1,'') AS pum,
+			MAX(lot) AS lot,
+			MAX(pre) AS pre,
+			MAX(chim) AS chim,
+			MAX(diff) AS diff,
+			MAX(gang) AS gang,
+			MAX(cold) AS cold,
+			MAX(chul) AS chul,
+			MAX(lot_qr) AS lot_qr
+			FROM tb_monitoring_real B
+			GROUP BY hogi
+		) AS A
+	</select>
+	
+	<update id="setMonitoringDataReSet" parameterType="workjisi">
+		UPDATE tb_monitoring_real SET 
+			lot_qr = #{lot_qr}, cutum = #{cutum},
+			pum = #{pum}, lot = #{lot},
+			pre = #{pre}, chim = #{chim},
+			diff = #{diff}, gang = #{gang}, cold = #{cold}
+		WHERE hogi = #{hogi}
+	</update>
+	
+	
+	<select id="alarmHistoryList" parameterType="alarmHistory" resultType="alarmHistory">
+		SELECT *
+		FROM (	
+			SELECT *
+			FROM(	
+				SELECT *,
+				LEAD(alarmstate) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmstate,
+				LEAD(time) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmtime
+				FROM ALARMDATA
+				WHERE 1=1
+				AND alarmgroup = 'ALARM'
+				AND time BETWEEN #{sdateTime} AND #{edateTime}
+				ORDER BY time
+			) AS aa
+			WHERE 1=1
+			AND alarmstate != 'Clear'
+		) AS bb
+		ORDER BY time DESC
+	</select>
+	
+	<select id="alarmRankingList" parameterType="alarmRanking" resultType="alarmRanking">
+		SELECT tagname, alarmgroup, alarmdesc, COUNT(*) AS alarmcount
+		FROM (	
+			SELECT *
+			FROM(	
+				SELECT tagname, tagvalue, alarmstate, alarmlevel, alarmgroup, alarmname, alarmdesc, trigger, 
+				time, strftime('%T',time) AS time2,
+				LEAD(alarmstate) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmstate,
+				LEAD(time) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmtime
+				FROM ALARMDATA
+				WHERE 1=1
+				AND alarmgroup = 'ALARM'
+				AND time BETWEEN #{sdateTime} AND #{edateTime}
+				ORDER BY time
+			) AS aa
+			WHERE 1=1
+			AND alarmstate != 'Clear'
+		) AS bb
+		GROUP BY tagname
+		ORDER BY alarmcount DESC
+	</select>
+	
+</mapper>

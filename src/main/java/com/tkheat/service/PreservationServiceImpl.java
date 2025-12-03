@@ -59,6 +59,15 @@ public class PreservationServiceImpl implements PreservationService{
 		preservationDao.updateSpareSub(sparePart);
 	}
 	
+	@Override
+	public void spareSubDelete(Integer sph_idx) {
+		preservationDao.spareSubDelete(sph_idx);
+	}
+	
+	
+	
+	
+	
 	
 	@Override
 	public List<Bega> getBegaInsertList(Bega bega){

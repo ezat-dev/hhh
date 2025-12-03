@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="suip">
+
+	<!-- 수입검사 조회 -->
+	<select id="getSuipList" parameterType="suip"
+		resultType="suip">
+		SELECT IPTEST.ITST_CODE, 
+		       LEFT(CONVERT(NVARCHAR, IPTEST.ITST_DATE, 120), 10) AS ITST_DATE, 
+		       LEFT(CONVERT(NVARCHAR, ORDERT.ORD_DATE, 120), 10) AS ORD_DATE, 
+		       CORP.CORP_NAME, 
+		       PRODUCT.PROD_NAME, 
+		       PRODUCT.PROD_NO, 
+		       PRODUCT.PROD_GYU, 
+		       PRODUCT.PROD_JAI, 
+		       IPTEST.ITST_WP, 
+		       IPTEST.ITST_P, 
+		       IPTEST.ITST_POOR,
+		       ITST_11N, 
+		       ITST_12N  
+		  FROM IPTEST 
+		   INNER JOIN ORDERT 
+		       ON IPTEST.ORD_CODE = ORDERT.ORD_CODE 
+		   INNER JOIN PRODUCT 
+		       ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE 
+		   INNER JOIN CORP 
+		       ON PRODUCT.CORP_CODE = CORP.CORP_CODE 
+		 WHERE IPTEST.ITST_DATE BETWEEN #{sdate} AND #{edate} 
+		ORDER BY IPTEST.ITST_DATE, 
+		       CORP.CORP_NAME, 
+		       PRODUCT.PROD_NAME, 
+		       PRODUCT.PROD_NO
+		
+		
+	</select>
+	
+	
+	<select id="suipDetail" parameterType="suip"
+		resultType="suip">
+		SELECT IPTEST.*, 
+		       LEFT(CONVERT(NVARCHAR, IPTEST.ITST_DATE, 120), 10) AS ITST_DATE1, 
+		       ORDERT.ORD_DATE, 
+		       CORP.CORP_NAME, 
+		       PRODUCT.PROD_NAME, 
+		       PRODUCT.PROD_NO, 
+		       PRODUCT.PROD_JAI, 
+		       ORDERT.ORD_SU, 
+		       ORDERT.ORD_LOT,
+		       IPTEST.ITST_SU,
+		       IPTEST.ITST_TEST, 
+		       IPTEST.ITST_POOR, 
+		       IPTEST.ITST_11N, 
+		       IPTEST.ITST_12N, 
+		       IPTEST.ITST_111, 
+		       IPTEST.ITST_112, 
+		       IPTEST.ITST_113, 
+		       IPTEST.ITST_114, 
+		       IPTEST.ITST_121, 
+		       IPTEST.ITST_122, 
+		       IPTEST.ITST_123, 
+		       IPTEST.ITST_124,
+		       IPTEST.ITST_BIGO,
+		       IPTEST.ITST_SU
+		  FROM IPTEST 
+		   INNER JOIN ORDERT 
+		       ON IPTEST.ORD_CODE = ORDERT.ORD_CODE 
+		   INNER JOIN PRODUCT 
+		       ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE 
+		   INNER JOIN CORP 
+		       ON PRODUCT.CORP_CODE = CORP.CORP_CODE 
+		 WHERE IPTEST.ITST_CODE = #{itst_code}
+	</select>
+	
+	
+	
+	<update id="suipUdateSave" parameterType="suip">
+		UPDATE IPTEST 
+		       SET ITST_DATE = #{itst_date},
+		       ITST_WP = #{itst_wp},
+		       ITST_WN = #{itst_wn},
+		       ITST_WS = #{itst_ws},
+		       ITST_W1 = #{itst_w1},
+		       ITST_W2 = #{itst_w2},
+		       ITST_W3 = #{itst_w3},
+		       ITST_W4 = #{itst_w4},
+		       ITST_W5 = #{itst_w5},
+		       ITST_01N = #{itst_01n},
+		       ITST_01S = #{itst_01s},
+		       ITST_011 = #{itst_011},
+		       ITST_012 = #{itst_012},
+		       ITST_013 = #{itst_013},
+		       ITST_014 = #{itst_014},
+		       ITST_015 = #{itst_015},
+		       ITST_02N = #{itst_02n},
+		       ITST_02S = #{itst_02s},
+		       ITST_021 = #{itst_021},
+		       ITST_022 = #{itst_022},
+		       ITST_023 = #{itst_023},
+		       ITST_024 = #{itst_024},
+		       ITST_025 = #{itst_025},
+		       ITST_03N = #{itst_03n},
+		       ITST_03S = #{itst_03s},
+		       ITST_031 = #{itst_031},
+		       ITST_032 = #{itst_032},
+		       ITST_033 = #{itst_033},
+		       ITST_034 = #{itst_034},
+		       ITST_035 = #{itst_035},
+		       ITST_04N = #{itst_04n},
+		       ITST_04S = #{itst_04s},
+		       ITST_041 = #{itst_041},
+		       ITST_042 = #{itst_042},
+		       ITST_043 = #{itst_043},
+		       ITST_044 = #{itst_044},
+		       ITST_045 = #{itst_045},
+		       ITST_05N = #{itst_05n},
+		       ITST_05S = #{itst_05s},
+		       ITST_051 = #{itst_051},
+		       ITST_052 = #{itst_052},
+		       ITST_053 = #{itst_053},
+		       ITST_054 = #{itst_054},
+		       ITST_055 = #{itst_055},
+		       ITST_06N = #{itst_06n},
+		       ITST_06S = #{itst_06s},
+		       ITST_061 = #{itst_061},
+		       ITST_062 = #{itst_062},
+		       ITST_063 = #{itst_063},
+		       ITST_064 = #{itst_064},
+		       ITST_065 = #{itst_065},
+		       ITST_07N = #{itst_07n},
+		       ITST_07S = #{itst_07s},
+		       ITST_071 = #{itst_071},
+		       ITST_072 = #{itst_072},
+		       ITST_073 = #{itst_073},
+		       ITST_074 = #{itst_074},
+		       ITST_075 = #{itst_075},
+		       ITST_08N = #{itst_08n},
+		       ITST_08S = #{itst_08s},
+		       ITST_081 = #{itst_081},
+		       ITST_082 = #{itst_082},
+		       ITST_083 = #{itst_083},
+		       ITST_084 = #{itst_084},
+		       ITST_085 = #{itst_085},
+		       ITST_P = #{itst_p},
+		       ITST_BIGO = #{itst_bigo}, 
+		       ITST_SU = #{itst_su},
+		       ITST_TEST = #{itst_test}, 
+		       ITST_POOR = #{itst_poor} 
+		 WHERE ITST_CODE = #{itst_code}
+	</update>
+
+
+
+</mapper>

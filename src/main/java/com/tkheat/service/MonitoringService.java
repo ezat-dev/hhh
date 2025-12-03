@@ -21,4 +21,6 @@ public interface MonitoringService {
 	
 	List<AlarmRanking> alarmRanking1(AlarmRanking alarmRanking);
 	
+	List<Monitoring> getCurrentAlarmList();
+	
 }

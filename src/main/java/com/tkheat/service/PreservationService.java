@@ -26,7 +26,7 @@ public interface PreservationService {
 	
 	void updateSpareSub(SparePart sparePart);
 	
-	
+	void spareSubDelete(Integer sph_idx);
 	
 	
 	List<Bega> getBegaInsertList(Bega bega);

@@ -31,7 +31,7 @@ public class MonitoringServiceImpl implements MonitoringService{
 	    }
 	
 	 @Override
-		public List<Monitoring > gettrend(Monitoring monitoring) {
+		public List<Monitoring> gettrend(Monitoring monitoring) {
 		    return monitoringDao.gettrend(monitoring); 	   
 		}
 
@@ -49,5 +49,10 @@ public class MonitoringServiceImpl implements MonitoringService{
 		@Override
 		public List<AlarmRanking> alarmRanking1(AlarmRanking alarmRanking) {
 			return monitoringDao.alarmRanking1(alarmRanking);
+		}
+		
+		@Override
+		public List<Monitoring> getCurrentAlarmList() {
+		    return monitoringDao.getCurrentAlarmList();
 		}
 }

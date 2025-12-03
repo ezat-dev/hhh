@@ -14,6 +14,19 @@ public class Monitoring {
     private String gong;
     private String gb;
     
+    
+    
+    private String regtime;
+    private String a_hogi;
+    private Integer a_value;
+    private String a_addr;
+    private String a_comment;
+    private String tagName;
+    
+    
+    
+    
+    
     private String startDate;
     private String endDate;
     private String tdatetime;
@@ -312,6 +325,42 @@ public class Monitoring {
 	}
 	public void setTf1_zone3(Integer tf1_zone3) {
 		this.tf1_zone3 = tf1_zone3;
+	}
+	public String getRegtime() {
+		return regtime;
+	}
+	public void setRegtime(String regtime) {
+		this.regtime = regtime;
+	}
+	public String getA_hogi() {
+		return a_hogi;
+	}
+	public void setA_hogi(String a_hogi) {
+		this.a_hogi = a_hogi;
+	}
+	public Integer getA_value() {
+		return a_value;
+	}
+	public void setA_value(Integer a_value) {
+		this.a_value = a_value;
+	}
+	public String getA_addr() {
+		return a_addr;
+	}
+	public void setA_addr(String a_addr) {
+		this.a_addr = a_addr;
+	}
+	public String getA_comment() {
+		return a_comment;
+	}
+	public void setA_comment(String a_comment) {
+		this.a_comment = a_comment;
+	}
+	public String getTagName() {
+		return tagName;
+	}
+	public void setTagName(String tagName) {
+		this.tagName = tagName;
 	}
 
 }

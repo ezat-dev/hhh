@@ -183,10 +183,9 @@ public class PreservationController {
 	
 	
 	
-	
 	// SpareSub 관리 조회
-	@RequestMapping(value = "/preservation/sparePart/getSpareSubList", method = RequestMethod.POST) 
-	@ResponseBody 
+	@RequestMapping(value = "/preservation/sparePart/getSpareSubList", method = RequestMethod.POST)
+	@ResponseBody
 	public Map<String, Object> getSpareSubList(@RequestParam("spp_idx") Integer spp_idx) {
 	    Map<String, Object> rtnMap = new HashMap<>();
 
@@ -221,17 +220,31 @@ public class PreservationController {
 	    return rtnMap;
 	}
 
-
 	// SpareSub 저장 (insert or update 분기)
 	@RequestMapping(value = "/preservation/sparePart/spareSubSave", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> spareSubSave(@ModelAttribute SparePart sparePart) {
 	    Map<String, Object> result = new HashMap<>();
-
+	    System.out.println("===== [SpareSub Save Request] =====");
+	    System.out.println("spp_idx = " + sparePart.getSpp_idx());
+	    System.out.println("sph_idx = " + sparePart.getSph_idx());
+	    System.out.println("spp_purchase_his = " + sparePart.getSpp_purchase_his());
+	    System.out.println("spp_no_his = " + sparePart.getSpp_no_his());
+	    System.out.println("spp_name_his = " + sparePart.getSpp_name_his());
+	    System.out.println("spp_gyu_his = " + sparePart.getSpp_gyu_his());
+	    System.out.println("spp_yong_his = " + sparePart.getSpp_yong_his());
+	    System.out.println("sph_input = " + sparePart.getSph_input());
+	    System.out.println("sph_suriout = " + sparePart.getSph_suriout());
+	    System.out.println("sph_jasanout = " + sparePart.getSph_jasanout());
+	    System.out.println("sph_bigo = " + sparePart.getSph_bigo());
+	    System.out.println("===================================");
 	    try {
-	        if (sparePart.getSpp_idx_his() != null && sparePart.getSpp_idx_his() > 0) {
+	      
+	        if (sparePart.getSph_idx() != null && sparePart.getSph_idx() > 0) {
+	        	 System.out.println("★ Update Mode 진입됨!");
 	            preservationService.updateSpareSub(sparePart); // update
 	        } else {
+	        	System.out.println("★ Insert Mode 진입됨!");
 	            preservationService.insertSpareSub(sparePart); // insert
 	        }
 	        result.put("status", "success");
@@ -242,7 +255,28 @@ public class PreservationController {
 
 	    return result;
 	}
-	
+
+	// SpareSub 삭제 - delete
+	@RequestMapping(value = "/preservation/sparePart/spareSubDelete", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> deleteSpareSub(@RequestParam("sph_idx") Integer sph_idx) {
+	    Map<String, Object> result = new HashMap<>();
+
+	    try {
+	        preservationService.spareSubDelete(sph_idx); 
+	        result.put("status", "success");
+	        result.put("message", "삭제 완료");
+	    } catch (Exception e) {
+	        result.put("status", "error");
+	        result.put("message", e.getMessage());
+	    }
+
+	    System.out.println(result.get("status"));
+	    System.out.println(result.get("message"));
+
+	    return result;
+	}
+
 	
 
 

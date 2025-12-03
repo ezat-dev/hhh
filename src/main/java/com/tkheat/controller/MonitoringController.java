@@ -2,7 +2,9 @@ package com.tkheat.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -63,13 +65,24 @@ public class MonitoringController {
 		 return "/monitoring/trend.jsp";
 	 }
 	 
-	 //1페이지알람
-	 @RequestMapping(value = "/monitoring/alarm/alarmList1", method = RequestMethod.POST)
+	 
+	 
+	 @RequestMapping(value = "/monitoring/currentAlarmList", method = RequestMethod.POST)
 	 @ResponseBody
-	 public Map<String, Object> alarmView1() throws UaException, InterruptedException, ExecutionException {
-		 OpcDataMap opcDataMap = new OpcDataMap();
-		 return opcDataMap.getOpcDataListMap("TKHEAT.MODBUS.ALARM");    
-	 }
+	 public Map<String, Object> getCurrentAlarmList() {
+
+	     Map<String, Object> rtnMap = new HashMap<>();
+
+	     List<Monitoring> alarmList = monitoringService.getCurrentAlarmList();
+
+	     rtnMap.put("data", alarmList);
+	     rtnMap.put("last_page", 1);
+
+	     return rtnMap;
+	 }	 
+	
+	 
+	 
 	 //2페이지알람
 	 @RequestMapping(value = "/monitoring/alarm/alarmList2", method = RequestMethod.POST)
 	 @ResponseBody
@@ -77,6 +90,10 @@ public class MonitoringController {
 		 OpcDataMap opcDataMap = new OpcDataMap();
 		 return opcDataMap.getOpcDataListMap("TKHEAT.MODBUS.ALARM");    
 	 }
+	 
+	 
+	 
+	 
 	 
 	 //트렌드 - 화면로드
 	 @RequestMapping(value = "/monitoring/alarmHistory", method = RequestMethod.GET)
@@ -154,14 +171,41 @@ public class MonitoringController {
 	     alarmHistory.setSdateTime(sdateTime);
 	     alarmHistory.setEdateTime(edateTime);
 
-	    
-	     List<AlarmHistory> alarmHistoryList = monitoringService.alarmHistory1(alarmHistory);
+	     List<AlarmHistory> rawList = monitoringService.alarmHistory1(alarmHistory);
+
+	     
+	     Map<String, AlarmHistory> alarmMap = new LinkedHashMap<>();
+
+	     for (AlarmHistory event : rawList) {
+	         String key = event.getA_comment() + "_" + event.getA_hogi();
+	         AlarmHistory row;
+	         Integer aValue = event.getA_value() != null ? event.getA_value() : 0;
+
+	         if (!alarmMap.containsKey(key)) {
+	             row = new AlarmHistory();
+	             row.setRegtime(aValue == 1 ? event.getRegtime() : null);
+	             row.setA_comment(event.getA_comment());
+	             row.setA_hogi(event.getA_hogi());
+	             row.setDisplayValue(aValue == 1 ? "경보발생" : "경보해제");
+	             row.setReleaseTime(aValue == 0 ? event.getRegtime() : null);
+	             alarmMap.put(key, row);
+	         } else {
+	             row = alarmMap.get(key);
+	             if (aValue == 0) {
+	                 row.setReleaseTime(event.getRegtime());
+	                 row.setDisplayValue("경보해제");
+	             }
+	         }
+	     }
+
+	     List<AlarmHistory> resultList = new ArrayList<>(alarmMap.values());
 
 	     rtnMap.put("last_page", 1);
-	     rtnMap.put("data", alarmHistoryList);
+	     rtnMap.put("data", resultList);
 
 	     return rtnMap;
 	 }
+
 	 
 	 
 	 

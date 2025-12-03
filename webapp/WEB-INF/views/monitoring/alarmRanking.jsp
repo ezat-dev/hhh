@@ -108,115 +108,55 @@
 	    
 <script>
 //전역변수
-var alarmHistory;
-
-//로드
-$(function(){
-    var now = new Date();
-	var year = now.getFullYear();
-	var month = checkDate(now.getMonth()+1);
-	var date = checkDate(now.getDate());
-
-	$("#endDate").val(year+"-"+month+"-"+date);
-	
-	
-	var before = new Date();
-	before.setFullYear(before.getFullYear(), before.getMonth(), before.getDate()-1);
-
-	var b_year = before.getFullYear();
-	var b_month = checkDate(before.getMonth()+1);
-	var b_date = checkDate(before.getDate());
-	
-	$("#startDate").val(b_year+"-"+b_month+"-"+b_date);
-
-	alarmRanking1();
-});
-//이벤트
-
-//함수
-	function checkDate(i) {
-		var result;
-	 	if(i<=9){
-	 		result = "0"+i;
-		}else{
-			result = i;
-		}
-	   	return result;
-	}
-
-function alarmRanking1(){
-	
-	var sdate = $("#startDate").val();
-	var edate = $("#endDate").val();
-	
-	var sdateTime = sdate+" 00:00:00";
-	var edateTime = edate+" 23:59:59";
-	
-	alarmHistory = new Tabulator("#alarmHistoryList", {
-		    height:"550px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/monitoring/alarmRanking1",
-		    ajaxProgressiveLoad:"scroll",			    			    
-		    ajaxParams:{
-		    	"sdateTime":sdateTime,
-		    	"edateTime":edateTime
-		    },
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-		        //url - the URL of the request
-		        //params - the parameters passed with the request
-		        //response - the JSON object returned in the body of the response.
-				$("#alarmHistoryList .tabulator-col.tabulator-sortable").css("height","29px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-//			    {title:"고유번호", field:"idx"},
-		        {title:"태그명", field:"tagname", sorter:"string", width:160,
-		        	hozAlign:"center"},
-		        {title:"알람명", field:"alarmdesc", sorter:"string", width:500,
-		        	hozAlign:"center"},
-		        	 {title:"알람명", field:"alarmdesc", sorter:"string", width:500,
-			        	hozAlign:"center"},
-			        {title:"알람발생 수", field:"alarmcount", sorter:"string", width:200,
-			        	hozAlign:"center"}
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-			    if(data.success_chk == "N" || data.success_chk == "" || data.success_chk == null){
-				 	row.getElement().style.backgroundColor = "#F6F6F6";
-				}else{
-					row.getElement().style.backgroundColor = "#E4F7BA";
-				}
-			},
-			rowClick:function(e, row){
-
-				$("#alarmHistoryList .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-					
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#alarmHistoryList div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-
-
-					}
-				});
-			}
+		var alarmHistory;
+		
+		window.alarmRanking1 = function(){
+		    var sdateTime = $("#startDate").val() + " 00:00:00";
+		    var edateTime = $("#endDate").val() + " 23:59:59";
+		
+		    if(alarmHistory){
+		        alarmHistory.setData("/tkheat/monitoring/alarmRanking1", {sdateTime:sdateTime, edateTime:edateTime});
+		        return;
+		    }
+		
+		    alarmHistory = new Tabulator("#alarmHistoryList", {
+		        height:"550px",
+		        layout:"fitColumns",
+		        selectable:true,
+		        tooltips:true,
+		        ajaxConfig:"POST",
+		        ajaxURL:"/tkheat/monitoring/alarmRanking1",
+		        ajaxParams:{sdateTime:sdateTime, edateTime:edateTime},
+		        ajaxResponse:function(url, params, response){
+		            return response.data;
+		        },
+		        placeholder:"조회된 데이터가 없습니다.",
+		        paginationSize:20,
+		        columns:[
+		            {title:"PLC주소", field:"a_addr", sorter:"string", width:160, hozAlign:"center", headerFilter:"input"},
+		            {title:"알람내용", field:"a_comment", sorter:"string", width:500, hozAlign:"center", headerFilter:"input"},
+		            {title:"지역", field:"a_hogi", sorter:"string", width:500, hozAlign:"center", headerFilter:"input"},
+		            {title:"알람발생 수", field:"alarmcount", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"}
+		        ]
+		    });
+		};
+		
+		$(function(){
+		    var now = new Date();
+		    var year = now.getFullYear();
+		    var month = checkDate(now.getMonth()+1);
+		    var date = checkDate(now.getDate());
+		    $("#endDate").val(year+"-"+month+"-"+date);
+		
+		    var before = new Date();
+		    before.setDate(before.getDate()-1);
+		    $("#startDate").val(before.getFullYear()+"-"+checkDate(before.getMonth()+1)+"-"+checkDate(before.getDate()));
+		
+		    alarmRanking1();
 		});
-	}
+		
+		function checkDate(i){ return i<=9?"0"+i:i; }
 
-//다이얼로그
 
 </script>
 

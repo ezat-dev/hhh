@@ -18,6 +18,7 @@
         bcf1_oil_pv,
         (bcf1_cp_pv * 0.001) AS bcf1_cp_pv,
         bcf2_cf_pv,
+        bcf2_oil_pv,
         (bcf2_cp_pv * 0.001) AS bcf2_cp_pv,
         bcf3_cf_pv,
         bcf3_oil_pv,
@@ -142,45 +143,49 @@
 	
 	
 	<select id="alarmHistoryList" parameterType="alarmHistory" resultType="alarmHistory">
-		SELECT *
-		FROM (	
-			SELECT *
-			FROM(	
-				SELECT *,
-				LEAD(alarmstate) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmstate,
-				LEAD(time) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmtime
-				FROM ALARMDATA
-				WHERE 1=1
-				AND alarmgroup = 'ALARM'
-				AND time BETWEEN #{sdateTime} AND #{edateTime}
-				ORDER BY time
-			) AS aa
-			WHERE 1=1
-			AND alarmstate != 'Clear'
-		) AS bb
-		ORDER BY time DESC
+	    SELECT
+	        regtime,
+	        a_hogi,
+	        a_value,
+	        a_addr,
+	        a_comment
+	    FROM dbo.tb_alarmlist
+	    WHERE regtime BETWEEN #{sdateTime} AND #{edateTime}
+	    ORDER BY regtime DESC
 	</select>
+
+
+
+
 	
 	<select id="alarmRankingList" parameterType="alarmRanking" resultType="alarmRanking">
-		SELECT tagname, alarmgroup, alarmdesc, COUNT(*) AS alarmcount
-		FROM (	
-			SELECT *
-			FROM(	
-				SELECT tagname, tagvalue, alarmstate, alarmlevel, alarmgroup, alarmname, alarmdesc, trigger, 
-				time, strftime('%T',time) AS time2,
-				LEAD(alarmstate) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmstate,
-				LEAD(time) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmtime
-				FROM ALARMDATA
-				WHERE 1=1
-				AND alarmgroup = 'ALARM'
-				AND time BETWEEN #{sdateTime} AND #{edateTime}
-				ORDER BY time
-			) AS aa
-			WHERE 1=1
-			AND alarmstate != 'Clear'
-		) AS bb
-		GROUP BY tagname
-		ORDER BY alarmcount DESC
+	    SELECT 
+	        a_addr,
+	        a_comment,
+	        a_hogi,
+	        COUNT(*) AS alarmcount
+	    FROM dbo.tb_alarmlist
+	    WHERE regtime BETWEEN #{sdateTime} AND #{edateTime}
+	    GROUP BY a_addr, a_comment, a_hogi
+	    ORDER BY alarmcount DESC
 	</select>
 	
+	
+	<select id="getCurrentAlarmList"  parameterType="monitoring" resultType="monitoring">
+		    SELECT t1.*
+	FROM tb_alarmlist t1
+	INNER JOIN (
+	    SELECT a_addr, MAX(regtime) AS max_time
+	    FROM tb_alarmlist
+	    GROUP BY a_addr
+	) t2 ON t1.a_addr = t2.a_addr AND t1.regtime = t2.max_time
+	ORDER BY t1.a_addr;
+   </select>
+   
+   
+   
+   
+   
+   
+   
 </mapper>
