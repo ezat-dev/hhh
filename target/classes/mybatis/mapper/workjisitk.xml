@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="workjisitk">
+
+	<select id="workInstructionTkAllList" parameterType="workJisiTk" resultType="workJisiTk">
+		SELECT *,
+		CONVERT(VARCHAR(10),ord_input,120) AS ord_input_view,
+		CONCAT(PROD_PG,' ',PROD_PG1,' ~ ') AS prod_pg,
+		CONCAT(PROD_GD3,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd,		
+		CASE WHEN ILBO_GUBN = 'J' THEN '단취'
+			 WHEN ILBO_GUBN = 'A' THEN '열처리'
+			 WHEN ILBO_GUBN = 'R' THEN '템퍼링'
+			 ELSE ''
+		END AS ilbo_gubn
+		FROM WORKILBO
+		LEFT OUTER JOIN
+			ORDERT
+		ON WORKILBO.ORD_CODE = ORDERT.ORD_CODE
+		LEFT OUTER JOIN
+			PRODUCT
+		ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+		LEFT OUTER JOIN
+			CORP
+		ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+		LEFT OUTER JOIN
+			FACILITY
+		ON WORKILBO.FAC_CODE = FACILITY.FAC_CODE
+		WHERE 1=1
+		<if test="sdate != '' and sdate != null and edate != '' and edate != null">
+			AND WORKILBO.ILBO_STRT >= CONCAT(#{sdate},' 00:00:00')
+			AND WORKILBO.ILBO_STRT <![CDATA[<=]]> CONCAT(#{edate},' 23:59:59')
+		</if>	
+		<if test="corp_name != '' and corp_name != null">
+			AND CORP.CORP_NAME LIKE CONCAT('%',#{corp_name},'%')
+		</if>
+		<if test="prod_name != '' and prod_name != null">
+			AND PRODUCT.PROD_NAME LIKE CONCAT('%',#{prod_name},'%')
+		</if>
+		<if test="prod_no != '' and prod_no != null">
+			AND PRODUCT.PROD_NO LIKE CONCAT('%',#{prod_no},'%')
+		</if>
+	</select>
+
+	<select id="workInstructionTkDanIpgoList" parameterType="workJisiTk" resultType="workJisiTk">
+		SELECT *,
+		(ORD_SU - ISNULL(danch_su,0)) AS danch_remain_su,
+		CONCAT(PROD_PG,' ',PROD_PG1,' ~ ') AS prod_pg,
+		CONCAT(PROD_GD3,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd,
+		CONVERT(VARCHAR(10),ord_input,120) AS ord_input_view,
+		CASE WHEN WSTD_T43 IS NULL THEN '0' ELSE WSTD_T43 END AS wstd_t43
+		FROM ORDERT A
+		LEFT OUTER JOIN
+		(
+			SELECT ord_code, SUM(ilbo_su) AS danch_su
+			FROM WORKILBO
+			WHERE ilbo_gubn = 'J'
+			GROUP BY ord_code
+		) B
+		ON A.ord_code = B.ord_code
+		LEFT OUTER JOIN
+			PRODUCT C
+		ON A.prod_code = C.prod_code
+		LEFT OUTER JOIN
+			CORP D
+		ON C.corp_code = D.corp_code
+		LEFT OUTER JOIN
+		(
+			SELECT PROD_CODE,
+			MAX(REPLACE((CASE WHEN WSTD_T43 IS NULL OR WSTD_T43 = '' THEN '0' ELSE WSTD_T43 END),',','')) AS WSTD_T43,
+			MAX(wstd_t32) AS WSTD_T32,
+			MAX(wstd_t33) AS WSTD_T33,
+			MAX(wstd_t41) AS WSTD_T41,
+			MAX(wstd_t87) AS WSTD_T87,
+			MAX(wstd_t44) AS WSTD_T44,
+			MAX(wstd_t51) AS WSTD_T51,
+			MAX(wstd_t52) AS WSTD_T52,
+			MAX(wstd_t53) AS WSTD_T53,
+			MAX(wstd_t54) AS WSTD_T54,
+			MAX(wstd_t30) AS WSTD_T30			
+			FROM WORKSTD
+			GROUP BY PROD_CODE		
+		) E
+		ON C.prod_code = E.prod_code
+		WHERE (A.ord_su > B.danch_su OR B.danch_su IS NULL)
+		AND A.ord_input >= '2025-01-01 00:00:00'
+		<if test="corp_name != '' and corp_name != null">
+			AND D.corp_name LIKE CONCAT('%',#{corp_name},'%')
+		</if>
+		<if test="prod_name != '' and prod_name != null">
+			AND C.prod_name LIKE CONCAT('%',#{prod_name},'%')
+		</if>
+		<if test="prod_no != '' and prod_no != null">
+			AND C.prod_no LIKE CONCAT('%',#{prod_no},'%')
+		</if>
+		<if test="sunipOrdList != null and !sunipOrdList.isEmpty()">
+			AND A.ord_code NOT IN
+			<foreach collection="sunipOrdList" item="ord_code" index="ord_code" open="(" separator="," close=")">
+				#{ord_code}
+			</foreach>
+		</if>
+		ORDER BY A.ord_code	</select>
+	
+	<select id="workInstructionTkDanUserList" parameterType="workjisiTk" resultType="workjisiTk">
+		SELECT *
+		FROM USERT
+		WHERE user_ret = '0'
+	</select>
+
+	<!-- 선입체크 -->
+	<select id="workInstructionTkDanSunipChk" parameterType="workjisiTk" resultType="workjisiTk">
+		SELECT *,
+		(ORD_SU - danch_su) AS danch_remain_su,
+		CONCAT(PROD_PG,' ',PROD_PG1,' ~ ') AS prod_pg,
+		CONCAT(PROD_GD3,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd,
+		CONVERT(VARCHAR(10),ord_input,120) AS ord_input_view,
+		CASE WHEN WSTD_T43 IS NULL THEN '0' ELSE WSTD_T43 END AS wstd_t43
+		FROM ORDERT A
+		LEFT OUTER JOIN
+		(
+			SELECT ord_code, SUM(ilbo_su) AS danch_su
+			FROM WORKILBO
+			WHERE ilbo_gubn = 'J'
+			GROUP BY ord_code
+		) B
+		ON A.ord_code = B.ord_code
+		LEFT OUTER JOIN
+			PRODUCT C
+		ON A.prod_code = C.prod_code
+		LEFT OUTER JOIN
+			CORP D
+		ON C.corp_code = D.corp_code
+		LEFT OUTER JOIN
+		(
+			SELECT PROD_CODE,
+			MAX(REPLACE((CASE WHEN WSTD_T43 IS NULL OR WSTD_T43 = '' THEN '0' ELSE WSTD_T43 END),',','')) AS WSTD_T43,
+			MAX(wstd_t32) AS WSTD_T32,
+			MAX(wstd_t33) AS WSTD_T33,
+			MAX(wstd_t41) AS WSTD_T41,
+			MAX(wstd_t87) AS WSTD_T87,
+			MAX(wstd_t44) AS WSTD_T44,
+			MAX(wstd_t51) AS WSTD_T51,
+			MAX(wstd_t52) AS WSTD_T52,
+			MAX(wstd_t53) AS WSTD_T53,
+			MAX(wstd_t54) AS WSTD_T54,
+			MAX(wstd_t30) AS WSTD_T30			
+			FROM WORKSTD
+			GROUP BY PROD_CODE		
+		) E
+		ON C.prod_code = E.prod_code		
+		WHERE (A.ord_su > B.danch_su OR B.danch_su IS NULL)
+		AND A.ord_input >= '2025-01-01 00:00:00'
+		AND A.prod_code = #{prod_code}
+		AND A.ord_code <![CDATA[<]]> #{ord_code}
+		<if test="sunipOrdList != null and !sunipOrdList.isEmpty()">
+			AND A.ord_code IN
+			<foreach collection="sunipOrdList" item="ord_code" index="ord_code" open="(" separator="," close=")">
+				#{ord_code}
+			</foreach>
+		</if>
+	</select>
+
+	<!-- 일보코드 조회 -->
+	<select id="getWorkIlboCodeSearch" resultType="int">
+		SELECT ISNULL(MAX(ILBO_CODE),0)+1 FROM WORKILBO
+	</select>
+
+	<insert id="workInstructionTkDanDataSave" parameterType="workJisiTk">
+	
+		EXEC WORKILBO_DANCH_SAVE #{ilbo_code}, #{ilbo_no}, #{ord_code}, #{ilbo_gubn}, #{ilbo_su}, #{ilbo_jung},
+							 #{ilbo_strt}, #{ilbo_end}, #{user_code}, #{ilbo_g11}, #{ilbo_g12}
+	</insert>
+
+</mapper>

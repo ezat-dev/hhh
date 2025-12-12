@@ -29,6 +29,13 @@
 <script type="text/javascript" src="/tkheat/js/airdatepicker/datepicker.ko.js"></script>
 <link rel="stylesheet" href="/tkheat/css/airdatepicker/datepicker.min.css"> 
 
+<!-- choices select태그 라이브러리 -->
+<!-- 
+<script type="text/javascript" src="/tkheat/js/choices/choices.js"></script>
+<link rel="stylesheet" href="/tkheat/css/choices/base.css"> 
+<link rel="stylesheet" href="/tkheat/css/choices/choices.css">
+ --> 
+
 <style>
 	.tabulator {
     font-size: 10px;
@@ -66,6 +73,13 @@ $(function(){
       language: 'ko'          // 한국어 설정
   });
 	
+	//날짜 : 년-월-일 시:분
+	 $(".ymdHmSet").datepicker({
+		  language: 'ko',
+	      dateFormat: 'yyyy-mm-dd hh:mm',     // 연도 형식 지정
+	      autoClose: true,        // 연도 선택 후 자동 닫힘
+	      language: 'ko'          // 한국어 설정
+	  });
 	
 });
 
@@ -177,6 +191,8 @@ function trendEtime(){
 	return ye+"-"+mo+"-"+da+" "+ho+":"+mi; 
 }
 
+
+
 function rpImagePopup() {
     var img = document.createElement("img");
 //    console.log(img);
@@ -239,9 +255,9 @@ function pageObject(paramKey){
 			"b03":["/tkheat/production/prodWaitingStatus","생산대기현황"],
 			"b04":["/tkheat/production/lotIpgo","LOT추적관리(입고)"],
 			"b05":["/tkheat/production/lotHeat","LOT추적관리(열처리LOT)"],
-			"b06":"",
+			"b06":["/tkheat/production/workInstructionTk","작업지시NEW"],//작업지시(적재)
 			"b07":"",
-
+			"b08":"",
 			
 			"c01":["/tkheat/process/cleanSiljuk","전세정작업실적"],
 			"c02":["/tkheat/process/chimSiljuk","침탄작업실적"],
