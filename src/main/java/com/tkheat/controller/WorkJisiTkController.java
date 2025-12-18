@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.tkheat.domain.WorkJisiTk;
 import com.tkheat.service.WorkJisiServiceTk;
+import com.tkheat.service.WorkJisiServiceTkImpl;
 
 @Controller
 public class WorkJisiTkController {
@@ -42,7 +43,7 @@ public class WorkJisiTkController {
 			@RequestParam(required=false) String s_prod_name,
 			@RequestParam(required=false) String s_prod_no){			
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
-		
+				
 		WorkJisiTk w = new WorkJisiTk();
 		w.setSdate(s_sdate);
 		w.setEdate(s_edate);
@@ -53,11 +54,56 @@ public class WorkJisiTkController {
 		List<WorkJisiTk> list = workJisiServiceTk.workInstructionTkAllList(w);
 		
 		
-		
 		rtnMap.put("data",list);
 		
 		
 		return rtnMap;	
+	}
+	
+	@RequestMapping(value = "/production/workInstructionTk/dataDelete", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> workInstructionTkDataDelete(
+			@RequestParam(required = false) int ilbo_code,	
+			@RequestParam(required = false) int ord_code,	
+			@RequestParam(required = false) String ilbo_gubn,	
+			@RequestParam(required = false) String ilbo_lot,
+			@RequestParam(required = false) String user_name
+		){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+	
+		WorkJisiTk w = new WorkJisiTk();
+		w.setIlbo_code(ilbo_code);
+		w.setOrd_code(ord_code);
+		w.setIlbo_gubn(ilbo_gubn);
+		w.setIlbo_lot(ilbo_lot);
+		w.setUser_name(user_name);
+		
+		workJisiServiceTk.workInstructionTkDataDelete(w);
+		
+	
+		return rtnMap;
+	}
+	
+	//작업데이터 조회 후 모달표시
+	@RequestMapping(value = "/production/workInstructionTk/dataUpdateList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> workInstructionTkDataUpdateList(
+			@RequestParam(required = false) int ilbo_code,	
+			@RequestParam(required = false) String ilbo_gubn,	
+			@RequestParam(required = false) String ilbo_lot
+		){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+	
+		WorkJisiTk w = new WorkJisiTk();
+		w.setIlbo_code(ilbo_code);
+		w.setIlbo_gubn(ilbo_gubn);
+		w.setIlbo_lot(ilbo_lot);
+		
+		List<WorkJisiTk> wList = workJisiServiceTk.workInstructionTkDataUpdateList(w);
+		
+		rtnMap.put("data",wList);
+	
+		return rtnMap;
 	}
 	
 	//3-1.작업지시(단취) 데이터조회(입고이력 조회선택시)
@@ -138,6 +184,23 @@ public class WorkJisiTkController {
 		
 		
 		return rtnMap;	
+	}
+	
+	@RequestMapping(value = "/production/workInstructionTk/dan/ipgoBarcodeScan", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> workInstructionTkDanIpgoBarcodeScan(
+			@RequestParam(required = false) int ord_code){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		WorkJisiTk w = new WorkJisiTk();
+		w.setOrd_code(ord_code);
+		
+		List<WorkJisiTk> list = workJisiServiceTk.workInstructionTkDanIpgoBarcodeScan(w);		
+		
+		rtnMap.put("data",list);
+
+		
+		return rtnMap;
 	}
 	
 	//3-3.입고리스트 선택시 단취리스트 데이터 이동
@@ -227,7 +290,7 @@ public class WorkJisiTkController {
 		
 		if(danch_sunip_chk == 1) {
 			//선입선출제외 체크됨
-			if("3183".equals(danch_sunip_chk_pw)) {
+			if("0000".equals(danch_sunip_chk_pw)) {
 				//선입선출 무시
 				
 				rtnMap.put("alert","정상");
@@ -271,6 +334,7 @@ public class WorkJisiTkController {
 		
 		return rtnMap;	
 	}
+	
 	
 	//적용할 제품의 수량,중량계산 메서드
 	public Map<String, Object> workInstructionTkDanIpgoListDataCalc(
@@ -411,7 +475,9 @@ public class WorkJisiTkController {
 		stdWorkTmp.setWstd_t52(ifNullStringReturn(selectViewObj.get("wstd_t52")));
 		stdWorkTmp.setWstd_t53(ifNullStringReturn(selectViewObj.get("wstd_t53")));
 		stdWorkTmp.setWstd_t54(ifNullStringReturn(selectViewObj.get("wstd_t54")));
-		stdWorkTmp.setWstd_t30(ifNullStringReturn(selectViewObj.get("wstd_t30")));		
+		stdWorkTmp.setWstd_t30(ifNullStringReturn(selectViewObj.get("wstd_t30")));
+		stdWorkTmp.setProduct_file_name(ifNullStringReturn(selectViewObj.get("product_file_name")));
+		stdWorkTmp.setWstd_chim_file_name1(ifNullStringReturn(selectViewObj.get("wstd_chim_file_name1")));
 		stdWorkTmp.setDanch_total_cnt(danch_total_cnt);
 		
 		rtnMap.put("selectMap",selectWorkTmp);
@@ -460,10 +526,11 @@ public class WorkJisiTkController {
 				
 				//작업자, 시작, 종료 데이터
 				formObj = formParser.parse(formObjParam);
-				formViewObj = (JSONObject)formObj;				
-				
+				formViewObj = (JSONObject)formObj;			
+					
 				//일보코드 조회
-				int ilbo_code = workJisiServiceTk.getWorkIlboCodeSearch();
+				int ilbo_code = 0;
+				int ilbo_code_search = workJisiServiceTk.getWorkIlboCodeSearch();
 				int user_code = Integer.parseInt(ifNullStringReturn(formViewObj.get("user_code")));
 				String ilbo_strt = ifNullStringReturn(formViewObj.get("ilbo_strt"));
 				String ilbo_end = ifNullStringReturn(formViewObj.get("ilbo_end"));
@@ -473,6 +540,12 @@ public class WorkJisiTkController {
 						listJsonObject = (JSONObject)lObj;
 						//listJsonObject.get("ord_code").toString()
 	                    WorkJisiTk wSave = new WorkJisiTk();
+	                    
+	                    if(Integer.parseInt(listJsonObject.get("ilbo_code").toString()) == 0) {
+	                    	ilbo_code = ilbo_code_search;
+	                    }else {
+	                    	ilbo_code = Integer.parseInt(listJsonObject.get("ilbo_code").toString());
+	                    }
 	                    
 	                    wSave.setIlbo_code(ilbo_code);
 	                    wSave.setUser_code(user_code);
@@ -496,10 +569,215 @@ public class WorkJisiTkController {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+		
+		return rtnMap;
+	}
+	
+	/*열처리 작업*/
+	@RequestMapping(value = "/production/workInstructionTk/bcf/bcfDataSearch", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> workInstructionTkBcfDataSearch(	
+			@RequestParam(required = false) String selectedDataParam){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		JSONParser selectedParser = new JSONParser();
+		Object selectedObj = new Object();
+		JSONObject selectedViewObj = new JSONObject();
+		
+		try {
+			//작업자, 시작, 종료 데이터
+			selectedObj = selectedParser.parse(selectedDataParam);
+			selectedViewObj = (JSONObject)selectedObj;
+			
+			int ilbo_code = Integer.parseInt(selectedViewObj.get("ilbo_code").toString());
+			
+			WorkJisiTk w = new WorkJisiTk();
+			w.setIlbo_code(ilbo_code);
+			
+			List<WorkJisiTk> wList = workJisiServiceTk.workInstructionTkBcfDataSearch(w);
+			
+			rtnMap.put("data",wList);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return rtnMap;
+	}
+
+	@RequestMapping(value = "/production/workInstructionTk/bcf/bcfList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> workInstructionTkBcfList(
+			@RequestParam(required=false) String fac_gyu
+			){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		WorkJisiTk w = new WorkJisiTk();
+		w.setFac_gyu(fac_gyu);
+		
+		List<WorkJisiTk> list = workJisiServiceTk.workInstructionTkBcfList(w);
+		
+		
+		
+		rtnMap.put("data",list);
+		
+		
+		return rtnMap;	
+	}
+	
+	@RequestMapping(value="/production/workInstructionTk/bcf/ilboLotRtn", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> workInstructionBcfIlboLotRtn(
+			@RequestParam(required=false) String ilbo_lot_date,
+			@RequestParam(required=false) int fac_code,
+			@RequestParam(required=false) int ilbo_code
+			){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		WorkJisiTk w = new WorkJisiTk();
+		w.setIlbo_lot_date(ilbo_lot_date);
+		w.setFac_code(fac_code);
+		w.setIlbo_code(ilbo_code);
+		
+		String ilbo_lot = workJisiServiceTk.workInstructionBcfIlboLotRtn(w);
+		
+		rtnMap.put("data",ilbo_lot);
+		
+		return rtnMap;
+	}
+	
+	
+	//열처리데이터 저장
+	@RequestMapping(value = "/production/workInstructionTk/bcf/dataSave", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> workInstructionTkBcfDataSave(	
+			@RequestParam(required = false) String bcfSettingDataList,
+			@RequestParam(required = false) String formObjParam){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		JSONParser listParser = new JSONParser();
+		JSONParser formParser = new JSONParser();
+		
+		Object listObj = new Object();
+		Object formObj = new Object();
+		
+		JSONArray listJsonArray = new JSONArray();
+		JSONObject formViewObj = new JSONObject();
+		JSONObject listJsonObject = new JSONObject();
+		
+		try {
+			//리스트 데이터
+			listObj = listParser.parse(bcfSettingDataList);
+			
+			
+			if(listObj instanceof JSONArray) {
+				listJsonArray = (JSONArray)listObj;
+				
+				//작업자, 시작, 종료 데이터
+				formObj = formParser.parse(formObjParam);
+				formViewObj = (JSONObject)formObj;			
+					
+				//일보코드 조회
+				int ilbo_code = 0;
+				int ilbo_code_search = workJisiServiceTk.getWorkIlboCodeSearch();				
+				
+				int fac_code = Integer.parseInt(ifNullStringReturn(formViewObj.get("fac_code")));
+				int user_code = Integer.parseInt(ifNullStringReturn(formViewObj.get("user_code")));
+				String wstd_gj11 = ifNullStringReturn(formViewObj.get("wstd_gj11"));
+				String wstd_gj12 = ifNullStringReturn(formViewObj.get("wstd_gj12"));
+				String wstd_gj13 = ifNullStringReturn(formViewObj.get("wstd_gj13"));
+				String wstd_gj14 = ifNullStringReturn(formViewObj.get("wstd_gj14"));
+				String wstd_gj16 = ifNullStringReturn(formViewObj.get("wstd_gj16"));
+				String wstd_gj17 = ifNullStringReturn(formViewObj.get("wstd_gj17"));
+				
+				String wstd_gj21 = ifNullStringReturn(formViewObj.get("wstd_gj21"));
+				String wstd_gj22 = ifNullStringReturn(formViewObj.get("wstd_gj22"));
+				String wstd_gj23 = ifNullStringReturn(formViewObj.get("wstd_gj23"));
+				String wstd_gj24 = ifNullStringReturn(formViewObj.get("wstd_gj24"));
+				
+				String wstd_gj32 = ifNullStringReturn(formViewObj.get("wstd_gj32"));
+				String wstd_gj33 = ifNullStringReturn(formViewObj.get("wstd_gj33"));
+				String wstd_gj34 = ifNullStringReturn(formViewObj.get("wstd_gj34"));
+				String wstd_gj42 = ifNullStringReturn(formViewObj.get("wstd_gj42"));
+				
+				String ilbo_lot = ifNullStringReturn(formViewObj.get("ilbo_lot"));
+				
+				String ilbo_strt = ifNullStringReturn(formViewObj.get("ilbo_strt"));
+				String ilbo_end = ifNullStringReturn(formViewObj.get("ilbo_end"));
+				
+				
+				
+				int ilbo_no = 0;
+				
+				for(Object lObj : listJsonArray) {
+					if (lObj instanceof JSONObject) {
+						listJsonObject = (JSONObject)lObj;
+						//listJsonObject.get("ord_code").toString()
+	                    WorkJisiTk wSave = new WorkJisiTk();
+	                    
+	                    //ilbo_pc의 값이 있는지 없는지로 구분
+	                    int ilbo_pc = Integer.parseInt(listJsonObject.get("ilbo_pc").toString());
+	                    
+	                    //0이라면 아직 열처리 등록 전
+	                    if(ilbo_pc == 0) {
+	                    	ilbo_pc = Integer.parseInt(listJsonObject.get("ilbo_code").toString());
+	                    	ilbo_code = ilbo_code_search;
+	                    }else {
+	                    	//0이 아니라면 이미 등록되어 있음
+	                    	ilbo_pc = Integer.parseInt(listJsonObject.get("ilbo_pc").toString());
+	                    	ilbo_code = Integer.parseInt(listJsonObject.get("ilbo_code").toString());
+	                    }
+	                    
+	                    wSave.setIlbo_code(ilbo_code);	   
+	                    wSave.setIlbo_pc(ilbo_pc);
+	                    wSave.setIlbo_pn(ilbo_no);
+	                    
+	                    wSave.setIlbo_lot(ilbo_lot);
+	                    wSave.setWstd_gj11(wstd_gj11);
+	                    wSave.setWstd_gj12(wstd_gj12);
+	                    wSave.setWstd_gj13(wstd_gj13);
+	                    wSave.setWstd_gj14(wstd_gj14);
+	                    wSave.setWstd_gj16(wstd_gj16);
+	                    wSave.setWstd_gj17(wstd_gj17);
+	                    
+	                    wSave.setWstd_gj21(wstd_gj21);
+	                    wSave.setWstd_gj22(wstd_gj22);
+	                    wSave.setWstd_gj23(wstd_gj23);
+	                    wSave.setWstd_gj24(wstd_gj24);
+	                    
+	                    wSave.setWstd_gj32(wstd_gj32);
+	                    wSave.setWstd_gj33(wstd_gj33);
+	                    wSave.setWstd_gj34(wstd_gj34);
+	                    
+	                    wSave.setWstd_gj42(wstd_gj42);
+	                    
+	                    wSave.setUser_code(user_code);
+	                    wSave.setFac_code(fac_code);
+	                    wSave.setIlbo_strt(ilbo_strt);
+	                    wSave.setIlbo_end(ilbo_end);
+	                    wSave.setOrd_code(Integer.parseInt(listJsonObject.get("ord_code").toString()));
+	                    wSave.setIlbo_no(ilbo_no);
+	                    wSave.setIlbo_gubn("A");
+	                    wSave.setIlbo_su(Integer.parseInt(listJsonObject.get("ilbo_su").toString()));
+	                    wSave.setIlbo_jung(Float.parseFloat(listJsonObject.get("ilbo_jung").toString()));
+	                    wSave.setIlbo_g11("0");
+	                    wSave.setIlbo_g12("");
+	                    
+	                    workJisiServiceTk.workInstructionTkBcfDataSave(wSave);
+	                    ilbo_no++;
+	                }					
+				}
+			}
+			
+			rtnMap.put("data", "저장완료");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 
 		
 		
 		
 		return rtnMap;
 	}
+
+	
 }

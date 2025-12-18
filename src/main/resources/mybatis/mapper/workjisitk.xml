@@ -8,12 +8,7 @@
 		SELECT *,
 		CONVERT(VARCHAR(10),ord_input,120) AS ord_input_view,
 		CONCAT(PROD_PG,' ',PROD_PG1,' ~ ') AS prod_pg,
-		CONCAT(PROD_GD3,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd,		
-		CASE WHEN ILBO_GUBN = 'J' THEN '단취'
-			 WHEN ILBO_GUBN = 'A' THEN '열처리'
-			 WHEN ILBO_GUBN = 'R' THEN '템퍼링'
-			 ELSE ''
-		END AS ilbo_gubn
+		CONCAT(PROD_GD3,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd
 		FROM WORKILBO
 		LEFT OUTER JOIN
 			ORDERT
@@ -41,7 +36,56 @@
 		<if test="prod_no != '' and prod_no != null">
 			AND PRODUCT.PROD_NO LIKE CONCAT('%',#{prod_no},'%')
 		</if>
+		ORDER BY ILBO_CODE
 	</select>
+	
+	<!-- 삭제로그 기록 -->
+	<insert id="workInstructionTkDataDeleteLog" parameterType="workJisiTk">
+		INSERT DEL_LOG(
+				DEL_DATE,
+				SESSION_NAME,
+				ORD_DATE,
+				DEL_KIND,
+				CORP_NAME,
+				PROD_NAME,
+				PROD_NO,
+				PROD_GYU,
+				DEL_SU,
+				DEL_AMNT,
+				ORD_LOT
+			)
+		SELECT 
+			CONVERT(CHAR(10), GETDATE(), 23),
+			#{user_name},
+			ORDERT.ORD_INPUT,
+			'작업지시',
+			CORP.CORP_NAME,
+			PRODUCT.PROD_NAME,
+			PRODUCT.PROD_NO,
+			PRODUCT.PROD_GYU,
+			WORKILBO.ILBO_SU,
+			WORKILBO.ILBO_JUNG,
+			ORDERT.ORD_LOT
+		FROM WORKILBO
+		INNER JOIN
+			ORDERT
+		ON WORKILBO.ORD_CODE = ORDERT.ORD_CODE
+		INNER JOIN
+			PRODUCT
+		ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+		INNER JOIN
+			CORP
+		ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+		WHERE 1=1
+		AND WORKILBO.ILBO_CODE = #{ilbo_code}
+		AND WORKILBO.ILBO_GUBN = #{ilbo_gubn}
+		AND WORKILBO.ORD_CODE = #{ord_code}
+		
+	</insert>
+	
+	<delete id="workInstructionTkDataDelete" parameterType="workJisiTk">
+		DELETE FROM WORKILBO WHERE ilbo_code = #{ilbo_code} AND ilbo_gubn = #{ilbo_gubn} AND ord_code = #{ord_code}
+	</delete>
 
 	<select id="workInstructionTkDanIpgoList" parameterType="workJisiTk" resultType="workJisiTk">
 		SELECT *,
@@ -49,7 +93,9 @@
 		CONCAT(PROD_PG,' ',PROD_PG1,' ~ ') AS prod_pg,
 		CONCAT(PROD_GD3,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd,
 		CONVERT(VARCHAR(10),ord_input,120) AS ord_input_view,
-		CASE WHEN WSTD_T43 IS NULL THEN '0' ELSE WSTD_T43 END AS wstd_t43
+		CASE WHEN WSTD_T43 IS NULL THEN '0' ELSE WSTD_T43 END AS wstd_t43,
+		ISNULL(product_file_name,'no_image.png') AS product_file_name,
+		ISNULL(wstd_chim_file_name1,'no_image.png') AS wstd_chim_file_name1
 		FROM ORDERT A
 		LEFT OUTER JOIN
 		(
@@ -78,7 +124,8 @@
 			MAX(wstd_t52) AS WSTD_T52,
 			MAX(wstd_t53) AS WSTD_T53,
 			MAX(wstd_t54) AS WSTD_T54,
-			MAX(wstd_t30) AS WSTD_T30			
+			MAX(wstd_t30) AS WSTD_T30,
+			MAX(wstd_chim_file_name1) AS WSTD_CHIM_FILE_NAME1		
 			FROM WORKSTD
 			GROUP BY PROD_CODE		
 		) E
@@ -94,13 +141,69 @@
 		<if test="prod_no != '' and prod_no != null">
 			AND C.prod_no LIKE CONCAT('%',#{prod_no},'%')
 		</if>
+		<if test="ord_code != 0 and ord_code != null">
+			AND A.ord_code = #{ord_code}
+		</if>
 		<if test="sunipOrdList != null and !sunipOrdList.isEmpty()">
 			AND A.ord_code NOT IN
 			<foreach collection="sunipOrdList" item="ord_code" index="ord_code" open="(" separator="," close=")">
 				#{ord_code}
 			</foreach>
 		</if>
-		ORDER BY A.ord_code	</select>
+		ORDER BY A.ord_code	
+	</select>
+
+	<select id="workInstructionTkDanIpgoBarcodeScan" parameterType="workJisiTk" resultType="workJisiTk">
+		SELECT *,
+		(ORD_SU - ISNULL(danch_su,0)) AS danch_remain_su,
+		CONCAT(PROD_PG,' ',PROD_PG1,' ~ ') AS prod_pg,
+		CONCAT(PROD_GD3,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd,
+		CONVERT(VARCHAR(10),ord_input,120) AS ord_input_view,
+		CASE WHEN WSTD_T43 IS NULL THEN '0' ELSE WSTD_T43 END AS wstd_t43,
+		ISNULL(product_file_name,'no_image.png') AS product_file_name,
+		ISNULL(wstd_chim_file_name1,'no_image.png') AS wstd_chim_file_name1
+		FROM ORDERT A
+		LEFT OUTER JOIN
+		(
+			SELECT ord_code, SUM(ilbo_su) AS danch_su
+			FROM WORKILBO
+			WHERE ilbo_gubn = 'J'
+			GROUP BY ord_code
+		) B
+		ON A.ord_code = B.ord_code
+		LEFT OUTER JOIN
+			PRODUCT C
+		ON A.prod_code = C.prod_code
+		LEFT OUTER JOIN
+			CORP D
+		ON C.corp_code = D.corp_code
+		LEFT OUTER JOIN
+		(
+			SELECT PROD_CODE,
+			MAX(REPLACE((CASE WHEN WSTD_T43 IS NULL OR WSTD_T43 = '' THEN '0' ELSE WSTD_T43 END),',','')) AS WSTD_T43,
+			MAX(wstd_t32) AS WSTD_T32,
+			MAX(wstd_t33) AS WSTD_T33,
+			MAX(wstd_t41) AS WSTD_T41,
+			MAX(wstd_t87) AS WSTD_T87,
+			MAX(wstd_t44) AS WSTD_T44,
+			MAX(wstd_t51) AS WSTD_T51,
+			MAX(wstd_t52) AS WSTD_T52,
+			MAX(wstd_t53) AS WSTD_T53,
+			MAX(wstd_t54) AS WSTD_T54,
+			MAX(wstd_t30) AS WSTD_T30,
+			MAX(wstd_chim_file_name1) AS WSTD_CHIM_FILE_NAME1			
+			FROM WORKSTD
+			GROUP BY PROD_CODE		
+		) E
+		ON C.prod_code = E.prod_code
+		WHERE (A.ord_su > B.danch_su OR B.danch_su IS NULL)
+		AND A.ord_input >= '2025-01-01 00:00:00'
+		<if test="ord_code != 0 and ord_code != null">
+			AND A.ord_code = #{ord_code}
+		</if>
+		ORDER BY A.ord_code	
+	</select>
+
 	
 	<select id="workInstructionTkDanUserList" parameterType="workjisiTk" resultType="workjisiTk">
 		SELECT *
@@ -170,6 +273,158 @@
 	
 		EXEC WORKILBO_DANCH_SAVE #{ilbo_code}, #{ilbo_no}, #{ord_code}, #{ilbo_gubn}, #{ilbo_su}, #{ilbo_jung},
 							 #{ilbo_strt}, #{ilbo_end}, #{user_code}, #{ilbo_g11}, #{ilbo_g12}
+	</insert>
+
+	<!-- 작업일보 수정데이터 조회 -->
+	<select id="workInstructionTkDataUpdateList" parameterType="workJisitk" resultType="workJisiTk">
+		SELECT *,
+			CONVERT(VARCHAR(10),ord_input,120) AS ord_input_view,
+		    CONCAT(PROD_PG,' ',PROD_PG1,' ~ ') AS prod_pg,
+		    CONCAT(PROD_GD3,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd
+		FROM WORKILBO
+		INNER JOIN
+		    ORDERT
+		ON WORKILBO.ord_code = ORDERT.ord_code
+		INNER JOIN
+		    PRODUCT
+		ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+		INNER JOIN
+		    CORP
+		ON CORP.CORP_CODE = PRODUCT.CORP_CODE
+		INNER JOIN
+		(
+			SELECT PROD_CODE,
+			MAX(REPLACE((CASE WHEN WSTD_T43 IS NULL OR WSTD_T43 = '' THEN '0' ELSE WSTD_T43 END),',','')) AS WSTD_T43,
+			MAX(wstd_t32) AS WSTD_T32,
+			MAX(wstd_t33) AS WSTD_T33,
+			MAX(wstd_t41) AS WSTD_T41,
+			MAX(wstd_t87) AS WSTD_T87,
+			MAX(wstd_t44) AS WSTD_T44,
+			MAX(wstd_t51) AS WSTD_T51,
+			MAX(wstd_t52) AS WSTD_T52,
+			MAX(wstd_t53) AS WSTD_T53,
+			MAX(wstd_t54) AS WSTD_T54,
+			MAX(wstd_t30) AS WSTD_T30,
+			MAX(wstd_gj11) AS WSTD_GJ11,
+			MAX(wstd_gj12) AS WSTD_GJ12,
+			MAX(wstd_gj13) AS WSTD_GJ13,
+			MAX(wstd_gj14) AS WSTD_GJ14,
+			MAX(wstd_gj16) AS WSTD_GJ16,
+			MAX(wstd_gj17) AS WSTD_GJ17,
+			MAX(wstd_gj21) AS WSTD_GJ21,
+			MAX(wstd_gj22) AS WSTD_GJ22,
+			MAX(wstd_gj23) AS WSTD_GJ23,
+			MAX(wstd_gj24) AS WSTD_GJ24,
+			MAX(wstd_gj32) AS WSTD_GJ32,
+			MAX(wstd_gj33) AS WSTD_GJ33,
+			MAX(wstd_gj34) AS WSTD_GJ34,
+			MAX(wstd_gj42) AS WSTD_GJ42
+			FROM WORKSTD
+			GROUP BY PROD_CODE		
+		) WORKSTD
+		ON PRODUCT.PROD_CODE = WORKSTD.PROD_CODE
+		WHERE 1=1
+		<choose>
+			<when test="ilbo_gubn = 'J'">
+				AND ILBO_CODE = #{ilbo_code}
+			</when>
+			<otherwise>
+				AND ILBO_PC = #{ilbo_code}
+			</otherwise>
+		</choose>
+		
+	</select>
+	
+	<!-- 열처리 작업 -->
+	<select id="workInstructionTkBcfDataSearch" parameterType="workJisiTk" resultType="workJisiTk">
+		SELECT *,
+		CONVERT(VARCHAR(10),ord_input,120) AS ord_input_view,
+		CONCAT(PROD_PG,' ',PROD_PG1,' ~ ') AS prod_pg,
+		CONCAT(PROD_GD3,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd
+		FROM WORKILBO
+		LEFT OUTER JOIN
+			ORDERT
+		ON WORKILBO.ORD_CODE = ORDERT.ORD_CODE
+		LEFT OUTER JOIN
+			PRODUCT
+		ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+		LEFT OUTER JOIN
+			CORP
+		ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+		LEFT OUTER JOIN
+			FACILITY
+		ON WORKILBO.FAC_CODE = FACILITY.FAC_CODE
+		INNER JOIN
+		(
+			SELECT PROD_CODE,
+			MAX(wstd_gj11) AS WSTD_GJ11,
+			MAX(wstd_gj12) AS WSTD_GJ12,
+			MAX(wstd_gj13) AS WSTD_GJ13,
+			MAX(wstd_gj14) AS WSTD_GJ14,
+			MAX(wstd_gj16) AS WSTD_GJ16,
+			MAX(wstd_gj17) AS WSTD_GJ17,
+			MAX(wstd_gj21) AS WSTD_GJ21,
+			MAX(wstd_gj22) AS WSTD_GJ22,
+			MAX(wstd_gj23) AS WSTD_GJ23,
+			MAX(wstd_gj24) AS WSTD_GJ24,
+			MAX(wstd_gj32) AS WSTD_GJ32,
+			MAX(wstd_gj33) AS WSTD_GJ33,
+			MAX(wstd_gj34) AS WSTD_GJ34,
+			MAX(wstd_gj42) AS WSTD_GJ42		
+			FROM WORKSTD
+			GROUP BY PROD_CODE		
+		) WORKSTD
+		ON PRODUCT.PROD_CODE = WORKSTD.PROD_CODE
+		
+		WHERE 1=1
+		<if test="ilbo_code != 0 and ilbo_code != null">
+			AND ILBO_CODE = #{ilbo_code}
+		</if>
+	</select>
+	
+	<select id="workInstructionTkBcfList" parameterType="workJisiTk" resultType="workJisiTk">
+		SELECT *
+		FROM FACILITY
+		WHERE 1=1
+		<if test="fac_gyu != '' and fac_gyu != null">
+			AND FAC_GYU = #{fac_gyu}
+		</if>
+		ORDER BY FAC_NAME
+	</select>
+
+	<select id="workInstructionBcfIlboLotRtn" parameterType="workJisiTk" resultType="string">
+		SELECT CONCAT('TK',RIGHT(REPLACE(#{ilbo_lot_date},'-',''),6),'-',#{fac_code}, (COUNT(*)+1),
+			(
+				SELECT CASE WHEN COUNT(*) = 1 THEN '0'
+				            WHEN COUNT(*) = 2 THEN 'A'
+				            WHEN COUNT(*) = 3 THEN 'B'
+				            ELSE 'B'
+				        END AS ilbo_lot_count
+				FROM workilbo
+				WHERE 1=1
+				AND ilbo_code = #{ilbo_code}
+				GROUP BY ilbo_code			
+			)
+		)
+		FROM (
+		    SELECT ILBO_LOT
+		    FROM WORKILBO
+		    WHERE 1=1
+		    AND ILBO_STRT >= CONCAT(#{ilbo_lot_date},' 00:00:00')
+		    AND FAC_CODE = #{fac_code}
+		    AND ILBO_PN = 0
+		    AND ILBO_GUBN = 'A'
+		    GROUP BY ILBO_LOT
+		) A		
+	</select>
+	
+	<insert id="workInstructionTkBcfDataSave" parameterType="workJisiTk">	
+		EXEC WORKILBO_BCF_SAVE #{ilbo_code}, #{ilbo_no}, #{ord_code}, #{ilbo_gubn}, #{ilbo_su}, #{ilbo_jung},
+							 #{ilbo_strt}, #{ilbo_end}, #{user_code}, #{ilbo_g11}, #{ilbo_g12},
+							 #{fac_code}, #{ilbo_pc}, #{ilbo_pn}, #{ilbo_lot},
+							 #{wstd_gj11}, #{wstd_gj12}, #{wstd_gj13}, #{wstd_gj14}, #{wstd_gj16}, #{wstd_gj17},
+							 #{wstd_gj21}, #{wstd_gj22}, #{wstd_gj23}, #{wstd_gj24},
+							 #{wstd_gj32}, #{wstd_gj33}, #{wstd_gj34}, #{wstd_gj42}
 	</insert>
 
 </mapper>

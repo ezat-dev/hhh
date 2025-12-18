@@ -116,6 +116,21 @@ public class WorkJisiTk {
 	private String wstd_t53;
 	private String wstd_t54;
 	private String wstd_t30;
+	private String wstd_gj11;
+	private String wstd_gj12;
+	private String wstd_gj13;
+	private String wstd_gj14;
+	private String wstd_gj15;
+	private String wstd_gj16;
+	private String wstd_gj17;
+	private String wstd_gj21;
+	private String wstd_gj22;
+	private String wstd_gj23;
+	private String wstd_gj24;
+	private String wstd_gj32;
+	private String wstd_gj33;
+	private String wstd_gj34;
+	private String wstd_gj42;
 	
 	//CORP 테이블(거래처)
 	private int corp_code;
@@ -269,6 +284,19 @@ public class WorkJisiTk {
 	private int danch_su;
 	private int danch_remain_su;
 	private int danch_std_cnt;
+	
+	private String product_file_name;
+	private String apperance_file_name;
+	private String heat_file_name;
+	private String drawing_file_name;
+	
+	private String wstd_chim_file_name1;
+	private String wstd_chim_file_name2;
+	
+	private String fac_gyu;
+	
+	private String ilbo_lot_date;
+	private String ilbo_lot_count;
 	
 	//수주번호 리스트로 선입제품 제외로 사용
 	private List<Integer> sunipOrdList;
@@ -1628,5 +1656,149 @@ public class WorkJisiTk {
 	}
 	public void setSunipOrdList(List<Integer> sunipOrdList) {
 		this.sunipOrdList = sunipOrdList;
+	}
+	public String getProduct_file_name() {
+		return product_file_name;
+	}
+	public void setProduct_file_name(String product_file_name) {
+		this.product_file_name = product_file_name;
+	}
+	public String getApperance_file_name() {
+		return apperance_file_name;
+	}
+	public void setApperance_file_name(String apperance_file_name) {
+		this.apperance_file_name = apperance_file_name;
+	}
+	public String getHeat_file_name() {
+		return heat_file_name;
+	}
+	public void setHeat_file_name(String heat_file_name) {
+		this.heat_file_name = heat_file_name;
+	}
+	public String getDrawing_file_name() {
+		return drawing_file_name;
+	}
+	public void setDrawing_file_name(String drawing_file_name) {
+		this.drawing_file_name = drawing_file_name;
+	}
+	public String getWstd_chim_file_name1() {
+		return wstd_chim_file_name1;
+	}
+	public void setWstd_chim_file_name1(String wstd_chim_file_name1) {
+		this.wstd_chim_file_name1 = wstd_chim_file_name1;
+	}
+	public String getWstd_chim_file_name2() {
+		return wstd_chim_file_name2;
+	}
+	public void setWstd_chim_file_name2(String wstd_chim_file_name2) {
+		this.wstd_chim_file_name2 = wstd_chim_file_name2;
+	}
+	public String getFac_gyu() {
+		return fac_gyu;
+	}
+	public void setFac_gyu(String fac_gyu) {
+		this.fac_gyu = fac_gyu;
+	}
+	public String getWstd_gj11() {
+		return wstd_gj11;
+	}
+	public void setWstd_gj11(String wstd_gj11) {
+		this.wstd_gj11 = wstd_gj11;
+	}
+	public String getWstd_gj12() {
+		return wstd_gj12;
+	}
+	public void setWstd_gj12(String wstd_gj12) {
+		this.wstd_gj12 = wstd_gj12;
+	}
+	public String getWstd_gj13() {
+		return wstd_gj13;
+	}
+	public void setWstd_gj13(String wstd_gj13) {
+		this.wstd_gj13 = wstd_gj13;
+	}
+	public String getWstd_gj14() {
+		return wstd_gj14;
+	}
+	public void setWstd_gj14(String wstd_gj14) {
+		this.wstd_gj14 = wstd_gj14;
+	}
+	public String getWstd_gj15() {
+		return wstd_gj15;
+	}
+	public void setWstd_gj15(String wstd_gj15) {
+		this.wstd_gj15 = wstd_gj15;
+	}
+	public String getWstd_gj16() {
+		return wstd_gj16;
+	}
+	public void setWstd_gj16(String wstd_gj16) {
+		this.wstd_gj16 = wstd_gj16;
+	}
+	public String getWstd_gj17() {
+		return wstd_gj17;
+	}
+	public void setWstd_gj17(String wstd_gj17) {
+		this.wstd_gj17 = wstd_gj17;
+	}
+	public String getWstd_gj21() {
+		return wstd_gj21;
+	}
+	public void setWstd_gj21(String wstd_gj21) {
+		this.wstd_gj21 = wstd_gj21;
+	}
+	public String getWstd_gj22() {
+		return wstd_gj22;
+	}
+	public void setWstd_gj22(String wstd_gj22) {
+		this.wstd_gj22 = wstd_gj22;
+	}
+	public String getWstd_gj23() {
+		return wstd_gj23;
+	}
+	public void setWstd_gj23(String wstd_gj23) {
+		this.wstd_gj23 = wstd_gj23;
+	}
+	public String getWstd_gj24() {
+		return wstd_gj24;
+	}
+	public void setWstd_gj24(String wstd_gj24) {
+		this.wstd_gj24 = wstd_gj24;
+	}
+	public String getWstd_gj32() {
+		return wstd_gj32;
+	}
+	public void setWstd_gj32(String wstd_gj32) {
+		this.wstd_gj32 = wstd_gj32;
+	}
+	public String getWstd_gj33() {
+		return wstd_gj33;
+	}
+	public void setWstd_gj33(String wstd_gj33) {
+		this.wstd_gj33 = wstd_gj33;
+	}
+	public String getWstd_gj34() {
+		return wstd_gj34;
+	}
+	public void setWstd_gj34(String wstd_gj34) {
+		this.wstd_gj34 = wstd_gj34;
+	}
+	public String getWstd_gj42() {
+		return wstd_gj42;
+	}
+	public void setWstd_gj42(String wstd_gj42) {
+		this.wstd_gj42 = wstd_gj42;
+	}
+	public String getIlbo_lot_date() {
+		return ilbo_lot_date;
+	}
+	public void setIlbo_lot_date(String ilbo_lot_date) {
+		this.ilbo_lot_date = ilbo_lot_date;
+	}
+	public String getIlbo_lot_count() {
+		return ilbo_lot_count;
+	}
+	public void setIlbo_lot_count(String ilbo_lot_count) {
+		this.ilbo_lot_count = ilbo_lot_count;
 	}
 }

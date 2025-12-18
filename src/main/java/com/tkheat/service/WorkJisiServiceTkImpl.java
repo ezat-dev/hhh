@@ -45,4 +45,39 @@ public class WorkJisiServiceTkImpl implements WorkJisiServiceTk {
 		workJisiDaoTk.workInstructionTkDanDataSave(wSave);
 	}
 
+	@Override
+	public void workInstructionTkDataDelete(WorkJisiTk w) {
+		workJisiDaoTk.workInstructionTkDataDelete(w);
+	}
+
+	@Override
+	public List<WorkJisiTk> workInstructionTkDataUpdateList(WorkJisiTk w) {
+		return workJisiDaoTk.workInstructionTkDataUpdateList(w);
+	}
+
+	@Override
+	public List<WorkJisiTk> workInstructionTkDanIpgoBarcodeScan(WorkJisiTk w) {
+		return workJisiDaoTk.workInstructionTkDanIpgoBarcodeScan(w);
+	}
+
+	@Override
+	public List<WorkJisiTk> workInstructionTkBcfDataSearch(WorkJisiTk w) {
+		return workJisiDaoTk.workInstructionTkBcfDataSearch(w);
+	}
+
+	@Override
+	public List<WorkJisiTk> workInstructionTkBcfList(WorkJisiTk w) {
+		return workJisiDaoTk.workInstructionTkBcfList(w);
+	}
+
+	@Override
+	public String workInstructionBcfIlboLotRtn(WorkJisiTk w) {
+		return workJisiDaoTk.workInstructionBcfIlboLotRtn(w);
+	}
+
+	@Override
+	public void workInstructionTkBcfDataSave(WorkJisiTk wSave) {
+		workJisiDaoTk.workInstructionTkBcfDataSave(wSave);
+	}
+
 }

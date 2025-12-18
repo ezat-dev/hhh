@@ -19,4 +19,18 @@ public interface WorkJisiDaoTk {
 
 	void workInstructionTkDanDataSave(WorkJisiTk wSave);
 
+	void workInstructionTkDataDelete(WorkJisiTk w);
+
+	List<WorkJisiTk> workInstructionTkDataUpdateList(WorkJisiTk w);
+
+	List<WorkJisiTk> workInstructionTkDanIpgoBarcodeScan(WorkJisiTk w);
+
+	List<WorkJisiTk> workInstructionTkBcfDataSearch(WorkJisiTk w);
+
+	List<WorkJisiTk> workInstructionTkBcfList(WorkJisiTk w);
+
+	String workInstructionBcfIlboLotRtn(WorkJisiTk w);
+
+	void workInstructionTkBcfDataSave(WorkJisiTk wSave);
+
 }

@@ -215,6 +215,86 @@
 	margin-left:5px;
 }
 
+/*침탄로작업 등록 모달*/
+.workBcfModal{
+	position: fixed; /* 화면에 고정 */
+	width:1400px;
+	height:720px;	
+	top: 50%; /* 수직 중앙 */
+	left: 50%; /* 수평 중앙 */
+	display: none;
+	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+	z-index: 20010; /* 다른 요소 위에 표시 */
+	border:2px solid black;
+	background-color:white;
+}
+
+.workBcfModal .j_container{
+	display:flex;	
+}
+
+.workBcfModal .j_row1{
+	display:flex;
+	margin-top:1px;
+}
+
+.workBcfModal .margin_left{
+	margin-left:5px;
+}
+
+.workBcfModal .iRowBtn{
+	display:block;
+	cursor:pointer;
+	width:70px;
+	height:30px;
+	font-size:12pt;
+}
+
+.workBcfModal .iRowBtn2{
+	display:block;
+	cursor:pointer;
+	width:120px;
+	height:30px;
+	font-size:12pt;
+}
+
+.workBcfModal .iRowLabel{
+	display:block;
+	width:120px;
+	height:20px;
+	text-align:center;
+	margin-bottom:2px;
+	font-size:12pt;
+}
+
+.workBcfModal .iRowLabel2{
+	display:block;
+	width:120px;
+	height:24px;
+	text-align:left;
+	margin-bottom:7px;
+	font-size:12pt;
+	margin-left:10px;
+}
+
+.workBcfModal .iRowInput{
+	/*display:flex;*/
+	width:120px !important;
+	height:20px;
+	font-size:12pt;
+	text-align:center;
+}
+
+.workBcfModal .iRowInput2{
+	display:block;
+	width:120px !important;
+	height:20px;
+	font-size:12pt;
+	text-align:center;
+	margin-bottom:5px;
+}
+
+
 /**/
 
 .header {
@@ -365,7 +445,7 @@
 				<!-- 수주no 바코드스캔 후 적용과 입고이력을 조회한다음 추가하는 방법 2가지 -->				
 				<label for="" class="iRowLabel">수주NO</label>
 				<input type="text" id="danch_ord_code" name="danch_ord_code" class="iRowInput_180"/>
-				<button class="iRowBtn2 margin_left" type="button" onclick="workHIpgoDataBarcodeScan();">수주NO조회</button>				
+				<button class="iRowBtn2 margin_left" type="button" onclick="getWorkDanIpgoDataBarcodeScan();">수주NO조회</button>				
 				<button class="workHDataBtn iRowBtn2 margin_left" type="button" onclick="workDanIpgoModalOpen();">입고이력조회</button>
 				<label for="" class="margin_left iRowLabel">총 작업수량</label>
 				<input type="text" name="danch_total_cnt" class="iRowInput" value="0" disabled="disabled"/>			
@@ -464,6 +544,7 @@
 				</div>
 			</div>
 			
+			
 			<div class="j_row1">
 				<div class="j_div">
 					<label for="wstd_t53" class="iRowLabel2">제품사진</label>
@@ -471,6 +552,15 @@
 				
 				<div class="j_div">
 					<!-- 제품사진, 단취사진 img -->
+					<img src="" alt="" name="product_file_name" style="width:150px; height:150px;"/>
+				</div>
+				<div class="j_div">
+					<label for="wstd_t53" class="iRowLabel2">단취사진</label>
+				</div>
+				
+				<div class="j_div">
+					<!-- 제품사진, 단취사진 img -->
+					<img src="" alt="" name="wstd_chim_file_name1" style="width:150px; height:150px;"/>
 				</div>
 			</div>
 
@@ -525,6 +615,182 @@
     </div>
 </div>
 
+<!-- 열처리작업 모달 -->
+<div class="workBcfModal">
+	<div class="detail">
+		<div class="header">
+		열처리작업 등록
+		</div>
+	</div>
+	
+		<form id="workBcfForm" name="workBcfForm" autocomplete="off">
+			<div class="j_container">
+				<!-- 수주no 바코드스캔 후 적용과 입고이력을 조회한다음 추가하는 방법 2가지 -->				
+				<label for="" class="iRowLabel">생산NO</label>
+				<input type="text" id="bcf_ilbo_lot" name="bcf_ilbo_lot" class="iRowInput_180"/>
+				<button class="iRowBtn margin_left" type="button" onclick="getworkBcfIlboLotReset();">제거</button>				
+							
+									
+			</div>	
+	
+		
+			<div class="setRow">
+				<div id="workBcfTabu"></div>
+			</div>
+			<hr />
+		<div class="j_container" style="justify-content:center; font-size:14pt;">
+			<div class="j_row1">*등록정보*</div>						
+		</div>
+		<hr />
+		<div class="j_container">				
+			<div class="j_row1">
+				<div class="j_div">
+					<label for="fac_code" class="iRowLabel">설비</label>
+					<select name="fac_code" class="iRowInput" style="height:27px;"></select>						
+				</div>
+				
+				<div class="j_div">
+					<label for="user_code" class="iRowLabel">작업자</label>
+					<select name="user_code" class="iRowInput" style="height:27px;"></select>						
+				</div>
+				
+				<div class="j_div">
+					<label for="wstd_t32" class="iRowLabel margin_left" style="width:240px;">작업시작</label>
+					<input type="datetime-local" name="ilbo_strt" class="iRowInput margin_left" style="width:240px !important; height:25px;"/>
+					<button class="iRowBtn margin_left" type="button" onclick="sdateTimeSetBtn('bcfStart');"
+					style="display:inline-block;">시작</button>
+				</div>
+				
+				<div class="j_div">
+					<label for="wstd_t32" class="iRowLabel margin_left" style="width:240px;">작업종료</label>
+					<input type="datetime-local" name="ilbo_end" class="iRowInput margin_left" style="width:240px !important; height:25px;"/>
+					<button class="iRowBtn margin_left" type="button" onclick="sdateTimeSetBtn('bcfEnd');"
+					style="display:inline-block;">종료</button>						
+				</div>
+				
+				<div class="j_div">
+					<label for="" class="margin_left iRowLabel">총 수량</label>
+					<input type="text" name="bcf_total_cnt" class="margin_left iRowInput" value="0" disabled="disabled"/>				
+				</div>
+				
+				<div class="j_div">
+					<label for="" class="margin_left iRowLabel">총 중량</label>
+					<input type="text" name="bcf_total_weight" class="margin_left iRowInput" value="0" disabled="disabled"/>				
+				</div>
+			</div>
+		</div>		
+		<hr />
+		<div class="j_container" style="justify-content:center; font-size:14pt;">
+			<div class="j_row1">*열처리조건*</div>			
+		</div>
+		<hr />
+		
+		
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_div">
+					<label class="iRowLabel2"></label>
+					<label class="iRowLabel2">온도</label>
+					<label class="iRowLabel2">시간</label>
+					<label class="iRowLabel2">CP</label>
+					<label class="iRowLabel2">H2[㎥/Hr]</label>
+					<label class="iRowLabel2">NH3[㎥/Hr]</label>
+					<label class="iRowLabel2">RX</label>
+				</div>
+				<div class="j_div">
+					<label class="iRowLabel2" 
+						style="text-align:center; margin-left:0; background:beige;
+						border:1px solid black; width: 125px;"
+					>예열</label>
+					<input type="text" name="wstd_gj11" class="iRowInput2"/>					
+					<input type="text" name="wstd_gj21" class="iRowInput2"/>
+					<input type="text" name="wstd_gj31" class="iRowInput2" disabled="disabled"/>
+					<input type="text" name="" class="iRowInput2" disabled="disabled"/>	
+					<input type="text" name="" class="iRowInput2" disabled="disabled"/>
+					<input type="text" name="wstd_gj42" class="iRowInput2"/>					
+				</div>
+				
+				<div class="j_div margin_left">
+					<label class="iRowLabel2" 
+						style="text-align:center; margin-left:0; background:beige;
+						border:1px solid black; width: 125px;"
+					>침탄</label>
+					<input type="text" name="wstd_gj12" class="iRowInput2"/>					
+					<input type="text" name="wstd_gj22" class="iRowInput2"/>
+					<input type="text" name="wstd_gj32" class="iRowInput2"/>
+					<input type="text" name="" class="iRowInput2" disabled="disabled"/>	
+					<input type="text" name="" class="iRowInput2" disabled="disabled"/>	
+					<label class="iRowLabel2">LPG</label>				
+				</div>
+				
+				<div class="j_div margin_left">
+					<label class="iRowLabel2" 
+						style="text-align:center; margin-left:0; background:MEDIUMSEAGREEN;
+						border:1px solid black; width: 125px;"
+					>확산</label>
+					<input type="text" name="wstd_gj13" class="iRowInput2"/>					
+					<input type="text" name="wstd_gj23" class="iRowInput2"/>
+					<input type="text" name="wstd_gj33" class="iRowInput2"/>
+					<input type="text" name="" class="iRowInput2" disabled="disabled"/>	
+					<input type="text" name="" class="iRowInput2" disabled="disabled"/>
+					<input type="text" name="" class="iRowInput2" disabled="disabled"/>		
+				</div>
+				
+				<div class="j_div margin_left">
+					<label class="iRowLabel2" 
+						style="text-align:center; margin-left:0; background:lightskyblue;
+						border:1px solid black; width: 125px;"
+					>강온</label>
+					<input type="text" name="wstd_gj14" class="iRowInput2"/>					
+					<input type="text" name="wstd_gj24" class="iRowInput2"/>
+					<input type="text" name="wstd_gj34" class="iRowInput2"/>
+					<input type="text" name="" class="iRowInput2" disabled="disabled"/>	
+					<input type="text" name="" class="iRowInput2" disabled="disabled"/>
+					<label class="iRowLabel2">교반속도</label>				
+				</div>
+				
+				<div class="j_div margin_left">
+					<label class="iRowLabel2" 
+						style="text-align:center; margin-left:0; background:lightpink;
+						border:1px solid black; width: 125px;"
+					>균열</label>
+					<input type="text" name="wstd_gj15" class="iRowInput2" disabled="disabled"/>					
+					<input type="text" name="wstd_gj25" class="iRowInput2" disabled="disabled"/>
+					<input type="text" name="wstd_gj35" class="iRowInput2" disabled="disabled"/>
+					<input type="text" name="" class="iRowInput2" disabled="disabled"/>	
+					<input type="text" name="" class="iRowInput2" disabled="disabled"/>
+					<input type="text" name="wstd_gj17" class="iRowInput2"/>				
+				</div>
+				
+				<div class="j_div margin_left">
+					<label class="iRowLabel2" 
+						style="text-align:center; margin-left:0; background:lightpink;
+						border:1px solid black; width: 125px;"
+					>냉각</label>
+					<input type="text" name="wstd_gj16" class="iRowInput2"/>					
+					<input type="text" name="wstd_gj26" class="iRowInput2" disabled="disabled"/>
+					<input type="text" name="wstd_gj36" class="iRowInput2" disabled="disabled"/>
+					<input type="text" name="" class="iRowInput2" disabled="disabled"/>	
+					<input type="text" name="" class="iRowInput2" disabled="disabled"/>					
+				</div>
+				
+			</div>
+
+			
+			
+		</div>
+		
+	</form>
+	
+	<hr />
+	
+    <div class="j_container" style="justify-content:end;">
+    	<div class="j_row1">
+			<button class="iRowBtn margin_left" type="button" onclick="workBcfModalSave();">저장</button>
+			<button class="iRowBtn margin_left" type="button" onclick="workBcfModalClose();">닫기</button>
+		</div>
+    </div>
+</div>
 
 <form id="reportPrint" name="reportPrint">
 	<input type="text" id="reportDate" name="reportDate" style="display:none;"/>
@@ -570,11 +836,88 @@
 		getWorkDataList();
 	});
 	
+	//작업삭제
+	$("#workDeleteBtn").on("click", function(){
+		
+		var selectedData = workDataTable.getSelectedData()[0];
+		
+		if(confirm("작업/단취코드 : "+selectedData.ilbo_code+"\n수주번호 : "+selectedData.ord_code+"\n작업구분 : "+selectedData.ilbo_gubn+"\n작업LOT : "+selectedData.ilbo_lot+"\n를 삭제하시겠습니까?")){
+			
+			var ilbo_code = selectedData.ilbo_code;
+			var ord_code = selectedData.ord_code;
+			var ilbo_gubn = selectedData.ilbo_gubn;
+			var ilbo_lot = selectedData.ilbo_lot;
+			var user_name = "${loginUser.user_name}";
+						
+			
+			$.ajax({
+				url:"/tkheat/production/workInstructionTk/dataDelete",
+				type:"post",
+				dataType:"json",
+				data:{
+					"ilbo_code":ilbo_code,
+					"ord_code":ord_code,
+					"ilbo_gubn":ilbo_gubn,
+					"ilbo_lot":ilbo_lot,
+					"user_code":user_name
+				},
+				success:function(result){
+					getWorkDataList();
+				}
+			});
+		}
+	});
+	
+	$("#workBcfForm select[name='fac_code']").change(function(){
+		ilboLotRtn(facNumberRtn(this.value));
+	});
+	
 	//함수
-	function workHIpgoDataBarcodeScan(){
-		alert("기능구현 예정");
-		return false;
+	function facNumberRtn(facCode){
+		var rtn = 0;
+		
+		switch (facCode){
+			case "1": rtn = 1; break;		//침탄로 1호기
+			case "2": rtn = 2; break;		//침탄로 2호기
+			case "3": rtn = 3; break;		//침탄로 3호기
+			case "4": rtn = 4; break;		//침탄로 4호기
+			case "18": rtn = 5; break;	//침탄로 5호기
+		}
+		
+		return rtn;
 	}
+	
+	function ilboLotRtn(facCodeParam){
+		
+		var now = new Date();
+		var ye = now.getFullYear();
+		var mo = paddingZero(now.getMonth()+1);
+		var da = paddingZero(now.getDate());
+		
+		var ho = paddingZero(now.getHours());
+		var mi = paddingZero(now.getMinutes());		
+		
+		var setDateTime = ye+"-"+mo+"-"+da+" "+ho+":"+mi;
+		
+		var bcf_ilbo_lot = "TK"+((ye+"").slice(-2))+mo+da+"-"+facCodeParam;
+		
+		
+		
+		$.ajax({
+			url:"/tkheat/production/workInstructionTk/bcf/ilboLotRtn",
+			type:"post",
+			dataType:"json",
+			data:{
+				"ilbo_lot_date":(ye+"-"+mo+"-"+da),
+				"fac_code":facCodeParam,
+				"ilbo_code":workDataTable.getSelectedData()[0].ilbo_code
+			},
+			success:function(result){
+				$("#workBcfForm input[name='bcf_ilbo_lot']").val(result.data);		
+			}
+		});
+	}
+	
 	
 	function sdateTimeSetBtn(gb){
 		var now = new Date();
@@ -593,6 +936,12 @@
 			break;
 			case "danchEnd": 
 				$("#workDanForm input[name='ilbo_end']").val(setDateTime);
+			break;
+			case "bcfStart": 
+				$("#workBcfForm input[name='ilbo_strt']").val(setDateTime);
+			break;
+			case "bcfEnd": 
+				$("#workBcfForm input[name='ilbo_end']").val(setDateTime);
 			break;
 		} 
 	}
@@ -630,6 +979,93 @@
 	function workDanModalClose(){		
 		workDanModal.style.display = 'none'; // 모달 숨김
 	}
+	
+	//침탄로작업
+	function workBcfModalOpen(){
+		$("#workBcfForm")[0].reset();
+		
+		var selectedData = workDataTable.getSelectedData()[0];
+		
+		if(selectedData == null){
+			alert("단취완료된 작업을 선택해주십시오!!");
+			workSelectModalClose();
+			return false;
+		}else{
+			var ilbo_gubn = selectedData.ilbo_gubn;
+			var ilbo_pc = selectedData.ilbo_pc;
+			
+			if(ilbo_gubn == "J" || (ilbo_gubn == "A" && ilbo_pc != 0)){
+				//정상선택
+				//선택한 제품의 리스트 조회해서 타뷸레이터 적용
+				getWorkBcfData();
+				getWorkBcfDataFacCode();
+				//일보로트 입력
+				ilboLotRtn(1);
+				
+				var now = new Date();
+				var ye = now.getFullYear();
+				var mo = paddingZero(now.getMonth()+1);
+				var da = paddingZero(now.getDate());
+				
+				var ho = paddingZero(now.getHours());
+				var mi = paddingZero(now.getMinutes());		
+				
+				var setDateTime = ye+"-"+mo+"-"+da+" "+ho+":"+mi;
+				
+				$("#workBcfForm input[name='ilbo_strt']").val(setDateTime);
+				$("#workBcfForm input[name='ilbo_end']").val(setDateTime);
+				
+				workSelectModalClose();
+				getWorkBcfDataUserCode();
+				workBcfModal.style.display = 'block'; // 모달 숨김
+				
+				var selectedDataParam = JSON.stringify(selectedData);
+				
+				$.ajax({
+					url:"/tkheat/production/workInstructionTk/bcf/bcfDataSearch",
+					type:"post",
+					dataType:"json",
+					traditional: true,
+					data:{"selectedDataParam":selectedDataParam},
+					success:function(result){
+						
+						var bcf_total_cnt = 0;		//총 수량
+						var bcf_total_weight = 0;	//총 중량
+						
+						workBcfDataTable.setData(result.data);
+
+						var rowDatas = result.data;
+						
+						for(var keys in rowDatas){
+							var rowData = rowDatas[keys];
+							for(var key in rowData){
+								if(key == "ilbo_su"){
+									bcf_total_cnt += rowData[key];
+								}
+								if(key == "ilbo_jung"){
+									bcf_total_weight += rowData[key];
+								}
+								$("#workBcfForm input[name='"+key+"']").val(rowData[key]);
+							}
+						}
+						
+						$("#workBcfForm input[name='bcf_total_cnt']").val(bcf_total_cnt);
+						$("#workBcfForm input[name='bcf_total_weight']").val(bcf_total_weight.toFixed(2));
+
+					}
+				});
+			}else{				
+				alert("단취작업만 선택해주시기 바랍니다!");
+				workSelectModalClose();
+				return false;
+			}
+		}
+		
+	}	
+	function workBcfModalClose(){		
+		workBcfModal.style.display = 'none'; // 모달 숨김
+	}
+	
 	
 	//단취작업 입고이력 모달
 	function workDanIpgoModalOpen(){
@@ -721,6 +1157,7 @@
 			        hozAlign:"center"},
 			    {title:"경화깊이", field:"prod_gd", sorter:"string", width:120},
 			    {title:"제품코드", field:"prod_code", visible:false},
+			    {title:"일보코드_pc", field:"ilbo_pc", visible:false},
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
@@ -740,6 +1177,65 @@
 						row.getElement().className += " row_select";	
 					}
 				});
+			},
+			rowDblClick:function(e, row){
+				var rowData = row.getData();
+
+				//일보구분에 따라 각각 표기
+				
+				var ilbo_code = rowData.ilbo_code;
+				var ilbo_gubn = rowData.ilbo_gubn;
+				var ilbo_lot = rowData.ilbo_lot;
+				
+				$.ajax({
+					url:"/tkheat/production/workInstructionTk/dataUpdateList",
+					type:"post",
+					dataType:"json",
+					data:{
+						"ilbo_code":ilbo_code,
+						"ilbo_gubn":ilbo_gubn,
+						"ilbo_lot":ilbo_lot
+					},
+					success:function(result){
+						//ilbo_gubn의 값에 따라서 모달변경
+						if(ilbo_gubn == "J"){
+							//단취작업 수정							
+							workDanModalOpen();
+						
+						
+							workDanDataTable.setData(result.data);
+							
+							var stdDatas = result.data;
+							
+							var danch_std_cnt = 0;
+							var danch_total_cnt = 0;
+							
+							for(let keys in stdDatas){
+								var stdData = stdDatas[keys];
+								
+								for(let key in stdData){
+									if(key != "danch_sunip_chk_pw" && key != "danch_sunip_chk"){
+										$("#workDanForm input[name='"+key+"']").val(stdData[key]);
+									}
+									
+									if(key == "wstd_t43"){
+										danch_std_cnt = stdData[key]; 
+									}
+									if(key == "ilbo_su"){
+										danch_total_cnt += stdData[key]; 
+									}
+								}
+							}
+							$("#workDanForm input[name='danch_std_cnt']").val(danch_std_cnt);
+							$("#workDanForm input[name='danch_total_cnt']").val(danch_total_cnt);
+						}else if(ilbo_gubn == "A"){
+							//열처리작업 수정
+							workBcfModalOpen();
+							
+							workBcfDataTable.setData(result.data);
+						}
+					}
+				});				
 			}
 		});		
 
@@ -772,9 +1268,9 @@
 		    		cellClick:function(e, cell){
 		    			
 		    			var setCount = 0;
-		    			var totalCount = $("input[name='danch_total_cnt']").val();
+		    			var totalCount = $("#workDanForm input[name='danch_total_cnt']").val();
 		    			setCount = totalCount - (cell.getRow().getData().ilbo_su);
-		    			$("input[name='danch_total_cnt']").val(setCount);
+		    			$("#workDanForm input[name='danch_total_cnt']").val(setCount);
 
 		    			cell.getRow().delete();
 	    			}
@@ -784,7 +1280,19 @@
 		        {title:"입고일", field:"ord_input_view", sorter:"string", width:120,
 			        hozAlign:"center"},	
 		        {title:"수량", field:"ilbo_su", sorter:"string", width:80,
-		        	hozAlign:"center"},		        
+		        	hozAlign:"center", editor:"number",
+		        	cellEdited:function(cell){
+		        		var rowData = cell.getRow().getData();
+		        		var ilbo_su = cell.getValue();
+		        		var ord_danj = rowData.ord_danj;
+		        		
+		        		var ilbo_jung = 0;
+		        		if(ilbo_su != 0){
+		        			ilbo_jung = ilbo_su * ord_danj;
+		        		}
+		        		cell.getRow().getCell("ilbo_jung").setValue(ilbo_jung.toFixed(2));
+		        	}
+			    },		        
 		        {title:"중량", field:"ilbo_jung", sorter:"string", width:80,
 		        	hozAlign:"center"},
 		        {title:"거래처", field:"corp_name", sorter:"string", width:120,
@@ -797,6 +1305,8 @@
 			        hozAlign:"center"},
 			    {title:"경화깊이", field:"prod_gd", width:120},
 			    {title:"제품코드", field:"prod_code", visible:false},
+			    {title:"작업코드", field:"ilbo_code", visible:false},
+			    {title:"입고단중", field:"ord_danj", visible:false}
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
@@ -830,7 +1340,6 @@
 			dataType:"json",
 			data:{},
 			success:function(result){
-				console.log(result);
 				
 				var data = result.data;
 				var _option = "";
@@ -838,9 +1347,33 @@
 					_option += "<option value='"+data[i].user_code+"'>"+data[i].user_name+"</option>";
 				}
 				
-				$("select[name='user_code']").append(_option);
+				$("#workDanForm select[name='user_code']").empty();
+				$("#workDanForm select[name='user_code']").append(_option);
 			}
 		})
+	}
+	
+	//바코드 스캔 후 수주NO로 조회시
+	function getWorkDanIpgoDataBarcodeScan(){
+		var barcode = $("#workDanForm input[name='danch_ord_code']").val();
+		var searchObj = {
+				"ord_code":barcode
+		};
+		
+				
+		$.ajax({
+			url:"/tkheat/production/workInstructionTk/dan/ipgoBarcodeScan",
+			type:"post",
+			dataType:"json",
+			data:{
+				"ord_code":barcode
+			},
+			success:function(result){
+	
+				workDanIpgoSelectData = result.data[0];
+				workDanIpgoSelectDataReg();
+			}
+		});
 	}
 	
 	//작업지시(단취) - 입고이력
@@ -947,15 +1480,12 @@
 		var danchSettingDataList = JSON.stringify(workDanDataTable.getData());
 		
 		var formObj = {
-				"user_code":$("select[name='user_code']").val(),
-				"ilbo_strt":$("input[name='ilbo_strt']").val().replace("T"," ")+":00",
-				"ilbo_end":$("input[name='ilbo_end']").val().replace("T"," ")+":00"
+				"user_code":$("#workDanForm select[name='user_code']").val(),
+				"ilbo_strt":$("#workDanForm input[name='ilbo_strt']").val().replace("T"," ")+":00",
+				"ilbo_end":$("#workDanForm input[name='ilbo_end']").val().replace("T"," ")+":00"
 		}
 		
 		var formObjParam = JSON.stringify(formObj);
-		
-//		console.log($("input[name='ilbo_strt']").val().replace("T"," ")+":00");
-//		console.log($("input[name='ilbo_end']").val().replace("T"," ")+":00");
 		
 		$.ajax({
 			url:"/tkheat/production/workInstructionTk/dan/dataSave",
@@ -967,8 +1497,6 @@
 				"formObjParam":formObjParam
 			},
 			success:function(result){
-				console.log(result);
-				
 				//모달 닫기
 				workDanModalClose();				
 				//전체이력 조회
@@ -996,15 +1524,15 @@
 //		var danchSettingDataList = JSON.stringify(workDanIpgoDataTable.getData()); //테스트
 		
 		var danch_sunip_chk_val = 0;
-		if($("input[name='danch_sunip_chk']").is(":checked")){
+		if($("#workDanForm input[name='danch_sunip_chk']").is(":checked")){
 			danch_sunip_chk_val = 1;
 		}
 
 		var stdObj = {
-			"danch_total_cnt":$("input[name='danch_total_cnt']").val(),
-			"danch_std_cnt":$("input[name='danch_std_cnt']").val(),
+			"danch_total_cnt":$("#workDanForm input[name='danch_total_cnt']").val(),
+			"danch_std_cnt":$("#workDanForm input[name='danch_std_cnt']").val(),
 			"danch_sunip_chk":danch_sunip_chk_val,
-			"danch_sunip_chk_pw":$("input[name='danch_sunip_chk_pw']").val(),
+			"danch_sunip_chk_pw":$("#workDanForm input[name='danch_sunip_chk_pw']").val(),
 		};
 		
 		
@@ -1034,6 +1562,17 @@
 								&& key != "ilbo_strt" && key != "ilbo_end"){
 							$("#workDanForm input[name='"+key+"']").val(stdMap[key]);
 						}
+						
+						//제품사진
+						if(key == "product_file_name"){
+							$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/productImg/"+stdMap[key]);
+						}
+						
+						//단취사진
+						if(key == "wstd_chim_file_name1"){
+							$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/workStdImg/"+stdMap[key]);
+						}
+						
 					}
 					
 					var selectOrdCode = result.selectOrdCode;
@@ -1053,8 +1592,6 @@
 		});	
 		
 	}
-	
-	
 	
 	function getWorkDanIpgoDataList(){
 		//단취정보 저장할 리스트
@@ -1083,9 +1620,177 @@
 		});
 	}
 	
+	/*열처리 작업*/
+	//작업지시(열처리) - 등록된 단취작업 리스트
+	var workBcfDataTable;	
+	function getWorkBcfData(){
+		
+		workBcfDataTable = new Tabulator("#workBcfTabu", {
+			index:"id",
+		    height:"140px",
+		    layout:"fitColumns",
+		    selectable:true,	//로우 선택설정
+		    tooltips:true,
+		    selectableRangeMode:"click",
+		    reactiveData:true,
+		    headerHozAlign:"center",
+		    placeholder:"조회된 데이터가 없습니다.",
+		    paginationSize:20,
+		    headerSort:false,
+		    ajaxResponse:function(url, params, response){
+				$("#workBcfTabu .tabulator-col.tabulator-sortable").css("height","30px");
+		        return response; //return the response data to tabulator
+		    },
+		    columns:[	    	
+		        {title:"바코드", field:"ord_code", sorter:"string", width:120,
+			        hozAlign:"center"},	
+		        {title:"입고일", field:"ord_input_view", sorter:"string", width:120,
+			        hozAlign:"center"},	
+		        {title:"수량", field:"ilbo_su", sorter:"string", width:80,
+		        	hozAlign:"center", editor:"number",
+		        	cellEdited:function(cell){
+		        		var rowData = cell.getRow().getData();
+		        		var ilbo_su = cell.getValue();
+		        		var ord_danj = rowData.ord_danj;
+		        		
+		        		var ilbo_jung = 0;
+		        		if(ilbo_su != 0){
+		        			ilbo_jung = ilbo_su * ord_danj;
+		        		}
+		        		cell.getRow().getCell("ilbo_jung").setValue(ilbo_jung.toFixed(2));
+		        	}
+			    },		        
+		        {title:"중량", field:"ilbo_jung", sorter:"string", width:80,
+		        	hozAlign:"center"},
+		        {title:"거래처", field:"corp_name", sorter:"string", width:120,
+		        	hozAlign:"center"},
+		        {title:"품명", field:"prod_name", sorter:"string", width:280,
+			        hozAlign:"center"},	
+		        {title:"품번", field:"prod_no", sorter:"string", width:160,
+			        hozAlign:"center"},
+		        {title:"소입경도", field:"prod_pg", sorter:"string", width:120,
+			        hozAlign:"center"},
+			    {title:"경화깊이", field:"prod_gd", width:120},
+			    {title:"제품코드", field:"prod_code", visible:false},
+			    {title:"작업코드", field:"ilbo_pc", visible:false},
+			    {title:"입고단중", field:"ord_danj", visible:false}
+		    ],
+		    rowFormatter:function(row){
+			    var data = row.getData();
+			    
+			    row.getElement().style.fontWeight = "700";
+				row.getElement().style.backgroundColor = "#FFFFFF";
+			},
+			rowClick:function(e, row){
+
+				$("#workBcfTabu .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
+						
+					if($(this).hasClass("row_select")){							
+						$(this).removeClass('row_select');
+						row.getElement().className += " row_select";
+					}else{
+						$("#workBcfTabu div.row_select").removeClass("row_select");
+						row.getElement().className += " row_select";	
+					}
+				});
+			}
+		});		
+		
+	}
+	
+	function getWorkBcfDataUserCode(){
+//		user_code
+		$.ajax({
+			url:"/tkheat/production/workInstructionTk/dan/ipgoList/userList",
+			type:"post",
+			dataType:"json",
+			data:{},
+			success:function(result){
+				
+				var data = result.data;
+				var _option = "";
+				for(var i=0; i<data.length; i++){
+					_option += "<option value='"+data[i].user_code+"'>"+data[i].user_name+"</option>";
+				}
+				$("#workBcfForm select[name='user_code']").empty();
+				$("#workBcfForm select[name='user_code']").append(_option);
+			}
+		})
+	}
+	
+	function getWorkBcfDataFacCode(){
+//		user_code
+		$.ajax({
+			url:"/tkheat/production/workInstructionTk/bcf/bcfList",
+			type:"post",
+			dataType:"json",
+			data:{"fac_gyu":"침탄"},
+			success:function(result){
+				var data = result.data;
+				var _option = "";
+				for(var i=0; i<data.length; i++){
+					_option += "<option value='"+data[i].fac_code+"'>"+data[i].fac_name+"</option>";
+				}
+				
+				$("#workBcfForm select[name='fac_code']").empty();
+				$("#workBcfForm select[name='fac_code']").append(_option);
+			}
+		})
+	}
+
+	//열처리작업 저장
+	function workBcfModalSave(){
+
+		//단취모달 리스트 데이터 조회
+		var bcfSettingDataList = JSON.stringify(workBcfDataTable.getData());
+		
+		var formObj = {
+				"fac_code":$("#workBcfForm select[name='fac_code']").val(),
+				"user_code":$("#workBcfForm select[name='user_code']").val(),
+				"ilbo_strt":$("#workBcfForm input[name='ilbo_strt']").val().replace("T"," ")+":00",
+				"ilbo_end":$("#workBcfForm input[name='ilbo_end']").val().replace("T"," ")+":00",
+				"ilbo_lot":$("#workBcfForm input[name='bcf_ilbo_lot']").val(),
+				"wstd_gj11":$("#workBcfForm input[name='wstd_gj11']").val(),
+				"wstd_gj21":$("#workBcfForm input[name='wstd_gj21']").val(),
+				"wstd_gj42":$("#workBcfForm input[name='wstd_gj42']").val(),
+				"wstd_gj12":$("#workBcfForm input[name='wstd_gj12']").val(),
+				"wstd_gj22":$("#workBcfForm input[name='wstd_gj22']").val(),
+				"wstd_gj32":$("#workBcfForm input[name='wstd_gj32']").val(),
+				"wstd_gj13":$("#workBcfForm input[name='wstd_gj13']").val(),
+				"wstd_gj23":$("#workBcfForm input[name='wstd_gj23']").val(),
+				"wstd_gj33":$("#workBcfForm input[name='wstd_gj33']").val(),
+				"wstd_gj14":$("#workBcfForm input[name='wstd_gj14']").val(),
+				"wstd_gj24":$("#workBcfForm input[name='wstd_gj24']").val(),
+				"wstd_gj34":$("#workBcfForm input[name='wstd_gj34']").val(),
+				"wstd_gj17":$("#workBcfForm input[name='wstd_gj17']").val(),
+				"wstd_gj16":$("#workBcfForm input[name='wstd_gj16']").val()
+		}
+		
+		var formObjParam = JSON.stringify(formObj);
+		
+		$.ajax({
+			url:"/tkheat/production/workInstructionTk/bcf/dataSave",
+			type:"post",
+			dataType:"json",
+			traditional: true,
+			data:{
+				"bcfSettingDataList":bcfSettingDataList,
+				"formObjParam":formObjParam
+			},
+			success:function(result){
+				//모달 닫기
+				workBcfModalClose();				
+				//전체이력 조회
+				getWorkDataList();
+			}			
+		});			
+	}
+
+	
 	//모달기능
 	const workSelectModal = document.querySelector('.workSelectModal');
 	const workDanModal = document.querySelector('.workDanModal');
+	const workBcfModal = document.querySelector('.workBcfModal');
 	const workDanIpgoModal = document.querySelector('.workDanIpgoModal');
 	
 	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
