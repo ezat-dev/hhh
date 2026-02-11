@@ -18,9 +18,6 @@ public interface ManagementService {
 	List<Users> getSmallPageList(String page_big);
 	
 
-	Permission authorityUserSelect(Permission permission);
-	
-	void authorityUserSelectSave(Permission permission);
 	
 	List<Product> getProductList(Product product);
 	
@@ -77,6 +74,20 @@ public interface ManagementService {
 	void insertUser(Users users);
 	
 	void updateUser(Users users);
+	
+	Users userDetail(Users user);
+	
+    void deleteUser(int user_code);
+    
+    void insertPermission(Permission permission);
+    
 
+    Permission authorityUserSelect(Permission permission);
+    
+    
+    void authorityUserSelectSave(Permission permission);
+    
+   
+    int checkPermissionExists(int user_code);
 	
 }

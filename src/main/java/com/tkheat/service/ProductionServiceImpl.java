@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.tkheat.dao.ProductionDao;
 import com.tkheat.domain.Ipgo;
 import com.tkheat.domain.Work;
+import com.tkheat.domain.WorkJisiTk;
 
 @Service
 public class ProductionServiceImpl implements ProductionService{
@@ -162,8 +163,15 @@ public class ProductionServiceImpl implements ProductionService{
 	
 	
 	
+	@Override
+	public List<WorkJisiTk> getLotList(WorkJisiTk workJisiTk) {
+		return productionDao.getLotList(workJisiTk);
+	}
 	
-	
+	@Override
+  	public List<WorkJisiTk> getLotListReport(WorkJisiTk workJisiTk){
+  		return productionDao.getLotListReport(workJisiTk);
+  	}
 	
 	
 	

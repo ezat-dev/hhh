@@ -1,6 +1,7 @@
 package com.tkheat.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -11,6 +12,7 @@ import com.tkheat.domain.AlarmHistory;
 import com.tkheat.domain.AlarmRanking;
 import com.tkheat.domain.Monitoring;
 import com.tkheat.domain.WorkJisi;
+import com.tkheat.domain.WorkJisiTk;
 
 @Repository
 public class MonitoringDaoImpl implements MonitoringDao {
@@ -50,11 +52,6 @@ public class MonitoringDaoImpl implements MonitoringDao {
     }
 
     @Override
-    public List<WorkJisi> getMonitoringDataList() {
-        return sqlSession.selectList("monitoring.getMonitoringDataList");
-    }
-
-    @Override
     public void setMonitoringDataReSet(WorkJisi setWork) {
         sqlSession.update("monitoring.setMonitoringDataReSet", setWork);
     }
@@ -73,4 +70,20 @@ public class MonitoringDaoImpl implements MonitoringDao {
     public List<Monitoring> getCurrentAlarmList() {
         return sqlSession.selectList("monitoring.getCurrentAlarmList");
     }
+    
+    @Override
+    public List<WorkJisiTk> getMonitoringDataList() {
+    	return sqlSession.selectList("monitoring.getMonitoringDataList");
+    }
+    
+	@Override
+	public List<WorkJisiTk> getMonitoringDataListStd(WorkJisiTk workJisiTk) {
+		return sqlSession.selectList("monitoring.getMonitoringDataListStd",workJisiTk);
+	}    
+	
+	@Override
+	public Map<String, Object> getOverviewData() {
+		return sqlSession.selectOne("monitoring.getOverviewData");
+	}
+    
 }

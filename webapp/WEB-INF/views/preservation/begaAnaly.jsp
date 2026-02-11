@@ -108,6 +108,7 @@
 	    
 <script>
 	//전역변수
+	let now_page_code = "e03";
     var cutumTable;	
 
   //로드

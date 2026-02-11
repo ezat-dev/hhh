@@ -811,139 +811,184 @@ public class ManagementController {
 		return "/management/authority.jsp";	       
 	}
 	
-	//작업자등록 - 화면로드
 	@RequestMapping(value = "/management/userinsert", method = RequestMethod.GET)
 	public String userinsert(Users users) {
+
 		return "/management/userinsert.jsp";	       
 	}
-
-	// 작업자 등록 - 저장
-	@RequestMapping(value = "/management/userinsert/save", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> insertUser(@RequestBody Users users) {
-	    Map<String, Object> rtnMap = new HashMap<>();
-	    try {
-	        managementService.insertUser(users);
-	        rtnMap.put("status", "success");
-	        rtnMap.put("message", "사용자 등록 성공");
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        rtnMap.put("status", "error");
-	        rtnMap.put("message", "사용자 등록 실패: " + e.getMessage());
-	    }
-	    return rtnMap;
-	}
-
-	// 작업자 수정 - 업데이트
-	@RequestMapping(value = "/management/userinsert/update", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> updateUser(@RequestBody Users users) {
-	    Map<String, Object> rtnMap = new HashMap<>();
-	    try {
-	        managementService.updateUser(users);
-	        rtnMap.put("status", "success");
-	        rtnMap.put("message", "사용자 정보가 수정되었습니다.");
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        rtnMap.put("status", "error");
-	        rtnMap.put("message", "수정 실패: " + e.getMessage());
-	    }
-	    return rtnMap;
-	}
-
-
+	
+	
 	// 전체 사용자 목록 조회
 	@RequestMapping(value = "/management/authority/userList", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> getUserList(
 	        @RequestParam String user_buso,
 	        @RequestParam String user_jick,
-	        @RequestParam String user_name,
-	        @RequestParam String user_ret) {
-
+	        @RequestParam String user_name) {
 	    Map<String, Object> rtnMap = new HashMap<String, Object>();
-
+	    
 	    Users user = new Users();
 	    user.setUser_buso(user_buso);
 	    user.setUser_jick(user_jick);
 	    user.setUser_name(user_name);
-	    user.setUser_ret(user_ret);
-
+	    
 	    List<Users> userList = managementService.getUserList(user);
-
+	    
 	    List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
 	    for (int i = 0; i < userList.size(); i++) {
 	        Users u = userList.get(i);
 	        HashMap<String, Object> rowMap = new HashMap<String, Object>();
-
 	        rowMap.put("idx", i + 1);
+	        rowMap.put("user_code", u.getUser_code());
 	        rowMap.put("user_no", u.getUser_no());
 	        rowMap.put("user_buso", u.getUser_buso());
-	        rowMap.put("user_code", u.getUser_code());
 	        rowMap.put("user_jick", u.getUser_jick());
 	        rowMap.put("user_name", u.getUser_name());
 	        rowMap.put("user_jdate", u.getUser_jdate());
 	        rowMap.put("user_odate", u.getUser_odate());
 	        rowMap.put("user_ret", u.getUser_ret());
-	        rowMap.put("user_id", u.getUser_id()); 
-	        rowMap.put("user_pwd", u.getUser_pwd());
-	        rowMap.put("user_phone", u.getUser_phone()); 
-	        rowMap.put("user_add", u.getUser_add()); 
-	        rowMap.put("user_bigo", u.getUser_bigo()); 
-
+	        
 	        rtnList.add(rowMap);
 	    }
-
+	    
 	    rtnMap.put("last_page", 1);
 	    rtnMap.put("data", rtnList);
-
+	    
 	    return rtnMap;
 	}
 
+	// 사용자 더블클릭 상세 조회 (신규 추가)
+	@RequestMapping(value = "/management/authority/userDetail", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> userDetail(@RequestParam int user_code) {
+	    Map<String, Object> rtnMap = new HashMap<String, Object>();
 
-	
-	
-	
+	    Users user = new Users();
+	    user.setUser_code(user_code);
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//사원별 권한등록 사용자 선택
-	@RequestMapping(value = "/management/authority/userSelect", method = RequestMethod.POST)
+	    Users userDetail = managementService.userDetail(user);
+
+	    rtnMap.put("data", userDetail);
+
+	    return rtnMap; 
+	}
+
+	// 사용자 저장 (등록 + 수정 통합) - JSP의 saveUser() 함수와 연결
+	@RequestMapping(value = "/management/userinsert/save", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> authorityUserSelect(
-			@RequestParam(required = false) int user_code){
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+	public Map<String, Object> userSave(@RequestBody Users users) {
+	    Map<String, Object> result = new HashMap<>();
+	    
+	    try {
+	        // user_code가 있으면 수정, 없으면 등록
+	        if (users.getUser_code() != null && users.getUser_code() > 0) {
+	            managementService.updateUser(users);
+	            result.put("status", "success");
+	            result.put("message", "수정되었습니다.");
+	        } else {
+	            managementService.insertUser(users);
+	            result.put("status", "success");
+	            result.put("message", "저장되었습니다.");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        result.put("status", "error");
+	        result.put("message", "저장 중 오류가 발생했습니다: " + e.getMessage());
+	    }
+	    
+	    System.out.println(result.get("status"));
+	    System.out.println(result.get("message"));
+	    
+	    return result;
+	}
 
-		Permission permission = new Permission();
-		permission.setUser_code(user_code);
+	// 사용자 삭제 (신규 추가) - JSP의 deleteUser() 함수와 연결
+	@RequestMapping(value = "/management/userinsert/delete", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> userDelete(@RequestParam("user_code") int user_code) {
+	    Map<String, Object> result = new HashMap<>();
 
-		Permission selectPermission = managementService.authorityUserSelect(permission);
+	    try {
+	        managementService.deleteUser(user_code);
+	        result.put("status", "success");
+	        result.put("message", "삭제되었습니다.");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        result.put("status", "error");
+	        result.put("message", "삭제 중 오류가 발생했습니다: " + e.getMessage());
+	    }
 
-		rtnMap.put("data", selectPermission);
+	    System.out.println(result.get("status"));
+	    System.out.println(result.get("message"));
 
-		return rtnMap;
+	    return result;
 	}
 
 
-	//사원별 권한등록 사용자 선택 후 수정
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// 사용자 권한 조회
+	@RequestMapping(value = "/management/authority/userSelect", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> authorityUserSelect(@RequestParam int user_code){
+	    Map<String, Object> rtnMap = new HashMap<String, Object>();
+	    
+	    try {
+	        Permission permission = new Permission();
+	        permission.setUser_code(user_code);
+	        
+	        Permission selectPermission = managementService.authorityUserSelect(permission);
+	        
+	        rtnMap.put("status", "success");
+	        rtnMap.put("data", selectPermission);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        rtnMap.put("status", "error");
+	        rtnMap.put("message", "권한 정보 조회 실패: " + e.getMessage());
+	    }
+	    
+	    return rtnMap;
+	}
+
+	// 사용자 권한 저장 (디버깅 강화)
 	@RequestMapping(value = "/management/authority/userSelectSave", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> authorityUserSelectSave(@ModelAttribute Permission permission){
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-
-		managementService.authorityUserSelectSave(permission);
-
-		return rtnMap;
-	}	 
-
+	    Map<String, Object> rtnMap = new HashMap<String, Object>();
+	    
+	    try {
+	        System.out.println("====================================");
+	        System.out.println("📥 권한 저장 요청");
+	        System.out.println("USER_CODE: " + permission.getUser_code());
+	        System.out.println("A01: " + permission.getA01());
+	        System.out.println("B01: " + permission.getB01());
+	        System.out.println("I01: " + permission.getI01());
+	        System.out.println("====================================");
+	        
+	        managementService.authorityUserSelectSave(permission);
+	        
+	        rtnMap.put("status", "success");
+	        rtnMap.put("message", "권한이 저장되었습니다.");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        rtnMap.put("status", "error");
+	        rtnMap.put("message", "권한 저장 실패: " + e.getMessage());
+	    }
+	    
+	    return rtnMap;
+	}
 
 	//측정기기관리 - 화면로드
 	@RequestMapping(value = "/management/measurement", method = RequestMethod.GET)

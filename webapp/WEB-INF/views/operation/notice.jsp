@@ -73,6 +73,7 @@
 	    
 <script>
 	//전역변수
+	let now_page_code = "g09";
     var cutumTable;	
 
 	//로드

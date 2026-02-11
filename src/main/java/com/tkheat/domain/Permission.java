@@ -137,6 +137,23 @@ public class Permission {
 	private String h20;
 	private String h21;
 	private String h22;
+	
+	private String i01;
+	private String i02;
+	private String i03;
+	private String i04;
+	private String i05;
+	private String i06;
+	private String i07;
+	private String i08;
+	private String i09;
+	private String i10;
+	private String i11;
+	private String i12;
+	private String i13;
+	private String i14;
+	
+	
 	public int getPerm_code() {
 		return perm_code;
 	}
@@ -898,6 +915,90 @@ public class Permission {
 	}
 	public void setH22(String h22) {
 		this.h22 = h22;
+	}
+	public String getI01() {
+		return i01;
+	}
+	public void setI01(String i01) {
+		this.i01 = i01;
+	}
+	public String getI02() {
+		return i02;
+	}
+	public void setI02(String i02) {
+		this.i02 = i02;
+	}
+	public String getI03() {
+		return i03;
+	}
+	public void setI03(String i03) {
+		this.i03 = i03;
+	}
+	public String getI04() {
+		return i04;
+	}
+	public void setI04(String i04) {
+		this.i04 = i04;
+	}
+	public String getI05() {
+		return i05;
+	}
+	public void setI05(String i05) {
+		this.i05 = i05;
+	}
+	public String getI06() {
+		return i06;
+	}
+	public void setI06(String i06) {
+		this.i06 = i06;
+	}
+	public String getI07() {
+		return i07;
+	}
+	public void setI07(String i07) {
+		this.i07 = i07;
+	}
+	public String getI08() {
+		return i08;
+	}
+	public void setI08(String i08) {
+		this.i08 = i08;
+	}
+	public String getI09() {
+		return i09;
+	}
+	public void setI09(String i09) {
+		this.i09 = i09;
+	}
+	public String getI10() {
+		return i10;
+	}
+	public void setI10(String i10) {
+		this.i10 = i10;
+	}
+	public String getI11() {
+		return i11;
+	}
+	public void setI11(String i11) {
+		this.i11 = i11;
+	}
+	public String getI12() {
+		return i12;
+	}
+	public void setI12(String i12) {
+		this.i12 = i12;
+	}
+	public String getI13() {
+		return i13;
+	}
+	public void setI13(String i13) {
+		this.i13 = i13;
+	}
+	public String getI14() {
+		return i14;
+	}
+	public void setI14(String i14) {
+		this.i14 = i14;
 	}
 
 

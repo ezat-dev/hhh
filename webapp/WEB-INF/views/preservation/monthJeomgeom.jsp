@@ -300,6 +300,7 @@
 	
 	
 <script>
+let now_page_code = "e07";
   var userTable;
 
   $(function () {
@@ -436,6 +437,7 @@
       ajaxLoader: false,
       ajaxProgressiveLoad: "scroll",
       paginationSize: 20,
+      headerFilterPlaceholder: "",
       placeholder: "조회된 데이터가 없습니다.",
       columns: columns,
       groupBy: "fac_name",

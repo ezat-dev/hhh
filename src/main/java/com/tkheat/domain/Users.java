@@ -3,7 +3,7 @@ package com.tkheat.domain;
 public class Users {
 
 	//USERT테이블(작업자 등록)
-	private int user_code;
+	private Integer user_code;
 	private String user_no;
 	private String user_name;
 	private String user_buso;
@@ -43,10 +43,10 @@ public class Users {
 	
 	
 	
-	public int getUser_code() {
+	public Integer getUser_code() {
 		return user_code;
 	}
-	public void setUser_code(int user_code) {
+	public void setUser_code(Integer user_code) {
 		this.user_code = user_code;
 	}
 	public String getUser_no() {

@@ -1,6 +1,10 @@
 
 
-
+.collapse__sublink.active {
+    background-color: var(--first-color);
+    color: var(--white-color);
+    border-radius: 4px;
+}
 
 /* VARIABLES CSS */
 :root {

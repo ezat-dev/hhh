@@ -280,6 +280,7 @@ textarea {
 	    
 <script>
 	//전역변수
+	let now_page_code = "g07";
     var cutumTable;	
     var sdate = $("#sdate").val();
     $(function() {

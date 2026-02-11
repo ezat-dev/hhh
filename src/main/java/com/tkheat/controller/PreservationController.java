@@ -201,6 +201,7 @@ public class PreservationController {
 	        rowMap.put("idx", i + 1);
 	        rowMap.put("spp_idx", sp.getSpp_idx());
 	        rowMap.put("spp_idx_his", sp.getSpp_idx_his());
+	        rowMap.put("sph_idx", sp.getSph_idx());  // ✅ 이 줄 추가!
 	        rowMap.put("spp_purchase_his", sp.getSpp_purchase_his());
 	        rowMap.put("spp_no_his", sp.getSpp_no_his());
 	        rowMap.put("spp_name_his", sp.getSpp_name_his());

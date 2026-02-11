@@ -17,7 +17,6 @@ public interface ManagementDao {
 	
 	List<Users> getSmallPageList(String page_big);
 
-	Permission authorityUserSelect(Permission permission);
 
 	void authorityUserSelectSave(Permission permission);
 	
@@ -87,5 +86,22 @@ public interface ManagementDao {
 	void insertUser(Users users);
 	
 	void updateUser(Users users);
+	
+	Users userDetail(Users user);
+	
+    void deleteUser(int user_code);
+    
+    
+
+    Permission authorityUserSelect(Permission permission);
+    
+    
+    int checkPermissionExists(int user_code);
+    
+    
+    void insertPermission(Permission permission);
+    
+   
+    void updatePermission(Permission permission);
 	
 }

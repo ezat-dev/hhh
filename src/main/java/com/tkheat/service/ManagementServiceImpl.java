@@ -37,10 +37,6 @@ public class ManagementServiceImpl implements ManagementService {
 	public Permission authorityUserSelect(Permission permission) {
 		return managementDao.authorityUserSelect(permission);
 	}
-	@Override
-	public void authorityUserSelectSave(Permission permission) {
-		managementDao.authorityUserSelectSave(permission);
-	}
 	
 	
 	
@@ -207,4 +203,47 @@ public class ManagementServiceImpl implements ManagementService {
 	public void updateUser(Users users) {
 	    managementDao.updateUser(users);
 	}
+	
+	@Override
+    public Users userDetail(Users user) {
+        return managementDao.userDetail(user);
+    }
+
+    @Override
+    public void deleteUser(int user_code) {
+    	managementDao.deleteUser(user_code);
+    }
+    
+    @Override
+    public void insertPermission(Permission permission) {
+    	managementDao.insertPermission(permission); 
+    }
+    
+    
+
+    /**
+     * 권한 저장 (INSERT/UPDATE 자동 판단)
+     */
+    @Override
+    public void authorityUserSelectSave(Permission permission) {
+        // 1. 해당 사용자의 권한 데이터 존재 여부 확인
+        int count = managementDao.checkPermissionExists(permission.getUser_code());
+        
+        // 2. 존재하지 않으면 INSERT, 존재하면 UPDATE
+        if (count == 0) {
+            System.out.println("✅ PERMISSION 데이터 없음 → INSERT 실행 (user_code: " + permission.getUser_code() + ")");
+            managementDao.insertPermission(permission);
+        } else {
+            System.out.println("✅ PERMISSION 데이터 있음 → UPDATE 실행 (user_code: " + permission.getUser_code() + ")");
+            managementDao.updatePermission(permission);
+        }
+    }
+
+    /**
+     * 권한 존재 여부 확인
+     */
+    @Override
+    public int checkPermissionExists(int user_code) {
+        return managementDao.checkPermissionExists(user_code);
+    }
 }

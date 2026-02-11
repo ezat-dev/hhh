@@ -33,4 +33,8 @@ public interface WorkJisiServiceTk {
 
 	void workInstructionTkBcfDataSave(WorkJisiTk wSave);
 
+	List<WorkJisiTk> workInstructionTkTfDataSearch(WorkJisiTk w);
+
+	void workInstructionTkTfDataSave(WorkJisiTk wSave);
+
 }

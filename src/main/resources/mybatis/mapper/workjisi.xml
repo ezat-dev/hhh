@@ -6,6 +6,11 @@
 
 	<!-- 입고관리 -->
 
+	<select id="getIpgoTechList" parameterType="workjisi" resultType="workjisi">
+		SELECT *
+		FROM techin	
+	</select>
+
 	<!-- 입고 조회 -->
 	<select id="getIpgoList" parameterType="workjisi" resultType="workjisi">
 		SELECT ORDERT.ORD_PRN,
@@ -1041,6 +1046,18 @@ SELECT
            )
 		
 	</insert>
+	
+	<update id="setChulgoUpdate" parameterType="workjisi">
+		UPDATE OCHULGO
+		   SET OCH_DATE = #{och_date},
+				OCH_SU = #{och_su},
+				OCH_AMNT = #{och_amnt},
+				OCH_MON = #{och_mon},
+				OCH_BIGO = #{och_bigo},
+				OCH_MA = #{och_ma},
+				OCH_DANG = #{och_dang}
+		 WHERE OCH_NO = #{och_no}	
+	</update>
 	
 	<!-- 모니터링 -->
 	<select id="barcodeDataCheck" parameterType="workJisi" resultType="workJisi">

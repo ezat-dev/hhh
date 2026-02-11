@@ -372,45 +372,54 @@ public class ProcessController {
 	@RequestMapping(value = "/process/facSiljuk/getFacSiljukList", method = RequestMethod.POST) 
 	@ResponseBody 
 	public Map<String, Object> getFacSiljukList(
-			@RequestParam String sdate,
-			@RequestParam String edate) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-
-		Siljuk siljuk = new Siljuk();
-
-		siljuk.setSdate(sdate);
-		siljuk.setEdate(edate);
-
-
-		List<Siljuk> facSiljukList = processService.getFacSiljukList(siljuk);
-
-		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
-		for(int i=0; i<facSiljukList.size(); i++) {
-			HashMap<String, Object> rowMap = new HashMap<String, Object>();
-			rowMap.put("idx", (i+1));
-			rowMap.put("ilbo_lot", facSiljukList.get(i).getIlbo_lot());
-			rowMap.put("ilbo_code", facSiljukList.get(i).getIlbo_code());
-			rowMap.put("fac_name", facSiljukList.get(i).getFac_name());
-			rowMap.put("corp_name", facSiljukList.get(i).getCorp_name());
-			rowMap.put("prod_name", facSiljukList.get(i).getProd_name());
-			rowMap.put("prod_no", facSiljukList.get(i).getProd_no());
-			rowMap.put("ilbo_strt", facSiljukList.get(i).getIlbo_strt());
-			rowMap.put("ilbo_end", facSiljukList.get(i).getIlbo_end());
-			rowMap.put("time", facSiljukList.get(i).getTime());
-			rowMap.put("ord_lot", facSiljukList.get(i).getOrd_lot());
-			rowMap.put("ilbo_su", facSiljukList.get(i).getIlbo_su());
-			rowMap.put("ilbo_jung", facSiljukList.get(i).getIlbo_jung());
-			rowMap.put("ord_danw", facSiljukList.get(i).getOrd_danw());
-			rowMap.put("ord_dang", facSiljukList.get(i).getOrd_dang());
-			rowMap.put("mon", facSiljukList.get(i).getMon());
-
-			rtnList.add(rowMap);
-		}
-
-		rtnMap.put("last_page",1);
-		rtnMap.put("data",rtnList);
-
-		return rtnMap; 
+	        @RequestParam String sdate,
+	        @RequestParam String edate) {
+	    
+	    Map<String, Object> rtnMap = new HashMap<String, Object>();
+	    
+	    Siljuk siljuk = new Siljuk();
+	    siljuk.setSdate(sdate);
+	    siljuk.setEdate(edate);
+	    
+	    List<Siljuk> facSiljukList = processService.getFacSiljukList(siljuk);
+	    
+	    
+	    if (facSiljukList.size() > 0) {
+	        Siljuk first = facSiljukList.get(0);
+	        System.out.println("▶ getFac_name(): [" + first.getFac_name() + "]");
+	        System.out.println("▶ getIlbo_lot(): [" + first.getIlbo_lot() + "]");
+	        System.out.println("▶ getIlbo_code(): [" + first.getIlbo_code() + "]");
+	    }
+	    
+	    List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+	    
+	    for(int i = 0; i < facSiljukList.size(); i++) {
+	        HashMap<String, Object> rowMap = new HashMap<String, Object>();
+	        
+	        rowMap.put("idx", (i+1));
+	        rowMap.put("ilbo_lot", facSiljukList.get(i).getIlbo_lot());
+	        rowMap.put("ilbo_code", facSiljukList.get(i).getIlbo_code());
+	        rowMap.put("fac_name", facSiljukList.get(i).getFac_name());
+	        rowMap.put("corp_name", facSiljukList.get(i).getCorp_name());
+	        rowMap.put("prod_name", facSiljukList.get(i).getProd_name());
+	        rowMap.put("prod_no", facSiljukList.get(i).getProd_no());
+	        rowMap.put("ilbo_strt", facSiljukList.get(i).getIlbo_strt());
+	        rowMap.put("ilbo_end", facSiljukList.get(i).getIlbo_end());
+	        rowMap.put("time", facSiljukList.get(i).getTime());
+	        rowMap.put("ord_lot", facSiljukList.get(i).getOrd_lot());
+	        rowMap.put("ilbo_su", facSiljukList.get(i).getIlbo_su());
+	        rowMap.put("ilbo_jung", facSiljukList.get(i).getIlbo_jung());
+	        rowMap.put("ord_danw", facSiljukList.get(i).getOrd_danw());
+	        rowMap.put("ord_dang", facSiljukList.get(i).getOrd_dang());
+	        rowMap.put("mon", facSiljukList.get(i).getMon());
+	        
+	        rtnList.add(rowMap);
+	    }
+	    
+	    rtnMap.put("last_page", 1);
+	    rtnMap.put("data", rtnList);
+	    
+	    return rtnMap; 
 	}
 
 	

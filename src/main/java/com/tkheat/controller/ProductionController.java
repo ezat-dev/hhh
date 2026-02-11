@@ -1,41 +1,56 @@
 package com.tkheat.controller;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 
 import com.tkheat.domain.Ipgo;
 import com.tkheat.domain.Work;
+import com.tkheat.domain.WorkJisiTk;
 import com.tkheat.service.ProductionService;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.SimpleJasperReportsContext;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Controller
 public class ProductionController {
@@ -778,10 +793,148 @@ public class ProductionController {
 	
 	
 	
+	//lot보고서 - 화면로드
+	@RequestMapping(value = "/production/lotReport", method = RequestMethod.GET)
+	public String lotReport() {
+		return "/production/lotReport.jsp";
+	}	
 	
 	
 	
+	// LOT 보고서 리스트 조회
+	@RequestMapping(value = "/production/lotReport/getLotList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getLotList(@RequestParam(value = "lotno_date", required = false) String lotno_date) {
+	    Map<String, Object> rtnMap = new HashMap<String, Object>();
+	    
+	    try {
+	        WorkJisiTk workJisiTk = new WorkJisiTk();
+	        
+	        if (lotno_date != null && !lotno_date.isEmpty()) {
+	            String date = lotno_date.replace("-", ""); // 2025-01 -> 202501
+	            workJisiTk.setLotno_date(date);
+	        }
+	        
+	        List<WorkJisiTk> lotList = productionService.getLotList(workJisiTk);
+	        List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+	        
+	        for (int i = 0; i < lotList.size(); i++) {
+	            HashMap<String, Object> rowMap = new HashMap<String, Object>();
+	            
+	            rowMap.put("ilbo_lot", lotList.get(i).getIlbo_lot());
+	            rowMap.put("ilbo_strt", lotList.get(i).getIlbo_strt());
+	            rowMap.put("ilbo_end", lotList.get(i).getIlbo_end());
+	            rowMap.put("ilbo_gubn", lotList.get(i).getIlbo_gubn());
+	            rowMap.put("corp_name", lotList.get(i).getCorp_name());
+	            rowMap.put("prod_name", lotList.get(i).getProd_name());
+	            rowMap.put("prod_no", lotList.get(i).getProd_no());
+	            rowMap.put("fac_name", lotList.get(i).getFac_name());
+	            
+	            rtnList.add(rowMap);
+	        }
+	        
+	        rtnMap.put("last_page", 1);
+	        rtnMap.put("data", rtnList);
+	        
+	    } catch (Exception e) {
+	        System.err.println("❌ LOT 보고서 조회 실패:");
+	        e.printStackTrace();
+	        
+	        rtnMap.put("last_page", 1);
+	        rtnMap.put("data", new ArrayList<>());
+	    }
+	    
+	    return rtnMap;
+	}
 	
+	
+	//lotReort 생성(자스퍼리포트)
+	@RequestMapping(value = "/production/lotReport/lotPrint", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<Resource> lotPrint(@RequestBody WorkJisiTk workJisiTk,
+	        HttpServletRequest request) {
+	    
+	    System.out.println("===== lotPrint 진입 =====");
+	    
+	    if (workJisiTk.getIlbo_lot() == null) {
+	        System.out.println("▶ 로트번호 == null");
+	        return ResponseEntity.badRequest().body(null);
+	    }
+	    
+	    System.out.println("▶ 요청 LOT = " + workJisiTk.getIlbo_lot());
+	    
+	    String lotno = workJisiTk.getIlbo_lot();
+	    String pdfFileName = lotno + ".pdf";
+	    String pdfPath = "D:/태경출력파일/lot보고서/" + pdfFileName;
+	    
+	    try {
+	        // 1) 데이터 조회
+	        List<WorkJisiTk> lotInfoList = productionService.getLotListReport(workJisiTk);
+	        
+	        System.out.println("▶ lotInfoList size = " + (lotInfoList == null ? "null" : lotInfoList.size()));
+	        
+	        if (lotInfoList == null || lotInfoList.isEmpty()) {
+	            System.out.println("▶ lotInfoList 비어있음");
+	            return ResponseEntity.badRequest().body(null);
+	        }
+	        
+	        for (WorkJisiTk v : lotInfoList) {
+	            System.out.println("v.getIlbo_strt() = " + v.getIlbo_strt());
+	        }
+	        
+	        Map<String, Object> reportMap = new HashMap<>();
+	        reportMap.put("lotno", lotno);
+	        
+	        // Report - lot보고서
+	        String reportPath = request.getServletContext()
+	                .getRealPath("/WEB-INF/resources/reports/lotReport.jrxml");
+	        
+	        System.out.println("▶ reportPath = " + reportPath);
+	        
+	        JasperReport report = JasperCompileManager.compileReport(reportPath);
+	        JasperPrint jasperPrint = JasperFillManager.fillReport(
+	                report,
+	                reportMap,
+	                new JRBeanCollectionDataSource(lotInfoList)
+	        );
+	        
+	        System.out.println("▶ jasperPrint 생성 완료");
+	        
+	        // PDF 생성
+	        JRPdfExporter exporter = new JRPdfExporter();
+	        
+	        // ✅ 수정: List로 감싸기
+	        List<JasperPrint> jasperPrintList = new ArrayList<>();
+	        jasperPrintList.add(jasperPrint);
+	        exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+	        
+	        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfPath));
+	        
+	        exporter.exportReport();
+	        
+	        File file = new File(pdfPath);
+	        System.out.println("▶ PDF 생성 완료 : " + file.exists());
+	        
+	        if (!file.exists()) {
+	            System.out.println("▶ PDF 파일 생성 실패");
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	        }
+	        
+	        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+	        
+	        return ResponseEntity.ok()
+	                .header(HttpHeaders.CONTENT_DISPOSITION,
+	                        "attachment; filename=\"" + URLEncoder.encode(pdfFileName, "UTF-8").replaceAll("\\+", "%20") + "\"")
+	                .contentLength(file.length())
+	                .contentType(MediaType.parseMediaType("application/pdf"))
+	                .body(resource);
+	        
+	    } catch (Exception e) {
+	        System.out.println("▶ 예외 발생");
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	    }
+	}
 	
 	
 	

@@ -4,7 +4,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>제품별 입출고 현황</title>
+    <title>제품별 입고 현황</title>
     <link rel="stylesheet" href="/tkheat/css/management/productInsert.css">
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
     <%@include file="../include/pluginpage.jsp" %> 
@@ -105,105 +105,101 @@
             <div id="tab1" class="tabulator"></div>
         </div>
 
-        <!-- 🔹 출고현황 -->
-        <div class="container">
-            <div id="tab2" class="tabulator"></div>
-        </div>
 
     </div>
 
 <script>
-    var tab1, tab2;
+let now_page_code = "g01";  // ✅ 페이지 코드 (조회 전용)
+var tab1;
 
-    $(function(){
-        var tdate = todayDate();
-        var ydate = yesterDate();
-        $("#sdate").val(ydate);
-        $("#edate").val(tdate);
+$(function(){
+    var tdate = todayDate();
+    var ydate = yesterDate();
+    $("#sdate").val(ydate);
+    $("#edate").val(tdate);
 
-        getPIpgoStatusList();
-        getPChulgoStatusList();
+    getPIpgoStatusList();
+});
+
+// 입고현황
+function getPIpgoStatusList(){
+    // 기존 테이블 제거
+    if (tab1) {
+        tab1.destroy();
+        tab1 = null;
+    }
+    
+    // DOM 초기화
+    $('#tab1').empty();
+    
+    tab1 = new Tabulator("#tab1", {
+        height:"750px",
+        layout:"fitColumns",
+        ajaxConfig:"POST",
+        ajaxURL:"/tkheat/operation/pIpgoStatus/getPIpgoStatusList",
+        ajaxParams:{
+            "sdate": $("#sdate").val(),
+            "edate": $("#edate").val(),
+        },
+        placeholder:"조회된 데이터가 없습니다.",
+        pagination:"local",
+        paginationSize:20,
+        paginationSizeSelector:[20,50,100,500,1000],
+        paginationCounter:"rows",
+        headerFilterPlaceholder: "",
+        
+        ajaxResponse: function (url, params, response) {
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height", "55px");
+            console.log("📊 서버 응답:", response);
+            
+            const data = response.data ? response.data : response;
+            console.log("📊 데이터 개수:", data.length);
+            
+            return data;
+        },
+        
+        columns:[
+            {title:"NO", field:"idx", width:80, hozAlign:"center"},
+            {title:"입고일", field:"ord_date", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"거래처명", field:"corp_name", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"품명", field:"prod_name", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"품번", field:"prod_no", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"수량", field:"ord_su", hozAlign:"center", 
+                formatter:"money", formatterParams:{thousand:",", precision:0},
+                bottomCalc:"sum", bottomCalcFormatter:"money", bottomCalcFormatterParams:{thousand:",", precision:0}},
+            {title:"단가", field:"prod_dang", hozAlign:"center", 
+                formatter:"money", formatterParams:{thousand:",", precision:0}},
+            {title:"금액", field:"ord_mon", hozAlign:"center", 
+                formatter:"money", formatterParams:{thousand:",", precision:0},
+                bottomCalc:"sum", bottomCalcFormatter:"money", bottomCalcFormatterParams:{thousand:",", precision:0}},
+        ],
+        
+        rowFormatter:function(row){
+            row.getElement().style.fontWeight = "700";
+            row.getElement().style.backgroundColor = "#FFFFFF";
+        },
+        
+        rowClick:function(e, row){
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").removeClass('row_select');
+            row.getElement().classList.add("row_select");
+        },
     });
+}
 
-    // 입고현황
-    function getPIpgoStatusList(){
-        tab1 = new Tabulator("#tab1", {
-            height:"400px",
-            layout:"fitColumns",
-            ajaxConfig:"POST",
-            ajaxURL:"/tkheat/operation/pIpgoStatus/getPIpgoStatusList",
-            ajaxParams:{
-                "sdate": $("#sdate").val(),
-                "edate": $("#edate").val(),
-            },
-            placeholder:"조회된 데이터가 없습니다.",
-            paginationSize: 20,
-            ajaxResponse: function (url, params, response) {
-                $("#tab1 .tabulator-col.tabulator-sortable").css("height", "55px");
-                return response.data;
-            },
-            columns:[
-                {title:"NO", field:"idx", width:80, hozAlign:"center"},
-                {title:"입고일", field:"ord_date", width:170, hozAlign:"center", headerFilter:"input"},
-                {title:"거래처명", field:"corp_name", width:180, hozAlign:"center", headerFilter:"input"},
-                {title:"품명", field:"prod_name", width:270, hozAlign:"center", headerFilter:"input"},
-                {title:"품번", field:"prod_no", width:240, hozAlign:"center", headerFilter:"input"},
-                {title:"수량", field:"ord_su", hozAlign:"center", bottomCalc:"sum",
-                    formatter:"money", formatterParams:{thousand:",", precision:0},
-                    bottomCalcFormatter:"money", bottomCalcFormatterParams:{thousand:",", precision:0}},
-                {title:"단가", field:"prod_dang", hozAlign:"center", formatter:"money", formatterParams:{thousand:",", precision:0}},
-                {title:"금액", field:"ord_mon", hozAlign:"center", bottomCalc:"sum",
-                    formatter:"money", formatterParams:{thousand:",", precision:0},
-                    bottomCalcFormatter:"money", bottomCalcFormatterParams:{thousand:",", precision:0}},
-            ]
-        });
-    }
+// 기간 변경 후 테이블 다시 조회
+function reloadTables(){
+    tab1.setData("/tkheat/operation/pIpgoStatus/getPIpgoStatusList", {
+        sdate: $("#sdate").val(),
+        edate: $("#edate").val()
+    });
+}
 
-    // 출고현황
-    function getPChulgoStatusList(){
-        tab2 = new Tabulator("#tab2", {
-            height:"400px",
-            layout:"fitColumns",
-            ajaxConfig:"POST",
-            ajaxURL:"/tkheat/operation/pChulgoStatus/getPChulgoStatusList",
-            ajaxParams:{
-                "sdate": $("#sdate").val(),
-                "edate": $("#edate").val(),
-            },
-            placeholder:"조회된 데이터가 없습니다.",
-            paginationSize: 20,
-            ajaxResponse: function (url, params, response) {
-                $("#tab2 .tabulator-col.tabulator-sortable").css("height", "55px");
-                return response.data;
-            },
-            columns:[
-                {title:"NO", field:"idx", width:80, hozAlign:"center"},
-                {title:"출고일", field:"och_date", width:170, hozAlign:"center", headerFilter:"input"},
-                {title:"거래처명", field:"corp_name", width:180, hozAlign:"center", headerFilter:"input"},
-                {title:"품명", field:"prod_name", width:270, hozAlign:"center", headerFilter:"input"},
-                {title:"품번", field:"prod_no", width:240, hozAlign:"center", headerFilter:"input"},
-                {title:"수량", field:"och_su", hozAlign:"center", bottomCalc:"sum",
-                    bottomCalcFormatter:"money", bottomCalcFormatterParams:{thousand:",", precision:0}},
-                {title:"중량", field:"och_amnt", hozAlign:"center", bottomCalc:"sum",
-                    bottomCalcFormatter:"money", bottomCalcFormatterParams:{thousand:",", precision:1}},
-                {title:"금액", field:"och_mon", hozAlign:"center", bottomCalc:"sum",
-                    formatter:"money", formatterParams:{thousand:",", precision:0},
-                    bottomCalcFormatter:"money", bottomCalcFormatterParams:{thousand:",", precision:0}},
-            ]
-        });
-    }
-
-    // 기간 변경 후 두 테이블 모두 다시 조회
-    function reloadTables(){
-        tab1.setData("/tkheat/operation/pIpgoStatus/getPIpgoStatusList", {
-            sdate: $("#sdate").val(),
-            edate: $("#edate").val()
-        });
-        tab2.setData("/tkheat/operation/pChulgoStatus/getPChulgoStatusList", {
-            sdate: $("#sdate").val(),
-            edate: $("#edate").val()
-        });
-    }
+// 엑셀 다운로드
+$(".excel-button").click(function () {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const filename = "제품별입고현황_" + today + ".xlsx";
+    tab1.download("xlsx", filename, { sheetName: "제품별입고현황" });
+});
 </script>
 </body>
 </html>

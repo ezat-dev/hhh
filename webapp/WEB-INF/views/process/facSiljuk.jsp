@@ -65,7 +65,42 @@
 .box1 label,
 .box1 input {
 	margin-right: 10px; /* 요소 사이 간격 */
-}            
+}     
+
+
+
+/* 그룹 헤더 스타일 조정 */
+.tabulator .tabulator-row.tabulator-group {
+    min-height: 30px !important;  /* 그룹 헤더 최소 높이 */
+}
+
+.tabulator .tabulator-row.tabulator-group .tabulator-group-toggle {
+    margin-right: 8px;
+}
+
+/* 스크롤바 스타일 */
+.tabulator .tabulator-tableholder {
+    overflow-y: auto !important;
+    max-height: 750px;
+}
+
+/* 스크롤바 커스텀 (선택사항) */
+.tabulator .tabulator-tableholder::-webkit-scrollbar {
+    width: 10px;
+}
+
+.tabulator .tabulator-tableholder::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.tabulator .tabulator-tableholder::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+.tabulator .tabulator-tableholder::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}       
     
     </style>
     
@@ -174,24 +209,27 @@
 	    
 	    
 <script>
-	//전역변수
-    var cutumTable;	
+//전역변수
+let now_page_code = "c06";
+var userTable;	
 
-	//로드
-	$(function(){
-		var tdate = todayDate();
-		var ydate = yesterDate();
-		
-		$("#sdate").val(ydate);
-		$("#edate").val(tdate);
-		getFacSiljukList();
-	});
+//로드
+$(function(){
+    var tdate = todayDate();
+    var ydate = yesterDate();
+    
+    $("#sdate").val(ydate);
+    $("#edate").val(tdate);
+    getFacSiljukList();
+});
 
-	//이벤트
-	//함수
-	function getFacSiljukList() {
+function getFacSiljukList() {
+    if (userTable) {
+        userTable.destroy();
+    }
+    
     userTable = new Tabulator("#tab1", {
-        height: "750px", // 전체 높이 스크롤 가능
+        height: "750px",  
         layout: "fitColumns",
         selectable: true,
         tooltips: true,
@@ -199,7 +237,6 @@
         reactiveData: true,
         headerHozAlign: "center",
 
-        // ✅ AJAX 설정
         ajaxURL: "/tkheat/process/facSiljuk/getFacSiljukList",
         ajaxConfig: "POST",
         ajaxParams: {
@@ -209,63 +246,150 @@
         ajaxLoader: false,
         placeholder: "조회된 데이터가 없습니다.",
 
-        // ✅ 응답에서 실제 데이터 배열만 반환
         ajaxResponse: function(url, params, response){
+            console.log("========== 서버 응답 전체 ==========");
+            console.log(response);
+            
+            if (response.data && response.data.length > 0) {
+                console.log("========== 첫 번째 데이터 ==========");
+                console.log(response.data[0]);
+                console.log("▶ fac_name:", response.data[0].fac_name);
+                console.log("▶ ilbo_lot:", response.data[0].ilbo_lot);
+            }
+            
             return response.data;
         },
 
-        pagination: false,  // ✅ 페이지네이션 해제 (스크롤로 전체 보기)
+        pagination: false,
         movableColumns: true,
 
-        // ✅ 2단 그룹핑: 설비명 → 생산LOT
+        
         groupBy: ["fac_name", "ilbo_lot"],
-        groupStartOpen: [true, true],  // 모두 펼쳐진 상태로 시작
+        groupStartOpen: [false, false], 
+        
+        
         groupHeader: [
             function(value, count, data, group){
-                return `<span style='font-weight:bold; font-size:14px;'>${value}</span>`;  // 설비명만 표시
+                console.log("▶ 1단계 그룹 value:", value, "타입:", typeof value);
+                
+                const displayValue = value || '미지정';
+                
+                return '<div style="font-weight:bold; font-size:15px; color:#fff; padding:8px 12px; ' +
+                       'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); ' +
+                       'border-left: 5px solid #4c51bf; line-height:1.3; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">' +
+                       '설비명: ' + displayValue + 
+                       ' <span style="color:#e0e7ff; font-size:13px; margin-left:8px;">(' + count + '건)</span>' +
+                       '</div>';
             },
             function(value, count, data, group){
-                return `<span style='color:#444;'>LOT: ${value}</span>`;  // 생산 LOT만 표시
+                console.log("▶ 2단계 그룹 value:", value, "타입:", typeof value);
+                
+                const displayValue = value || '미지정';
+                
+                return '<div style="font-weight:600; font-size:14px; color:#2d3748; padding:6px 12px; ' +
+                       'margin-left:30px; background:#e6f7ff; ' +
+                       'border-left: 4px solid #1890ff; line-height:1.3; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">' +
+                       '생산 LOT: ' + displayValue + 
+                       ' <span style="color:#718096; font-size:12px; margin-left:8px;">(' + count + '건)</span>' +
+                       '</div>';
             }
         ],
 
-        columns: [
-            {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:100, hozAlign:"center"},	
-            {title:"작업코드", field:"ilbo_code", sorter:"string", width:90, hozAlign:"center"},     
-            {title:"설비명", field:"fac_name", sorter:"string", width:110, hozAlign:"center"}, 
-            {title:"거래처", field:"corp_name", sorter:"string", width:120, hozAlign:"center"}, 
-            {title:"품명", field:"prod_name", sorter:"string", width:180, hozAlign:"center"},		        
-            {title:"품번", field:"prod_no", sorter:"string", width:120, hozAlign:"center"},
-            {title:"시작", field:"ilbo_strt", sorter:"string", width:100, hozAlign:"center"},
-            {title:"종료", field:"ilbo_end", sorter:"string", width:100, hozAlign:"center"},	
-            {title:"소요시간(분)", field:"time", sorter:"string", width:120, hozAlign:"center"},	
-            {title:"작업수량", field:"ilbo_su", sorter:"string", width:150, hozAlign:"center"},	
-            {title:"중량", field:"ilbo_jung", sorter:"string", width:100, hozAlign:"center"},
-            {title:"단위", field:"ord_danw", sorter:"string", width:70, hozAlign:"center"},
-            {title:"단가", field:"ord_dang", sorter:"string", width:150, hozAlign:"center"},
-            {title:"금액", field:"mon", sorter:"string", width:100, hozAlign:"center"},
-        ],
-
-        rowFormatter: function(row){
-            row.getElement().style.fontWeight = "700";
-            row.getElement().style.backgroundColor = "#FFFFFF";
+        
+        groupToggleElement: "header",  
+        
+        
+        groupClick: function(e, group){
+            group.toggle();  
         },
 
-        rowClick: function(e, row){
-            $("#tab1 .tabulator-row").removeClass("row_select");
-            row.getElement().classList.add("row_select");
+        columns: [
+            {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:100, hozAlign:"center"},
+            {title:"작업코드", field:"ilbo_code", sorter:"string", width:90, hozAlign:"center"},     
+            {title:"설비명", field:"fac_name", sorter:"string", width:110, hozAlign:"center"},
+            {title:"거래처", field:"corp_name", sorter:"string", width:120, hozAlign:"center"}, 
+            {title:"품명", field:"prod_name", sorter:"string", width:180, hozAlign:"center"},
+            {title:"품번", field:"prod_no", sorter:"string", width:120, hozAlign:"center"},
+            {
+                title:"시작", 
+                field:"ilbo_strt", 
+                sorter:"string", 
+                width:100, 
+                hozAlign:"center",
+                formatter: function(cell) {
+                    const value = cell.getValue();
+                    if (!value) return '-';
+                    return value.split('.')[0];
+                }
+            },
+            {
+                title:"종료", 
+                field:"ilbo_end", 
+                sorter:"string", 
+                width:100, 
+                hozAlign:"center",
+                formatter: function(cell) {
+                    const value = cell.getValue();
+                    if (!value) return '';
+                    // .000 제거
+                    return value.replace(/\.\d{3}$/, '');
+                }
+            },
+                    {title:"소요시간(분)", field:"time", sorter:"string", width:120, hozAlign:"center"},
+                    {title:"작업수량", field:"ilbo_su", sorter:"string", width:150, hozAlign:"center"},
+                    {
+                        title:"중량", 
+                        field:"ilbo_jung", 
+                        sorter:"string", 
+                        width:100, 
+                        hozAlign:"center",
+                        formatter: function(cell) {
+                            const value = cell.getValue();
+                            if (!value || isNaN(value)) return value;
+                            return Math.round(parseFloat(value)).toLocaleString('ko-KR');
+                        }
+                    },
+                    {title:"단위", field:"ord_danw", sorter:"string", width:70, hozAlign:"center"},
+                    {
+                        title:"단가", 
+                        field:"ord_dang", 
+                        sorter:"string", 
+                        width:150, 
+                        hozAlign:"center",
+                        formatter: function(cell) {
+                            const value = cell.getValue();
+                            if (!value || isNaN(value)) return value;
+                            return Math.floor(Number(value)).toLocaleString('ko-KR');
+                        }
+                    },
+                    {
+                        title:"금액", 
+                        field:"mon", 
+                        sorter:"string", 
+                        width:100, 
+                        hozAlign:"center",
+                        formatter: function(cell) {
+                            const value = cell.getValue();
+                            if (!value || isNaN(value)) return value;
+                            return Number(value).toLocaleString('ko-KR');
+                        }
+                    },
+                ],
 
-            const rowData = row.getData();
-            // rowData 처리 가능
+                rowFormatter: function(row){
+                    row.getElement().style.fontWeight = "700";
+                    row.getElement().style.backgroundColor = "#FFFFFF";
+                },
+
+                rowClick: function(e, row){
+                    $("#tab1 .tabulator-row").removeClass("row_select");
+                    row.getElement().classList.add("row_select");
+
+                    const rowData = row.getData();
+                    console.log("✅ 선택된 행:", rowData);
+                }
+            });
         }
-    });
-}
-
-
-
-
-	
-
     </script>
 
 	</body>

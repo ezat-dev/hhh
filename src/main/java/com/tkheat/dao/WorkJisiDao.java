@@ -73,4 +73,8 @@ public interface WorkJisiDao {
 	List<WorkJisi> barcodeDataDupCheck(WorkJisi workJisi);
 
 	void barcodeDataProc(WorkJisi ww);	
+
+	List<WorkJisi> getIpgoTechList(WorkJisi w);
+
+	void setChulgoUpdate(WorkJisi chulgo);	
 }

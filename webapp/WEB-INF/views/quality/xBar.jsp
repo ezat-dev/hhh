@@ -292,7 +292,7 @@
 		
 		  
 <script>
-
+let now_page_code = "f03";
 var cpkListTable;
 var selectedRowData = null;
 

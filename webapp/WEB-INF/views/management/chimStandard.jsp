@@ -12,237 +12,607 @@
     
     <style>
     
-	.container {
-		display: flex;
-		justify-content: space-between;
-/*		margin-left:1008px;
-		margin-top:200px;*/
-	}
-
-.chimStandardModal {
-    position: fixed; /* 화면에 고정 */
-    top: 50%; /* 수직 중앙 */
-    left: 55%; /* 수평 중앙 */
-    display : none;
-    transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-    z-index: 1000; /* 다른 요소 위에 표시 */
+	/* ========== 기존 스타일 유지 ========== */
+.main {
+    width: 98%;
 }
-#editPop {
-    background: #ffffff;
-    border: 1px solid #000000;
-    width: 1300px;
-    height: 720px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-    margin: 20px auto;
-    border-radius: 5px;
-    position: relative;
+
+.container {
     display: flex;
-    flex-direction: column; /* 헤더 + 내용 수직 배치 */
+    justify-content: space-between;
 }
 
-.header {
-    position: absolute; /* 모달 내부 상단에 고정 */
+.box1 {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    width: 1500px;
+    margin-left: -940px;
+    gap: 10px;
+}
+
+/* ========== 모달 오버레이 ========== */
+.modal-overlay {
+    display: none;
+    position: fixed;
     top: 0;
     left: 0;
-    right: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.modal-overlay.active {
+    display: block;
+}
+
+/* ========== 제품/도면 모달용 기존 스타일 유지 ========== */
+#productListModal.modal-overlay,
+#drawingFileModal.modal-overlay {
     display: flex;
-    justify-content: center;
     align-items: center;
-    background-color: #33363d;
-    height: 50px;
-    color: white;
-    font-size: 20px;
-    text-align: center;
-    z-index: 10;
+    justify-content: center;
+    z-index: 1100;
 }
 
-.header-close {
-    position: absolute;
-    right: 15px;
-    top: 10px;
+#productListModal .modal-content,
+#drawingFileModal .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1000px;
+    position: relative;
+    z-index: 1101;
+}
+
+#productListModal .modal-header,
+#drawingFileModal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+#productListModal .modal-close,
+#drawingFileModal .modal-close {
     cursor: pointer;
-    font-size: 20px;
-    color: white;
+    font-size: 24px;
 }
 
-#editPop .modal-body {
-    flex: 1; /* 남은 공간 차지 */
-    overflow-y: auto; /* 내용만 스크롤 */
-    margin-top: 50px; /* 헤더 높이만큼 여백 */
-    padding: 20px; /* 내부 여백 */
-}
-.popField {
-    margin-bottom: 20px; /* 각 필드셋 간의 여백 */
-    border: 1px solid #ccc; /* 테두리 */
-    border-radius: 5px; /* 둥근 모서리 */
-    padding: 10px; /* 내부 여백 */
-}
-
-.popField legend {
-    font-weight: bold; /* 굵은 글씨 */
-    padding: 0 10px; /* 레전드 패딩 */
-}
-
-.popFieldTable, .popFieldTable2, .popFieldTable3 {
-    width: 100%; /* 테이블 너비 100% */
-    border-collapse: collapse; /* 테두리 겹침 제거 */
+/* ========== 침탄로 모달 컨테이너 ========== */
+.chim-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1700px;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    overflow: hidden;
 }
 
-.popFieldTable th,
-.popFieldTable td,
-.popFieldTable2 th,
-.popFieldTable2 td,
-.popFieldTable3 th,
-.popFieldTable3 td {
-    padding: 5px; /* 셀 패딩 */
-    border: 1px solid #ccc; /* 셀 경계선 */
+.chim-modal.active {
+    display: flex;
+    flex-direction: column;
 }
 
-.basic {
-    background: #ffffff;
-    border: 1px solid #949494; /* 경계선 색상 */
-    width: calc(100% - 10px); /* 기본 너비 100%에서 여백 제외 */
-    padding: 5px; /* 내부 여백 */
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* 내부 그림자 */
-    border-radius: 3px; /* 둥근 모서리 */
-}
-
-.basic[readonly] {
-    background-color: #f9f9f9; /* 읽기 전용 필드 색상 */
-}
-
-.imgArea {
-    width: 100%; /* 이미지 영역 너비 */
-    height: 90px; /* 이미지 영역 높이 */
-    border: 1px solid #ddd; /* 경계선 */
-    
-    margin-bottom: 10px; /* 하단 여백 */
-}
-
-.imgArea img {
-    width: 100%; /* 이미지 너비 */
-    height: 100%; /* 이미지 높이 */
-    object-fit: cover; /* 이미지 비율 유지 */
-}
-
-.btnSaveClose {
-	display: flex;
-	justify-content: center; /* 가운데 정렬 */
-	gap: 20px; /* 버튼 사이 여백 */
-	margin-top: 30px; /* 모달 내용과의 간격 */
-	margin-bottom: 20px; /* 모달 하단과 버튼 사이 간격  */
-}
-.btnSaveClose button {
-	width: 100px;
-	height: 35px;
-	background-color: #FFD700; /* 기본 배경 - 노란색 */
-	color: black;
-	border: 2px solid #FFC107; /* 노란 테두리 */
-	border-radius: 5px;
-	font-weight: bold;
-	text-align: center;
-	cursor: pointer;
-	line-height: 35px;
-	margin: 0 10px;
-	margin-top: 10px;
-	transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-/* 저장 버튼 호버 시 */
-.btnSaveClose .save:hover {
-	background-color: #FFC107;
-	transform: scale(1.05);
-}
-
-/* 닫기 버튼 - 회색 톤 */
-.btnSaveClose .close {
-	background-color: #A9A9A9;
-	color: black;
-	border: 2px solid #808080;
-}
-
-/* 닫기 버튼 호버 시 */
-.btnSaveClose .close:hover {
-	background-color: #808080;
-	transform: scale(1.05);
-}
-    
-body{
-	font-size : 15px;
-}
-.box1 {
-	display: flex;
-	justify-content: right;
-	align-items: center;
-	width: 1500px;
-	margin-left: -940px;
-}
-
-.box1 input{
-	width : 5%;
-}
-.box1 select{
-	width: 5%
-} 
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 1000px;
-  position: relative;
-}
-
+/* ========== 모달 헤더 ========== */
 .modal-header {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  font-size: 18px;
-  margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+    cursor: move;
+    flex-shrink: 0;
 }
 
-.modal-close {
-  cursor: pointer;
-  font-size: 24px;
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
 }
-/* 페이지네이션 중앙정렬 */
-.tabulator-footer {
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* ========== 모달 본문 ========== */
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #f5f7fa;
+    padding: 15px;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #e0e0e0;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #666;
+}
+
+/* ========== 컨텐츠 래퍼 ========== */
+.modal-content-wrapper {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr;
+    gap: 15px;
+    height: 100%;
+}
+
+/* ========== 왼쪽/오른쪽 영역 ========== */
+.modal-left,
+.modal-right {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ========== 섹션 ========== */
+.field-section {
+    background: white;
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2c3e50;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* ========== 제품 이미지 미리보기 ========== */
+.product-image-preview {
+    width: 100%;
+    height: 80px;
+    border: 2px dashed #ced4da;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.product-image-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* ========== 필드 행/열 ========== */
+.field-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.field-row:last-child {
+    margin-bottom: 0;
+}
+
+.field-col {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.field-col-full {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.field-col label,
+.field-col-full label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.req {
+    color: #dc3545;
+    margin-left: 2px;
+}
+
+/* ========== 입력 필드 ========== */
+.field-col input[type="text"],
+.field-col select,
+.field-col-full input[type="text"],
+.field-col-full textarea {
+    width: 100%;
+    padding: 5px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 12px;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+.field-col input:focus,
+.field-col select:focus,
+.field-col-full input:focus,
+.field-col-full textarea:focus {
+    outline: none;
+    border-color: #4dabf7;
+    box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.1);
+}
+
+.field-col input[readonly],
+.field-col-full input[readonly] {
+    background: #f1f3f5;
+    cursor: not-allowed;
+}
+
+.field-col select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 26px;
+}
+
+/* ========== 검색 버튼 포함 입력 ========== */
+.input-with-btn {
+    display: flex;
+    gap: 4px;
+}
+
+.input-with-btn input {
+    flex: 1;
+}
+
+.btn-search {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background: #4dabf7;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-search:hover {
+    background: #339af0;
+}
+
+/* ========== 공정 테이블 ========== */
+.process-table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 10px;
+}
+
+.process-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+.process-table th,
+.process-table td {
+    border: 1px solid #dee2e6;
+    padding: 4px 6px;
+    text-align: center;
+}
+
+.process-table thead th {
+    background: #f1f3f5;
+    font-weight: 700;
+    color: #495057;
+}
+
+.process-table tbody th {
+    background: #f8f9fa;
+    font-weight: 600;
+    text-align: left;
+    padding-left: 8px;
+}
+
+.process-table input {
+    width: 100%;
+    padding: 3px 5px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    font-size: 11px;
+    box-sizing: border-box;
+}
+
+.process-table input:focus {
+    outline: none;
+    border-color: #4dabf7;
+}
+
+/* ========== 개정이력 테이블 ========== */
+.revision-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+.revision-table th,
+.revision-table td {
+    border: 1px solid #dee2e6;
+    padding: 5px 8px;
+    text-align: center;
+}
+
+.revision-table thead th {
+    background: #f1f3f5;
+    font-weight: 700;
+    color: #495057;
+}
+
+.revision-table td:first-child {
+    font-weight: 600;
+}
+
+.revision-table input {
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    font-size: 11px;
+    box-sizing: border-box;
+}
+
+/* ========== 이미지 업로드 ========== */
+.img-upload-area {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.img-upload-area input[type="file"] {
+    padding: 5px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.img-upload-area input[type="file"]::-webkit-file-upload-button {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 3px;
+    background: #4dabf7;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 6px;
+}
+
+.img-preview {
+    width: 100%;
+    height: 120px;
+    border: 2px dashed #ced4da;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.img-preview-small {
+    height: 100px;
+}
+
+.img-preview:hover {
+    border-color: #4dabf7;
+    background: #e7f5ff;
+}
+
+.img-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* ========== 파일 업로드 ========== */
+.file-upload-area {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.file-upload-area input[type="file"] {
+    padding: 5px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.file-upload-area a {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 11px;
+    color: #4dabf7;
+    text-decoration: none;
+    word-break: break-all;
+}
+
+/* ========== 단취방법 계산 테이블 ========== */
+.calc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+.calc-table td {
+    border: 1px solid #dee2e6;
+    padding: 4px 6px;
+}
+
+.calc-label {
+    background: #f8f9fa;
+    font-weight: 600;
+    text-align: left;
+    padding-left: 8px !important;
+    width: 100px;
+}
+
+.calc-section-title {
+    background: #e9ecef;
+    font-weight: 700;
+    text-align: center;
+    padding: 6px !important;
+}
+
+.calc-table input {
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    font-size: 11px;
+    box-sizing: border-box;
+    text-align: right;
+}
+
+.calc-table input[readonly] {
+    background: #f1f3f5;
+    cursor: not-allowed;
+}
+
+/* ========== 모달 푸터 ========== */
+.modal-footer {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px 0;
+    gap: 8px;
+    padding: 12px 20px;
+    background: white;
+    border-top: 1px solid #dee2e6;
+    flex-shrink: 0;
 }
 
-/* 커스텀 페이지 버튼 */
-.custom-pagination button {
-    margin: 0 5px;
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    background: #f8f8f8;
-    border-radius: 4px;
+.modal-footer button {
+    min-width: 100px;
+    height: 36px;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 700;
     cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s;
+    transition: all 0.3s;
 }
-.custom-pagination button:hover {
-    background: #007bff;
+
+.btn-save {
+    background: linear-gradient(135deg, #51cf66, #37b24d);
     color: white;
-    border-color: #007bff;
-}     
+}
+
+.btn-save:hover {
+    background: linear-gradient(135deg, #40c057, #2f9e44);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(64, 192, 87, 0.3);
+}
+
+.btn-saveas {
+    background: linear-gradient(135deg, #4dabf7, #339af0);
+    color: white;
+}
+
+.btn-saveas:hover {
+    background: linear-gradient(135deg, #339af0, #1c7ed6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(77, 171, 247, 0.3);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #ff6b6b, #fa5252);
+    color: white;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(135deg, #f03e3e, #e03131);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(240, 62, 62, 0.3);
+}
+
+.btn-cancel {
+    background: linear-gradient(135deg, #868e96, #495057);
+    color: white;
+}
+
+.btn-cancel:hover {
+    background: linear-gradient(135deg, #6c757d, #343a40);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* ========== 반응형 ========== */
+@media (max-width: 1800px) {
+    .chim-modal {
+        width: 95vw;
+    }
+}
+
+@media (max-width: 1400px) {
+    .modal-content-wrapper {
+        grid-template-columns: 1.8fr 1fr;
+    }
+}
+
+@media (max-width: 1200px) {
+    .field-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .modal-content-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
     </style>
     
     
@@ -293,737 +663,661 @@ body{
 
 
 
-<form method="post" class="corrForm" id="chimStandardForm" name="chimStandardForm">	    
-   <div class="chimStandardModal">    
-	
-      <div id="editPop">
-       <div class="header">
-       			침탄로표준등록
-       			<span class="header-close">&times;</span>
-       </div>
-       
-       <div class="modal-body">
-        <fieldset class="popField">
-          <legend>제품정보</legend>
-          <fieldset class="popField">
-              <legend>제품사진</legend>
-              <div class="findImage">
-                <input type="hidden" name="type" value="standard">
-                
-                
-                <div class="imgArea" id="previewId7" style="height:90px;border:1px solid #ddd;">
-                  <img class="rp-img-popup" id="prev_previewId7"  width="30%" height="100%">
+<form method="post" class="corrForm" id="chimStandardForm" name="chimStandardForm" enctype="multipart/form-data">
+    <input type="hidden" name="type" value="standard" />
+    
+    <div class="modal-overlay"></div>
+    
+    <div class="chim-modal">
+        <!-- 헤더 -->
+        <div class="modal-header">
+            <h2>침탄로표준등록</h2>
+            <button type="button" class="modal-close-btn">&times;</button>
+        </div>
+        
+        <!-- 본문 -->
+        <div class="modal-body">
+            <div class="modal-content-wrapper">
+                <!-- 왼쪽: 입력 필드 -->
+                <div class="modal-left">
+                    <!-- 제품정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">제품정보</h3>
+                        <div class="product-image-preview">
+                            <img id="prev_previewId7" src="/tkheat/css/image/no_image.png" alt="제품사진">
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>고객명 <span class="req">*</span></label>
+                                <div class="input-with-btn">
+                                    <input type="text" id="corp_name" name="corp_name" readonly>
+                                    <input type="hidden" id="prod_code" name="prod_code">
+                                    <button type="button" class="btn-search" onclick="openProductListModal();">검색</button>
+                                </div>
+                            </div>
+                            <div class="field-col">
+                                <label>단중(g)</label>
+                                <input type="text" id="prod_danj" name="prod_danj" readonly>
+                            </div>
+                            <div class="field-col">
+                                <label>도번/품번</label>
+                                <input type="text" id="prod_no" name="prod_no" readonly>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>품명</label>
+                                <input type="text" id="prod_name" name="prod_name" readonly>
+                            </div>
+                            <div class="field-col">
+                                <label>재질</label>
+                                <input type="text" id="prod_jai" name="prod_jai" readonly>
+                            </div>
+                            <div class="field-col">
+                                <label>단가</label>
+                                <input type="text" id="prod_dang" name="prod_dang" readonly>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>주문번호</label>
+                                <input type="text" id="prodC_cno" name="prodC_cno" readonly>
+                            </div>
+                            <div class="field-col">
+                                <label>PWS No.</label>
+                                <input type="text" id="prod_pwsno" name="prod_pwsno" readonly>
+                            </div>
+                            <div class="field-col">
+                                <label>공정</label>
+                                <input type="text" id="tech_te" name="tech_te" readonly>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>도면/공정도</label>
+                                <input type="text" id="prod_do" name="prod_do" readonly>
+                            </div>
+                            <div class="field-col">
+                                <label>Ref No.</label>
+                                <input type="text" id="prod_refno" name="prod_refno" readonly>
+                            </div>
+                            <div class="field-col">
+                                <label>검사규격</label>
+                                <input type="text" id="prod_gyu" name="prod_gyu" readonly>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>기종</label>
+                                <input type="text" id="prod_kijong" name="prod_kijong" readonly>
+                            </div>
+                            <div class="field-col"></div>
+                            <div class="field-col"></div>
+                        </div>
+                        <input type="hidden" id="prod_appear" name="prod_appear">
+                        <input type="hidden" id="prod_transform" name="prod_transform">
+                        <input type="hidden" id="prod_cd" name="prod_cd">
+                    </div>
+                    
+                    <!-- 요구규격 -->
+                    <div class="field-section">
+                        <h3 class="section-title">요구규격</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>표면경도</label>
+                                <input type="text" id="prod_pg" name="prod_pg" readonly>
+                            </div>
+                            <div class="field-col">
+                                <label>심부경도</label>
+                                <input type="text" id="prod_sg" name="prod_sg" readonly>
+                            </div>
+                            <div class="field-col">
+                                <label>금속조직</label>
+                                <input type="text" id="prod_e1" name="prod_e1" readonly>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>변형량</label>
+                                <input type="text" id="prod_e3" name="prod_e3" readonly>
+                            </div>
+                            <div class="field-col">
+                                <label>경화깊이</label>
+                                <input type="text" id="prod_gd1" name="prod_gd1" readonly>
+                            </div>
+                            <div class="field-col">
+                                <label>기준</label>
+                                <input type="text" id="prod_gd2" name="prod_gd2" readonly>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>경화깊이 범위</label>
+                                <input type="text" id="prod_gd5" name="prod_gd5" readonly placeholder="~">
+                            </div>
+                            <div class="field-col"></div>
+                            <div class="field-col"></div>
+                        </div>
+                        <input type="hidden" id="prod_pg3" name="prod_pg3">
+                        <input type="hidden" id="prod_sg3" name="prod_sg3">
+                        <input type="hidden" id="prod_e5" name="prod_e5">
+                        <input type="hidden" id="prod_ra" name="prod_ra">
+                        <input type="hidden" id="prod_pgs" name="prod_pgs">
+                    </div>
+                    
+                    <!-- 전세척 -->
+                    <div class="field-section">
+                        <h3 class="section-title">전세척</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>설비</label>
+                                <select id="fac_code1" name="fac_code1">
+                                    <option value="15">진공세정기 2호기</option>
+                                </select>
+                            </div>
+                            <div class="field-col">
+                                <label>온도</label>
+                                <input type="text" id="wstd_n01" name="wstd_n01">
+                            </div>
+                            <div class="field-col">
+                                <label>시간</label>
+                                <input type="text" id="wstd_n02" name="wstd_n02">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>농도</label>
+                                <input type="text" id="wstd_t66" name="wstd_t66">
+                            </div>
+                            <div class="field-col"></div>
+                            <div class="field-col"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 공정 (테이블) -->
+                    <div class="field-section">
+                        <h3 class="section-title">공정</h3>
+                        <div class="process-table-wrapper">
+                            <table class="process-table">
+                                <thead>
+                                    <tr>
+                                        <th>구분</th>
+                                        <th>예열</th>
+                                        <th>침탄</th>
+                                        <th>확산</th>
+                                        <th>강온</th>
+                                        <th>균열</th>
+                                        <th>Oil</th>
+                                        <th>교반기</th>
+                                        <th>냉각시간</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>온도[℃]</th>
+                                        <td><input type="text" id="wstd_gj11" name="wstd_gj11"></td>
+                                        <td><input type="text" id="wstd_gj12" name="wstd_gj12"></td>
+                                        <td><input type="text" id="wstd_gj13" name="wstd_gj13"></td>
+                                        <td><input type="text" id="wstd_gj14" name="wstd_gj14"></td>
+                                        <td><input type="text" id="wstd_gj15" name="wstd_gj15"></td>
+                                        <td><input type="text" id="wstd_gj16" name="wstd_gj16"></td>
+                                        <td><input type="text" id="wstd_gj17" name="wstd_gj17"></td>
+                                        <td><input type="text" id="wstd_gj18" name="wstd_gj18"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>시간[분]</th>
+                                        <td><input type="text" id="wstd_gj21" name="wstd_gj21"></td>
+                                        <td><input type="text" id="wstd_gj22" name="wstd_gj22"></td>
+                                        <td><input type="text" id="wstd_gj23" name="wstd_gj23"></td>
+                                        <td><input type="text" id="wstd_gj24" name="wstd_gj24"></td>
+                                        <td><input type="text" id="wstd_gj25" name="wstd_gj25"></td>
+                                        <td><input type="text" id="wstd_gj26" name="wstd_gj26"></td>
+                                        <td><input type="text" id="wstd_gj27" name="wstd_gj27"></td>
+                                        <td><input type="text" id="wstd_gj28" name="wstd_gj28"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>cp%</th>
+                                        <td><input type="text" id="wstd_gj31" name="wstd_gj31"></td>
+                                        <td><input type="text" id="wstd_gj32" name="wstd_gj32"></td>
+                                        <td><input type="text" id="wstd_gj33" name="wstd_gj33"></td>
+                                        <td><input type="text" id="wstd_gj34" name="wstd_gj34"></td>
+                                        <td><input type="text" id="wstd_gj35" name="wstd_gj35"></td>
+                                        <td><input type="text" id="wstd_gj36" name="wstd_gj36"></td>
+                                        <td><input type="text" id="wstd_gj37" name="wstd_gj37"></td>
+                                        <td><input type="text" id="wstd_gj38" name="wstd_gj38"></td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <th>RX[㎥/Hr]</th>
+                                        <td><input type="text" id="wstd_gj39" name="wstd_gj39"></td>
+                                        <td><input type="text" id="wstd_gj42" name="wstd_gj42"></td>
+                                        <td><input type="text" id="wstd_gj43" name="wstd_gj43"></td>
+                                        <td><input type="text" id="wstd_gj44" name="wstd_gj44"></td>
+                                        <td><input type="text" id="wstd_gj45" name="wstd_gj45"></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>LPG</th>
+                                        <td><input type="text" id="wstd_gj49" name="wstd_gj49"></td>
+                                        <td><input type="text" id="wstd_gj52" name="wstd_gj52"></td>
+                                        <td><input type="text" id="wstd_gj53" name="wstd_gj53"></td>
+                                        <td><input type="text" id="wstd_gj54" name="wstd_gj54"></td>
+                                        <td><input type="text" id="wstd_gj55" name="wstd_gj55"></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>CH3OH[cc/Hr]</th>
+                                        <td><input type="text" id="wstd_gj59" name="wstd_gj59"></td>
+                                        <td><input type="text" id="wstd_gj62" name="wstd_gj62"></td>
+                                        <td><input type="text" id="wstd_gj63" name="wstd_gj63"></td>
+                                        <td><input type="text" id="wstd_gj64" name="wstd_gj64"></td>
+                                        <td><input type="text" id="wstd_gj65" name="wstd_gj65"></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>N2[㎥/Hr]</th>
+                                        <td><input type="text" id="wstd_gj69" name="wstd_gj69"></td>
+                                        <td><input type="text" id="wstd_gj72" name="wstd_gj72"></td>
+                                        <td><input type="text" id="wstd_gj73" name="wstd_gj73"></td>
+                                        <td><input type="text" id="wstd_gj74" name="wstd_gj74"></td>
+                                        <td><input type="text" id="wstd_gj75" name="wstd_gj75"></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>NH3[Nl/min]</th>
+                                        <td><input type="text" id="wstd_gj79" name="wstd_gj79"></td>
+                                        <td><input type="text" id="wstd_gj82" name="wstd_gj82"></td>
+                                        <td><input type="text" id="wstd_gj83" name="wstd_gj83"></td>
+                                        <td><input type="text" id="wstd_gj84" name="wstd_gj84"></td>
+                                        <td><input type="text" id="wstd_gj85" name="wstd_gj85"></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr> -->
+                                    <tr>
+                                        <th>수량</th>
+                                        <td><input type="text" id="wstd_gjsu" name="wstd_gjsu"></td>
+                                        <td colspan="7"></td>
+                                    </tr>
+                                    <tr>
+                                        <th>rpm</th>
+                                        <td><input type="text" id="wstd_gjrpm" name="wstd_gjrpm"></td>
+                                        <td colspan="7"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="field-row" style="margin-top: 10px;">
+                            <div class="field-col-full">
+                                <label>비고</label>
+                                <input type="text" id="wstd_worknote" name="wstd_worknote">
+                            </div>
+                        </div>
+                        
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>설비</label>
+                                <select id="fac_code" name="fac_code">
+                                    <option value="5">고주파 1호기(폐기)</option>
+                                    <option value="6">고주파 2호기 (폐기)</option>
+                                    <option value="9">고주파 5호기</option>
+                                    <option value="21">급수시설</option>
+                                    <option value="10">변성로 1호기</option>
+                                    <option value="11">변성로 2호기</option>
+                                    <option value="12">쇼트 1호기</option>
+                                    <option value="13">쇼트 2호기</option>
+                                    <option value="14">쇼트 3호기</option>
+                                    <option value="19">쇼트 4호기</option>
+                                    <option value="20">전기시설</option>
+                                    <option value="15">진공세정기 2호기</option>
+                                    <option value="1">침탄로 1호기</option>
+                                    <option value="2">침탄로 2호기</option>
+                                    <option value="3">침탄로 3호기</option>
+                                    <option value="4">침탄로 4호기</option>
+                                    <option value="18">침탄로 5호기</option>
+                                    <option value="22">콤프레샤</option>
+                                    <option value="16">템퍼링기 1호기</option>
+                                    <option value="17">템퍼링기 2호기</option>
+                                </select>
+                            </div>
+                            <div class="field-col">
+                                <label>보고서 유형</label>
+                                <select id="reportType" name="report_type">
+                                    <option value="QT1">QT-Tempering</option>
+                                    <option value="QT2">QT-1차,2차 Tempering</option>
+                                    <option value="QT3">QT-심냉처리</option>
+                                    <option value="QT4">QT-응력제거</option>
+                                    <option value="CH1">침탄-Tempering</option>
+                                    <option value="CH2">침탄-1차,2차 Tempering</option>
+                                    <option value="CH3">침탄-중간검사교정</option>
+                                    <option value="CH4">침탄-Marking</option>
+                                </select>
+                            </div>
+                            <div class="field-col"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 후세척 -->
+                    <div class="field-section">
+                        <h3 class="section-title">후세척</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>설비</label>
+                                <select id="facCode2" name="fac_code2">
+                                    <option value="15">진공세정기 2호기</option>
+                                </select>
+                            </div>
+                            <div class="field-col">
+                                <label>온도</label>
+                                <input type="text" id="wstd_n03" name="wstd_n03">
+                            </div>
+                            <div class="field-col">
+                                <label>시간</label>
+                                <input type="text" id="wstd_n04" name="wstd_n04">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>농도</label>
+                                <input type="text" id="wstd_t67" name="wstd_t67">
+                            </div>
+                            <div class="field-col"></div>
+                            <div class="field-col"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 템퍼링 -->
+                    <div class="field-section">
+                        <h3 class="section-title">템퍼링</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>1차 온도</label>
+                                <input type="text" id="wstd_ready" name="wstd_ready">
+                            </div>
+                            <div class="field-col">
+                                <label>1차 시간</label>
+                                <input type="text" id="wstd_worktime" name="wstd_worktime">
+                            </div>
+                            <div class="field-col">
+                                <label>1차 비고</label>
+                                <input type="text" id="wstd_t62" name="wstd_t62">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>2차 온도</label>
+                                <input type="text" id="wstd_t63" name="wstd_t63">
+                            </div>
+                            <div class="field-col">
+                                <label>2차 시간</label>
+                                <input type="text" id="wstd_t64" name="wstd_t64">
+                            </div>
+                            <div class="field-col">
+                                <label>2차 비고</label>
+                                <input type="text" id="wstd_t65" name="wstd_t65">
+                            </div>
+                        </div>
+                    </div>
+<!-- 후처리 -->
+                    <div class="field-section">
+                        <h3 class="section-title">후처리</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>후처리 수량</label>
+                                <input type="text" id="wstd_gj97" name="wstd_gj97">
+                            </div>
+                            <div class="field-col">
+                                <label>설비</label>
+                                <select id="fac_code3" name="fac_code3">
+                                    <option value="12">쇼트 1호기</option>
+                                    <option value="13">쇼트 2호기</option>
+                                    <option value="14">쇼트 3호기</option>
+                                    <option value="19">쇼트 4호기</option>
+                                </select>
+                            </div>
+                            <div class="field-col">
+                                <label>1차처리</label>
+                                <input type="text" id="wstd_gj98" name="wstd_gj98">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>1차 압력</label>
+                                <input type="text" id="wstd_gj99" name="wstd_gj99">
+                            </div>
+                            <div class="field-col">
+                                <label>2차처리</label>
+                                <input type="text" id="wstd_gj100" name="wstd_gj100">
+                            </div>
+                            <div class="field-col">
+                                <label>2차 압력</label>
+                                <input type="text" id="wstd_gj101" name="wstd_gj101">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 심냉처리 -->
+                    <div class="field-section">
+                        <h3 class="section-title">심냉처리</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>예냉온도</label>
+                                <input type="text" id="wstd_t68" name="wstd_t68">
+                            </div>
+                            <div class="field-col">
+                                <label>예냉시간</label>
+                                <input type="text" id="wstd_t69" name="wstd_t69">
+                            </div>
+                            <div class="field-col">
+                                <label>심냉온도</label>
+                                <input type="text" id="wstd_t70" name="wstd_t70">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>심냉시간</label>
+                                <input type="text" id="wstd_t71" name="wstd_t71">
+                            </div>
+                            <div class="field-col">
+                                <label>방냉후실온</label>
+                                <input type="text" id="wstd_t72" name="wstd_t72">
+                            </div>
+                            <div class="field-col">
+                                <label>비고</label>
+                                <input type="text" id="wstd_t73" name="wstd_t73">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 개정이력 -->
+                    <div class="field-section">
+                        <h3 class="section-title">개정이력</h3>
+                        <table class="revision-table">
+                            <thead>
+                                <tr>
+                                    <th>NO</th>
+                                    <th>개정일자</th>
+                                    <th>사유</th>
+                                    <th>확인</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td><input type="text" id="wstd_g11" name="wstd_g11"></td>
+                                    <td><input type="text" id="wstd_g12" name="wstd_g12"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td><input type="text" id="wstd_g21" name="wstd_g21"></td>
+                                    <td><input type="text" id="wstd_g22" name="wstd_g22"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td><input type="text" id="wstd_g31" name="wstd_g31"></td>
+                                    <td><input type="text" id="wstd_g32" name="wstd_g32"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td><input type="text" id="wstd_g41" name="wstd_g41"></td>
+                                    <td><input type="text" id="wstd_g42" name="wstd_g42"></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-              </div>
-            </fieldset><table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable">
-          <colgroup span="8">
-            <col width="7%">
-            <col width="18%">
-            <col width="7%">
-            <col width="18%">
-            <col width="7%">
-            <col width="18%">
-            <col width="7%">
-            <col width="18%">
-          </colgroup>
-            
-          <tbody><tr>
-            <th class="left">고객명<input id="prod_code" name="prod_code" type="hidden" value=""></th>
-            <td class=""><input id="corp_name" name="corp_name" class="basic" type="text" style="width:70%;" value="" readonly="">
-            <input class="" type="button" title="제품선택" onclick="openProductListModal();" value="검색"></td>
-            <th class="">단중(g)</th>
-            <td class=""><input id="prod_danj" name="prod_danj" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-            <th class="">도번/품번</th>
-            <td class=""><input id="prod_no" name="prod_no" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-            <th class="">품명</th>
-            <td class=""><input id="prod_name" name="prod_name" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-          </tr>
-          <tr>
-            <th class="left">재질</th>
-            <td class=""><input id="prod_jai" name="prod_jai" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-            <th class="">단가</th>
-            <td class=""><input id="prod_dang" name="prod_dang" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-            <th class="">주문번호</th>
-            <td class=""><input id="prodC_cno" name="prodC_cno" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-            <th class="">PWS No.</th>
-            <td class=""><input id="prod_pwsno" name="prod_pwsno" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-          </tr>
-          <tr>
-            <th class="">공정</th>
-            <td class=""><input id="tech_te" name="tech_te" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-            <th class="left">도면/공정도</th>
-            <td class=""><input id="prod_do" name="prod_do" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-            <th class="left">Ref No.</th>
-            <td class=""><input id="prod_refno" name="prod_refno" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-            <th class="left">검사규격</th>
-            <td class=""><input id="prod_gyu" name="prod_gyu" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-          </tr>
-          <tr>
-            <!-- <th class="">ECD</th>
-            <td class=""><input id="prodE5" name="prodE5" class="basic" type="text" style="width:100%;" value="" readonly /></td>
-            <th class="left">Ra%</th>
-            <td class=""><input id="prodRa" name="prodRa" class="basic" type="text" style="width:100%;" value="" readonly/></td> -->
-            <th class="left">기종</th>
-            <td class=""><input id="prod_kijong" name="prod_kijong" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-            <td class=""><input id="prod_appear" name="prod_appear" class="basic" type="hidden" style="width:90%;" value="" readonly=""></td>
-            <td class=""><input id="prod_transform" name="prod_transform" class="basic" type="hidden" style="width:90%;" value="" readonly=""></td>
-            <th class="left" hidden="">기종</th>
-            <td class="" hidden="">&gt;<input id="prod_cd" name="prod_cd" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-          </tr>
-        </tbody></table>
-        </fieldset>
-
-        <table cellspacing="0" cellpadding="0" width="100%" class="">
-        <colgroup span="2">
-          <col width="70%">
-          <col width="30%">
-        </colgroup>
-        <tbody><tr>
-          <td class="" valign="top">
-            <div class="">
-              <fieldset class="popField">
-              <legend>요구규격</legend>
-                <table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable">
-                  <colgroup span="5">
-                    <col width="3%">
-                    <col width="5%">
-                    <col width="3%">
-                    <col width="5%">
-                    <col width="3%">
-                    <col width="5%">
-                    <col width="2%">
-                    <col width="5%">
-                  </colgroup>
-                  <tbody><tr>
-                    <th class="">표면경도</th>
-                    <td class=""><input id="prod_pg" name="prod_pg" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-                    <th class="">심부경도</th>
-                    <td class=""><input id="prod_sg" name="prod_sg" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-                    <th class="">금속조직</th>
-                    <td class=""><input id="prod_e1" name="prod_e1" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-                    <th class="">변형량</th>
-                    <td class=""><input id="prod_e3" name="prod_e3" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-                  </tr>
-                  <tr>
-                    <th class="" hidden="">표면경도 비고</th>
-                    <td class="" hidden=""><input id="prod_pg3" name="prod_pg3" class="basic" type="text" style="width:90%; display:none;" value="" readonly=""></td>
-                    <th class="" hidden="">심부경도 비고</th>
-                    <td class="" hidden=""><input id="prod_sg3" name="prod_sg3" class="basic" type="text" style="width:90%; display:none;" value="" readonly=""></td>
-                    <!-- <th class="">표면경도 (실측치)</th>
-                    <td class=""><input id="prodPgs" name="prodPgs" class="basic" type="text" style="width:100%;" value="" readonly/></td> -->
-                    <!-- <th class="">경화거리(ECD)</th>
-                    <td class=""><input id="prod_khecd" name="prod_khecd" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-                    <th class="">경화거리(TCD)</th>
-                    <td class=""><input id="prod_khtcd" name="prod_khtcd" class="basic" type="text" style="width:90%;" value="" readonly=""></td> -->
-                  </tr>
-                    <tr>
-                    <th class="">경화깊이</th>
-                    <td class=""><input id="prod_gd1" name="prod_gd1" class="basic" type="text" style="width:90%;" value="" readonly=""></td><td class="" align="center">기준</td><td class=""><input id="prod_gd2" name="prod_gd2" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-                    <td class="" align="center">~</td><td class=""><input id="prod_gd5" name="prod_gd5" class="basic" type="text" style="width:90%;" value="" readonly=""></td>
-                    </tr>
-                    <tr>
-                    <input id="prod_cd" name="prod_cd" class="basic" type="hidden" value="" readonly="">
-                    <input id="prod_e5" name="prod_e5" class="basic" type="hidden" value="" readonly="">
-                    <input id="prod_ra" name="prod_ra" class="basic" type="hidden" value="" readonly="">
-                    <input id="prod_pgs" name="prod_pgs" class="basic" type="hidden" value="" readonly="">
-                    </tr>
-                </tbody></table>
-              </fieldset>
+                
+                <!-- 오른쪽: 이미지 및 단취방법 -->
+                <div class="modal-right">
+                    <!-- 단취사진 -->
+                    <div class="field-section">
+                        <h3 class="section-title">단취사진</h3>
+                        <div class="img-upload-area">
+                            <input type="file" id="imgInput0" class="imgInputClass" name="wstd_chim_file_url1" accept="image/*" onchange="previewImage(this,'previewId1')">
+                            <div class="img-preview img-preview-small">
+                                <img id="prev_previewId1" src="/tkheat/css/image/no_image.png" alt="단취사진">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 도면 -->
+                    <div class="field-section">
+                        <h3 class="section-title">도면</h3>
+                        <div class="file-upload-area">
+                            <input type="file" name="drawing_file_url" accept=".pdf">
+                            <a href="#" id="fileLink" onclick="openDrawingModal(event)"></a>
+                        </div>
+                    </div>
+                    
+                    <!-- 사진-3 -->
+                    <div class="field-section">
+                        <h3 class="section-title">사진-3</h3>
+                        <div class="img-upload-area">
+                            <input type="file" id="imgInput1" class="imgInputClass" name="wstd_chim_file_url2" accept="image/*" onchange="previewImage(this,'previewId3')">
+                            <div class="img-preview img-preview-small">
+                                <img id="prev_previewId3" src="/tkheat/css/image/no_image.png" alt="사진-3">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 단취방법 -->
+                    <div class="field-section">
+                        <h3 class="section-title">단취방법</h3>
+                        <table class="calc-table">
+                            <tbody>
+                                <tr>
+                                    <td class="calc-label">EA/줄(판)</td>
+                                    <td colspan="2">
+                                        <input type="text" id="wstd_t32" name="wstd_t32" onchange="fn_Calc()">
+                                    </td>
+                                    <td>이하</td>
+                                </tr>
+                                <tr>
+                                    <td class="calc-label">줄(판)/단</td>
+                                    <td colspan="3">
+                                        <input type="text" id="wstd_t33" name="wstd_t33" onchange="fn_Calc()">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="calc-label">단/Tray</td>
+                                    <td>
+                                        <input type="text" id="wstd_t41" name="wstd_t41" onchange="fn_Calc()">
+                                    </td>
+                                    <td>Tray차지</td>
+                                    <td>
+                                        <input type="text" id="wstd_t42" name="wstd_t42" onchange="fn_Calc()">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="calc-label">추가수량</td>
+                                    <td colspan="3">
+                                        <input type="text" id="wstd_t87" name="wstd_t87" onchange="fn_Calc()">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="calc-label">단취수량</td>
+                                    <td colspan="2">
+                                        <input type="text" id="wstd_t43" name="wstd_t43" readonly>
+                                    </td>
+                                    <td>EA/CH</td>
+                                </tr>
+                                <tr>
+                                    <td class="calc-label">Jig무게</td>
+                                    <td colspan="2">
+                                        <input type="text" id="wstd_t44" name="wstd_t44" onchange="fn_Calc()">
+                                    </td>
+                                    <td>kg</td>
+                                </tr>
+                                <tr>
+                                    <td class="calc-label">제품무게/ch</td>
+                                    <td colspan="2">
+                                        <input type="text" id="wstd_t51" name="wstd_t51" readonly>
+                                    </td>
+                                    <td>kg</td>
+                                </tr>
+                                <tr>
+                                    <td class="calc-label">총단중/ch</td>
+                                    <td colspan="2">
+                                        <input type="text" id="wstd_t52" name="wstd_t52" readonly>
+                                    </td>
+                                    <td>kg</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="calc-section-title">단취시 유의사항</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        ● <input type="text" id="wstd_t53" name="wstd_t53">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        ● <input type="text" id="wstd_t54" name="wstd_t54">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        ● <input type="text" id="wstd_t30" name="wstd_t30">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="calc-label">단중</td>
+                                    <td colspan="2">
+                                        <input type="text" id="wstd_t40" name="wstd_t40" value="1" onchange="fn_Calc()">
+                                    </td>
+                                    <td>kg</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <input type="hidden" id="wstd_t34" name="wstd_t34">
+                        <input type="hidden" id="wstd_t50" name="wstd_t50">
+                        <input type="hidden" id="wstd_t55" name="wstd_t55">
+                    </div>
+                </div>
             </div>
-
-            <div class="" hidden="">
-              <fieldset class="popField">
-                <legend>침탄경화깊이</legend>
-                <table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable">
-                  <colgroup span="5">
-                    <col width="1%">
-                    <col width="8%">
-                    <col width="1%">
-                    <col width="8%">
-                    <col width="1%">
-                    <col width="8%">
-                  </colgroup>
-                  <tbody><tr>
-                    <th class="">0.28mm</th>
-                    <td class=""><input id="prod_gd1" name="prod_gd1" class="basic" type="text" style="width:100%;" value="" readonly=""></td>
-                    <th class="">0.68mm</th>
-                    <td class=""><input id="prod_gd2" name="prod_gd2" class="basic" type="text" style="width:100%;" value="" readonly=""></td>
-                    <th class="">1.18mm</th>
-                    <td class=""><input id="prod_gd3" name="prod_gd3" class="basic" type="text" style="width:100%;" value="" readonly=""></td>
-                  </tr>
-                </tbody></table>
-              </fieldset>
-            </div>
-
-
-            <div class="">
-              <fieldset class="popField">
-                <legend>전세척</legend>
-                <table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable">
-                  <tbody><tr>
-                  <td class=""><select id="fac_code1" name="fac_code1" class="basic" style="width: 100%">
-                        
-                          <option value="15">진공세정기 2호기</option>
-                        
-                          </select>
-                  <!-- <td class=""  hidden=""><select id="wstdStep07" name="wstdStep07"class="basic" style="width:145px;">
-                          <option></option>
-                          <option>STEP1</option>
-                          <option>STEP2</option>
-                          <option>STEP3</option>
-                         </select> -->
-                    </td><th class="" style="width:5%;">온도</th>
-                    <td class=""><input id="wstd_n01" name="wstd_n01" class="basic" type="text" style="width:80%;" value=""></td>
-                    <th class="" style="width:5%;">시간</th>
-                    <td class=""><input id="wstd_n02" name="wstd_n02" class="basic" type="text" style="width:80%;" value=""></td>
-                    <th class="" style="width:5%;">농도</th>
-                    <td class=""><input id="wstd_t66" name="wstd_t66" class="basic" type="text" style="width:80%;" value=""></td>
-                      
-                </tr>
-                </tbody></table>
-              </fieldset>
-            </div>
-
-            <div class="">
-              <fieldset class="popField">
-                <legend>공정</legend>
-                <table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable">
-                  <colgroup span="9">
-                    <col width="12%">
-                    <col width="11%">
-                    <col width="11%">
-                    <col width="11%">
-                    <col width="11%">
-                    <col width="11%">
-                    <col width="11%">
-                    <col width="11%">
-                    <col width="11%">
-                  </colgroup>
-                  <tbody><tr>
-                    <th>구분</th>
-                    <th>예열</th>
-                    <th>침탄</th>
-                    <th>확산</th>
-                    <th>강온</th>
-                    <th>균열</th>
-                    <th>Oil</th>
-                    <th>교반기</th>
-                    <th>냉각시간</th>
-                  </tr>
-                  <tr>
-                    <th>온도[℃]</th>
-                    <td><input id="wstd_gj11" name="wstd_gj11" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj12" name="wstd_gj12" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj13" name="wstd_gj13" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj14" name="wstd_gj14" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj15" name="wstd_gj15" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj16" name="wstd_gj16" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj17" name="wstd_gj17" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj18" name="wstd_gj18" class="basic" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                  <tr>
-                    <th>시간[분]</th>
-                    <td><input id="wstd_gj21" name="wstd_gj21" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj22" name="wstd_gj22" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj23" name="wstd_gj23" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj24" name="wstd_gj24" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj25" name="wstd_gj25" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj26" name="wstd_gj26" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj27" name="wstd_gj27" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj28" name="wstd_gj28" class="basic" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                  <tr>
-                    <th>cp%</th>
-                    <td><input id="wstd_gj31" name="wstd_gj31" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj32" name="wstd_gj32" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj33" name="wstd_gj33" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj34" name="wstd_gj34" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj35" name="wstd_gj35" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj36" name="wstd_gj36" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj37" name="wstd_gj37" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj38" name="wstd_gj38" class="basic" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                  <tr>
-                    <th>RX[㎥/Hr]</th>
-                    <td><input id="wstd_gj39" name="wstd_gj39" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj42" name="wstd_gj42" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj43" name="wstd_gj43" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj44" name="wstd_gj44" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj45" name="wstd_gj45" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                  </tr>
-                  <tr>
-                    <th>LPG</th>
-                    <td><input id="wstd_gj49" name="wstd_gj49" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj52" name="wstd_gj52" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj53" name="wstd_gj53" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj54" name="wstd_gj54" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj55" name="wstd_gj55" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                  </tr>
-                  <tr>
-                    <th>CH3OH[cc/Hr]</th>
-                    <td><input id="wstd_gj59" name="wstd_gj59" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj62" name="wstd_gj62" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj63" name="wstd_gj63" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj64" name="wstd_gj64" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj65" name="wstd_gj65" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                  </tr>
-                  <tr>
-                    <th>N2[㎥/Hr]</th>
-                    <td><input id="wstd_gj69" name="wstd_gj69" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj72" name="wstd_gj72" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj73" name="wstd_gj73" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj74" name="wstd_gj74" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj75" name="wstd_gj75" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                  </tr>
-                  <tr>
-                    <th>NH3[Nl/min]</th>
-                    <td><input id="wstd_gj79" name="wstd_gj79" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj82" name="wstd_gj82" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj83" name="wstd_gj83" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj84" name="wstd_gj84" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="wstd_gj85" name="wstd_gj85" class="basic" type="text" style="width:90%;" value=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                    <td><input id="" name="" class="basic" type="text" style="width:90%;" value="" disabled=""></td>
-                  </tr>
-                  <tr>
-                    <th>수량</th>
-                    <td><input id="wstd_gjsu" name="wstd_gjsu" class="basic" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                  <tr>
-                    <th>rpm</th>
-                    <td><input id="wstd_gjrpm" name="wstd_gjrpm" class="basic" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                </tbody></table>
-                <table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable">
-                  <colgroup span="2">
-                    <col width="10%">
-                    <col width="90%">
-                  </colgroup>
-                  <tbody><tr>
-                    <th class="">비고</th>
-                    <td class=""><input id="wstd_worknote" name="wstd_worknote" class="basic" type="text" style="width:90%;" value=""></td>
-                  </tr>
-
-                </tbody></table>
-                <table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable">
-                  <colgroup span="2">
-                    <col width="10%">
-                    <col width="90%">
-                  </colgroup>
-                  <tbody><tr>
-                    <th class="">설비</th>
-                    <td class="">
-                      <select id="fac_code" name="fac_code" class="basic" style="width: 100%">
-                        
-                          <option value="5">고주파 1호기(폐기)</option>
-                        
-                          <option value="6">고주파 2호기 (폐기)</option>
-                        
-                          <option value="9">고주파 5호기</option>
-                        
-                          <option value="21">급수시설</option>
-                        
-                          <option value="10">변성로 1호기</option>
-                        
-                          <option value="11">변성로 2호기</option>
-                        
-                          <option value="12">쇼트 1호기</option>
-                        
-                          <option value="13">쇼트 2호기</option>
-                        
-                          <option value="14">쇼트 3호기</option>
-                        
-                          <option value="19">쇼트 4호기</option>
-                        
-                          <option value="20">전기시설</option>
-                        
-                          <option value="15">진공세정기 2호기</option>
-                        
-                          <option value="1">침탄로 1호기</option>
-                        
-                          <option value="2">침탄로 2호기</option>
-                        
-                          <option value="3">침탄로 3호기</option>
-                        
-                          <option value="4">침탄로 4호기</option>
-                        
-                          <option value="18">침탄로 5호기</option>
-                        
-                          <option value="22">콤프레샤</option>
-                        
-                          <option value="16">템퍼링기 1호기</option>
-                        
-                          <option value="17">템퍼링기 2호기</option>
-                        
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="">보고서 유형</th>
-                    <td class="">
-                      <select id="reportType" name="report_type" class="basic" style="width: 100%">
-                        <option value="QT1">QT-Tempering</option>
-                        <option value="QT2">QT-1차,2차 Tempering</option>
-                        <option value="QT3">QT-심냉처리</option>
-                        <option value="QT4">QT-응력제거</option>
-                        <option value="CH1">침탄-Tempering</option>
-                        <option value="CH2">침탄-1차,2차 Tempering</option>
-                        <option value="CH3">침탄-중간검사교정</option>
-                        <option value="CH4">침탄-Marking</option>
-                      </select>
-                    </td>
-                  </tr>
-                </tbody></table>
-              </fieldset>
-            </div>
-            <div class="">
-              <fieldset class="popField">
-                <legend>후세척</legend>
-                <table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable">
-                      <tbody><tr>
-                      <td class=""><select id="facCode2" name="fac_code2" class="basic" style="width: 100%">
-                           
-                           <option value="15">진공세정기 2호기</option>
-                           
-                           </select>
-                      <!-- <td class="" hidden=""><select id="wstdStep08" name="wstdStep08"class="basic" style="width:145px;">
-                          <option></option>
-                          <option>STEP1</option>
-                          <option>STEP2</option>
-                          <option>STEP3</option>
-                         </select> -->
-                    </td><th class="" style="width:5%;">온도</th>
-                    <td class=""><input id="wstd_n03" name="wstd_n03" class="basic" type="text" style="width:90%;" value=""></td>
-                    <th class="" style="width:5%;">시간</th>
-                    <td class=""><input id="wstd_n04" name="wstd_n04" class="basic" type="text" style="width:90%;" value=""></td>
-                    <th class="" style="width:5%;">농도</th>
-                    <td class=""><input id="wstd_t67" name="wstd_t67" class="basic" type="text" style="width:90%;" value=""></td>
-                      </tr>
-                </tbody></table>
-              </fieldset>
-              <fieldset class="popField">
-                <legend>1차탬퍼링</legend>
-                <table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable">
-                  <colgroup span="5">
-                    <col width="1%">
-                    <col width="5%">
-                    <col width="1%">
-                    <col width="5%">
-                    <col width="1%">
-                    <col width="5%">
-                  </colgroup>
-                  <tbody><tr>
-                    <th class="">온도</th>
-                    <td class=""><input id="wstd_ready" name="wstd_ready" class="basic" type="text" style="width:90%;" value=""></td>
-                    <th class="">시간</th>
-                    <td class=""><input id="wstd_worktime" name="wstd_worktime" class="basic" type="text" style="width:90%;" value=""></td>
-                    <th class="">비고</th>
-                    <td class=""><input id="wstd_t62" name="wstd_t62" class="basic" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                </tbody></table>
-              </fieldset>
-              <fieldset class="popField">
-                <legend>2차탬퍼링</legend>
-                <table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable">
-                  <colgroup span="5">
-                    <col width="1%">
-                    <col width="5%">
-                    <col width="1%">
-                    <col width="5%">
-                    <col width="1%">
-                    <col width="5%">
-                  </colgroup>
-                  <tbody><tr>
-                    <th class="">온도</th>
-                    <td class=""><input id="wstd_t63" name="wstd_t63" class="basic" type="text" style="width:90%;" value=""></td>
-                    <th class="">시간</th>
-                    <td class=""><input id="wstd_t64" name="wstd_t64" class="basic" type="text" style="width:90%;" value=""></td>
-                    <th class="">비고</th>
-                    <td class=""><input id="wstd_t65" name="wstd_t65" class="basic" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                </tbody></table>
-              </fieldset>
-              <fieldset class="popField">
-                <legend>후처리</legend>
-                <table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable">
-                  <tbody><tr>
-                    <th class="" style="width:10%;">후처리 수량</th>
-                    <td class=""><input id="wstd_gj97" name="wstd_gj97" class="basic" type="text" style="width:90%;" value=""></td>
-                    <th class="" style="width:10%;">설비</th>
-                    <td class=""><select id="fac_code3" name="fac_code3" class="basic" style="width: 90%">
-                      
-                        <option value="12">쇼트 1호기</option>
-                      
-                        <option value="13">쇼트 2호기</option>
-                      
-                        <option value="14">쇼트 3호기</option>
-                      
-                        <option value="19">쇼트 4호기</option>
-                      
-                    </select>
-                  </td></tr>
-                  <tr>
-                    <th class="" style="width:5%;">1차처리</th>
-                    <td class=""><input id="wstd_gj98" name="wstd_gj98" class="basic" type="text" style="width:90%;" value=""></td>
-                    <th class="" style="width:5%;">압력</th>
-                    <td class=""><input id="wstd_gj99" name="wstd_gj99" class="basic" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                  <tr>
-                    <th class="" style="width:5%;">2차처리</th>
-                    <td class=""><input id="wstd_gj100" name="wstd_gj100" class="basic" type="text" style="width:90%;" value=""></td>
-                    <th class="" style="width:5%;">압력</th>
-                    <td class=""><input id="wstd_gj101" name="wstd_gj101" class="basic" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                </tbody></table>
-              </fieldset>
-            </div>
-          </td>
-
-
-          <td class="" valign="top" style="padding-left:10px;">
-            <fieldset class="popField">
-              <legend>단취사진</legend>
-              <div class="findImage">
-                <input type="hidden" name="type" value="standard">
-                  <input type="file" id="imgInput0" class="imgInputClass" name=wstd_chim_file_url1 title="이미지 찾기" onchange="previewImage(this,'previewId1')">
-                  <!--<input type="button" value="X" title="삭제" class="btnFT" /> -->
-                <div class="imgArea" id="previewId1" style="height:90px;border:1px solid #ddd;"><img id="prev_previewId1"  width="100%" height="100%"></div>
-              </div>
-            </fieldset>
-            <fieldset class="popField">
-              <legend>도면</legend>
-              <input type="hidden" name="type" value="pdffile">
-              <input type="file" name="drawing_file_url" title="" onchange="" style=" width: 140px;" accept=".pdf"">
-               <div>
-    				<a href="#" id="fileLink" class="valClean" onclick="openDrawingModal(event)"></a> 
-				</div>
-            </fieldset>
-            <fieldset class="popField">
-              <legend>사진-3</legend>
-              <div class="findImage">
-              <input type="hidden" name="type" value="standard">
-                  <input type="file" id="imgInput1" class="imgInputClass" name=wstd_chim_file_url2 title="이미지 찾기" onchange="previewImage(this,'previewId3')"><!-- <input type="button" value="X" title="삭제" class="btnFT" /> -->
-                <div class="imgArea" id="previewId3" style="height:91px;border:1px solid #ddd;"><img id="prev_previewId3"  width="100%" height="100%"></div>
-              </div>
-            </fieldset>
-
-            <!-- 단취방법 -->
-            <div class="">
-            <fieldset class="popField">
-              <legend>단취방법</legend>
-              <table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable3">
-                <colgroup span="4">
-                  <col width="34%">
-                  <col width="33%">
-                  <col width="25%">
-                  <col width="25%">
-                </colgroup>
-                <tbody><tr>
-                  <td class="top">EA/줄(판)</td>
-          <td class="top2" colspan="2">
-            <input type="text" id="wstd_t32" name="wstd_t32" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()">
-          </td>
-          <td class="top2">이하</td>
-        </tr>
-        <tr>
-          <td class="left">줄(판)/단</td>
-          <td colspan="3">
-            <input type="text" id="wstd_t33" name="wstd_t33" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()">
-          </td>
-          <td colspan="2" hidden="">
-            <input type="text" id="wstd_t34" name="wstd_t34" value="" class="basic" style="width:90%; display:none;">
-          </td>
-        </tr>
-        <tr>
-          <td class="left">단/Tray</td>
-          <td>
-            <input type="text" id="wstd_t41" name="wstd_t41" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()">
-          </td>
-          <td>Tray차지</td>
-          <td>
-            <input type="text" id="wstd_t42" name="wstd_t42" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()">
-          </td>
-        </tr>
-        <tr>
-          <td class="left">추가수량</td>
-          <td colspan="3">
-            <input type="text" id="wstd_t87" name="wstd_t87" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()">
-          </td>
-        </tr>
-        <tr>
-          <td class="left">단취수량</td>
-          <td colspan="2">
-            <input type="text" id="wstd_t43" name="wstd_t43" value="" class="basic" style="width:90%; text-align: right;" readonly>
-          </td>
-          <td>EA/CH</td>
-        </tr>
-        <tr>
-          <td class="left">Jig무게</td>
-          <td colspan="2">
-            <input type="text" id="wstd_t44" name="wstd_t44" value="" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()">
-          </td>
-          <td>kg</td>
-        </tr>
-        <tr>
-          <td class="left">제품무게/ch</td>
-          <td colspan="2">
-            <input type="text" id="wstd_t51" name="wstd_t51" value="" class="basic" style="width:90%; text-align: right;" readonly>
-          </td>
-          <td>kg</td>
-        </tr>
-        <tr>
-          <td class="left">총단중/ch</td>
-          <td colspan="2">
-            <input type="text" id="wstd_t52" name="wstd_t52" value="" class="basic" style="width:90%; text-align: right;" readonly>
-          </td>
-          <td>kg</td>
-                </tr>
-
-                <tr height="5px"></tr>
-
-                <tr>
-                  <th class="left" colspan="4">단취시 유의사항</th>
-                </tr>
-                <tr>
-                  <td class="left" colspan="4">
-                    ● <input type="text" id="wstd_t53" name="wstd_t53" value="" class="basic" style="width:91%;">
-                  </td>
-                </tr>
-                <tr>
-                  <td class="left" colspan="4">
-                    ● <input type="text" id="wstd_t54" name="wstd_t54" value="" class="basic" style="width:91%;">
-                  </td>
-                </tr>
-                <tr>
-                  <td class="left" colspan="4">
-                    ● <input type="text" id="wstd_t30" name="wstd_t30" value="" class="basic" style="width:91%;">
-                  </td>
-                </tr>
-                <tr>
-                  <td class="left">단중</td>
-                  <td colspan="2"><input type="text" id="wstd_t40" name="wstd_t40" value="1" class="basic" style="width:90%; text-align: right;" onchange="fn_Calc()"></td>
-                  <td>kg</td>
-                </tr>
-                <tr>
-                  <!-- <td class="left">HIGH NO</td> -->
-                  <td colspan="2" hidden=""><input type="text" id="wstd_t50" name="wstd_t50" value="" class="basic" style="width:97%; text-align: right; display:none;" readonly=""></td>
-                  <!-- <td>EA</td> -->
-                </tr>
-                <tr>
-                  <!-- <td class="left">LOW NO</td> -->
-                  <td colspan="2" hidden=""><input type="text" id="wstd_t55" name="wstd_t55" value="" class="basic" style="width:97%; text-align: right; display:none;" readonly=""></td>
-                  <!-- <td>EA</td> -->
-                </tr>
-              </tbody></table>
-            </fieldset>
-            </div>
-           </td>
-          </tr>
-        </tbody></table>
-        
-        <div style="margin-top:10px; border-top:1px solid #bbb; height:1px;"></div>
-          <div class="clear"></div>
-          
-        <fieldset class="popField">
-          <legend>심냉처리</legend>
-            <table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable">
-            <colgroup span="5">
-              <col width="60">
-              <col width="100">
-              <col width="60">
-              <col width="100">
-              <col width="60">
-              <col width="100">
-              <col width="60">
-              <col width="100">
-              <col width="70">
-              <col width="100">
-              <col width="40">
-              <col width="100">
-            </colgroup>
-            <tbody><tr>
-              <th class="left">예냉온도</th>
-              <td class=""><input id="wstd_t68" name="wstd_t68" class="basic" type="text" style="width:90%;" value=""></td>
-              <th class="">예냉시간</th>
-              <td class=""><input id="wstd_t69" name="wstd_t69" class="basic" type="text" style="width:90%;" value=""></td>
-              <th class="">심냉온도</th>
-              <td class=""><input id="wstd_t70" name="wstd_t70" class="basic" type="text" style="width:90%;" value=""></td>
-              <th class="">심냉시간</th>
-              <td class=""><input id="wstd_t71" name="wstd_t71" class="basic" type="text" style="width:90%;" value=""></td>
-              <th class="">방냉후실온</th>
-              <td class=""><input id="wstd_t72" name="wstd_t72" class="basic" type="text" style="width:90%;" value=""></td>
-              <th class="">비고</th>
-              <td class=""><input id="wstd_t73" name="wstd_t73" class="basic" type="text" style="width:90%;" value=""></td>
-            </tr>
-            </tbody></table>
-        </fieldset>
-        
-        <div class="">
-          <fieldset class="popField">
-            <legend>개정이력</legend>
-            <table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable2">
-              <colgroup span="5">
-                <col width="">
-                <col width="">
-                <col width="">
-                <col width="">
-              </colgroup>
-              <tbody><tr>
-                <th class="left">NO</th>
-                <th class="">개정일자</th>
-                <th class="">사유</th>
-                <th class="">확인</th>
-              </tr>
-              <tr>
-                <td class="left">1</td>
-                <td class=""><input id="wstd_g11" name="wstd_g11" class="basic" type="text" style="width:98%;" value=""></td>
-                <td class=""><input id="wstd_g12" name="wstd_g12" class="basic" type="text" style="width:98%;" value=""></td>
-                <td class=""></td>
-              </tr>
-              <tr>
-                <td class="left">2</td>
-                <td class=""><input id="wstd_g21" name="wstd_g21" class="basic" type="text" style="width:98%;" value=""></td>
-                <td class=""><input id="wstd_g22" name="wstd_g22" class="basic" type="text" style="width:98%;" value=""></td>
-                <td class=""></td>
-              </tr>
-              <tr>
-                <td class="left">3</td>
-                <td class=""><input id="wstd_g31" name="wstd_g31" class="basic" type="text" style="width:98%;" value=""></td>
-                <td class=""><input id="wstd_g32" name="wstd_g32" class="basic" type="text" style="width:98%;" value=""></td>
-                <td class=""></td>
-              </tr>
-              <tr>
-                <td class="left">4</td>
-                <td class=""><input id="wstd_g41" name="wstd_g41" class="basic" type="text" style="width:98%;" value=""></td>
-                <td class=""><input id="wstd_g42" name="wstd_g42" class="basic" type="text" style="width:98%;" value=""></td>
-                <td class=""></td>
-              </tr>
-            </tbody></table>
-          </fieldset>
         </div>
+        
+        <!-- 푸터 (버튼) -->
+        <div class="modal-footer">
+            <button type="button" class="btn-delete" onclick="deleteChim();" style="display:none;">삭제</button>
+            <button type="button" class="btn-save" onclick="save();">저장</button>
+            <button type="button" class="btn-saveas" id="btnSaveAs" onclick="saveAs();" style="display:none;">다른이름저장</button>
+            <button type="button" class="btn-cancel">닫기</button>
         </div>
-        <div class="btnSaveClose">
-        	<button class="delete" type="button" onclick="deleteChim();"  style="display: none;">삭제</button>
-            <button class="save" type="button" onclick="save();">저장</button>
-            <button type="button" id="btnSaveAs" style="display:none;" onclick="saveAs()">다른이름저장</button>
-            <button class="close" type="button" onclick="window.close();">닫기</button>
-    	</div>
-     </div>
-  </div>    
- </form>   
+    </div>
+</form>
  
  
  
@@ -1050,74 +1344,151 @@ body{
     </div>
 </div>  
 	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
 <script>
-	//전역변수
-    var cutumTable;	
-    var isEditMode = false; //수정,최초저장 구분값
+//========== 전역변수 ==========
+let now_page_code = "h04";  // ✅ 페이지 코드 (필수)
+var chimTable;
+var isEditMode = false;
+var selectedRowData = null;
 
-	//로드
-	$(function(){
-		//전체 거래처목록 조회
-		getChimStandardList();
-	});
+// ========== 페이지 로드 ==========
+$(function(){
+    // ✅ 권한 체크 실행
+    if (typeof userInfoList === 'function') {
+        userInfoList(now_page_code);
+    }
+    getChimStandardList();
+});
 
-    $(function(){	
-        // 파일 선택시 이미지 띄우기
-      $('.imgInputClass').change(function(event){
-        var selectedFile = event.target.files[0];
-      var reader = new FileReader();
-      
-      var img = $(this).parent().parent().find('img')[0];
-      img.title = selectedFile.name;
-      
-      reader.onload = function(event) {
+// ========== 파일 미리보기 ==========
+$('.imgInputClass').change(function(event){
+    var selectedFile = event.target.files[0];
+    if (!selectedFile) return;
+    
+    var reader = new FileReader();
+    var img = $(this).parent().find('img')[0];
+    
+    if (!img) {
+        img = $(this).siblings('.img-preview').find('img')[0];
+    }
+    
+    img.title = selectedFile.name;
+
+    reader.onload = function(event) {
         img.src = event.target.result;
-      };
-      
-      reader.readAsDataURL(selectedFile);
-      });
-    });
+    };
+    reader.readAsDataURL(selectedFile);
+});
 
-	//이벤트
-	//함수
-	function getChimStandardList(){
-    userTable = new Tabulator("#tab1", {
+// ========== 모달 열기 (입력) ==========
+$('.insert-button').on('click', function() {
+    isEditMode = false;
+    selectedRowData = null;
+    $('#chimStandardForm')[0].reset();
+    
+    // 이미지 초기화
+    $('#prev_previewId1, #prev_previewId3, #prev_previewId7').attr('src', '/tkheat/css/image/no_image.png');
+    $('#fileLink').attr('href', '#').text('');
+    
+    // 기본값 설정
+    $('#wstd_t40').val('1');
+    
+    // 버튼 상태
+    $('.btn-delete, #btnSaveAs').hide();
+    
+    // 모달 중앙 정렬
+    $('.chim-modal').css({
+        'left': '50%',
+        'top': '50%',
+        'transform': 'translate(-50%, -50%)'
+    });
+    
+    $('.modal-overlay, .chim-modal').addClass('active');
+});
+
+// ========== 모달 닫기 ==========
+$('.modal-close-btn, .btn-cancel').on('click', function() {
+    $('.modal-overlay, .chim-modal').removeClass('active');
+});
+
+// ========== 모달 드래그 ==========
+let isDragging = false;
+let startX, startY, modalLeft, modalTop;
+
+$('.chim-modal .modal-header').on('mousedown', function(e) {
+    if ($(e.target).hasClass('modal-close-btn') || $(e.target).closest('.modal-close-btn').length) {
+        return;
+    }
+    
+    isDragging = true;
+    const modal = $('.chim-modal');
+    const offset = modal.offset();
+    
+    startX = e.pageX;
+    startY = e.pageY;
+    modalLeft = offset.left;
+    modalTop = offset.top;
+    
+    modal.css('transform', 'none');
+    e.preventDefault();
+});
+
+$(document).on('mousemove', function(e) {
+    if (isDragging) {
+        const dx = e.pageX - startX;
+        const dy = e.pageY - startY;
+        
+        $('.chim-modal').css({
+            left: (modalLeft + dx) + 'px',
+            top: (modalTop + dy) + 'px'
+        });
+    }
+});
+
+$(document).on('mouseup', function() {
+    isDragging = false;
+});
+
+// ========== 침탄로 리스트 조회 ==========
+function getChimStandardList(){
+    console.log("🔄 getChimStandardList 시작");
+    
+    // 기존 테이블 완전히 제거
+    if (chimTable) {
+        chimTable.destroy();
+        chimTable = null;
+    }
+    
+    // DOM 초기화
+    $('#tab1').empty();
+    
+    chimTable = new Tabulator("#tab1", {
         height:"750px",
         layout:"fitColumns",
-        selectable:true, // 로우 선택
+        selectable:true,
         tooltips:true,
         selectableRangeMode:"click",
-        selectableRows:true,
         reactiveData:true,
         headerHozAlign:"center",
         ajaxConfig:"POST",
         ajaxLoader:false,
         ajaxURL:"/tkheat/management/chimStandardInsert/getChimStandardList",
-        ajaxParams:{
-            /* 필요한 경우 검색 조건 추가 가능 */
-            /* "corp_name": $("#corp_name").val(), */
-        },
+        ajaxParams:{},
         placeholder:"조회된 데이터가 없습니다.",
-
-        // ✅ 클라이언트 페이징 설정
-        pagination:"local",               // 클라이언트 사이드 페이징
-        paginationSize:20,                // 기본 페이지당 표시 개수
-        paginationSizeSelector:[20,50,100,500,1000],  // 페이지당 표시 선택 가능
-        paginationCounter:"rows",         // "rows" = 현재 페이지 범위/전체 행수 표시
+        pagination:"local",
+        paginationSize:20,
+        paginationSizeSelector:[20,50,100,500,1000],
+        paginationCounter:"rows",
+        headerFilterPlaceholder: "",
 
         ajaxResponse:function(url, params, response){
             $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-            return response.data ? response.data : response; // data 유무 체크
+            console.log("📊 서버 응답:", response);
+            
+            const data = response.data ? response.data : response;
+            console.log("📊 데이터 개수:", data.length);
+            
+            return data;
         },
 
         columns:[
@@ -1125,7 +1496,6 @@ body{
             {title:"고객명", field:"corp_name", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
             {title:"품명", field:"prod_name", sorter:"string", width:220, hozAlign:"center", headerFilter:"input"},
             {title:"도번/품번", field:"prod_no", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
-            {title:"기종", field:"prod_kijong", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
             {title:"재질", field:"prod_jai", sorter:"int", width:200, hozAlign:"center", headerFilter:"input"},
             {title:"단가", field:"prod_dang", sorter:"int", width:200, hozAlign:"center", headerFilter:"input"},
             {title:"설비", field:"fac_name", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
@@ -1134,432 +1504,472 @@ body{
         ],
 
         rowFormatter:function(row){
-            var data = row.getData();
             row.getElement().style.fontWeight = "700";
             row.getElement().style.backgroundColor = "#FFFFFF";
         },
 
         rowClick:function(e, row){
-            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-                if($(this).hasClass("row_select")){							
-                    $(this).removeClass('row_select');
-                    row.getElement().className += " row_select";
-                } else {
-                    $("#tab1 div.row_select").removeClass("row_select");
-                    row.getElement().className += " row_select";	
-                }
-            });
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").removeClass('row_select');
+            row.getElement().classList.add("row_select");
         },
 
+        // ✅ 더블클릭 이벤트에 권한 체크 추가
         rowDblClick:function(e, row){
+            // 수정 권한 체크
+            const permission = userPermissions?.[now_page_code];
+            
+            if (!['U', 'D'].includes(permission)) {
+                alert("수정 권한이 없습니다.");
+                console.log("⚠️ 더블클릭 차단 - 현재 권한:", permission);
+                return false;
+            }
+            
+            console.log("✅ 더블클릭(수정) 권한 확인 완료");
+            
             var data = row.getData();
             selectedRowData = data;
             isEditMode = true;
-            $('#chimStandardForm')[0].reset();
-
             getChimStandardDetail(data.wstd_code);
-            $("#btnSaveAs").show();
-            $('.delete').show();
+            
+            // ✅ 버튼 표시 제어
+            if (permission === 'D') {
+                // 삭제 권한: 저장, 다른이름저장, 삭제 모두 표시
+                $("#btnSave, #btnSaveAs, .btn-delete").show();
+                console.log("✅ 모든 버튼 표시 (삭제 권한)");
+            } else if (permission === 'U') {
+                // 수정 권한: 저장, 다른이름저장만 표시
+                $("#btnSave, #btnSaveAs").show();
+                $(".btn-delete").hide();
+                console.log("✅ 저장/다른이름저장 버튼만 표시 (수정 권한)");
+            }
         },
-    });		
+    });
+    
+    console.log("✅ Tabulator 생성 완료");
 }
 
-
-
-
-
-	
+// ========== 침탄로 상세 조회 ==========
 function getChimStandardDetail(wstd_code){
-	$.ajax({
-		url:"/tkheat/management/chimStandardInsert/getChimStandardDetail",
-		type:"post",
-		dataType:"json",
-		data:{
-			"wstd_code":wstd_code
-		},
-		success:function(result){
-			console.log(result);
-			var allData = result.data;
-			
-			for(let key in allData){
-//				console.log(allData, key);	
-				$("[name='"+key+"']").val(allData[key]);
-			}
-
-			// 이미지 초기화
-			$("#prev_previewId1, #prev_previewId3, #prev_previewId7").attr("src", "/tkheat/css/image/no_image.png");
-			//도면파일 초기화
-			$("#fileLink").attr("href", "#").text("");
-			// 단취사진
-			if (allData.wstd_chim_file_name1) {
-				console.log("원본 파일명:", allData.wstd_chim_file_name1);
-				console.log("인코딩된 경로:", encodeURIComponent(allData.wstd_chim_file_name1));
-				const path = "/tkPrint/사진/침탄로작업표준/" + allData.wstd_chim_file_name1;
-				console.log("path: ", path);
-				$("#prev_previewId1").attr("src", path);
-				//$(".aphoto").attr("href", path).text(d.product_file_name);
-			}
-			// 사진-3
-			if (allData.wstd_chim_file_name2) {
-				console.log("원본 파일명:", allData.wstd_chim_file_name2);
-				console.log("인코딩된 경로:", encodeURIComponent(allData.wstd_chim_file_name2));
-				const path = "/tkPrint/사진/침탄로작업표준/" + allData.wstd_chim_file_name2;
-				console.log("path: ", path);
-				$("#prev_previewId3").attr("src", path);
-				$("#prev_previewId7").attr("src", path);
-				//$(".aphoto").attr("href", path).text(d.product_file_name);
-			}
-
-            //도면파일
-            if (allData.drawing_file_name) {
-                const path = "/tkPrint/사진/침탄로작업표준/" + allData.drawing_file_name;
-                $("#fileLink")
-                    .attr("href", path)
-                    .text(allData.drawing_file_name); // 파일명을 텍스트로 표시
+    $.ajax({
+        url:"/tkheat/management/chimStandardInsert/getChimStandardDetail",
+        type:"post",
+        dataType:"json",
+        data:{
+            "wstd_code":wstd_code
+        },
+        success:function(result){
+            console.log("📄 상세 데이터:", result);
+            const d = result.data;
+            
+            // 폼 초기화
+            $('#chimStandardForm')[0].reset();
+            
+            // 기본 데이터 바인딩
+            for(let key in d){
+                $("[name='"+key+"']").val(d[key]);
             }
 
-			$('.chimStandardModal').show().addClass('show');
-		}
-	});
+            // 이미지 초기화
+            $("#prev_previewId1, #prev_previewId3, #prev_previewId7").attr("src", "/tkheat/css/image/no_image.png");
+            $("#fileLink").attr("href", "#").text("");
+            
+            // 단취사진
+            if (d.wstd_chim_file_name1) {
+                const path = "/tkPrint/사진/침탄로작업표준/" + d.wstd_chim_file_name1;
+                $("#prev_previewId1").attr("src", path);
+            }
+            
+            // 사진-3
+            if (d.wstd_chim_file_name2) {
+                const path = "/tkPrint/사진/침탄로작업표준/" + d.wstd_chim_file_name2;
+                $("#prev_previewId3, #prev_previewId7").attr("src", path);
+            }
+
+            // 도면파일
+            if (d.drawing_file_name) {
+                const path = "/tkPrint/사진/침탄로작업표준/" + d.drawing_file_name;
+                $("#fileLink").attr("href", path).text(d.drawing_file_name);
+            }
+
+            // 모달 열기
+            $('.modal-overlay, .chim-modal').addClass('active');
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 상세 조회 오류:", error);
+        }
+    });
 }
-	
-    </script>
+
+// ========== 제품 검색 모달 ==========
+function openProductListModal() {
+    document.getElementById('productListModal').style.display = 'flex';
+
+    let productListTable = new Tabulator("#productListTabulator", {
+        height:"450px",
+        layout:"fitColumns",
+        selectable:true,
+        ajaxURL:"/tkheat/management/productInsert/productList",
+        ajaxConfig:"POST",
+        ajaxParams:{
+            "corp_name": "",
+            "prod_code": "",
+        },
+        ajaxResponse:function(url, params, response){
+            console.log("🔍 제품 검색 결과:", response);
+            return response.data;
+        },    
+        columns:[
+            {title:"NO", field:"idx", width:80, hozAlign:"center"},
+            {title:"거래처", field:"corp_name", width:120, hozAlign:"center"},
+            {title:"품명", field:"prod_name", width:120, hozAlign:"center",visible:false},
+            {title:"품번", field:"prod_no", width:150, hozAlign:"center"},
+            {title:"규격", field:"prod_gyu", width:100, hozAlign:"center"},
+            {title:"재질", field:"prod_jai", width:200, hozAlign:"center"},
+            {title:"공정", field:"tech_te", width:200, hozAlign:"center"},
+            {title:"표면경도", field:"prod_pg", width:200, hozAlign:"center"},
+            {title:"심부경도", field:"prod_sg", width:200, hozAlign:"center"},
+            {title:"경화깊이", field:"prod_gd2", width:200, hozAlign:"center"},
+            {title:"경화깊이1", field:"prod_gd1", width:200, hozAlign:"center"},
+            {title:"경화깊이2", field:"prod_gd3", width:200, hozAlign:"center"},
+        ],
+        rowDblClick:function(e, row){
+            let data = row.getData();
+            
+            // 제품 정보 바인딩
+            $('#corp_name').val(data.corp_name);
+            $('#prod_code').val(data.prod_code);
+            $('#prod_danj').val(data.prod_danj);
+            $('#prod_no').val(data.prod_no);
+            $('#prod_name').val(data.prod_name);
+            $('#prod_jai').val(data.prod_jai);
+            $('#prod_dang').val(data.prod_dang);
+            $('#prod_pwsno').val(data.prod_pwsno);
+            $('#tech_te').val(data.tech_te);
+            $('#prod_do').val(data.prod_do);
+            $('#prod_refno').val(data.prod_refno);
+            $('#prod_gyu').val(data.prod_gyu);
+            $('#prod_kijong').val(data.prod_kijong);
+            $('#prod_pg').val(data.prod_pg);
+            $('#prod_sg').val(data.prod_sg);
+            $('#prod_e1').val(data.prod_e1);
+            $('#prod_e3').val(data.prod_e3);
+            $('#prod_khecd').val(data.prod_khecd);
+            $('#prod_khtcd').val(data.prod_khtcd);
+            $('#prod_gd1').val(data.prod_gd1);
+            $('#prod_gd2').val(data.prod_gd2);
+            $('#prod_gd5').val(data.prod_gd5);
+            
+            document.getElementById('productListModal').style.display = 'none';
+        }
+    });
+}
+
+function closeProductListModal() {
+    document.getElementById('productListModal').style.display = 'none';
+}
+
+// ========== 저장 ==========
+function save() {
+    console.log("💾 save() 함수 시작");
     
+    // ✅ 권한 체크
+    const permission = userPermissions?.[now_page_code];
     
-   <script>
-		
- // 드래그 기능 추가
-	const modal = document.querySelector('.chimStandardModal');
-	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
-
-	header.addEventListener('mousedown', function(e) {
-		// transform 제거를 위한 초기 위치 설정
-		const rect = modal.getBoundingClientRect();
-		modal.style.left = rect.left + 'px';
-		modal.style.top = rect.top + 'px';
-		modal.style.transform = 'none'; // 중앙 정렬 해제
-
-		let offsetX = e.clientX - rect.left;
-		let offsetY = e.clientY - rect.top;
-
-		function moveModal(e) {
-			modal.style.left = (e.clientX - offsetX) + 'px';
-			modal.style.top = (e.clientY - offsetY) + 'px';
-		}
-
-		function stopMove() {
-			window.removeEventListener('mousemove', moveModal);
-			window.removeEventListener('mouseup', stopMove);
-		}
-
-		window.addEventListener('mousemove', moveModal);
-		window.addEventListener('mouseup', stopMove);
-	});
-		
-
-	// 모달 열기
-	const insertButton = document.querySelector('.insert-button');
-	const chimStandardModal = document.querySelector('.chimStandardModal');
-	const closeButton = document.querySelector('.close');
-	const headerCloseButton = document.querySelector('.header-close');
-
-	insertButton.addEventListener('click', function() {
-		isEditMode = false;  // 추가 모드
-	    $('#chimStandardForm')[0].reset(); // 폼 초기화
-	    chimStandardModal.style.display = 'block'; // 모달 표시
-
-		$('.delete').hide();
-		$("#btnSaveAs").hide();
-	});
-
-	closeButton.addEventListener('click', function() {
-		chimStandardModal.style.display = 'none'; // 모달 숨김
-	});
-
-	headerCloseButton.addEventListener('click', function() {
-		chimStandardModal.style.display = 'none';
-	});
-
-
-
-
-
-	//제품검색버튼 리스트 모달
-    function openProductListModal() {
-        document.getElementById('productListModal').style.display = 'flex';
-
-        
-        let productListTable = new Tabulator("#productListTabulator", {
-            height:"450px",
-            layout:"fitColumns",
-            selectable:true,
-            ajaxURL:"/tkheat/management/productInsert/productList",
-            ajaxConfig:"POST",
-            ajaxParams:{
-                "corp_name": "",
-                "prod_code": "",
-                   
-            },
-		    ajaxResponse:function(url, params, response){
-//				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-				console.log(response);
-		        return response.data; //return the response data to tabulator
-		    },    
-            columns:[
-                {title:"NO", field:"idx", width:80, hozAlign:"center"},
-                {title:"거래처", field:"corp_name", width:120, hozAlign:"center"},
-                {title:"품명", field:"prod_name", width:120, hozAlign:"center",visible:false},
-                {title:"품번", field:"prod_no", width:150, hozAlign:"center"},
-                {title:"규격", field:"prod_gyu", width:100, hozAlign:"center"},
-                {title:"재질", field:"prod_jai", width:200, hozAlign:"center"},
-                {title:"공정", field:"tech_te", width:200, hozAlign:"center"},
-                {title:"표면경도", field:"prod_pg", width:200, hozAlign:"center"},
-                {title:"심부경도", field:"prod_sg", width:200, hozAlign:"center"},
-                {title:"경화깊이", field:"prod_gd2", width:200, hozAlign:"center"},
-                {title:"경화깊이1", field:"prod_gd1", width:200, hozAlign:"center"},
-                {title:"경화깊이2", field:"prod_gd3", width:200, hozAlign:"center"},
-            ],
-            rowDblClick:function(e, row){
-                let data = row.getData();
-                
-                document.getElementById('corp_name').value = data.corp_name;
-                document.getElementById('prod_code').value = data.prod_code;
-                document.getElementById('prod_danj').value = data.prod_danj;
-                document.getElementById('prod_no').value = data.prod_no;
-                document.getElementById('prod_name').value = data.prod_name;
-                document.getElementById('prod_jai').value = data.prod_jai;
-                document.getElementById('prod_dang').value = data.prod_dang;
-                document.getElementById('prod_pwsno').value = data.prod_pwsno;
-                document.getElementById('tech_te').value = data.tech_te;
-                document.getElementById('prod_do').value = data.prod_do;
-                document.getElementById('prod_refno').value = data.prod_refno;
-                document.getElementById('prod_gyu').value = data.prod_gyu;
-                document.getElementById('prod_kijong').value = data.prod_kijong;
-                document.getElementById('prod_pg').value = data.prod_pg;
-                document.getElementById('prod_sg').value = data.prod_sg;
-                document.getElementById('prod_e1').value = data.prod_e1;
-                document.getElementById('prod_e3').value = data.prod_e3;
-                document.getElementById('prod_khecd').value = data.prod_khecd;
-                document.getElementById('prod_khtcd').value = data.prod_khtcd;
-                document.getElementById('prod_gd1').value = data.prod_gd1;
-                document.getElementById('prod_gd2').value = data.prod_gd2;
-                document.getElementById('prod_gd5').value = data.prod_gd5;
-
-
-                
-                document.getElementById('productListModal').style.display = 'none';
-            }
-        });
+    // 신규 등록인 경우
+    if (!isEditMode) {
+        if (!['I', 'U', 'D'].includes(permission)) {
+            alert("등록 권한이 없습니다.");
+            console.log("⚠️ 등록 권한 없음 - 현재 권한:", permission);
+            return false;
+        }
+        console.log("✅ 등록 권한 확인 완료");
+    } 
+    // 수정인 경우
+    else {
+        if (!['U', 'D'].includes(permission)) {
+            alert("수정 권한이 없습니다.");
+            console.log("⚠️ 수정 권한 없음 - 현재 권한:", permission);
+            return false;
+        }
+        console.log("✅ 수정 권한 확인 완료");
     }
-
     
+    var formData = new FormData($("#chimStandardForm")[0]);
 
-    function closeProductListModal() {
-        document.getElementById('productListModal').style.display = 'none';
-    }
+    let confirmMsg = "";
 
-    
-  //침탄로작업표준 저장
-    function save() {
-	    var formData = new FormData($("#chimStandardForm")[0]);
-
-	    let confirmMsg = "";
-
-	    if (isEditMode && selectedRowData && selectedRowData.wstd_code) {
-	        formData.append("mode", "update");
-	        formData.append("wstd_code", selectedRowData.wstd_code);
-	        confirmMsg = "수정하시겠습니까?";
-	    } else {
-	        formData.append("mode", "insert");
-	        confirmMsg = "저장하시겠습니까?";
-	    }
-
-	    if (!confirm(confirmMsg)) {
-	        return;
-	    }
-
-	    $.ajax({
-	        url: "/tkheat/management/chimStandardInsert/chimStandardInsertSave",
-	        type: "POST",
-	        data: formData,
-	        contentType: false,
-	        processData: false,
-	        dataType: "json",
-	        success: function(result) {
-	        	alert("저장 되었습니다.");
-                $(".chimStandardModal").hide();
-                getChimStandardList();
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("저장 오류:", error);
-	        }
-	    });
-	}
-
-    function saveAs() {
-        var formData = new FormData($("#chimStandardForm")[0]);
+    if (isEditMode && selectedRowData && selectedRowData.wstd_code) {
+        formData.append("mode", "update");
+        formData.append("wstd_code", selectedRowData.wstd_code);
+        confirmMsg = "수정하시겠습니까?";
+    } else {
         formData.append("mode", "insert");
-        if (!confirm("다른 이름으로 저장하시겠습니까?")) return;
-
-        $.ajax({
-            url: "/tkheat/management/chimStandardInsert/chimStandardInsertSave",
-            type: "POST",
-            data: formData,
-            contentType: false,
-            processData: false,
-            dataType: "json",
-            success: function(result) {
-                alert("다른 이름으로 저장되었습니다.");
-                $(".chimStandardModal").hide();
-                getChimStandardList();
-            },
-            error: function(xhr, status, error) {
-                console.error("다른이름저장 오류:", error);
-            }
-        });
+        confirmMsg = "저장하시겠습니까?";
+        formData.delete("wstd_code");
     }
-    	
 
+    if (!confirm(confirmMsg)) {
+        return;
+    }
 
-	function deleteChim() {
-	    if (!selectedRowData || !selectedRowData.wstd_code) {
-	        alert("삭제할 대상을 선택하세요.");
-	        return;
-	    }
+    $.ajax({
+        url: "/tkheat/management/chimStandardInsert/chimStandardInsertSave",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "json",
+        success: function(result) {
+            console.log("💾 저장 완료:", result);
+            alert("저장 되었습니다.");
+            
+            // 모달 닫기
+            $('.modal-overlay, .chim-modal').removeClass('active');
+            
+            // 모달 위치 초기화
+            $('.chim-modal').css({
+                'left': '50%',
+                'top': '50%',
+                'transform': 'translate(-50%, -50%)'
+            });
+            
+            // 폼 초기화
+            $('#chimStandardForm')[0].reset();
+            isEditMode = false;
+            selectedRowData = null;
+            
+            // 테이블 리로드
+            setTimeout(function() {
+                console.log("🔄 테이블 리로드 시작");
+                getChimStandardList();
+            }, 300);
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 저장 오류:", error);
+            console.error("응답:", xhr.responseText);
+            alert("저장 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-	    if (!confirm("삭제하시겠습니까?")) {
-	        return;
-	    }
+// ========== 다른이름으로 저장 ==========
+function saveAs() {
+    console.log("💾 saveAs() 함수 시작");
+    
+    // ✅ 권한 체크 (등록 권한 필요)
+    const permission = userPermissions?.[now_page_code];
+    
+    if (!['I', 'U', 'D'].includes(permission)) {
+        alert("등록 권한이 없습니다.");
+        console.log("⚠️ 다른이름으로 저장 권한 없음 - 현재 권한:", permission);
+        return false;
+    }
+    console.log("✅ 다른이름으로 저장 권한 확인 완료");
+    
+    var formData = new FormData($("#chimStandardForm")[0]);
+    formData.append("mode", "insert");
+    formData.delete("wstd_code");
+    
+    if (!confirm("다른 이름으로 저장하시겠습니까?")) {
+        return;
+    }
 
-	    $.ajax({
-	        url: "/tkheat/management/chimStandardInsert/chimStandardDelete",
-	        type: "POST",
-	        data: {
-	        	wstd_code: selectedRowData.wstd_code
-	        },
-	        dataType: "json",
-	        success: function(result) {
-	            if (result.status === "success") {
-	                alert("삭제되었습니다.");
-	                $(".chimStandardModal").hide();
-	                getChimStandardList();
-	            } else {
-	                alert("삭제 중 오류가 발생했습니다: " + result.message);
-	            }
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("삭제 오류:", error);
-	            alert("삭제 요청 중 오류가 발생했습니다.");
-	        }
-	    });
-	}
+    $.ajax({
+        url: "/tkheat/management/chimStandardInsert/chimStandardInsertSave",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "json",
+        success: function(result) {
+            console.log("💾 다른이름 저장 완료:", result);
+            alert("다른 이름으로 저장되었습니다.");
+            
+            $('.modal-overlay, .chim-modal').removeClass('active');
+            
+            $('.chim-modal').css({
+                'left': '50%',
+                'top': '50%',
+                'transform': 'translate(-50%, -50%)'
+            });
+            
+            // 폼 초기화
+            $('#chimStandardForm')[0].reset();
+            isEditMode = false;
+            selectedRowData = null;
+            
+            setTimeout(function() {
+                getChimStandardList();
+            }, 300);
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 다른이름 저장 오류:", error);
+            alert("저장 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-    //엑셀 다운로드
-	$(".excel-button").click(function () {
-	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-	    const filename = "침탄로작업표준_" + today + ".xlsx";
-	    userTable.download("xlsx", filename, { sheetName: "침탄로작업표준" });
-	});
+// ========== 삭제 ==========
+function deleteChim() {
+    console.log("🗑️ deleteChim() 함수 시작");
+    
+    // ✅ 권한 체크 (삭제 권한 필요)
+    const permission = userPermissions?.[now_page_code];
+    
+    if (permission !== 'D') {
+        alert("삭제 권한이 없습니다.");
+        console.log("⚠️ 삭제 권한 없음 - 현재 권한:", permission);
+        return false;
+    }
+    console.log("✅ 삭제 권한 확인 완료");
+    
+    if (!selectedRowData || !selectedRowData.wstd_code) {
+        alert("삭제할 대상을 선택하세요.");
+        return;
+    }
 
+    if (!confirm("삭제하시겠습니까?")) {
+        return;
+    }
 
-	document.addEventListener("DOMContentLoaded", function() {
-		console.log({
-			  t32: wstd_t32.value,
-			  t33: wstd_t33.value,
-			  t41: wstd_t41.value,
-			  t42: wstd_t42.value,
-			  t44: wstd_t44.value,
-			  t40: wstd_t40 ? wstd_t40.value : "없음",
-			  t87: wstd_t87.value
-			});
-		  window.fn_Calc = function() {
-		    var wstd_t32 = document.getElementById("wstd_t32");
-		    var wstd_t33 = document.getElementById("wstd_t33");
-		    var wstd_t41 = document.getElementById("wstd_t41");
-		    var wstd_t42 = document.getElementById("wstd_t42");
-		    var wstd_t44 = document.getElementById("wstd_t44");
-		    var wstd_t40 = document.getElementById("wstd_t40"); 
-		    var wstd_t43 = document.getElementById("wstd_t43");
-		    var wstd_t51 = document.getElementById("wstd_t51");
-		    var wstd_t52 = document.getElementById("wstd_t52");
-		    var wstd_t87 = document.getElementById("wstd_t87");
+    $.ajax({
+        url: "/tkheat/management/chimStandardInsert/chimStandardDelete",
+        type: "POST",
+        data: {
+            wstd_code: selectedRowData.wstd_code
+        },
+        dataType: "json",
+        success: function(result) {
+            if (result.status === "success") {
+                alert("삭제되었습니다.");
+                $('.modal-overlay, .chim-modal').removeClass('active');
+                
+                // 모달 위치 초기화
+                $('.chim-modal').css({
+                    'left': '50%',
+                    'top': '50%',
+                    'transform': 'translate(-50%, -50%)'
+                });
+                
+                // 폼 초기화
+                $('#chimStandardForm')[0].reset();
+                isEditMode = false;
+                selectedRowData = null;
+                
+                setTimeout(function() {
+                    getChimStandardList();
+                }, 300);
+            } else {
+                alert("삭제 중 오류가 발생했습니다: " + result.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 삭제 오류:", error);
+            alert("삭제 요청 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-		    // wstd_t40이 없으면 1로 기본처리 (옵션)
-		    var wstd_t40_val = wstd_t40 ? Number(fn_rtnnumber(wstd_t40.value)) : 1;
+// ========== 엑셀 다운로드 ==========
+$(".excel-button").click(function () {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const filename = "침탄로작업표준_" + today + ".xlsx";
+    chimTable.download("xlsx", filename, { sheetName: "침탄로작업표준" });
+});
 
-		    if (
-		      wstd_t32.value !== "" && wstd_t33.value !== "" &&
-		      wstd_t41.value !== "" && wstd_t42.value !== "" &&
-		      wstd_t44.value !== "" &&
-		      wstd_t87.value !== ""
-		    ) {
-		      // 단취수량 계산
-		      var calc_t43 = 
-		        Number(fn_rtnnumber(wstd_t32.value)) *
-		        Number(fn_rtnnumber(wstd_t33.value)) *
-		        Number(fn_rtnnumber(wstd_t41.value)) *
-		        Number(fn_rtnnumber(wstd_t42.value)) +
-		        Number(fn_rtnnumber(wstd_t87.value));
+// ========== 단취방법 계산 ==========
+window.fn_Calc = function() {
+    var wstd_t32 = document.getElementById("wstd_t32");
+    var wstd_t33 = document.getElementById("wstd_t33");
+    var wstd_t41 = document.getElementById("wstd_t41");
+    var wstd_t42 = document.getElementById("wstd_t42");
+    var wstd_t44 = document.getElementById("wstd_t44");
+    var wstd_t40 = document.getElementById("wstd_t40");
+    var wstd_t43 = document.getElementById("wstd_t43");
+    var wstd_t51 = document.getElementById("wstd_t51");
+    var wstd_t52 = document.getElementById("wstd_t52");
+    var wstd_t87 = document.getElementById("wstd_t87");
 
-		      wstd_t43.value = fn_addComma(calc_t43);
+    var wstd_t40_val = wstd_t40 ? Number(fn_rtnnumber(wstd_t40.value)) : 1;
 
-		      // 제품무게/ch 계산
-		      var calc_t51 = calc_t43 * wstd_t40_val;
-		      wstd_t51.value = fn_addComma(calc_t51.toFixed(2));
+    if (
+        wstd_t32.value !== "" && wstd_t33.value !== "" &&
+        wstd_t41.value !== "" && wstd_t42.value !== "" &&
+        wstd_t44.value !== "" && wstd_t87.value !== ""
+    ) {
+        // 단취수량 계산
+        var calc_t43 = 
+            Number(fn_rtnnumber(wstd_t32.value)) *
+            Number(fn_rtnnumber(wstd_t33.value)) *
+            Number(fn_rtnnumber(wstd_t41.value)) *
+            Number(fn_rtnnumber(wstd_t42.value)) +
+            Number(fn_rtnnumber(wstd_t87.value));
 
-		      // 총단중/ch 계산
-		      var calc_t52 = Number(fn_rtnnumber(wstd_t44.value)) + calc_t51;
-		      wstd_t52.value = fn_addComma(calc_t52.toFixed(1));
-		    } else {
-		      // 입력값 부족 시 결과 초기화
-		      wstd_t43.value = "";
-		      wstd_t51.value = "";
-		      wstd_t52.value = "";
-		    }
-		  };
+        wstd_t43.value = fn_addComma(calc_t43);
 
-		  window.fn_addComma = function(n) {
-		    if (isNaN(n)) return 0;
-		    var reg = /(^[+-]?\d+)(\d{3})/;
-		    n = n.toString();
-		    while (reg.test(n)) {
-		      n = n.replace(reg, '$1' + ',' + '$2');
-		    }
-		    return n;
-		  };
+        // 제품무게/ch 계산
+        var calc_t51 = calc_t43 * wstd_t40_val;
+        wstd_t51.value = fn_addComma(calc_t51.toFixed(2));
 
-		  window.fn_rtnnumber = function(n) {
-		    if (typeof n !== "string") return n;
-		    return n.replace(/,/g, "");
-		  };
-		});
+        // 총단중/ch 계산
+        var calc_t52 = Number(fn_rtnnumber(wstd_t44.value)) + calc_t51;
+        wstd_t52.value = fn_addComma(calc_t52.toFixed(1));
+    } else {
+        wstd_t43.value = "";
+        wstd_t51.value = "";
+        wstd_t52.value = "";
+    }
+};
 
-	//pdf 미리보기
-	function openDrawingModal(event) {
-	    event.preventDefault(); // 링크의 기본 동작 방지
-	    
-	    const fileLink = $("#fileLink");
-	    const filePath = fileLink.attr("href");
-	    const fileName = fileLink.text();
+window.fn_addComma = function(n) {
+    if (isNaN(n)) return 0;
+    var reg = /(^[+-]?\d+)(\d{3})/;
+    n = n.toString();
+    while (reg.test(n)) {
+        n = n.replace(reg, '$1' + ',' + '$2');
+    }
+    return n;
+};
 
-	    if (!filePath || filePath === "#" || fileName === "") {
-	        alert("저장된 도면 파일이 없습니다.");
-	        return;
-	    }
+window.fn_rtnnumber = function(n) {
+    if (typeof n !== "string") return n;
+    return n.replace(/,/g, "");
+};
 
-	    $("#drawingFileName").text(fileName);
-	    $("#pdfViewer").attr("src", filePath);
-	    
-	    // 모달 표시
-	    $('#drawingFileModal').show();
-	}
-	//pdf 모달 닫기
-	function closeDrawingModal() {
-	    $('#drawingFileModal').hide()
-	    $("#pdfViewer").attr("src", ""); 
-	}
+// ========== 이미지 미리보기 함수 ==========
+function previewImage(input, previewId) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#prev_' + previewId).attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
-    </script>
+// ========== PDF 미리보기 ==========
+function openDrawingModal(event) {
+    event.preventDefault();
+    
+    const fileLink = $("#fileLink");
+    const filePath = fileLink.attr("href");
+    const fileName = fileLink.text();
+
+    if (!filePath || filePath === "#" || fileName === "") {
+        alert("저장된 도면 파일이 없습니다.");
+        return;
+    }
+
+    $("#drawingFileName").text(fileName);
+    $("#pdfViewer").attr("src", filePath);
+    $('#drawingFileModal').css('display', 'flex');
+}
+
+function closeDrawingModal() {
+    $('#drawingFileModal').css('display', 'none');
+    $("#pdfViewer").attr("src", "");
+}
+</script>
 
 	</body>
 </html>

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.tkheat.domain.Ipgo;
 import com.tkheat.domain.Work;
+import com.tkheat.domain.WorkJisiTk;
 
 public interface ProductionService {
 
@@ -72,6 +73,14 @@ public interface ProductionService {
 	List<Work> getLotHeatJuckList(String ilbo_pc);
 	
 	List<Work> getLotHeatChimList(String ilbo_pc);
+	
+	
+	
+	List<WorkJisiTk> getLotList(WorkJisiTk workJisiTk);
+	
+	List<WorkJisiTk> getLotListReport(WorkJisiTk workJisiTk);
+	
+	
 	
 
 }

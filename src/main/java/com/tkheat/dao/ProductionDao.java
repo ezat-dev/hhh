@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.tkheat.domain.Ipgo;
 import com.tkheat.domain.Work;
+import com.tkheat.domain.WorkJisiTk;
 
 public interface ProductionDao {
 
@@ -73,7 +74,9 @@ public interface ProductionDao {
 	
 	
 	
+	List<WorkJisiTk> getLotList(WorkJisiTk workJisiTk);
 	
+	List<WorkJisiTk> getLotListReport(WorkJisiTk workJisiTk);
 	
 	
 }

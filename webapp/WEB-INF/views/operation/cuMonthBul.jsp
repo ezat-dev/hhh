@@ -256,6 +256,7 @@ textarea {
 	    
 <script>
 	//전역변수
+	let now_page_code = "g10";
     var cutumTable;	
     var sdate = $("#sdate").val();
 	//로드
@@ -285,7 +286,12 @@ textarea {
             "werr_in_out_gubn": $("#werr_in_out_gubn").val(),
         },
         placeholder:"조회된 데이터가 없습니다.",
+        pagination:"local",
         paginationSize:20,
+        paginationSizeSelector:[20,50,100,500,1000],
+        paginationCounter:"rows",
+        
+        headerFilterPlaceholder: "",
         ajaxResponse:function(url, params, response){
             $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
             return response;
@@ -442,6 +448,7 @@ function getCuBulSubList(){
         },
         placeholder:"조회된 데이터가 없습니다.",
         paginationSize:20,
+        headerFilterPlaceholder: "",
         ajaxResponse:function(url, params, response){
             $("#sub .tabulator-col.tabulator-sortable").css("height","55px");
             return response;

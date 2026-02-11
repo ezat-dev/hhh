@@ -43,7 +43,7 @@
 	justify-content: right;
 	align-items: center;
 	width: 1500px;
-	margin-left: -760px;
+	margin-left: -620px;
 }
 
 .box1 select{
@@ -152,7 +152,7 @@
 .iRowHLabel{
 	display:block;
 	width:120px;
-	height:25px;
+	height:28px;
 	text-align:center;
 	margin-bottom:2px;
 	font-size:12pt;
@@ -161,7 +161,7 @@
 .iRowHInput{
 	display:block;
 	width:120px !important;
-	height:25px;
+	height:28px;
 	font-size:12pt;
 	text-align:center;
 }
@@ -170,7 +170,7 @@
 	display:block;
 	cursor:pointer;
 	width:128px !important;
-	height:26px;
+	height:29px;
 	font-size:12pt;
 }
 
@@ -191,14 +191,23 @@
         
         
 		<label class="daylabel">일자 : </label>
-		<input type="date" class="sdate" id="sdate" style="font-size: 16px;" autocomplete="off"> ~ 
-		<input type="date" class="edate" id="edate" style="font-size: 16px;" autocomplete="off">
+		<input type="text" class="sdate datetimepicker_date" id="sdate" style="font-size: 16px;" autocomplete="off"> ~ 
+		<input type="text" class="edate datetimepicker_date" id="edate" style="font-size: 16px;" autocomplete="off">
 		
 		<label class="daylabel">제품구분 : </label>
 		<select id="prod_gubn">
 			<option value="">전체</option>
 			<option value="양산">양산</option>
 			<option value="개발">개발</option>
+		</select>
+		
+		<label class="daylabel">거래명세서 출력 : </label>
+		<select id="report_type">
+			<option value="거래명세서-일반">거래명세서-일반</option>
+			<option value="거래명세서-A4">거래명세서-A4</option>
+			<option value="거래명세서-일반_2">거래명세서-일반_2</option>
+			<option value="거래명세서-A4_2">거래명세서-A4_2</option>
+			<option value="거래명세서-제품별">거래명세서-제품별</option>
 		</select>
 			
 	</div>
@@ -221,6 +230,7 @@
 			</button>
 			<button class="printer-button">
 				<img src="/tkheat/css/image/printer-icon.png" alt="printer"
+					onclick="report();"
 					class="button-image">
 
 			</button>
@@ -241,14 +251,14 @@
 					<div class="j_container">
 						<label class="font_10pt">*V표 선택을 한 제품만 출고 됩니다.&nbsp;</label>
 						<label for="">출고일 :</label>
-						<input type="date" class="och_date" id="och_date" style="font-size: 12pt; width:120px;">
+						<input type="text" class="och_date datetimepicker_date" id="och_date" style="font-size: 12pt; width:120px;">
 						<label class="font_10pt">&nbsp;&nbsp;출고대기잔량 :</label>
 						<input type="number" class="och_jan" id="och_jan" style="font-size: 12pt; width:120px;" value="0">
 						<label class="font_10pt">&nbsp;&nbsp;*단위가 EA일때만 적용됨&nbsp;&nbsp;</label>
 						<label class="margin_left">입고일 :</label>
-						<input type="date" class="ord_sdate" id="ord_sdate" style="font-size: 12pt; width:120px;">
+						<input type="text" class="ord_sdate datetimepicker_date" id="ord_sdate" style="font-size: 12pt; width:120px;">
 						~
-						<input type="date" class="ord_edate" id="ord_edate" style="font-size: 12pt; width:120px;">&nbsp;&nbsp;
+						<input type="text" class="ord_edate datetimepicker_date" id="ord_edate" style="font-size: 12pt; width:120px;">&nbsp;&nbsp;
 						<button class="iRowBtn margin_left" style="width:80px !important;" type="button" onclick="getChulgoAddData();">조회</button>
 						
 						<input type="checkbox" id="och_calc" name="och_calc" class="iRowInput"
@@ -307,12 +317,123 @@
 					"edate" : $("#edate").val(),
 					"prod_gubn" : $("#prod_gubn").val()					
 				},success:function(result){
-					console.log(result);
-					
 					chulgoTable.setData(result.data);
 				}
 			});
 		}
+		
+		var dateEditor = function(cell, onRendered, success, cancel){
+		    //cell - the cell component for the editable cell
+		    //onRendered - function to call when the editor has been rendered
+		    //success - function to call to pass thesuccessfully updated value to Tabulator
+		    //cancel - function to call to abort the edit and return to a normal cell
+
+		    //create and style input
+		    var cellValue = cell.getValue();
+		    
+		    input = document.createElement("input");
+
+		    
+		    input.setAttribute("type", "text");
+		    input.className = "datetimepicker_date";
+
+		    input.style.padding = "4px";
+		    input.style.width = "100%";
+		    input.style.boxSizing = "border-box";
+
+		    input.value = cellValue;
+
+		    onRendered(function(){
+		    	datePickerDate();   	
+		        input.focus();
+		        input.style.height = "100%";
+		    });
+
+		    function onChange(){
+		        if(input.value != cellValue){
+		        	if(input.value != ""){
+		            	success(input.value);
+		        	}else{
+		        		cancel();	
+		        	}
+		        }else{
+		            cancel();
+		        }
+		    }
+
+		    //submit new value on blur or change
+		    input.addEventListener("blur", onChange);
+
+		    //submit new value on enter
+		    input.addEventListener("keydown", function(e){
+		        if(e.keyCode == 13){
+		            onChange();
+		        }
+
+		        if(e.keyCode == 27){
+		            cancel();
+		        }
+		    });
+
+		    return input;
+		};	
+		
+		var monthEditor = function(cell, onRendered, success, cancel){
+		    //cell - the cell component for the editable cell
+		    //onRendered - function to call when the editor has been rendered
+		    //success - function to call to pass thesuccessfully updated value to Tabulator
+		    //cancel - function to call to abort the edit and return to a normal cell
+
+		    //create and style input
+		    var cellValue = cell.getValue();
+		    
+		    input = document.createElement("input");
+
+		    
+		    input.setAttribute("type", "text");
+		    input.className = "datetimepicker_month";
+
+		    input.style.padding = "4px";
+		    input.style.width = "100%";
+		    input.style.boxSizing = "border-box";
+
+		    input.value = cellValue;
+
+		    onRendered(function(){
+		    	datePickerMonth();   	
+		        input.focus();
+		        input.style.height = "100%";
+		    });
+
+		    function onChange(){
+		        if(input.value != cellValue){
+		        	if(input.value != ""){
+		            	success(input.value);
+		        	}else{
+		        		cancel();	
+		        	}
+		        }else{
+		            cancel();
+		        }
+		    }
+
+		    //submit new value on blur or change
+		    input.addEventListener("blur", onChange);
+
+		    //submit new value on enter
+		    input.addEventListener("keydown", function(e){
+		        if(e.keyCode == 13){
+		            onChange();
+		        }
+
+		        if(e.keyCode == 27){
+		            cancel();
+		        }
+		    });
+
+		    return input;
+		};	
+
 		
 	var chulgoTable;
 	function getChulgoList() {
@@ -329,31 +450,106 @@
 			ajaxLoader : false,
 			placeholder : "조회된 데이터가 없습니다.",
 			paginationSize : 20,
+			headerFilterPlaceholder: "",
 			ajaxResponse : function(url, params, response) {
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height", "55px");
+				$("#tab1 .tabulator-col.tabulator-sortable").css("height", "30px");
 					return response; //return the response data to tabulator
 			},
-			columns : [ 
-				{title : "NO",field : "idx",sorter : "int",width : 80,hozAlign : "center"}, 
-				{title : "출력",field:"och_prn",sorter:"string",width:120,hozAlign:"center",headerFilter:"input"},
-				{title : "입고일",field : "ord_date",sorter : "string",width : 120,hozAlign : "center",headerFilter : "input"}, 
-				{title : "출고일",field : "och_date",sorter : "string",width : 120,hozAlign : "center",headerFilter : "input"}, 
-				{title : "수주No",field : "ord_code",sorter : "string",width : 150,hozAlign : "center",headerFilter : "input"}, 
-				{title : "거래처",field : "corp_name",sorter : "string",width : 120,hozAlign : "center",headerFilter : "input"}, 
-				{title : "품명",field : "prod_name",sorter : "string",width : 100,hozAlign : "center",headerFilter : "input"}, 
-				{title : "품번",field : "prod_no",sorter : "string",width : 100,hozAlign : "center",headerFilter : "input"}, 
-				{title : "재질",field : "prod_jai",sorter : "string",width : 100,hozAlign : "center",headerFilter : "input"}, 
-				{title : "규격",field : "prod_gyu",sorter : "int",width : 100,hozAlign : "center",headerFilter : "input"}, 
-				{title : "공정",field : "tech_te",sorter : "int",width : 100,hozAlign : "center",headerFilter : "input"}, 
-				{title : "입고/타각LOT",field : "och_lot",sorter : "int",width : 100,hozAlign : "center",headerFilter : "input"}, 
-				{title : "단위",field : "prod_danw",sorter : "int",width : 100,hozAlign : "center",headerFilter : "input"}, 
-				{title : "출고수량",field : "och_su",sorter : "int",width : 100,hozAlign : "center",headerFilter : "input"}, 
-				{title : "출고중량",field : "och_amnt",sorter : "int",width : 100,hozAlign : "center",headerFilter : "input"}, 
-				{title : "금액",field : "och_mon",sorter : "int",width : 100,hozAlign : "center",headerFilter : "input"}, 
-				{title : "단가",field : "och_dang",sorter : "int",width : 100,hozAlign : "center",headerFilter : "input"}, 
-				{title : "단중",field : "prod_danj",sorter : "int",width : 100,hozAlign : "center",headerFilter : "input"}, 
-				{title : "마감월",field : "och_ma",sorter : "int",width : 100,hozAlign : "center",headerFilter : "input"}, 
-				{title : "비고",field : "och_bigo",sorter : "int",width : 100,hozAlign : "center",headerFilter : "input"},
+		    cellEditing:function(cell){
+		    	userEditing = true;
+		    },
+		    cellEdited:function(cell){
+		    	
+		    	
+		    	
+		    	if(userEditing){
+					var rowData = cell.getRow().getData();
+					var och_su = rowData.och_sh;
+					var och_amnt = rowData.amnt;
+					var och_mon = rowData.och_mon;
+					//add 모달에는 있는데 리스트에는 없어서 주석처리(26-02-10)
+				/*
+		    		if(cell.getField() == "och_su"){
+		    			if(rowData.ord_danw == "KG"){
+							alert("단위가 KG일때는 중량만 수정 가능합니다.");
+							cell.getRow().getCell("och_su").setValue(rowData.jaego_su);
+							return false;			    				
+		    			}else{
+							if(rowData.jaego_su < cell.getValue()){
+								alert("입고수보다 큽니다");
+								cell.getRow().getCell("och_su").setValue(rowData.jaego_su);
+								return false;
+							}			    				
+		    			}							
+					}else if(cell.getField() == "och_amnt"){
+						if(rowData.ord_danw != "KG"){
+							alert("단위가 EA,CH일때는 수량만 수정 가능합니다.");
+							cell.getRow().getCell("och_amnt").setValue(rowData.jaego_amnt);
+							return false;
+						}else{
+							if(rowData.jaego_amnt < cell.getValue()){
+								alert("입고중량보다 큽니다");
+								cell.getRow().getCell("och_amnt").setValue(rowData.jaego_amnt);
+								return false;
+							}
+						}							
+					}
+		    		*/
+		    		
+		    		och_mon = ( Number(rowData.och_dang) * ((rowData.prod_danw=="KG")? Number(rowData.och_amnt) : Number(rowData.och_su)) ).toFixed(0);
+		    		cell.getRow().getCell("och_mon").setValue(och_mon);
+		    		
+		    		setChulgoUpdateData(cell.getRow().getData());
+		    	}
+		    },
+			columns : [
+				{title : "NO",field : "idx",sorter : "int",width : 40,hozAlign : "center", headerSort:false}, 
+				{title : "och_no",field : "och_no",sorter : "int",width : 40,hozAlign : "center", headerSort:false, visible:false}, 
+				{title : "출력",field:"och_prn",sorter:"string",width:40,hozAlign:"center",headerFilter:"input", headerSort:false},
+				{title : "입고일",field : "ord_date",sorter : "string",width : 80,hozAlign : "center",headerFilter : "input", headerSort:false}, 
+				{title : "출고일",field : "och_date",sorter : "string",width : 80,hozAlign : "center",
+					headerFilter : "input", headerSort:false, editor:dateEditor
+				}, 
+				{title : "수주수량",field : "ord_su",sorter : "int",width : 100,hozAlign : "center",
+					headerFilter : "input", headerSort:false, visible:false}, 
+				{title : "수주No",field : "ord_code",sorter : "string",width : 100,hozAlign : "center",
+					headerFilter : "input", headerSort:false}, 
+				{title : "거래처",field : "corp_name",sorter : "string",width : 120,hozAlign : "center",
+						headerFilter : "input", headerSort:false}, 
+				{title : "품명",field : "prod_name",sorter : "string",width : 100,hozAlign : "center",
+						headerFilter : "input", headerSort:false}, 
+				{title : "품번",field : "prod_no",sorter : "string",width : 100,hozAlign : "center",
+						headerFilter : "input", headerSort:false}, 
+				{title : "재질",field : "prod_jai",sorter : "string",width : 100,hozAlign : "center",
+						headerFilter : "input", headerSort:false}, 
+				{title : "규격",field : "prod_gyu",sorter : "int",width : 100,hozAlign : "center",
+						headerFilter : "input", headerSort:false}, 
+				{title : "공정",field : "tech_te",sorter : "int",width : 100,hozAlign : "center",
+						headerFilter : "input", headerSort:false}, 
+				{title : "입고/타각LOT",field : "och_lot",sorter : "int",width : 100,hozAlign : "center",
+						headerFilter : "input", headerSort:false}, 
+				{title : "단위",field : "prod_danw",sorter : "int",width : 40,hozAlign : "center",
+						headerFilter : "input", headerSort:false}, 
+				{title : "출고수량",field : "och_su",sorter : "int",width : 50,hozAlign : "center",
+						headerFilter : "input", headerSort:false, editor:"input"
+				}, 
+				{title : "출고중량",field : "och_amnt",sorter : "int",width : 50,hozAlign : "center",
+						headerFilter : "input", headerSort:false, editor:"input"
+				}, 
+				{title : "금액",field : "och_mon",sorter : "int",width : 60,hozAlign : "center",
+					headerFilter : "input", headerSort:false, editor:"input"
+				}, 
+				{title : "단가",field : "och_dang",sorter : "int",width : 50,hozAlign : "center",
+					headerFilter : "input", headerSort:false, editor:"input"
+				}, 
+				{title : "단중",field : "prod_danj",sorter : "int",width : 50,hozAlign : "center",
+					headerFilter : "input", headerSort:false}, 
+				{title : "마감월",field : "och_ma",sorter : "string",width : 80,hozAlign : "center",
+						headerFilter : "input", headerSort:false, editor:monthEditor
+				}, 
+				{title : "비고",field : "och_bigo",sorter : "int",width : 80,hozAlign : "center",
+					headerFilter : "input", headerSort:false, editor:"input"
+				},
 			],
 			rowFormatter : function(row) {
 				var data = row.getData();
@@ -381,6 +577,30 @@
 		});
 	}
 
+	function setChulgoUpdateData(rowData){
+		
+		var sendObj = {
+			"chulgoData": rowData
+		}
+		
+		$.ajax({
+			url:"/tkheat/product/chulgo/chulgoUpdate",
+			type:"post",
+			contentType: false,
+			processData: false,			
+			dataType:"json",
+			data:JSON.stringify(sendObj),
+			success:function(result){
+				getChulgoData();
+			},error: function(xhr, status, status) {
+				console.log(xhr);
+				console.log(status);
+				console.log(status);
+            }
+		});
+
+		
+	}
 
 
 		function getChulgoAddData(){
@@ -419,11 +639,9 @@
 				ajaxLoader : false,
 				placeholder : "조회된 데이터가 없습니다.",
 				paginationSize : 20,
+				headerFilterPlaceholder: "",
 			    rowSelectionChanged:function(data, rows){
 			    	if(data.length != 0){
-//			        	console.log("선택된 행 데이터:", data);
-//			        	console.log(data[data.length-1].ord_code);
-//			        	console.log(rows[rows.length-1].getCell("och_mon"));
 			        	
 			        	userEditing = false;
 			        	var jan = $("#och_jan").val();
@@ -431,7 +649,13 @@
 			        	
 			        	
 			        	if(rowData.ord_danw == "EA"){
-			        		if(jan > rowData.och_su){
+			        		if(jan == 0){
+			        			var och_su = rowData.och_su;
+			        			rows[rows.length-1].getCell("och_mon").setValue((och_su * rowData.ord_dang).toFixed(1));
+			        			rows[rows.length-1].getCell("och_su").setValue(och_su);
+			        			rows[rows.length-1].getCell("och_amnt").setValue((och_su * rowData.ord_danj).toFixed(1));
+			        			$("#och_jan").val(0);			        			
+			        		}else if(jan > rowData.och_su){
 			        			var och_su = rowData.och_su;
 			        			var jValue = jan - och_su;
 			        			
@@ -569,19 +793,19 @@
 				hozAlign:"center", headerFilter:"input", headerSort:false},	
 				{title:"입고/타각LOT", field:"ord_lot", sorter:"string", width:70,
 				hozAlign:"center", headerFilter:"input", headerSort:false},
-				{title:"단위", field:"ord_danw", sorter:"string", width:60,
+				{title:"단위", field:"ord_danw", sorter:"string", width:40,
 				hozAlign:"center", headerFilter:"input", headerSort:false},	
-				{title:"단가", field:"ord_dang", sorter:"int", width:60,
+				{title:"단가", field:"ord_dang", sorter:"int", width:50,
 				hozAlign:"center", headerFilter:"input", headerSort:false},
-				{title:"단중", field:"ord_danj", sorter:"int", width:60,
+				{title:"단중", field:"ord_danj", sorter:"int", width:50,
 				hozAlign:"center", headerFilter:"input", headerSort:false},
 				{title:"입고수", field:"ord_su", sorter:"int", width:50,
 				hozAlign:"center", headerFilter:"input", headerSort:false},
-				{title:"입고중량", field:"ord_amnt", sorter:"int", width:60,
+				{title:"입고중량", field:"ord_amnt", sorter:"int", width:50,
 				hozAlign:"center", headerFilter:"input", headerSort:false},
 				{title:"생산수", field:"ilbo_su", sorter:"int", width:50,
 				hozAlign:"center", headerFilter:"input", headerSort:false},
-				{title:"생산중량", field:"ilbo_jung", sorter:"int", width:60,
+				{title:"생산중량", field:"ilbo_jung", sorter:"int", width:50,
 				hozAlign:"center", headerFilter:"input", headerSort:false},
 				{title:"재고수", field:"jaego_su", sorter:"int", width:50,
 				hozAlign:"center", headerFilter:"input", headerSort:false},
@@ -596,8 +820,8 @@
 				{title:"금액", field:"och_mon", sorter:"int", width:80,
 				hozAlign:"center", headerFilter:"input", headerSort:false},
 				{title:"비고", field:"och_bigo", sorter:"int", width:100,
-				hozAlign:"center", headerFilter:"input", headerSort:false},
-				{title:"마감월", field:"och_ma", sorter:"int", width:100,
+				hozAlign:"center", headerFilter:"input", headerSort:false, editor:"input"},
+				{title:"마감월", field:"och_ma", sorter:"int", width:60,
 				hozAlign:"center", headerFilter:"input", headerSort:false},
 				],
 				rowFormatter : function(row) {
@@ -658,6 +882,75 @@
 				alert("출고등록할 제품을 선택하세요.");
 			}
 		}
+		
+	    function report() {
+	        if ($("#reportType").val() == "거래명세서-일반") {
+	            var ochNoList = jQuery(maingrid).jqGrid('getGridParam', 'selarrrow');
+	            if (ochNoList == "") ochNoList = jQuery(maingrid).jqGrid('getDataIDs');
+
+	            setPlusOCH_PRN(ochNoList);
+	            changeColorGridRowCheckPrintReport();
+
+	            var url = "TradePortfolioChulgo3?ochNoList=" + ochNoList;
+	            var mywin = window.open(url, '_win', 'toolbar=yes,location=no,status=yes,menubar=yes,scroll bars=yes,resizable=yes,width=1000,height=800,top=0,left =100');
+	            mywin.focus();
+
+	        } else if ($("#reportType").val() == "거래명세서-A4") {
+	            if (confirm("보고서를 출력하시겠습니까?")) {
+	                var ochNoList = jQuery(maingrid).jqGrid('getGridParam', 'selarrrow');
+	                if (ochNoList == "") ochNoList = jQuery(maingrid).jqGrid('getDataIDs');
+
+	                setPlusOCH_PRN(ochNoList);
+	                changeColorGridRowCheckPrintReport();
+
+	                var url = "tradePortfolio3A4?ochNoList=" + ochNoList;
+	                var mywin = window.open(url, '_win', 'toolbar=yes,location=no,status=yes,menubar=yes,scroll bars=yes,resizable=yes,width=1000,height=800,top=0,left =100');
+	                mywin.focus();
+	            } else {
+	                jAlert('출력이 취소되었습니다.');
+	            }
+	        } else if ($("#reportType").val() == "거래명세서-일반_2") {
+	            if (confirm("보고서를 출력하시겠습니까?")) {
+	                var ochNoList = jQuery(maingrid).jqGrid('getGridParam', 'selarrrow');
+	                if (ochNoList == "") ochNoList = jQuery(maingrid).jqGrid('getDataIDs');
+
+	                setPlusOCH_PRN(ochNoList);
+	                changeColorGridRowCheckPrintReport();
+
+	                var url = "TradePortfolioChulgo3_2?ochNoList=" + ochNoList;
+	                var mywin = window.open(url, '_win', 'toolbar=yes,location=no,status=yes,menubar=yes,scroll bars=yes,resizable=yes,width=1000,height=800,top=0,left =100');
+	                mywin.focus();
+	            } else {
+	                jAlert('출력이 취소되었습니다.');
+	            }
+	        } else if ($("#reportType").val() == "거래명세서-A4_2") {
+	            if (confirm("보고서를 출력하시겠습니까?")) {
+	                var ochNoList = jQuery(maingrid).jqGrid('getGridParam', 'selarrrow');
+	                if (ochNoList == "") ochNoList = jQuery(maingrid).jqGrid('getDataIDs');
+
+	                setPlusOCH_PRN(ochNoList);
+	                changeColorGridRowCheckPrintReport();
+
+	                var url = "tradePortfolio3A4_2?ochNoList=" + ochNoList;
+	                var mywin = window.open(url, '_win', 'toolbar=yes,location=no,status=yes,menubar=yes,scroll bars=yes,resizable=yes,width=1000,height=800,top=0,left =100');
+	                mywin.focus();
+	            } else {
+	                jAlert('출력이 취소되었습니다.');
+	            }
+	        } else if ($("#reportType").val() == "거래명세서-제품별")
+	        {
+	            var ochNoList = jQuery(maingrid).jqGrid('getGridParam', 'selarrrow');
+	            if (ochNoList == "") ochNoList = jQuery(maingrid).jqGrid('getDataIDs');
+
+	            setPlusOCH_PRN(ochNoList);
+	            changeColorGridRowCheckPrintReport();
+
+	            var url = "TradePortfolioChulgo_prod?ochNoList=" + ochNoList;
+	            var mywin = window.open(url, '_win', 'toolbar=yes,location=no,status=yes,menubar=yes,scroll bars=yes,resizable=yes,width=1000,height=800,top=0,left =100');
+	            mywin.focus();
+	        }
+	    }
+
 		
 		function closeBtn(){
 			chulgoModal.style.display = 'none'; // 모달 숨김

@@ -90,7 +90,8 @@ public class WorkJisiTkController {
 	public Map<String, Object> workInstructionTkDataUpdateList(
 			@RequestParam(required = false) int ilbo_code,	
 			@RequestParam(required = false) String ilbo_gubn,	
-			@RequestParam(required = false) String ilbo_lot
+			@RequestParam(required = false) String ilbo_lot,
+			@RequestParam(required = false) int ilbo_pc
 		){
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 	
@@ -98,6 +99,7 @@ public class WorkJisiTkController {
 		w.setIlbo_code(ilbo_code);
 		w.setIlbo_gubn(ilbo_gubn);
 		w.setIlbo_lot(ilbo_lot);
+		w.setIlbo_pc(ilbo_pc);
 		
 		List<WorkJisiTk> wList = workJisiServiceTk.workInstructionTkDataUpdateList(w);
 		
@@ -607,12 +609,12 @@ public class WorkJisiTkController {
 	@RequestMapping(value = "/production/workInstructionTk/bcf/bcfList", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> workInstructionTkBcfList(
-			@RequestParam(required=false) String fac_gyu
+			@RequestParam(required=false) String tech_no
 			){
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		
 		WorkJisiTk w = new WorkJisiTk();
-		w.setFac_gyu(fac_gyu);
+		w.setTech_no(tech_no);
 		
 		List<WorkJisiTk> list = workJisiServiceTk.workInstructionTkBcfList(w);
 		
@@ -772,12 +774,164 @@ public class WorkJisiTkController {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-
-		
-		
-		
 		return rtnMap;
 	}
 
+	/*템퍼링 작업*/
+	@RequestMapping(value = "/production/workInstructionTk/tf/tfDataSearch", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> workInstructionTkTfDataSearch(	
+			@RequestParam(required = false) String selectedDataParam){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		JSONParser selectedParser = new JSONParser();
+		Object selectedObj = new Object();
+		JSONObject selectedViewObj = new JSONObject();
+		
+		try {
+			//작업자, 시작, 종료 데이터
+			selectedObj = selectedParser.parse(selectedDataParam);
+			selectedViewObj = (JSONObject)selectedObj;
+			
+			int ilbo_code = Integer.parseInt(selectedViewObj.get("ilbo_code").toString());
+			int ilbo_pc = Integer.parseInt(selectedViewObj.get("ilbo_pc").toString());
+			
+			WorkJisiTk w = new WorkJisiTk();
+			w.setIlbo_code(ilbo_code);
+			w.setIlbo_pc(ilbo_pc);
+			
+			List<WorkJisiTk> wList = workJisiServiceTk.workInstructionTkTfDataSearch(w);
+			
+			rtnMap.put("data",wList);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return rtnMap;
+	}
+	
+	//열처리데이터 저장
+	@RequestMapping(value = "/production/workInstructionTk/tf/dataSave", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> workInstructionTkTfDataSave(	
+			@RequestParam(required = false) String tfSettingDataList,
+			@RequestParam(required = false) String formObjParam){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		JSONParser listParser = new JSONParser();
+		JSONParser formParser = new JSONParser();
+		
+		Object listObj = new Object();
+		Object formObj = new Object();
+		
+		JSONArray listJsonArray = new JSONArray();
+		JSONObject formViewObj = new JSONObject();
+		JSONObject listJsonObject = new JSONObject();
+		
+		try {
+			//리스트 데이터
+			listObj = listParser.parse(tfSettingDataList);
+			
+			
+			if(listObj instanceof JSONArray) {
+				listJsonArray = (JSONArray)listObj;
+				
+				//작업자, 시작, 종료 데이터
+				formObj = formParser.parse(formObjParam);
+				formViewObj = (JSONObject)formObj;			
+					
+				//일보코드 조회
+				int ilbo_code = 0;
+				int ilbo_code_search = workJisiServiceTk.getWorkIlboCodeSearch();				
+				
+				int fac_code = Integer.parseInt(ifNullStringReturn(formViewObj.get("fac_code")));
+				int user_code = Integer.parseInt(ifNullStringReturn(formViewObj.get("user_code")));
+				
+				String ilbo_strt = ifNullStringReturn(formViewObj.get("ilbo_strt"));
+				String ilbo_end = ifNullStringReturn(formViewObj.get("ilbo_end"));				
+				String ilbo_g11 = ifNullStringReturn(formViewObj.get("ilbo_g11"));
+				String ilbo_g12 = ifNullStringReturn(formViewObj.get("ilbo_g12"));
+				String ilbo_pg1_si = ifNullStringReturn(formViewObj.get("ilbo_pg1_si"));
+				String ilbo_pg2_si = ifNullStringReturn(formViewObj.get("ilbo_pg2_si"));
+				String ilbo_pg3_si = ifNullStringReturn(formViewObj.get("ilbo_pg3_si"));
+				String ilbo_pg4_si = ifNullStringReturn(formViewObj.get("ilbo_pg4_si"));
+				String ilbo_pg5_si = ifNullStringReturn(formViewObj.get("ilbo_pg5_si"));
+				String ilbo_okng_si = ifNullStringReturn(formViewObj.get("ilbo_okng_si"));
+				String ilbo_pg1_sr = ifNullStringReturn(formViewObj.get("ilbo_pg1_sr"));
+				String ilbo_pg2_sr = ifNullStringReturn(formViewObj.get("ilbo_pg2_sr"));
+				String ilbo_pg3_sr = ifNullStringReturn(formViewObj.get("ilbo_pg3_sr"));
+				String ilbo_pg4_sr = ifNullStringReturn(formViewObj.get("ilbo_pg4_sr"));
+				String ilbo_pg5_sr = ifNullStringReturn(formViewObj.get("ilbo_pg5_sr"));
+				String ilbo_okng_sr = ifNullStringReturn(formViewObj.get("ilbo_okng_sr"));
+
+				
+				
+				
+				int ilbo_no = 0;
+				
+				for(Object lObj : listJsonArray) {
+					if (lObj instanceof JSONObject) {
+						listJsonObject = (JSONObject)lObj;
+						//listJsonObject.get("ord_code").toString()
+	                    WorkJisiTk wSave = new WorkJisiTk();
+	                    String ilbo_lot = ifNullStringReturn(listJsonObject.get("ilbo_lot"));                 
+	                    String ilbo_cm = ifNullStringReturn(listJsonObject.get("ilbo_cm"));                 
+	                    //ilbo_lot_yn_chk의 값이 1인지 0인지로 구분
+	                    int ilbo_lot_yn_chk = Integer.parseInt(listJsonObject.get("ilbo_lot_yn_chk").toString());
+	                    
+	                    //0이라면 아직 열처리 등록 전
+	                    if(ilbo_lot_yn_chk == 0) {
+	                    	ilbo_code = ilbo_code_search;
+	                    }else {
+	                    	//0이 아니라면 이미 등록되어 있음
+	                    	ilbo_code = Integer.parseInt(listJsonObject.get("ilbo_code").toString());
+	                    }
+	                    
+	                    int ilbo_pc = Integer.parseInt(listJsonObject.get("ilbo_pc").toString());
+	                    
+	                    wSave.setIlbo_code(ilbo_code);	   
+	                    wSave.setIlbo_pc(ilbo_pc);
+	                    wSave.setIlbo_pn(ilbo_no);
+	                    
+	                    wSave.setIlbo_lot(ilbo_lot);
+	                    wSave.setIlbo_g11(ilbo_g11);
+	                    wSave.setIlbo_g12(ilbo_g12);
+	                    wSave.setIlbo_pg1_si(ilbo_pg1_si);
+	                    wSave.setIlbo_pg2_si(ilbo_pg2_si);
+	                    wSave.setIlbo_pg3_si(ilbo_pg3_si);
+	                    wSave.setIlbo_pg4_si(ilbo_pg4_si);
+	                    wSave.setIlbo_pg5_si(ilbo_pg5_si);
+	                    wSave.setIlbo_okng_si(ilbo_okng_si);
+	                    wSave.setIlbo_pg1_sr(ilbo_pg1_sr);
+	                    wSave.setIlbo_pg2_sr(ilbo_pg2_sr);
+	                    wSave.setIlbo_pg3_sr(ilbo_pg3_sr);
+	                    wSave.setIlbo_pg4_sr(ilbo_pg4_sr);
+	                    wSave.setIlbo_pg5_sr(ilbo_pg5_sr);
+	                    wSave.setIlbo_okng_sr(ilbo_okng_sr);
+	                    
+	                    wSave.setUser_code(user_code);
+	                    wSave.setFac_code(fac_code);
+	                    wSave.setIlbo_strt(ilbo_strt);
+	                    wSave.setIlbo_end(ilbo_end);
+	                    wSave.setOrd_code(Integer.parseInt(listJsonObject.get("ord_code").toString()));
+	                    wSave.setIlbo_no(ilbo_no);
+	                    wSave.setIlbo_cm(ilbo_cm);
+	                    wSave.setIlbo_gubn("R");
+	                    wSave.setIlbo_su(Integer.parseInt(listJsonObject.get("ilbo_su").toString()));
+	                    wSave.setIlbo_jung(Float.parseFloat(listJsonObject.get("ilbo_jung").toString()));
+	                    
+	                    workJisiServiceTk.workInstructionTkTfDataSave(wSave);
+	                    ilbo_no++;
+	                }					
+				}
+			}
+			
+			rtnMap.put("data", "저장완료");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return rtnMap;
+	}
+	
 	
 }

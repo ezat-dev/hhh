@@ -166,4 +166,14 @@ public class WorkJisiServiceImpl implements WorkJisiService{
 		return workJisiDao.getWorkJisiHeatProdCodeList(w);
 	}
 
+	@Override
+	public List<WorkJisi> getIpgoTechList(WorkJisi w) {
+		return workJisiDao.getIpgoTechList(w);
+	}
+
+	@Override
+	public void setChulgoUpdate(WorkJisi chulgo) {
+		workJisiDao.setChulgoUpdate(chulgo);		
+	}
+
 }

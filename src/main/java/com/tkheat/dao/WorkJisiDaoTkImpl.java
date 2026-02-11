@@ -81,5 +81,15 @@ public class WorkJisiDaoTkImpl implements WorkJisiDaoTk {
 	public void workInstructionTkBcfDataSave(WorkJisiTk wSave) {
 		sqlSession.insert("workjisitk.workInstructionTkBcfDataSave",wSave);		
 	}
+
+	@Override
+	public List<WorkJisiTk> workInstructionTkTfDataSearch(WorkJisiTk w) {
+		return sqlSession.selectList("workjisitk.workInstructionTkTfDataSearch",w);
+	}
+
+	@Override
+	public void workInstructionTkTfDataSave(WorkJisiTk wSave) {
+		sqlSession.insert("workjisitk.workInstructionTkTfDataSave",wSave);
+	}
 	
 }

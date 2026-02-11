@@ -11,130 +11,393 @@
 <%@include file="../include/pluginpage.jsp" %>     
     <style>
     
-	.container {
-		display: flex;
-		justify-content: space-between;
-/*		margin-left:1008px;
-		margin-top:200px;*/
-	}
-
-
-.measurementModal {
-    position: fixed; /* 화면에 고정 */
-    top: 50%; /* 수직 중앙 */
-    left: 50%; /* 수평 중앙 */
-    display : none;
-    transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-    z-index: 1000; /* 다른 요소 위에 표시 */
-}
-       
-    .detail {
-  background: #ffffff;
-    border: 1px solid #000000;
-    width: 1300px; /* 가로 길이 고정 */
-    height: 720px; /* 세로 길이 고정 */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-    margin: 20px auto; /* 중앙 정렬 */
-    padding: 20px;
-    border-radius: 5px; /* 모서리 둥글게 */
-    overflow-y: auto; /* 세로 스크롤 추가 */
+/* ========== 기존 스타일 유지 ========== */
+.container {
+    display: flex;
+    justify-content: space-between;
 }
 
-.insideTable {
-    width: 100%; /* 테이블 너비 100% */
-    border-collapse: collapse; /* 테두리 겹침 제거 */
+/* ========== 모달 오버레이 ========== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
 }
 
-.insideTable th,
-.insideTable td {
-    padding: 8px; /* 셀 패딩 */
-    border: 1px solid #ccc; /* 셀 경계선 */
-    vertical-align: middle; /* 수직 정렬 */
+.modal-overlay.active {
+    display: block;
 }
 
-.insideTable th {
-    background: #f0f0f0; /* 헤더 배경색 */
+/* ========== 측정기기 모달 컨테이너 ========== */
+.measurement-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1400px;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    overflow: hidden;
 }
 
-.basic, .form-control, .rp-input {
-    width: calc(100% - 12px); /* 너비 조정 */
-    padding: 5px; /* 내부 여백 */
-    border: 1px solid #949494; /* 경계선 색상 */
-    border-radius: 3px; /* 둥근 모서리 */
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* 내부 그림자 */
+.measurement-modal.active {
+    display: flex;
+    flex-direction: column;
 }
 
-.basic[readonly] {
-    background-color: #f9f9f9; /* 읽기 전용 필드 색상 */
+/* ========== 모달 헤더 ========== */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+    cursor: move;
+    flex-shrink: 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* ========== 모달 본문 ========== */
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #f5f7fa;
+    padding: 15px;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #e0e0e0;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #666;
+}
+
+/* ========== 컨텐츠 래퍼 ========== */
+.modal-content-wrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 15px;
+    height: 100%;
+}
+
+/* ========== 왼쪽/오른쪽 영역 ========== */
+.modal-left,
+.modal-right {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ========== 섹션 ========== */
+.field-section {
+    background: white;
+    border-radius: 8px;
+    padding: 12px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2c3e50;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* ========== 필드 행/열 ========== */
+.field-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.field-row:last-child {
+    margin-bottom: 0;
+}
+
+.field-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field-col-full {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field-col label,
+.field-col-full label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.req {
+    color: #dc3545;
+    margin-left: 2px;
+}
+
+/* ========== 입력 필드 ========== */
+.field-col input[type="text"],
+.field-col input[type="date"],
+.field-col select,
+.field-col-full input[type="text"],
+.field-col-full textarea {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 12px;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+.field-col input:focus,
+.field-col select:focus,
+.field-col-full input:focus,
+.field-col-full textarea:focus {
+    outline: none;
+    border-color: #4dabf7;
+    box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.1);
+}
+
+.field-col input[readonly],
+.field-col-full input[readonly] {
+    background: #f1f3f5;
+    cursor: not-allowed;
+}
+
+.field-col select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 26px;
 }
 
 textarea {
-    width: 100%; /* 너비 100% */
-    padding: 5px; /* 내부 여백 */
-    border: 1px solid #949494; /* 경계선 색상 */
-    border-radius: 3px; /* 둥근 모서리 */
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
 }
 
-.findImage {
-    display: flex; /* 플렉스 박스 사용 */
-    align-items: center; /* 수직 정렬 */
+/* ========== 이미지 업로드 ========== */
+.img-upload-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.findImage input[type="file"] {
-    margin-right: 10px; /* 오른쪽 여백 */
-}   
-       
-.header {
-    display: flex; /* 플렉스 박스 사용 */
-    justify-content: center; /* 중앙 정렬 */
-    align-items: center; /* 수직 중앙 정렬 */
-    margin-bottom: 10px; /* 상단 여백 */
-    background-color: #33363d; /* 배경색 */
-    height: 50px; /* 높이 */
-    color: white; /* 글자색 */
-    font-size: 20px; /* 글자 크기 */
-    text-align: center; /* 텍스트 정렬 */
-}
-.btnSaveClose {
-	display: flex;
-	justify-content: center; /* 가운데 정렬 */
-	gap: 20px; /* 버튼 사이 여백 */
-	margin-top: 30px; /* 모달 내용과의 간격 */
-	margin-bottom: 20px; /* 모달 하단과 버튼 사이 간격  */
-}
-.btnSaveClose button {
-	width: 100px;
-	height: 35px;
-	background-color: #FFD700; /* 기본 배경 - 노란색 */
-	color: black;
-	border: 2px solid #FFC107; /* 노란 테두리 */
-	border-radius: 5px;
-	font-weight: bold;
-	text-align: center;
-	cursor: pointer;
-	line-height: 35px;
-	margin: 0 10px;
-	margin-top: 10px;
-	transition: background-color 0.3s ease, transform 0.2s ease;
+.img-upload-area input[type="file"] {
+    padding: 6px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
 }
 
-/* 저장 버튼 호버 시 */
-.btnSaveClose .save:hover {
-	background-color: #FFC107;
-	transform: scale(1.05);
+.img-upload-area input[type="file"]::-webkit-file-upload-button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    background: #4dabf7;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 8px;
 }
 
-/* 닫기 버튼 - 회색 톤 */
-.btnSaveClose .close {
-	background-color: #A9A9A9;
-	color: black;
-	border: 2px solid #808080;
+.img-preview {
+    width: 100%;
+    height: 250px;
+    border: 2px dashed #ced4da;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    overflow: hidden;
+    transition: all 0.3s;
 }
 
-/* 닫기 버튼 호버 시 */
-.btnSaveClose .close:hover {
-	background-color: #808080;
-	transform: scale(1.05);
+.img-preview-large {
+    height: 300px;
+}
+
+.img-preview:hover {
+    border-color: #4dabf7;
+    background: #e7f5ff;
+}
+
+.img-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.btn-img-delete {
+    padding: 6px 12px;
+    border: 1px solid #ff6b6b;
+    border-radius: 4px;
+    background: white;
+    color: #ff6b6b;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-img-delete:hover {
+    background: #ff6b6b;
+    color: white;
+}
+
+/* ========== 파일 업로드 ========== */
+.file-upload-area {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.file-upload-area input[type="file"] {
+    padding: 6px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+/* ========== 모달 푸터 ========== */
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: white;
+    border-top: 1px solid #dee2e6;
+    flex-shrink: 0;
+}
+
+.modal-footer button {
+    min-width: 100px;
+    height: 36px;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #51cf66, #37b24d);
+    color: white;
+}
+
+.btn-save:hover {
+    background: linear-gradient(135deg, #40c057, #2f9e44);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(64, 192, 87, 0.3);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #ff6b6b, #fa5252);
+    color: white;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(135deg, #f03e3e, #e03131);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(240, 62, 62, 0.3);
+}
+
+.btn-cancel {
+    background: linear-gradient(135deg, #868e96, #495057);
+    color: white;
+}
+
+.btn-cancel:hover {
+    background: linear-gradient(135deg, #6c757d, #343a40);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* ========== 반응형 ========== */
+@media (max-width: 1600px) {
+    .measurement-modal {
+        width: 95vw;
+    }
+}
+
+@media (max-width: 1200px) {
+    .modal-content-wrapper {
+        grid-template-columns: 1.5fr 1fr;
+    }
+    
+    .field-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .modal-content-wrapper {
+        grid-template-columns: 1fr;
+    }
 }
     
     
@@ -172,450 +435,588 @@ textarea {
 	</main>
 	
 	
-<form method="post" class="corrForm" id="measurementForm" name="measurementForm">
-<div class="measurementModal">	
-	<div class="detail">
-		<div class="header">
-			측정기기등록
-		</div>
-          <table cellspacing="0" cellpadding="0" width="100%">
-            <tbody><tr>
-              <td class="">
-                <table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-                  <input type="hidden" class="basic rp-input" id="ter_code" name="ter_code" value="-1">
-                  <tbody><tr>
-                    <th class="left">측정기기명</th>
-                    <td class="">
-  
-                      <input type="text" class="form-control rp-input" id="ter_name" name="ter_name" style="width:90%;" value="">
-  
-                    </td>
-  
-                    <th class="left">측정기기번호</th>
-                    <td class="">
-                      <input type="text" class="basic rp-input" id="ter_no" name="ter_no" style="width:90%;" value="">
-                    </td>
-  
-                    <th class="left">제조회사</th>
-                    <td class="">
-                      <input type="text" class="basic rp-input" id="ter_maker" name="ter_maker" style="width:90%;" value="">
-                    </td>
-  
-                  </tr>
-                  <tr>
-                    <td class="" colspan="2">
-                    <input id="imgInput0" class="imgInputClass" type="file" name="file_url" style="width:92%;" onchange="rpReadImageURL(this); $(this).parent().find('img').removeClass('rp-file-del');">
-                      <button onclick="imageDelete(this)">X</button>
-                    </td>
-                    <th class="">모델명</th>
-                    <td class=""><input id="ter_model" name="ter_model" class="basic rp-input" type="text" style="width:90%;" value=""></td>
-                    <th class="">제조일자</th>
-                    <td class=""><input id="ter_mdate" name="ter_mdate" class="basic rp-input date js-datepicker js-date-now hasDatepicker" type="text" style="width:90%;" value="" maxlength="20" size="20" readonly="readonly"></td>
-  
-                  </tr>
-                  <tr>
-                    <td class="" colspan="2" rowspan="10">
-                      <img id="img0" class="img-rounded rp-img-popup" src="/tkheat/css/image/no_image.png" alt="사진" style="width: 220px;">
-                    </td>
-                    <th class="">S/N</th>
-                    <td class=""><input id="ter_sn" name="ter_sn" class="basic rp-input" type="text" style="width:90%;" value=""></td>
-                    <th class="">구입회사</th>
-                    <td class=""><input id="ter_buy" name="ter_buy" class="basic rp-input" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                  <tr>
-                    <th class="">용도</th>
-                    <td class=""><input id="ter_yong" name="ter_yong" class="basic rp-input" type="text" style="width:90%;" value=""></td>
-                    <th class="">구입일자</th>
-                    <td class=""><input id="ter_bdate" name="ter_bdate" class="basic rp-input date js-datepicker js-date-now hasDatepicker" type="text" style="width:90%;" value="" maxlength="20" size="20" readonly="readonly"></td>
-                  </tr>
-                  <tr>
-                    <th class="">측정기기종류</th>
-                    <td class=""><input id="ter_kind" name="ter_kind" class="basic rp-input" type="text" style="width:90%;" value=""></td>
-                    <th class="">구입금액</th>
-                    <td class=""><input id="ter_bmon" name="ter_bmon" class="basic rp-input" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                  <tr>
-                    <th class="">관리자(정)</th>
-                    <td class=""><input id="ter_ma1" name="ter_ma1" class="basic rp-input" type="text" style="width:90%;" value=""></td>
-                    <th class="">검교정주기</th>
-                    <td class="">
-  
-                        <select id="ter_gum" name="ter_gum"  class="basic rp-input" style="width: 100%">
-                          
-                            <option value="분기(120)">분기(120)</option>
-                          
-                            <option value="반년(182)">반년(182)</option>
-                          
-                            <option value="년간(362)">년간(362)</option>
-                          
-                            <option value="2년간(730)">2년간(730)</option>
-                          
-                        </select>
-                  </td></tr>
-                  <tr>
-                    <th class="">관리자(부)</th>
-                    <td class=""><input id="ter_man2" name="ter_man2" class="basic rp-input" type="text" style="width:90%;" value=""></td>
-                    <th class="">사용전압</th>
-                    <td class=""><input id="ter_v" name="ter_v" class="basic rp-input" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                  <tr>
-                    <th class="">설치장소</th>
-                    <td class=""><input id="ter_place" name="ter_place" class="basic rp-input" type="text" style="width:90%;" value=""></td>
-                    <th class="">사용전류</th>
-                    <td class=""><input id="ter_a" name="ter_a" class="basic rp-input" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                  <tr>
-                    <th class="">상태</th>
-                    <td class="">
-                      <select id="ter_use" name="ter_use" class="basic rp-input" style="width:90%;">
-                        <option>사용</option>
-                        <option>폐기</option>
-                        <option>매각</option>
-                      </select>
-                    </td>
-                    <th class="">사용전력</th>
-                    <td class=""><input id="ter_kw" name="ter_kw" class="basic rp-input" type="text" style="width:90%;" value=""></td>
-                  </tr>
-                  <tr>
-                    <th class="">상태비고</th>
-                    <td class=""><input id="ter_ubigo" name="ter_ubigo" class="basic rp-input" type="text" style="width:90%;" value=""></td>
-                    <th class="">차기검교정일</th>
-                    <td class=""><input id="ter_next_gum" name="ter_next_gum" c type="date" style="width:90%;" value=""></td>
-                  </tr>
-                  <tr>
-                    <th class="">첨부파일</th>
-                    <td class="findImage"><input type="hidden" name="type" id="type" class="imgInputClass" value="tester" onchange="rpReadImageURL(this); $(this).parent().find('img').removeClass('rp-file-del');">
-                      <input type="file" name="file1" id="file1" class="rp-input" title="파일 찾기" onchange="" accept=".xls,.xlsx,.hwp,.hwpx,.pdf,.jpeg,.jpg,.png">
-                    </td><th class="">최종검교정일</th>
-                    <td class=""><input id="ter_end_gum" name="ter_end_gum"  type="date" onfocusout="set_ter_next_gum();" style="width:90%;" value=""></td>
-                  </tr>
-                  <tr>
-                    <th class="">비고</th>
-                    <td class="" colspan="3">
-                      <textarea id="ter_bigo" name="ter_bigo" class="basic rp-input" type="text" style="width:90%;"></textarea>
-                    </td>
-                  </tr>
-                </tbody></table>
-                
-  
-              </td>
-            </tr>
-          </tbody></table>
-          <div class="btnSaveClose">
-          	 <button class="delete" type="button" onclick="deleteMea();"  style="display: none;">삭제</button>
-			 <button class="save" type="button" onclick="save();">저장</button>
-			 <button class="close" type="button" onclick="window.close();">닫기</button>
-    	  </div>
+<form method="post" class="corrForm" id="measurementForm" name="measurementForm" enctype="multipart/form-data">
+    <input type="hidden" id="ter_code" name="ter_code" value="-1">
+    <input type="hidden" id="type" name="type" value="tester">
+    
+    <div class="modal-overlay"></div>
+    
+    <div class="measurement-modal">
+        <!-- 헤더 -->
+        <div class="modal-header">
+            <h2>측정기기등록</h2>
+            <button type="button" class="modal-close-btn">&times;</button>
         </div>
-     </div>
-</form>   
+        
+        <!-- 본문 -->
+        <div class="modal-body">
+            <div class="modal-content-wrapper">
+                <!-- 왼쪽: 입력 필드 -->
+                <div class="modal-left">
+                    <!-- 기본정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">기본정보</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>측정기기명 <span class="req">*</span></label>
+                                <input type="text" id="ter_name" name="ter_name">
+                            </div>
+                            <div class="field-col">
+                                <label>측정기기번호</label>
+                                <input type="text" id="ter_no" name="ter_no">
+                            </div>
+                            <div class="field-col">
+                                <label>제조회사</label>
+                                <input type="text" id="ter_maker" name="ter_maker">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>모델명</label>
+                                <input type="text" id="ter_model" name="ter_model">
+                            </div>
+                            <div class="field-col">
+                                <label>제조일자</label>
+                                <input type="text" id="ter_mdate" name="ter_mdate" class="js-datepicker" readonly>
+                            </div>
+                            <div class="field-col">
+                                <label>S/N</label>
+                                <input type="text" id="ter_sn" name="ter_sn">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 구입정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">구입정보</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>구입회사</label>
+                                <input type="text" id="ter_buy" name="ter_buy">
+                            </div>
+                            <div class="field-col">
+                                <label>구입일자</label>
+                                <input type="text" id="ter_bdate" name="ter_bdate" class="js-datepicker" readonly>
+                            </div>
+                            <div class="field-col">
+                                <label>구입금액</label>
+                                <input type="text" id="ter_bmon" name="ter_bmon">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 사용정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">사용정보</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>용도</label>
+                                <input type="text" id="ter_yong" name="ter_yong">
+                            </div>
+                            <div class="field-col">
+                                <label>측정기기종류</label>
+                                <input type="text" id="ter_kind" name="ter_kind">
+                            </div>
+                            <div class="field-col">
+                                <label>설치장소</label>
+                                <input type="text" id="ter_place" name="ter_place">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>상태</label>
+                                <select id="ter_use" name="ter_use">
+                                    <option>사용</option>
+                                    <option>폐기</option>
+                                    <option>매각</option>
+                                </select>
+                            </div>
+                            <div class="field-col">
+                                <label>상태비고</label>
+                                <input type="text" id="ter_ubigo" name="ter_ubigo">
+                            </div>
+                            <div class="field-col"></div>
+                        </div>
+                    </div>
+
+                    <!-- 관리정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">관리정보</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>관리자(정)</label>
+                                <input type="text" id="ter_ma1" name="ter_ma1">
+                            </div>
+                            <div class="field-col">
+                                <label>관리자(부)</label>
+                                <input type="text" id="ter_man2" name="ter_man2">
+                            </div>
+                            <div class="field-col">
+                                <label>검교정주기</label>
+                                <select id="ter_gum" name="ter_gum">
+                                    <option value="분기(120)">분기(120)</option>
+                                    <option value="반년(182)">반년(182)</option>
+                                    <option value="년간(362)">년간(362)</option>
+                                    <option value="2년간(730)">2년간(730)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>최종검교정일</label>
+                                <input type="date" id="ter_end_gum" name="ter_end_gum" onfocusout="set_ter_next_gum();">
+                            </div>
+                            <div class="field-col">
+                                <label>차기검교정일</label>
+                                <input type="date" id="ter_next_gum" name="ter_next_gum">
+                            </div>
+                            <div class="field-col"></div>
+                        </div>
+                    </div>
+
+                    <!-- 전력정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">전력정보</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>사용전압</label>
+                                <input type="text" id="ter_v" name="ter_v">
+                            </div>
+                            <div class="field-col">
+                                <label>사용전류</label>
+                                <input type="text" id="ter_a" name="ter_a">
+                            </div>
+                            <div class="field-col">
+                                <label>사용전력</label>
+                                <input type="text" id="ter_kw" name="ter_kw">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 비고 -->
+                    <div class="field-section">
+                        <h3 class="section-title">비고</h3>
+                        <div class="field-row">
+                            <div class="field-col-full">
+                                <label>비고</label>
+                                <textarea id="ter_bigo" name="ter_bigo" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 오른쪽: 이미지 및 파일 -->
+                <div class="modal-right">
+                    <!-- 측정기기 사진 -->
+                    <div class="field-section">
+                        <h3 class="section-title">측정기기 사진</h3>
+                        <div class="img-upload-area">
+                            <input type="file" id="imgInput0" class="imgInputClass" name="file_url" accept="image/*">
+                            <div class="img-preview img-preview-large">
+                                <img id="img0" src="/tkheat/css/image/no_image.png" alt="측정기기사진">
+                            </div>
+                            <button type="button" class="btn-img-delete" onclick="imageDelete(this)">이미지 삭제</button>
+                        </div>
+                    </div>
+
+                    <!-- 첨부파일 -->
+                    <div class="field-section">
+                        <h3 class="section-title">첨부파일</h3>
+                        <div class="file-upload-area">
+                            <input type="file" name="file1" id="file1" accept=".xls,.xlsx,.hwp,.hwpx,.pdf,.jpeg,.jpg,.png">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 푸터 (버튼) -->
+        <div class="modal-footer">
+            <button type="button" class="btn-delete" onclick="deleteMea();" style="display:none;">삭제</button>
+            <button type="button" class="btn-save" onclick="save();">저장</button>
+            <button type="button" class="btn-cancel">닫기</button>
+        </div>
+    </div>
+</form>
 	    
 <script>
-	//전역변수
-    var cutumTable;	
-    var isEditMode = false; //수정,최초저장 구분값
+//========== 전역변수 ==========
+let now_page_code = "h07";
+var measureTable;
+var isEditMode = false;
+var selectedRowData = null;
 
+// ========== 페이지 로드 ==========
+$(function(){
+	if (typeof userInfoList === 'function') {
+        userInfoList(now_page_code);
+    }
+    getMeasureList();
+});
+
+// ========== 파일 미리보기 ==========
+$('.imgInputClass').change(function(event){
+    var selectedFile = event.target.files[0];
+    if (!selectedFile) return;
     
-	//로드
-	$(function(){
-		//전체 거래처목록 조회
-		getMeasureList();
-	});
-
-	$(function(){	
-		  // 파일 선택 시 이미지 미리보기 적용
-		  $('.imgInputClass').change(function(event){
-		    var selectedFile = event.target.files[0];
-		    if (!selectedFile) return;
-
-		    var reader = new FileReader();
-
-		    // 이미지 출력 위치 지정
-		    reader.onload = function(event) {
-		      $('#img0').attr('src', event.target.result); 
-		    };
-
-		    reader.readAsDataURL(selectedFile);
-		  });
-		});
-
-
-	//이벤트
-	//함수
-	function getMeasureList(){
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    selectableRows:true,
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/management/measurement/measureList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{},
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:60,
-		        	hozAlign:"center"},
-		        {title:"상태", field:"ter_use", sorter:"string", width:90,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"측정기기명", field:"ter_name", sorter:"string", width:150,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"측정기기번호", field:"ter_code", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"최근검교정날짜", field:"ter_end_gum", sorter:"string", width:150,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"차기검교정날짜", field:"ter_next_gum", sorter:"int", width:150,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"검교정주기", field:"ter_gum", sorter:"int", width:100,
-			        hozAlign:"center", headerFilter:"input"},
-			    {title:"모델명", field:"ter_model", sorter:"int", width:120,
-				    hozAlign:"center", headerFilter:"input"},
-				{title:"구입회사", field:"ter_buy", sorter:"int", width:150,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"구입일", field:"ter_bdate", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"구입금액", field:"ter_bmon", sorter:"int", width:100,
-				    hozAlign:"center", headerFilter:"input"}, 
-					/* {title:"사진", field:"file_name", width:100,
-						hozAlign:"center", formatter:"image",
-					    cssClass:"rp-img-popup",
-				      	formatterParams:{
-					      	height:"30px", width:"30px",
-					      	urlPrefix:"/tkPrint/사진/측정기기관리/"
-					      	}, 
-					    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
-					    },   */   		
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
-
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
-
-				var rowData = row.getData();
-				
-			},
-			rowDblClick:function(e, row){
-
-				var data = row.getData();
-				selectedRowData = data;
-				isEditMode = true;
-				$('#measurementForm')[0].reset();
-
-/*
-				Object.keys(data).forEach(function (key) {
-			        const field = $('#chimStandardForm [name="' + key + '"]');
-
-			        if (field.length) {
-			            field.val(data[key]);
-			        }
-				});
-*/
-
-				console.log("data.ter_code",data.ter_code);
-				measureDetail(data.ter_code);
-
-				 $('.delete').show();
-			},
-		});		
-	}
-
-	//더블클릭 했을 때 데이터 가져오기
-		function measureDetail(ter_code){
-		$.ajax({
-			url:"/tkheat/management/getMeasurmentDetail",
-			type:"post",
-			dataType:"json",
-			data:{
-				"ter_code":ter_code
-			},
-			success:function(result){
-				console.log(result);
-				var allData = result.data;
-				
-				for(let key in allData){
-//					console.log(allData, key);	
-					$("#measurementForm [name='"+key+"']").val(allData[key]);
-				}
-
-				// 이미지 초기화
-				$("#img0").attr("src", "/tkheat/css/image/no_image.png");
-
-				// 이미지
- 				if (allData.file_name) {
-					console.log("원본 파일명:", allData.file_name);
-					console.log("인코딩된 경로:", encodeURIComponent(allData.file_name));
-					const path = "/tkPrint/사진/측정기기관리/" + allData.file_name;
-					console.log("path: ", path);
-					$("#img0").attr("src", path);
-					//$(".aphoto").attr("href", path).text(d.product_file_name);
-				} 
-
-				$('.measurementModal').show().addClass('show');
-			}
-		});
-	}
-	
-
-    </script>
+    var reader = new FileReader();
     
+    reader.onload = function(event) {
+        $('#img0').attr('src', event.target.result);
+    };
     
-	<script>
-		
- // 드래그 기능 추가
-	const modal = document.querySelector('.measurementModal');
-	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
+    reader.readAsDataURL(selectedFile);
+});
 
-	header.addEventListener('mousedown', function(e) {
-		// transform 제거를 위한 초기 위치 설정
-		const rect = modal.getBoundingClientRect();
-		modal.style.left = rect.left + 'px';
-		modal.style.top = rect.top + 'px';
-		modal.style.transform = 'none'; // 중앙 정렬 해제
+// ========== 모달 열기 (입력) ==========
+$('.insert-button').on('click', function() {
+    isEditMode = false;
+    selectedRowData = null;
+    $('#measurementForm')[0].reset();
+    
+    // 이미지 초기화
+    $('#img0').attr('src', '/tkheat/css/image/no_image.png');
+    
+    // 기본값 설정
+    $('#ter_code').val('-1');
+    
+    // 버튼 상태
+    $('.btn-delete').hide();
+    
+    // 모달 중앙 정렬
+    $('.measurement-modal').css({
+        'left': '50%',
+        'top': '50%',
+        'transform': 'translate(-50%, -50%)'
+    });
+    
+    $('.modal-overlay, .measurement-modal').addClass('active');
+});
 
-		let offsetX = e.clientX - rect.left;
-		let offsetY = e.clientY - rect.top;
+// ========== 모달 닫기 ==========
+$('.modal-close-btn, .btn-cancel').on('click', function() {
+    $('.modal-overlay, .measurement-modal').removeClass('active');
+});
 
-		function moveModal(e) {
-			modal.style.left = (e.clientX - offsetX) + 'px';
-			modal.style.top = (e.clientY - offsetY) + 'px';
-		}
+// ========== 모달 드래그 ==========
+let isDragging = false;
+let startX, startY, modalLeft, modalTop;
 
-		function stopMove() {
-			window.removeEventListener('mousemove', moveModal);
-			window.removeEventListener('mouseup', stopMove);
-		}
+$('.measurement-modal .modal-header').on('mousedown', function(e) {
+    if ($(e.target).hasClass('modal-close-btn') || $(e.target).closest('.modal-close-btn').length) {
+        return;
+    }
+    
+    isDragging = true;
+    const modal = $('.measurement-modal');
+    const offset = modal.offset();
+    
+    startX = e.pageX;
+    startY = e.pageY;
+    modalLeft = offset.left;
+    modalTop = offset.top;
+    
+    modal.css('transform', 'none');
+    e.preventDefault();
+});
 
-		window.addEventListener('mousemove', moveModal);
-		window.addEventListener('mouseup', stopMove);
-	});
-		
+$(document).on('mousemove', function(e) {
+    if (isDragging) {
+        const dx = e.pageX - startX;
+        const dy = e.pageY - startY;
+        
+        $('.measurement-modal').css({
+            left: (modalLeft + dx) + 'px',
+            top: (modalTop + dy) + 'px'
+        });
+    }
+});
 
-	// 모달 열기
-	const insertButton = document.querySelector('.insert-button');
-	const measurementModal = document.querySelector('.measurementModal');
-	const closeButton = document.querySelector('.close');
+$(document).on('mouseup', function() {
+    isDragging = false;
+});
 
-	insertButton.addEventListener('click', function() {
-		isEditMode = false;  // 추가 모드
-	    $('#measurementForm')[0].reset(); // 폼 초기화
-	    measurementModal.style.display = 'block'; // 모달 표시
+// ========== 측정기기 리스트 조회 ==========
+function getMeasureList(){
+    // 기존 테이블 완전히 제거
+    if (measureTable) {
+        measureTable.destroy();
+        measureTable = null;
+    }
+    
+    // DOM 초기화
+    $('#tab1').empty();
+    
+    measureTable = new Tabulator("#tab1", {
+        height:"750px",
+        layout:"fitColumns",
+        selectable:true,
+        tooltips:true,
+        selectableRangeMode:"click",
+        reactiveData:true,
+        headerHozAlign:"center",
+        ajaxConfig:"POST",
+        ajaxLoader:false,
+        ajaxURL:"/tkheat/management/measurement/measureList",
+        ajaxParams:{},
+        placeholder:"조회된 데이터가 없습니다.",
+        pagination:"local",
+        paginationSize:20,
+        paginationSizeSelector:[20,50,100,500,1000],
+        paginationCounter:"rows",
+        headerFilterPlaceholder: "",
+        ajaxResponse:function(url, params, response){
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
+            console.log("📊 서버 응답:", response);
+            return response.data ? response.data : [];
+        },
 
-		// 이미지 초기화
-		$("#img0").attr("src", "/tkheat/css/image/no_image.png");
-	    
-		$('.delete').hide();
-	});
+        columns:[
+            {title:"NO", field:"idx", sorter:"int", width:60, hozAlign:"center"},
+            {title:"상태", field:"ter_use", sorter:"string", width:90, hozAlign:"center", headerFilter:"input"},
+            {title:"측정기기명", field:"ter_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"측정기기번호", field:"ter_code", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"최근검교정날짜", field:"ter_end_gum", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"차기검교정날짜", field:"ter_next_gum", sorter:"int", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"검교정주기", field:"ter_gum", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"모델명", field:"ter_model", sorter:"int", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"구입회사", field:"ter_buy", sorter:"int", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"구입일", field:"ter_bdate", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"구입금액", field:"ter_bmon", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
+        ],
 
-	closeButton.addEventListener('click', function() {
-		measurementModal.style.display = 'none'; // 모달 숨김
-	});
+        rowFormatter:function(row){
+            row.getElement().style.fontWeight = "700";
+            row.getElement().style.backgroundColor = "#FFFFFF";
+        },
 
+        rowClick:function(e, row){
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").removeClass('row_select');
+            row.getElement().classList.add("row_select");
+        },
 
+        rowDblClick:function(e, row){
+            // 수정 권한 체크
+            if (window.disableRowDblClick) {
+                alert("수정 권한이 없습니다.");
+                return false;
+            }
+            
+            var data = row.getData();
+            selectedRowData = data;
+            isEditMode = true;
+            measureDetail(data.ter_code);
+            
+            // 삭제 버튼 표시 여부 (권한 체크)
+            const permission = userPermissions?.[now_page_code];
+            if (permission === 'D') {
+                $('.btn-delete').show();
+            } else {
+                $('.btn-delete').hide();
+            }
+        },
+    });
+    
+    console.log("✅ Tabulator 생성 완료");
+}
 
-	//측정기기 저장
-    function save() {
-	    var formData = new FormData($("#measurementForm")[0]);
+// ========== 측정기기 상세 조회 ==========
+function measureDetail(ter_code){
+    $.ajax({
+        url:"/tkheat/management/getMeasurmentDetail",
+        type:"post",
+        dataType:"json",
+        data:{
+            "ter_code":ter_code
+        },
+        success:function(result){
+            console.log("📄 상세 데이터:", result);
+            const d = result.data;
+            
+            // 폼 초기화
+            $('#measurementForm')[0].reset();
+            
+            // 기본 데이터 바인딩
+            for(let key in d){
+                $("#measurementForm [name='"+key+"']").val(d[key]);
+            }
 
-	    let confirmMsg = "";
+            // 이미지 초기화
+            $("#img0").attr("src", "/tkheat/css/image/no_image.png");
 
-	    if (isEditMode && selectedRowData && selectedRowData.ter_code) {
-	        formData.append("mode", "update");
-	        formData.append("wstd_code", selectedRowData.ter_code);
-	        confirmMsg = "수정하시겠습니까?";
-	    } else {
-	        formData.append("mode", "insert");
-	        confirmMsg = "저장하시겠습니까?";
-	    }
+            // 이미지 로드
+            if (d.file_name) {
+                console.log("원본 파일명:", d.file_name);
+                const path = "/tkPrint/사진/측정기기관리/" + d.file_name;
+                console.log("path:", path);
+                $("#img0").attr("src", path);
+            }
 
-	    if (!confirm(confirmMsg)) {
-	        return;
-	    }
+            // 모달 열기
+            $('.modal-overlay, .measurement-modal').addClass('active');
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 상세 조회 오류:", error);
+        }
+    });
+}
 
-	    $.ajax({
-	        url: "/tkheat/management/measurement/measureInsertSave",
-	        type: "POST",
-	        data: formData,
-	        contentType: false,
-	        processData: false,
-	        dataType: "json",
-	        success: function(result) {
-	        	alert("저장 되었습니다.");
-                $(".measurementModal").hide();
+// ========== 저장 ==========
+function save() {
+	// ✅ 권한 체크
+    const permission = userPermissions?.[now_page_code];
+    
+    // 신규 등록인 경우
+    if (!isEditMode) {
+        if (!['I', 'U', 'D'].includes(permission)) {
+            alert("등록 권한이 없습니다.");
+            console.log("⚠️ 등록 권한 없음 - 현재 권한:", permission);
+            return false;
+        }
+        console.log("✅ 등록 권한 확인 완료");
+    } 
+    // 수정인 경우
+    else {
+        if (!['U', 'D'].includes(permission)) {
+            alert("수정 권한이 없습니다.");
+            console.log("⚠️ 수정 권한 없음 - 현재 권한:", permission);
+            return false;
+        }
+        console.log("✅ 수정 권한 확인 완료");
+    }
+    var formData = new FormData($("#measurementForm")[0]);
+
+    let confirmMsg = "";
+
+    if (isEditMode && selectedRowData && selectedRowData.ter_code) {
+        formData.append("mode", "update");
+        formData.append("ter_code", selectedRowData.ter_code);
+        confirmMsg = "수정하시겠습니까?";
+    } else {
+        formData.append("mode", "insert");
+        confirmMsg = "저장하시겠습니까?";
+        formData.delete("ter_code");
+    }
+
+    if (!confirm(confirmMsg)) {
+        return;
+    }
+
+    $.ajax({
+        url: "/tkheat/management/measurement/measureInsertSave",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "json",
+        success: function(result) {
+            console.log("💾 저장 완료:", result);
+            alert("저장 되었습니다.");
+            
+            // 모달 닫기
+            $('.modal-overlay, .measurement-modal').removeClass('active');
+            
+            // 모달 위치 초기화
+            $('.measurement-modal').css({
+                'left': '50%',
+                'top': '50%',
+                'transform': 'translate(-50%, -50%)'
+            });
+            
+            // 테이블 리로드
+            setTimeout(function() {
+                console.log("🔄 테이블 리로드 시작");
                 getMeasureList();
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("저장 오류:", error);
-	        }
-	    });
-	}
+            }, 300);
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 저장 오류:", error);
+            console.error("응답:", xhr.responseText);
+            alert("저장 중 오류가 발생했습니다.");
+        }
+    });
+}
 
+// ========== 삭제 ==========
+function deleteMea() {
+	// ✅ 권한 체크
+    const permission = userPermissions?.[now_page_code];
+    
+    if (permission !== 'D') {
+        alert("삭제 권한이 없습니다.");
+        console.log("⚠️ 삭제 권한 없음 - 현재 권한:", permission);
+        return false;
+    }
+    console.log("✅ 삭제 권한 확인 완료");
+    if (!selectedRowData || !selectedRowData.ter_code) {
+        alert("삭제할 대상을 선택하세요.");
+        return;
+    }
 
-	function deleteMea() {
-	    if (!selectedRowData || !selectedRowData.ter_code) {
-	        alert("삭제할 대상을 선택하세요.");
-	        return;
-	    }
+    if (!confirm("삭제하시겠습니까?")) {
+        return;
+    }
 
-	    if (!confirm("삭제하시겠습니까?")) {
-	        return;
-	    }
+    $.ajax({
+        url: "/tkheat/management/measurement/measureDelete",
+        type: "POST",
+        data: {
+            ter_code: selectedRowData.ter_code
+        },
+        dataType: "json",
+        success: function(result) {
+            if (result.status === "success") {
+                alert("삭제되었습니다.");
+                $('.modal-overlay, .measurement-modal').removeClass('active');
+                
+                setTimeout(function() {
+                    getMeasureList();
+                }, 300);
+            } else {
+                alert("삭제 중 오류가 발생했습니다: " + result.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 삭제 오류:", error);
+            alert("삭제 요청 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-	    $.ajax({
-	        url: "/tkheat/management/measurement/measureDelete",
-	        type: "POST",
-	        data: {
-	        	ter_code: selectedRowData.ter_code
-	        },
-	        dataType: "json",
-	        success: function(result) {
-	            if (result.status === "success") {
-	                alert("삭제되었습니다.");
-	                $(".measurementModal").hide();
-	                getMeasureList();
-	            } else {
-	                alert("삭제 중 오류가 발생했습니다: " + result.message);
-	            }
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("삭제 오류:", error);
-	            alert("삭제 요청 중 오류가 발생했습니다.");
-	        }
-	    });
-	}
+// ========== 이미지 삭제 ==========
+function imageDelete(button) {
+    if (confirm("이미지를 삭제하시겠습니까?")) {
+        $('#img0').attr('src', '/tkheat/css/image/no_image.png');
+        $('#imgInput0').val('');
+        alert("이미지가 삭제되었습니다.");
+    }
+}
 
-    //엑셀 다운로드
-	$(".excel-button").click(function () {
-	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-	    const filename = "측정기기관리_" + today + ".xlsx";
-	    userTable.download("xlsx", filename, { sheetName: "측정기기관리" });
-	});
-		
+// ========== 엑셀 다운로드 ==========
+$(".excel-button").click(function () {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const filename = "측정기기관리_" + today + ".xlsx";
+    measureTable.download("xlsx", filename, { sheetName: "측정기기관리" });
+});
 
+// ========== 차기검교정일 자동계산 (있는 경우) ==========
+function set_ter_next_gum() {
+    const endGum = $('#ter_end_gum').val();
+    const gumCycle = $('#ter_gum').val();
+    
+    if (!endGum || !gumCycle) return;
+    
+    // 검교정주기에서 숫자만 추출 (예: "년간(362)" → 362)
+    const days = parseInt(gumCycle.match(/\d+/)[0]);
+    
+    // 날짜 계산
+    const endDate = new Date(endGum);
+    endDate.setDate(endDate.getDate() + days);
+    
+    // YYYY-MM-DD 형식으로 변환
+    const nextGum = endDate.toISOString().split('T')[0];
+    $('#ter_next_gum').val(nextGum);
+}
 
     </script>
 	</body>

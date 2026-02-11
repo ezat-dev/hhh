@@ -42,6 +42,7 @@
 </main>
 
 <script>
+let now_page_code = "d05";
 var alarmHistory;
 
 $(function() {

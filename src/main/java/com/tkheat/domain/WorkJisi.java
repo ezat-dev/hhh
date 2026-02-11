@@ -208,7 +208,7 @@ public class WorkJisi {
 	private String corp_name;		//거래처명
 
 	//TECHIN 테이블 (설비정보?)
-	private int tech_no;
+	private String tech_no;
 	private String tech_te;			//공정종류
 	
 	//설비
@@ -1119,10 +1119,10 @@ public class WorkJisi {
 	public void setCorp_name(String corp_name) {
 		this.corp_name = corp_name;
 	}
-	public int getTech_no() {
+	public String getTech_no() {
 		return tech_no;
 	}
-	public void setTech_no(int tech_no) {
+	public void setTech_no(String tech_no) {
 		this.tech_no = tech_no;
 	}
 	public String getTech_te() {

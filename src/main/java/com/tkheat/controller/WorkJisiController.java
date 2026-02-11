@@ -51,6 +51,18 @@ public class WorkJisiController {
 
 
 	//입고관리
+	public String ifNullStringReturn(Object obj) {
+		
+		String rtnValue = "";
+		
+		if(obj != null) {
+			rtnValue = obj.toString();
+		}
+		
+		return rtnValue;
+	}
+
+	//입고관리
 
 	//입고관리 - 화면로드
 	@RequestMapping(value = "/product/ipgo", method = RequestMethod.GET)
@@ -62,74 +74,16 @@ public class WorkJisiController {
 	@RequestMapping(value = "/product/ipgo/getIpgoList", method = RequestMethod.POST) 
 	@ResponseBody 
 	public Map<String, Object> getIpgoList(
-			@RequestParam String sdate,
-			@RequestParam String edate
-			) {
+			@ModelAttribute WorkJisi w) {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 
-		WorkJisi ipgo = new WorkJisi();
-		ipgo.setSdate(sdate);
-		ipgo.setEdate(edate);
 		
-		List<WorkJisi> ipgoList = workJisiService.getIpgoList(ipgo);
+		List<WorkJisi> ipgoList = workJisiService.getIpgoList(w);
+		List<WorkJisi> ipgoTechList = workJisiService.getIpgoTechList(w);
 
-		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
-		for(int i=0; i<ipgoList.size(); i++) {
-			HashMap<String, Object> rowMap = new HashMap<String, Object>();
-			rowMap.put("idx", (i+1));
-			rowMap.put("ord_prn", ipgoList.get(i).getOrd_prn());
-			rowMap.put("ord_code", ipgoList.get(i).getOrd_code());
-			rowMap.put("ord_date", ipgoList.get(i).getOrd_date());
-			rowMap.put("ord_nap", ipgoList.get(i).getOrd_nap());
-			rowMap.put("corp_name", ipgoList.get(i).getCorp_name());
-			rowMap.put("prod_name", ipgoList.get(i).getProd_name());
-			rowMap.put("prod_no", ipgoList.get(i).getProd_no());
-			rowMap.put("prod_gyu", ipgoList.get(i).getProd_gyu());
-			rowMap.put("prod_jai", ipgoList.get(i).getProd_jai());
-			rowMap.put("tech_te", ipgoList.get(i).getTech_te());
-			rowMap.put("ord_danw", ipgoList.get(i).getOrd_danw());
-			rowMap.put("ord_boxsu", ipgoList.get(i).getOrd_boxsu());
-			rowMap.put("ord_su", ipgoList.get(i).getOrd_su());
-			rowMap.put("ord_amnt", ipgoList.get(i).getOrd_amnt());
-			rowMap.put("ord_lot", ipgoList.get(i).getOrd_lot());
-			rowMap.put("ord_danj", ipgoList.get(i).getOrd_danj());
-			rowMap.put("itst_wp", ipgoList.get(i).getItst_wp());
-			rowMap.put("ord_name", ipgoList.get(i).getOrd_name());
-			rowMap.put("ord_sunip", ipgoList.get(i).getOrd_sunip());
-			rowMap.put("ord_bigo", ipgoList.get(i).getOrd_bigo());
-			rowMap.put("prod_pg", ipgoList.get(i).getProd_pg());
-			rowMap.put("prod_cd", ipgoList.get(i).getProd_cd());
-			rowMap.put("prod_sg", ipgoList.get(i).getProd_sg());
-			rowMap.put("prod_e1", ipgoList.get(i).getProd_e1());
-			
-			//열처리수주서 파일유무
-			File file1 = new File("D:/태경출력파일/열처리수주서/"+ipgoList.get(i).getOrd_code()+".pdf");
-			File file2 = new File("D:/태경출력파일/열후TAG/"+ipgoList.get(i).getOrd_code()+".pdf");
-			File file3 = new File("D:/태경출력파일/입고현황표/"+ipgoList.get(i).getOrd_code()+".pdf");
 
-			if(file1.exists()) {
-				rowMap.put("ord_before_file_yn",1);
-			}else {
-				rowMap.put("ord_before_file_yn",0);
-			}
-			
-			if(file2.exists()) {
-				rowMap.put("ord_after_file_yn",1);
-			}else {
-				rowMap.put("ord_after_file_yn",0);
-			}
-			
-			if(file3.exists()) {
-				rowMap.put("ord_manage_file_yn",1);
-			}else {
-				rowMap.put("ord_manage_file_yn",0);
-			}
-
-			rtnList.add(rowMap);
-		}
-
-		rtnMap.put("last_page",1);
-		rtnMap.put("data",rtnList);
+		rtnMap.put("data",ipgoList);
+		rtnMap.put("techin",ipgoTechList);
 
 		return rtnMap; 
 	}
@@ -137,51 +91,13 @@ public class WorkJisiController {
 	//입고관리 - 입고등록리스트
 		@RequestMapping(value = "/product/ipgo/getIpgoAddList", method = RequestMethod.POST) 
 		@ResponseBody 
-		public Map<String, Object> getIpgoAddList(
-				@RequestParam String sdate,
-				@RequestParam String edate
-				) {
+		public Map<String, Object> getIpgoAddList(@ModelAttribute WorkJisi w) {
 			Map<String, Object> rtnMap = new HashMap<String, Object>();
 
-			WorkJisi ipgo = new WorkJisi();
-			ipgo.setSdate(sdate);
-			ipgo.setEdate(edate);
 			
-			List<WorkJisi> ipgoList = workJisiService.getIpgoAddList(ipgo);
+			List<WorkJisi> ipgoList = workJisiService.getIpgoAddList(w);
 
-			List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
-			for(int i=0; i<ipgoList.size(); i++) {
-				HashMap<String, Object> rowMap = new HashMap<String, Object>();
-				rowMap.put("idx", (i+1));
-				rowMap.put("prod_code", ipgoList.get(i).getProd_code());
-				rowMap.put("corp_name", ipgoList.get(i).getCorp_name());
-				rowMap.put("prod_name", ipgoList.get(i).getProd_name());
-				rowMap.put("prod_no", ipgoList.get(i).getProd_no());
-				rowMap.put("prod_gyu", ipgoList.get(i).getProd_gyu());
-				rowMap.put("prod_jai", ipgoList.get(i).getProd_jai());
-				rowMap.put("tech_te", ipgoList.get(i).getTech_te());
-				rowMap.put("prod_pg", ipgoList.get(i).getProd_pg());
-				rowMap.put("prod_sg", ipgoList.get(i).getProd_sg());
-				rowMap.put("prod_cd", ipgoList.get(i).getProd_cd());
-				rowMap.put("prod_e1", ipgoList.get(i).getProd_e1());
-				rowMap.put("prod_gubn", ipgoList.get(i).getProd_gubn());
-				rowMap.put("prod_e3", ipgoList.get(i).getProd_e3());
-				rowMap.put("prod_danw", ipgoList.get(i).getProd_danw());
-				rowMap.put("prod_danj", ipgoList.get(i).getProd_danj());
-				rowMap.put("prod_dang", ipgoList.get(i).getProd_dang());
-				rowMap.put("prod_cno", ipgoList.get(i).getProd_cno());
-				rowMap.put("prod_gd1", ipgoList.get(i).getProd_gd1());
-				rowMap.put("prod_gd2", ipgoList.get(i).getProd_gd2());
-				rowMap.put("prod_gd3", ipgoList.get(i).getProd_gd3());
-				rowMap.put("ord_row", 1);
-				rowMap.put("prod_boxsu", 1);
-				rowMap.put("ord_su", 1);
-
-				rtnList.add(rowMap);
-			}
-
-			rtnMap.put("last_page",1);
-			rtnMap.put("data",rtnList);
+			rtnMap.put("data",ipgoList);
 
 			return rtnMap; 
 		}
@@ -1163,7 +1079,8 @@ public class WorkJisiController {
 		return rtnMap; 
 	}
 	
-	//작업지시 - 등록
+	
+	//출고 - 등록
 	@RequestMapping(value = "/product/chulgo/chulgoAdd", method = RequestMethod.POST) 
 	@ResponseBody 
 	public Map<String, Object> setChulgoAdd(@RequestBody String str){
@@ -1191,7 +1108,7 @@ public class WorkJisiController {
 				chulgo.setJaego_amnt(Float.parseFloat(jObj.get("jaego_amnt").toString()));
 				chulgo.setJaego_su(Integer.parseInt(jObj.get("jaego_su").toString()));
 				chulgo.setOch_amnt(Float.parseFloat(jObj.get("och_amnt").toString()));
-				chulgo.setOch_bigo(jObj.get("och_amnt").toString());
+				chulgo.setOch_bigo(jObj.get("och_bigo").toString());
 				chulgo.setOch_ma(jObj.get("och_ma").toString());
 				chulgo.setOrd_dang(Float.parseFloat(jObj.get("ord_dang").toString()));
 				chulgo.setOrd_danj(Float.parseFloat(jObj.get("ord_danj").toString()));
@@ -1209,6 +1126,41 @@ public class WorkJisiController {
 
 		rtnMap.put("data","succ");
 
+		return rtnMap;
+	}
+	
+	//출고 - 수정
+	@RequestMapping(value = "/product/chulgo/chulgoUpdate", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> setChulgoUpdate(@RequestBody String str){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		JSONParser jParser = new JSONParser();
+		
+		try {
+			JSONObject workObj = (JSONObject)jParser.parse(str);
+						
+			JSONObject workData = (JSONObject)workObj.get("chulgoData");
+											
+			WorkJisi chulgo = new WorkJisi();
+			
+			chulgo.setOch_date(workData.get("och_date").toString());
+			chulgo.setOch_su(Integer.parseInt(workData.get("och_su").toString()));
+			chulgo.setOch_amnt(Float.parseFloat(workData.get("och_amnt").toString()));
+			chulgo.setOch_mon(workData.get("och_mon").toString());
+			chulgo.setOch_bigo(workData.get("och_bigo").toString());
+			chulgo.setOch_ma(workData.get("och_ma").toString());
+			chulgo.setOch_dang(workData.get("och_dang").toString());
+			chulgo.setOch_no(Integer.parseInt(workData.get("och_no").toString()));
+			
+			workJisiService.setChulgoUpdate(chulgo);
+			
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		rtnMap.put("data","succ");
+		
 		return rtnMap;
 	}
 

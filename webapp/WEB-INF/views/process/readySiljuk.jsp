@@ -130,6 +130,7 @@
 	    
 <script>
 	//전역변수
+	let now_page_code = "c07";
     var cutumTable;	
 
 	//로드
@@ -153,6 +154,7 @@
         selectableRangeMode: "click",
         reactiveData: true,
         headerHozAlign: "center",
+        headerSort:false,
         ajaxConfig: "POST",
         ajaxLoader: false,
         ajaxURL: "/tkheat/process/readySiljuk/getReadySiljukList",
@@ -162,10 +164,15 @@
             "edate": $("#edate").val(),
         },
         placeholder: "조회된 데이터가 없습니다.",
-        paginationSize: 20,
+        pagination:"local",
+        paginationSize:20,
+        paginationSizeSelector:[20,50,100,500,1000],
+        paginationCounter:"rows",
+        
+        headerFilterPlaceholder: "",
         ajaxResponse: function (url, params, response) {
-            $("#tab1 .tabulator-col.tabulator-sortable").css("height", "29px");
-            return response; // return the response data to tabulator
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height", "55px");
+            return response.data ? response.data : [];
         },
         columns: [
             /* {
@@ -181,19 +188,19 @@
             }, */
             { title: "NO", field: "idx", sorter: "int", width: 80, hozAlign: "center" },
             { title: "작업일", field: "ilbo_date", sorter: "string", width: 120, hozAlign: "center" },
-            { title: "준비코드", field: "ilbo_code", sorter: "string", width: 120, hozAlign: "center" },
-            { title: "수주NO", field: "ord_code", sorter: "string", width: 120, hozAlign: "center" },
-            { title: "시작", field: "ilbo_strt", sorter: "string", width: 120, hozAlign: "center" },
-            { title: "완료", field: "ilbo_end", sorter: "string", width: 120, hozAlign: "center" },
-            { title: "입고LOT", field: "ord_lot", sorter: "string", width: 200, hozAlign: "center" },
-            { title: "거래처", field: "corp_name", sorter: "string", width: 200, hozAlign: "center" },
-            { title: "품명", field: "prod_name", sorter: "string", width: 250, hozAlign: "center" },
-            { title: "품번", field: "prod_no", sorter: "string", width: 200, hozAlign: "center" },
-            { title: "규격", field: "prod_gyu", sorter: "string", width: 200, hozAlign: "center" },
-            { title: "재질", field: "prod_jai", sorter: "string", width: 150, hozAlign: "center" },
-            { title: "작업량", field: "ilbo_su", sorter: "string", width: 100, hozAlign: "center" },
-            { title: "작업자", field: "user_name", sorter: "string", width: 150, hozAlign: "center" },
-            { title: "담당자", field: "ord_name", sorter: "string", width: 150, hozAlign: "center" },
+            { title: "준비코드", field: "ilbo_code", sorter: "string", width: 80, hozAlign: "center", headerFilter:"input" },
+            { title: "수주NO", field: "ord_code", sorter: "string", width: 80, hozAlign: "center", headerFilter:"input" },
+            { title: "시작", field: "ilbo_strt", sorter: "string", width: 80, hozAlign: "center" },
+            { title: "완료", field: "ilbo_end", sorter: "string", width: 80, hozAlign: "center" },
+            { title: "입고LOT", field: "ord_lot", sorter: "string", width: 80, hozAlign: "center", headerFilter:"input" },
+            { title: "거래처", field: "corp_name", sorter: "string", width: 150, hozAlign: "center", headerFilter:"input" },
+            { title: "품명", field: "prod_name", sorter: "string", width: 150, hozAlign: "center", headerFilter:"input" },
+            { title: "품번", field: "prod_no", sorter: "string", width: 150, hozAlign: "center", headerFilter:"input" },
+            { title: "규격", field: "prod_gyu", sorter: "string", width: 150, hozAlign: "center", headerFilter:"input" },
+            { title: "재질", field: "prod_jai", sorter: "string", width: 150, hozAlign: "center", headerFilter:"input" },
+            { title: "작업량", field: "ilbo_su", sorter: "string", width: 80, hozAlign: "center", headerFilter:"input" },
+            { title: "작업자", field: "user_name", sorter: "string", width: 80, hozAlign: "center", headerFilter:"input" },
+            { title: "담당자", field: "ord_name", sorter: "string", width: 80, hozAlign: "center", headerFilter:"input" },
             /* {
                 title: "삭제",
                 formatter: function () {

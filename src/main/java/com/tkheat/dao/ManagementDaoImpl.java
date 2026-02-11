@@ -36,11 +36,6 @@ public class ManagementDaoImpl implements ManagementDao {
 		 return sqlSession.selectList("users.getSmallPageList", page_big);  
 	 }
 	 
-	 //사용자 권한 리스트 조회
-	 @Override
-	 public Permission authorityUserSelect(Permission permission) {
-		 return sqlSession.selectOne("users.authorityUserSelect",permission);
-	 }
 	 
 	 //사용자 권한 저장
 	@Override
@@ -231,7 +226,46 @@ public class ManagementDaoImpl implements ManagementDao {
 	 public void updateUser(Users users) {
 	     sqlSession.update("users.updateUser", users);
 	 }
+	 
+	 @Override
+	 public Users userDetail(Users user) {
+	     return sqlSession.selectOne("users.userDetail", user);
+	 }
 
-	
+	 @Override
+	 public void deleteUser(int user_code) {
+	     sqlSession.delete("users.deleteUser", user_code);
+	 }
+
+	 
+	 
+	 @Override
+	    public Permission authorityUserSelect(Permission permission) {
+	        return sqlSession.selectOne("users.authorityUserSelect", permission);
+	    }
+
+	    /**
+	     * 권한 존재 여부 확인
+	     */
+	    @Override
+	    public int checkPermissionExists(int user_code) {
+	        return sqlSession.selectOne("users.checkPermissionExists", user_code);
+	    }
+
+	    /**
+	     * 권한 INSERT
+	     */
+	    @Override
+	    public void insertPermission(Permission permission) {
+	        sqlSession.insert("users.insertPermission", permission);
+	    }
+
+	    /**
+	     * 권한 UPDATE
+	     */
+	    @Override
+	    public void updatePermission(Permission permission) {
+	        sqlSession.update("users.updatePermission", permission);
+	    }
 }
 

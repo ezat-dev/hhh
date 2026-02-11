@@ -11,264 +11,694 @@
     <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
+/* ========== 기존 스타일 유지 ========== */
 .main {
-	width: 98%;
+    width: 98%;
 }
 
 .container {
-	display: flex;
-	justify-content: space-between;
-}
-.productModal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    display: none;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-}
-
-.detail {
-    background: #ffffff;
-    border: 1px solid #000000;
-    width: 1200px;
-    height: 720px; /* 원래 높이 유지 */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-    margin: 0 auto;
-    border-radius: 5px;
-    position: relative; /* 헤더 absolute 기준 */
-    overflow: hidden; /* 전체 스크롤 방지 */
-}
-
-.header {
-    position: absolute; /* 모달 상단 고정 */
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50px;
-    background-color: #33363d;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 20px;
-    z-index: 10;
-}
-
-.header-close {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-    cursor: pointer;
-    font-size: 20px;
-    color: white;
-}
-
-.modal-body {
-    position: absolute;
-    top: 50px; /* 헤더 높이만큼 아래 시작 */
-    left: 0;
-    right: 0;
-    bottom: 0; /* 모달 하단까지 */
-    overflow-y: auto; /* 내용만 스크롤 */
-    padding: 20px;
-}
-
-
-.insideTable {
-	width: 100%; /* 내부 테이블 너비 100% */
-	border-collapse: collapse;
-}
-
-.insideTable th, .insideTable td {
-	padding: 5px; /* 셀 패딩을 줄여 세로 길이 감소 */
-	border: 1px solid #ccc; /* 셀 경계선 */
-	text-align: left; /* 텍스트 왼쪽 정렬 */
-}
-
-.insideTable th {
-	background: #f0f0f0; /* 헤더 배경색 */
-	font-weight: bold; /* 굵은 글씨 */
-}
-
-.basic {
-	background: #ffffff;
-	border: 1px solid #949494; /* 경계선 색상 */
-	width: calc(50% - 10px); /* 입력 박스 너비 조정 */
-	padding: 5px; /* 내부 여백 */
-	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* 내부 그림자 */
-	border-radius: 3px; /* 둥근 모서리 */
-	display: inline-block; /* 인라인 블록으로 설정하여 가로 정렬 */
-	margin-right: 5px; /* 입력 박스 간격 조정 */
-}
-
-.basic:last-child {
-	margin-right: 0; /* 마지막 입력 박스의 여백 제거 */
-}
-
-
-
-.btnSearchCorp:hover, .btn1T:hover {
-	background: #0056b3; /* 호버 시 색상 변경 */
-}
-
-.resultArea2 {
-	background: #f9f9f9; /* 결과 영역 배경색 */
-	padding: 10px; /* 내부 여백 */
-	border: 1px solid #ddd; /* 경계선 */
-	border-radius: 5px; /* 모서리 둥글게 */
-}
-
-.imgArea {
-	width: 200px; /* 이미지 영역 너비 */
-	height: 150px; /* 이미지 영역 높이 */
-	border: 1px solid #ddd; /* 경계선 */
-	margin-bottom: 10px; /* 하단 여백 */
-}
-
-.imgClass {
-	width: 100%; /* 이미지 너비 */
-	height: 100%; /* 이미지 높이 */
-	object-fit: cover; /* 이미지 비율 유지 */
-}
-
-.tdRight {
-	text-align: right; /* 오른쪽 정렬 */
-}
-
-.thSub2 {
-	width: 100px; /* 서브 헤더 너비 */
-}
-.thSub {
-	width: 100px; /* 서브 헤더 너비 */
-}
-.valClean {
-	margin-left: 5px; /* 여백 */
-}
-
-textarea {
-	border: 1px solid #949494; /* 경계선 색상 */
-	padding: 5px; /* 내부 여백 */
-	width: calc(100% - 10px); /* 너비 100%에서 여백 제외 */
-	height: 100px; /* 높이 */
-	border-radius: 3px; /* 둥근 모서리 */
-}
-
-.btnSaveClose {
-	display: flex;
-	justify-content: center; /* 가운데 정렬 */
-	gap: 20px; /* 버튼 사이 여백 */
-	margin-top: 30px; /* 모달 내용과의 간격 */
-	margin-bottom: 20px; /* 모달 하단과 버튼 사이 간격  */
-}
-.btnSaveClose button {
-	width: 100px;
-	height: 35px;
-	background-color: #FFD700; /* 기본 배경 - 노란색 */
-	color: black;
-	border: 2px solid #FFC107; /* 노란 테두리 */
-	border-radius: 5px;
-	font-weight: bold;
-	text-align: center;
-	cursor: pointer;
-	line-height: 35px;
-	margin: 0 10px;
-	margin-top: 10px;
-	transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-/* 저장 버튼 호버 시 */
-.btnSaveClose .save:hover {
-	background-color: #FFC107;
-	transform: scale(1.05);
-}
-
-/* 닫기 버튼 - 회색 톤 */
-.btnSaveClose .close {
-	background-color: #A9A9A9;
-	color: black;
-	border: 2px solid #808080;
-}
-
-/* 닫기 버튼 호버 시 */
-.btnSaveClose .close:hover {
-	background-color: #808080;
-	transform: scale(1.05);
+    justify-content: space-between;
 }
 
 .box1 {
-	display: flex;
-	justify-content: right;
-	align-items: center;
-	width: 1500px;
-	margin-left: -250px;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    width: 1500px;
+    margin-left: -250px;
+    gap: 10px;
 }
 
-.box1 input{
-	width : 5%;
-}
-.box1 select{
-	width: 5%
-}
+/* ========== 모달 오버레이 ========== */
 .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;  /* ✅ 기본 오버레이 */
 }
 
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 1000px;
-  position: relative;
+.modal-overlay.active {
+    display: block;
 }
 
+/* ========== 거래처/도면 모달용 기존 스타일 유지 ========== */
+#cutumListModal.modal-overlay,
+#drawingFileModal.modal-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;  /* ✅ 제품 모달보다 위 */
+    background: rgba(0, 0, 0, 0.6);  /* ✅ 더 진한 배경 */
+}
+
+#cutumListModal .modal-content,
+#drawingFileModal .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1000px;
+    position: relative;
+    z-index: 1101;
+    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.5);  /* ✅ 더 강한 그림자 */
+}
+
+#cutumListModal .modal-header,
+#drawingFileModal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+#cutumListModal .modal-close,
+#drawingFileModal .modal-close {
+    cursor: pointer;
+    font-size: 24px;
+    color: #495057;
+    transition: color 0.3s;
+}
+
+#cutumListModal .modal-close:hover,
+#drawingFileModal .modal-close:hover {
+    color: #dc3545;
+}
+
+/* ========== 제품 모달 컨테이너 ========== */
+.product-modal {
+   display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1600px;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    z-index: 1000;  /* ✅ 제품 모달 */
+    overflow: hidden;
+}
+
+.product-modal.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== 모달 헤더 ========== */
 .modal-header {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  font-size: 18px;
-  margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+    cursor: move;
+    flex-shrink: 0;
 }
 
-.modal-close {
-  cursor: pointer;
-  font-size: 24px;
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
 }
-/* 페이지네이션 중앙정렬 */
-.tabulator-footer {
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* ========== 모달 본문 ========== */
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #f5f7fa;
+    padding: 15px;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #e0e0e0;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #666;
+}
+
+/* ========== 컨텐츠 래퍼 ========== */
+.modal-content-wrapper {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    gap: 15px;
+    height: 100%;
+}
+
+/* ========== 왼쪽/오른쪽 영역 ========== */
+.modal-left,
+.modal-right {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ========== 섹션 ========== */
+.field-section {
+    background: white;
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2c3e50;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* ========== 필드 행/열 ========== */
+.field-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.field-row:last-child {
+    margin-bottom: 0;
+}
+
+.field-col {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.field-col-full {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.field-col label,
+.field-col-full label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.req {
+    color: #dc3545;
+    margin-left: 2px;
+}
+
+/* ========== 입력 필드 ========== */
+.field-col input[type="text"],
+.field-col input[type="date"],
+.field-col input[type="number"],
+.field-col select,
+.field-col-full input[type="text"],
+.field-col-full textarea,
+.modal-right textarea {
+    width: 100%;
+    padding: 5px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 12px;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+.field-col input:focus,
+.field-col select:focus,
+.field-col-full input:focus,
+.field-col-full textarea:focus {
+    outline: none;
+    border-color: #4dabf7;
+    box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.1);
+}
+
+.field-col select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 26px;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 40px;
+    font-family: inherit;
+    line-height: 1.4;
+}
+
+/* ========== 검색 버튼 포함 입력 ========== */
+.input-with-btn {
+    display: flex;
+    gap: 4px;
+}
+
+.input-with-btn input {
+    flex: 1;
+}
+
+.btn-search {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background: #4dabf7;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-search:hover {
+    background: #339af0;
+}
+
+/* ========== 기호 버튼 포함 입력 ========== */
+.input-with-symbols {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+}
+
+.input-with-symbols input {
+    flex: 1;
+}
+
+.btn-symbol {
+    padding: 4px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    background: white;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-symbol:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+/* ========== SPEC 그리드 ========== */
+.spec-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.spec-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.spec-item label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.spec-inputs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.spec-inputs select {
+    width: 70px;
+    padding: 4px 6px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.spec-inputs input {
+    width: 50px;
+    padding: 4px 6px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+.spec-inputs span {
+    font-size: 11px;
+    color: #6c757d;
+}
+
+/* ========== 경화깊이 입력 ========== */
+.depth-inputs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.depth-inputs select {
+    padding: 4px 6px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+.depth-inputs input {
+    padding: 4px 6px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+.depth-inputs span {
+    font-size: 11px;
+    color: #6c757d;
+}
+
+/* ========== 수입검사 그리드 ========== */
+.inspection-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+}
+
+.inspection-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.inspection-row label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #495057;
+    min-width: 50px;
+}
+
+.inspection-row input {
+    width: 60px;
+    padding: 4px 6px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+.inspection-row span {
+    font-size: 11px;
+    color: #6c757d;
+}
+
+/* ========== 공정 체크 그리드 ========== */
+.process-check-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.process-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.process-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.process-item label {
+    font-size: 12px;
+    cursor: pointer;
+    margin: 0;
+}
+
+/* ========== 이미지 업로드 ========== */
+.img-upload-area {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.img-upload-area input[type="file"] {
+    padding: 5px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.img-upload-area input[type="file"]::-webkit-file-upload-button {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 3px;
+    background: #4dabf7;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 6px;
+}
+
+.img-upload-area input[type="file"]::-webkit-file-upload-button:hover {
+    background: #339af0;
+}
+
+.img-preview {
+    width: 100%;
+    height: 240px;
+    border: 2px dashed #ced4da;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.img-preview-small {
+    height: 140px;
+}
+
+.img-preview:hover {
+    border-color: #4dabf7;
+    background: #e7f5ff;
+}
+
+.img-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.file-link {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 11px;
+    color: #4dabf7;
+    text-decoration: none;
+    border: 1px solid #4dabf7;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.file-link:hover {
+    background: #4dabf7;
+    color: white;
+}
+
+.btn-clear {
+    padding: 4px 10px;
+    border: 1px solid #dc3545;
+    border-radius: 4px;
+    background: white;
+    color: #dc3545;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-clear:hover {
+    background: #dc3545;
+    color: white;
+}
+
+/* ========== 파일 업로드 영역 ========== */
+.file-upload-area {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.file-upload-area input[type="file"] {
+    padding: 5px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.file-upload-area a {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 11px;
+    color: #4dabf7;
+    text-decoration: none;
+    word-break: break-all;
+}
+
+.file-upload-area a:hover {
+    text-decoration: underline;
+}
+
+/* ========== 모달 푸터 ========== */
+.modal-footer {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px 0;
+    gap: 8px;
+    padding: 12px 20px;
+    background: white;
+    border-top: 1px solid #dee2e6;
+    flex-shrink: 0;
 }
 
-/* 커스텀 페이지 버튼 */
-.custom-pagination button {
-    margin: 0 5px;
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    background: #f8f8f8;
-    border-radius: 4px;
+.modal-footer button {
+    min-width: 90px;
+    height: 36px;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 700;
     cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s;
-}
-.custom-pagination button:hover {
-    background: #007bff;
-    color: white;
-    border-color: #007bff;
+    transition: all 0.3s;
 }
 
+.btn-save {
+    background: linear-gradient(135deg, #51cf66, #37b24d);
+    color: white;
+}
+
+.btn-save:hover {
+    background: linear-gradient(135deg, #40c057, #2f9e44);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(64, 192, 87, 0.3);
+}
+
+.btn-saveas {
+    background: linear-gradient(135deg, #4dabf7, #339af0);
+    color: white;
+}
+
+.btn-saveas:hover {
+    background: linear-gradient(135deg, #339af0, #1c7ed6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(77, 171, 247, 0.3);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #ff6b6b, #fa5252);
+    color: white;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(135deg, #f03e3e, #e03131);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(240, 62, 62, 0.3);
+}
+
+.btn-cancel {
+    background: linear-gradient(135deg, #868e96, #495057);
+    color: white;
+}
+
+.btn-cancel:hover {
+    background: linear-gradient(135deg, #6c757d, #343a40);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* ========== 반응형 ========== */
+@media (max-width: 1700px) {
+    .product-modal {
+        width: 1400px;
+    }
+}
+
+@media (max-width: 1500px) {
+    .product-modal {
+        width: 95vw;
+    }
+    
+    .modal-content-wrapper {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+@media (max-width: 1200px) {
+    .field-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .spec-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 900px) {
+    .modal-content-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .field-row {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
     
     
@@ -385,525 +815,479 @@ textarea {
 	</main>
 
 
-<form method="post" class="corrForm" id="productInsertForm" name="productInsertForm">	    
-<div class="productModal">    
- <div class="detail">
- <div class="header">
- 	제품등록
- 	<span class="header-close">&times;</span>
- </div>
- 	<div class="modal-body">
-    <table cellspacing="0" cellpadding="0" width="100%">
-      <tbody><tr>
-        <td>
-          <table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-            <colgroup span="4">
-              <col width="*">
-              <col width="40%">
-              <col width="*">
-              <col width="40%">
-            </colgroup>
-            <tbody><tr>
-              <th class="left">등록일</th>
-              <td><input id="prod_date" name="prod_date" type="date" style="width:100px;" maxlength="20" size="20"></td>
-              <th>구분</th>
-              <td>
-                <select id="prod_gubn" name="prod_gubn" class="basic valPost valClean" style="width:150px;">										
-                  <option>양산</option>
-                  <option>개발</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th class="left">거래처</th>
-              <td>
-                  <input id="corp_name" name="corp_name"class="basic valClean" type="text" style="width:60%;"  readonly="readonly">
-                  <input id="corp_code" name="corp_code" class="basic valPost valClean" type="hidden" style="width:50%;"  readonly="readonly">
-                <input class="btnSearchCorp" name="" type="button" title="거래처선택" value="검색" onclick="openCutumModal();">
-
-              </td>
-              <th>관리번호</th>
-              <td><input id="prod_cno" name="prod_cno" class="basic valPost valClean" type="text" style="width:90%;" value=""></td>
-            </tr>
-            <tr>
-              <th class="left">품명</th>
-              <td>
-                <input id="prod_name" name="prod_name" class="basic valPost valClean" type="text" style="width:90%;" value="">
-<!--                 <input id="PROD_CODE" name="prod_code" class="basic valPost valClean" type="hidden" value=""> -->
-              </td>
-              <th><span class="left">품번</span></th>
-              <td><input id="prod_no" name="prod_no" class="basic valPost valClean" type="text" style="width:90%;" value=""></td>
-            </tr>
-            <tr>
-              <th class="left">모델명</th>
-              <td><input id="prod_model" name="prod_model" class="basic valPost valClean" type="text" style="width:90%;" value=""></td>
-              <th><span class="left">재질</span></th>
-              <td><input id="prod_jai" name="prod_jai" class="basic valPost valClean" type="text" style="width:90%;" value=""></td>
-            </tr>									
-            <tr>
-              <th class="left">규격</th>
-              <td>
-                <input id="prod_gyu" name="prod_gyu" class="basic valPost valClean" type="text" style="width:200px;" value="">
-                <input type="button" value="Φ" class="btn1T" onclick="$('#prod_gyu').val($('#prod_gyu').val()+'Φ');">
-                <input type="button" value="X" class="btn1T" onclick="$('#prod_gyu').val($('#prod_gyu').val()+'X');">
-                <input type="button" value="L" class="btn1T" onclick="$('#prod_gyu').val($('#prod_gyu').val()+'L');">
-              </td>
-              <th><span class="left">단중(kg)</span></th>
-              <td><input id="prod_danj" name="prod_danj" class="basic valPost valClean" type="text" style="width:90%;" value=""></td>
-            </tr>
-            <tr>
-              <th class="left">단가</th>
-              <td><input id="prod_dang" name="prod_dang" class="basic valPost valClean" type="text" style="width:90%;" value="0"></td>
-              <th class="left">단위</th>
-              <td>
-                <select id="prod_danw" name="prod_danw" class="basic valPost valClean" style="width:150px;">
-                  <option>EA</option>
-                  <option>CH</option>
-                  <option>KG</option>
-                </select>
-              </td>
-            </tr><tr>
-            </tr><tr>
-              <th>수입검사</th>
-              <td style="vertical-align: top;">
-                <table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-                  <tbody><tr>
-                  <th>치수1</th>
-                  <td><input id="prod_chisu1n" name="prod_chisu1n"  type="text" value="">-<input id="prod_chisu1s" name="prod_chisu1s"  type="text" value=""></td>
-                    </tr>
-                    <tr>
-                  <th>치수2</th>
-                  <td><input id="prod_chisu2n" name="prod_chisu2n"  type="text" value="">-<input id="prod_chisu2s" name="prod_chisu2s" type="text" value=""></td>
-                    </tr>
-                    <tr>
-                  <th>치수3</th>
-                  <td><input id="prod_chisu3n" name="prod_chisu3n" type="text" value="">-<input id="prod_chisu3s" name="prod_chisu3s" type="text" value=""></td>
-                    </tr>
-                    <tr>
-                  <th>치수4</th>
-                  <td><input id="prod_chisu4n" name="prod_chisu4n"  type="text" value="">-<input id="prod_chisu4s" name="prod_chisu4s" type="text" value=""></td>
-                    </tr>
-                    <tr>
-                  <th>치수5</th>
-                  <td><input id="prod_chisu5n" name="prod_chisu5n"  type="text" value="">-<input id="prod_chisu5s" name="prod_chisu5s" type="text" value=""></td>
-                    </tr>
-                </tbody></table>
-              </td>
-            </tr>
-            <tr>
-              <th class="left">연마여유(mm)</th>
-              <td style="vertical-align: top;">
-                <table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-                  <tbody><tr><td><input id="prod_polish" name="prod_polish" class="basic valPost valClean" type="text" style="width:90%;" value="0"></td>
-                </tr></tbody></table>
-              </td>
-              <th><span class="left">박스당수량</span></th>
-              <td><input id="prod_boxsu" name="prod_boxsu" class="basic valPost valClean" type="text" style="width:90%;" value=""></td>
-            </tr>
-            <tr>
-              <th><span class="left">공정</span></th>
-              <td>
-                <select id="tech_no" name="tech_no" class="basic valPost valClean">
-                  
-                    <option value="A08">PIT로-가스산질화(A08)</option>
-                  
-                    <option value="A11">PIT로-가스질화(A11)</option>
-                  
-                    <option value="A12">PIT로-가스연질화(A12)</option>
-                  
-                    <option value="A13">PIT로-Annearling(A13)</option>
-                  
-                    <option value="A14">PIT로-Normalizing(A14)</option>
-                  
-                    <option value="A15">PIT로-기타(A15)</option>
-                  
-                    <option value="A16">Box Type-QT(A16)</option>
-                  
-                    <option value="A17">Box Type-침탄(A17)</option>
-                  
-                    <option value="A18">Box Type-침탄질화(A18)</option>
-                  
-                    <option value="A20">Box Type-가스연질화(A20)</option>
-                  
-                    <option value="A21">Box Type-Normalizing(A21)</option>
-                  
-                    <option value="A27">이온질화-이온질화(A27)</option>
-                  
-                    <option value="A30">Salt로-염욕질화(A30)</option>
-                  
-                    <option value="A31">Box Type-Case-Vc(A31)</option>
-                  
-                    <option value="A32">PIT로-Normalizing(A32)</option>
-                  
-                    <option value="A33">Box Type-VC침탄(A33)</option>
-                  
-                    <option value="A34">Box Type-가스질화(A34)</option>
-                  
-                    <option value="A35">PIT로-침류질화(A35)</option>
-                  
-                    <option value="B16">템퍼링로-템퍼링(B16)</option>
-                  
-                    <option value="B17">템퍼링로-템퍼링기타(B17)</option>
-                  
-                    <option value="B38">진공로-진공열처리(B38)</option>
-                  
-                    <option value="B39">이온질화-PLASOX(B39)</option>
-                  
-                    <option value="B40">진공로-Annearling(B40)</option>
-                  
-                    <option value="B41">진공로-Normalizing(B41)</option>
-                  
-                    <option value="B42">진공로-기타(B42)</option>
-                  
-                    <option value="C01">PQ-PQ(C01)</option>
-                  
-                    <option value="C02">PQ-외주품(C02)</option>
-                  
-                    <option value="C03">PQ-침탄PQ(C03)</option>
-                  
-                </select>
-              </td>
-              <th>공정순서</th>
-              <td><input id="tech_seq" name="tech_seq" class="basic valPost valClean" type="text" style="width:90%;" value=""></td>
-            </tr>
-            <tr>
-              <th class="left changeDanga" style="display: none;">입고변경단가</th>
-              <td colspan="4" class="changeDanga" style="display: none;">
-                <input type="text" id="changeIpgoFromDate" name="changeIpgoFromDate" value="" class="date" style="width:85px;" readonly="">
-                ~<input type="text" id="changeIpgoToDate" name="changeIpgoToDate" value="" class="date" style="width:85px;" readonly="">
-                <input id="changeIpgoValue" name="changeIpgoValue" class="basic" type="text" style="width:10%;" value="" placeholder="변경단가 입력">
-                <input class="" type="button" title="단가를 적용시키실려면 클릭하세요" value="저장" style="width:50px;" onclick="changeIpgoDanga();">
-              </td>
-            </tr>
-            <tr>
-              <th class="left changeDanga" style="display: none;">출고변경단가</th>
-              <td colspan="4" class=" changeDanga" style="display: none;"><input type="text" id="changeFromDate" name="changeFromDate" value="" class="date" style="width:85px;" readonly="">
-              ~<input type="text" id="changeToDate" name="changeToDate" value="" class="date" style="width:85px;" readonly="">
-              <input id="changeValue" name="changeValue" class="basic" type="text" style="width:10%;" value="" placeholder="변경단가 입력">
-              <input class="" type="button" title="단가를 적용시키실려면 클릭하세요" value="저장" style="width:50px;" onclick="changeDanga();">
-              </td>										
-            </tr>	
-            <tr>
-              <th>공정패턴</th>
-              <td><input id="tech_pattern" name="tech_pattern" class="basic valPost valClean" type="number" value=""></td>
-              <th>포장방법</th>
-              <td><input id="prod_danch" name="prod_danch" class="basic valPost valClean" type="text" style="width:90%;" value=""></td>	
-            </tr>
-            <tr>
-              <th class="left">BOX TYPE</th>
-              <td>
-                <select id="prod_box" name="prod_box" class="basic valPost valClean" style="width:150px;">
-                  <option>A</option>
-                  <option>B</option>
-                </select>
-              </td>
-              <th class="left">열처리곡선</th>
-              <td>
-                <select id="prod_snp" name="prod_snp" class="basic valPost valClean" type="text" style="width:150px;" value="">
-                  <option>불요</option>
-                  <option>필요</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th class="left">방청유</th>
-              <td>
-                <select id="prod_bangch" name="prod_bangch" class="basic valPost valClean" style="width:150px;">
-                  <option>필요없음</option>
-                  <option>수용성</option>
-                  <option>유용성</option>
-                  <option>기타</option>
-                </select>
-              </td>
-              <th class="left">후처리</th>
-              <td>
-                <select id="prod_vnyl" name="prod_vnyl" class="basic valPost valClean" style="width:150px;">
-                  <option>불요</option>
-                  <option>쇼트SHOT-H</option>
-                  <option>쇼트SHOT-T</option>
-                  <option>쇼트SHOT-A</option>
-                  <option>쇼트SHOT-H</option>
-                  <option>센딩SAND-A</option>
-                  <option>센딩SAND-index</option>
-                  <option>센딩SAND-T</option>
-                  <option>센딩SAND-conveyer</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th class="left">시편제목</th>
-              <td>
-                <select id="prod_pad" name="prod_pad" class="basic valPost valClean" style="width:150px;">
-                  <option>본품</option>
-                  <option>대체시편</option>
-                  <option>시편절단(본품절단)</option>
-                  <option>시편필요없음</option>
-                </select>
-              </td>
-              <th class="left">제품실재고 현황</th>
-              <td>
-                <input id="prod_realjai" name="prod_realjai" class="basic valPost valClean" type="text" style="width:90%;" value="">
-              </td>
-            </tr>	
-            <tr>
-            <th class="left">업종</th>
-              <td>
-                <select id="prod_upjong" name="prod_upjong" class="basic valPost valClean" style="width:150px;">
-                  <option>자동차</option>
-                  <option>선박</option>
-                  <option>유압</option>
-                  <option>방산</option>
-                  <option>기타</option>
-                </select>
-              </td>
-            <th class="left">성적서</th>
-              <td>
-                <select id="prod_plt" name="prod_plt" class="basic valPost valClean" style="width:150px;">
-                  <option>필요</option>
-                  <option>불필요</option>
-                </select>
-              </td>
-            </tr>									
-            <tr>
-  <th class="left">SPEC</th>
-  <td colspan="3">
-    <table class="insideTable w-100">
-      <tbody>
-        <!-- 경도 정보 영역 -->
-        <tr>
-          <th class="thSub2">표면경도</th>
-          <td>
-            <select id="prod_pg" name="prod_pg">
-              <option>HRC</option><option>HV</option><option>HS</option><option>HRA</option><option>HRB</option><option>HB</option><option>HR15N</option><option>HR30N</option><option>HR45N</option>
-            </select>
-            <input id="prod_pg1" name="prod_pg1" type="text" style="width:60px;"> ~ 
-            <input id="prod_pg2" name="prod_pg2" type="text" style="width:60px;">
-          </td>
-
-          <th class="thSub2">소입경도</th>
-          <td>
-            <select id="prod_si" name="prod_si">
-              <option>HRC</option><option>HV</option><option>HS</option><option>HRA</option><option>HRB</option><option>HB</option><option>HR15N</option><option>HR30N</option><option>HR45N</option>
-            </select>
-            <input id="prod_si1" name="prod_si1" type="text" style="width:60px;"> ~ 
-            <input id="prod_si2" name="prod_si2" type="text" style="width:60px;">
-          </td>
-        </tr>
-
-        <tr>
-          <th class="thSub2">소려경도</th>
-          <td>
-            <select id="prod_sr" name="prod_sr">
-              <option>HRC</option><option>HV</option><option>HS</option><option>HRA</option><option>HRB</option><option>HB</option><option>HR15N</option><option>HR30N</option><option>HR45N</option>
-            </select>
-            <input id="prod_sr1" name="prod_sr1" type="text" style="width:60px;"> ~ 
-            <input id="prod_sr2" name="prod_sr2" type="text" style="width:60px;">
-          </td>
-
-          <th class="thSub2">심부경도</th>
-          <td>
-            <select id="prod_sg" name="prod_sg">
-              <option>HRC</option><option>HV</option><option>HRA</option><option>HRB</option><option>HB</option>
-            </select>
-            <input id="prod_sg1" name="prod_sg1" type="text" style="width:60px;"> ~ 
-            <input id="prod_sg2" name="prod_sg2" type="text" style="width:60px;">
-          </td>
-        </tr>
-
-        <!-- 경화 깊이 -->
-        <tr>
-          <th class="thSub2">경화깊이</th>
-          <td colspan="3">
-            <select id="prod_gd1" name="prod_gd1">
-              <option>유효경화</option><option>전경화</option>
-            </select>
-            <select id="prod_gd3" name="prod_gd3">
-              <option>HV</option><option>HRC</option>
-            </select>
-            <input id="prod_gd2" name="prod_gd2" type="text" style="width:60px;"> 기준,
-            <input id="prod_gd4" name="prod_gd4" type="text" style="width:60px;"> ~ 
-            <input id="prod_gd5" name="prod_gd5" type="text" style="width:60px;">
-          </td>
-        </tr>
-
-        <!-- 화합물층, 금속조직, 변형량, 비고 -->
-        <tr>
-          <th class="thSub2">화합물층 깊이</th>
-          <td>
-            <select id="prod_whadeep" name="prod_whadeep">
-              <option>㎛</option><option>㎜</option>
-            </select>
-            <input id="prod_e1" name="prod_e1" type="text" style="width:60px;"> ~ 
-            <input id="prod_e2" name="prod_e2" type="text" style="width:60px;">
-          </td>
-
-          <th class="thSub2">금속조직</th>
-          <td><input id="prod_gj" name="prod_gj" type="text" style="width:95%;"></td>
-        </tr>
-
-        <tr>
-          <th class="thSub2">변형량</th>
-          <td><input id="prod_bh" name="prod_bh" type="text" style="width:95%;"></td>
-          <th class="thSub2">비고</th>
-          <td><textarea id="prod_note" name="prod_note" style="width:95%; height: 50px;"></textarea></td>
-        </tr>
-      </tbody>
-    </table>
-  </td>
-</tr>
-              
-              <th rowspan="3">사진</th>
-              <td rowspan="3">
-                <table class="insideTable" cellspacing="0" cellpadding="0" width="100%">
-                  <tbody>
-                    <tr>
-                      <th class="thSub2">제품</th>
-                      <td class="tdRight">
-                        <div>
-                              <input id="imgInput0" class="imgInputClass valClean" type="file" name="product_file_url" title="이미지 찾기" onchange="rpReadImageURL(this); $(this).parent().find('img').removeClass('rp-file-del');">
-                              <!-- <input type="button" value="X" name="product_file_url" onclick="$('#img0').attr('src', '/resources/images/noimage_01.gif'); $('#imgInput0').val('');"> -->
-                          <!-- <input type="text" name="product_file_name">  -->
-                          <a href="" class="form-control aphoto" download="">다운로드</a>
+<form method="post" class="corrForm" id="productInsertForm" name="productInsertForm" enctype="multipart/form-data">
+    
+    <div class="modal-overlay"></div>
+    
+    <div class="product-modal">
+        <!-- 헤더 -->
+        <div class="modal-header">
+            <h2>제품등록</h2>
+            <button type="button" class="modal-close-btn">&times;</button>
+        </div>
+        
+        <!-- 본문 -->
+        <div class="modal-body">
+            <div class="modal-content-wrapper">
+                <!-- 왼쪽: 입력 필드 -->
+                <div class="modal-left">
+                    <!-- 기본 정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">기본 정보</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>등록일</label>
+                                <input type="date" id="prod_date" name="prod_date">
+                            </div>
+                            <div class="field-col">
+                                <label>구분</label>
+                                <select id="prod_gubn" name="prod_gubn">
+                                    <option>양산</option>
+                                    <option>개발</option>
+                                </select>
+                            </div>
+                            <div class="field-col">
+                                <label>거래처</label>
+                                <div class="input-with-btn">
+                                    <input type="text" id="corp_name" name="corp_name" readonly>
+                                    <input type="hidden" id="corp_code" name="corp_code">
+                                    <button type="button" class="btn-search" onclick="openCutumModal();">검색</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="imgArea" style="width:200px; height:150px; border:1px solid #ddd;">
-                          <img id="img0" class="imgClass rp-img-popup" style="width:100%; height:100%;" src="/tkheat/css/image/no_image.png">
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>품명 <span class="req">*</span></label>
+                                <input type="text" id="prod_name" name="prod_name" placeholder="품명">
+                            </div>
+                            <div class="field-col">
+                                <label>품번</label>
+                                <input type="text" id="prod_no" name="prod_no" placeholder="품번">
+                            </div>
+                            <div class="field-col">
+                                <label>관리번호</label>
+                                <input type="text" id="prod_cno" name="prod_cno" placeholder="관리번호">
+                            </div>
                         </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th class="thSub2">외형사진<br>및<br>분석위치</th>
-                      <td class="tdRight">
-                        <div>
-                              <input id="imgInput1" class="imgInputClass valClean" type="file" name="apperance_file_url" title="이미지 찾기">
-                              <input type="button" value="X" onclick="$('#img1').attr('src', '/tkheat/css/image/no_image.png'); $('#imgInput1').val('');">
-                          <a href="" class="form-control bphoto" download="">다운로드</a>
-                          </div>
-                        <div class="imgArea" style="width:200px; height:150px; border:1px solid #ddd;">
-                          <img id="img1" class="imgClass rp-img-popup" style="width:100%; height:100%;" src="/tkheat/css/image/no_image.png">
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>모델명</label>
+                                <input type="text" id="prod_model" name="prod_model" placeholder="모델명">
+                            </div>
+                            <div class="field-col">
+                                <label>재질</label>
+                                <input type="text" id="prod_jai" name="prod_jai" placeholder="재질">
+                            </div>
+                            <div class="field-col">
+                                <label>규격</label>
+                                <div class="input-with-symbols">
+                                    <input type="text" id="prod_gyu" name="prod_gyu" placeholder="규격">
+                                    <button type="button" class="btn-symbol" onclick="$('#prod_gyu').val($('#prod_gyu').val()+'Φ');">Φ</button>
+                                    <button type="button" class="btn-symbol" onclick="$('#prod_gyu').val($('#prod_gyu').val()+'X');">X</button>
+                                    <button type="button" class="btn-symbol" onclick="$('#prod_gyu').val($('#prod_gyu').val()+'L');">L</button>
+                                </div>
+                            </div>
                         </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th class="thSub2">열처리공정</th>
-                      <td class="tdRight">
-                        <div>
-                              <input id="imgInput2" class="imgInputClass valClean" type="file" name="heat_file_url" title="이미지 찾기">
-                              <input type="button" value="X" onclick="$('#img2').attr('src', '/tkheat/css/image/no_image.png'); $('#imgInput2').val('');">
-                          <a href="" class="form-control cphoto" download="">다운로드</a>
-                          </div>
-                        <div class="imgArea" style="width:200px; height:150px; border:1px solid #ddd;">
-                          <img id="img2" class="imgClass rp-img-popup" style="width:100%; height:100%;" src="/tkheat/css/image/no_image.png">
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>단중(kg)</label>
+                                <input type="text" id="prod_danj" name="prod_danj" placeholder="단중">
+                            </div>
+                            <div class="field-col">
+                                <label>단가</label>
+                                <input type="text" id="prod_dang" name="prod_dang" value="0">
+                            </div>
+                            <div class="field-col">
+                                <label>단위</label>
+                                <select id="prod_danw" name="prod_danw">
+                                    <option>EA</option>
+                                    <option>CH</option>
+                                    <option>KG</option>
+                                </select>
+                            </div>
                         </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                    <script type="text/javascript">
-                      $(function(){	
-                        // 파일 선택시 이미지 띄우기
-                      $('.imgInputClass').change(function(event){
-                        var selectedFile = event.target.files[0];
-                      var reader = new FileReader();
-                      
-                      var img = $(this).parent().parent().find('img')[0];
-                      img.title = selectedFile.name;
-                      
-                      reader.onload = function(event) {
-                        img.src = event.target.result;
-                      };
-                      
-                      reader.readAsDataURL(selectedFile);
-                      });
-                    });
-                  $("#PROD_DANG").change(function(){
-                    $(this).val($(this).val() == '' ? 0 : $(this).val());
-                    $(this).val(parseFloat($(this).val()).toFixed(2));
-                  });
-                    </script>
-              </td>
-            </tr>
-            
-            <tr>
-              <th>도면파일</th>
-              <td>
-                <div>
-                      <input id="file" class="valClean" type="file" title="파일 찾기" name="drawing_file_url">
-                  <input type="button" value="X" onclick="$('#fileLink').text('');">
-                  </div>
-                  <div>
-    				<a href="#" id="fileLink" class="valClean" onclick="openDrawingModal(event)"></a> 
-				</div>
-                <div>
-                  <a href="" id="fileLink" class="valClean" target="_blank"></a> 
+                    </div>
+                    
+                    <!-- 공정 정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">공정 정보</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>공정</label>
+                                <select id="tech_no" name="tech_no">
+                                    <option value="A08">PIT로-가스산질화(A08)</option>
+                                    <option value="A11">PIT로-가스질화(A11)</option>
+                                    <option value="A12">PIT로-가스연질화(A12)</option>
+                                    <option value="A13">PIT로-Annearling(A13)</option>
+                                    <option value="A14">PIT로-Normalizing(A14)</option>
+                                    <option value="A15">PIT로-기타(A15)</option>
+                                    <option value="A16">Box Type-QT(A16)</option>
+                                    <option value="A17">Box Type-침탄(A17)</option>
+                                    <option value="A18">Box Type-침탄질화(A18)</option>
+                                    <option value="A20">Box Type-가스연질화(A20)</option>
+                                    <option value="A21">Box Type-Normalizing(A21)</option>
+                                    <option value="A27">이온질화-이온질화(A27)</option>
+                                    <option value="A30">Salt로-염욕질화(A30)</option>
+                                    <option value="A31">Box Type-Case-Vc(A31)</option>
+                                    <option value="A32">PIT로-Normalizing(A32)</option>
+                                    <option value="A33">Box Type-VC침탄(A33)</option>
+                                    <option value="A34">Box Type-가스질화(A34)</option>
+                                    <option value="A35">PIT로-침류질화(A35)</option>
+                                    <option value="B16">템퍼링로-템퍼링(B16)</option>
+                                    <option value="B17">템퍼링로-템퍼링기타(B17)</option>
+                                    <option value="B38">진공로-진공열처리(B38)</option>
+                                    <option value="B39">이온질화-PLASOX(B39)</option>
+                                    <option value="B40">진공로-Annearling(B40)</option>
+                                    <option value="B41">진공로-Normalizing(B41)</option>
+                                    <option value="B42">진공로-기타(B42)</option>
+                                    <option value="C01">PQ-PQ(C01)</option>
+                                    <option value="C02">PQ-외주품(C02)</option>
+                                    <option value="C03">PQ-침탄PQ(C03)</option>
+                                </select>
+                            </div>
+                            <div class="field-col">
+                                <label>공정순서</label>
+                                <input type="text" id="tech_seq" name="tech_seq" placeholder="공정순서">
+                            </div>
+                            <div class="field-col">
+                                <label>공정패턴</label>
+                                <input type="number" id="tech_pattern" name="tech_pattern" placeholder="패턴">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>박스당수량</label>
+                                <input type="text" id="prod_boxsu" name="prod_boxsu" placeholder="수량">
+                            </div>
+                            <div class="field-col">
+                                <label>포장방법</label>
+                                <input type="text" id="prod_danch" name="prod_danch" placeholder="포장방법">
+                            </div>
+                            <div class="field-col">
+                                <label>BOX TYPE</label>
+                                <select id="prod_box" name="prod_box">
+                                    <option>A</option>
+                                    <option>B</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 품질 정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">품질 정보</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>열처리곡선</label>
+                                <select id="prod_snp" name="prod_snp">
+                                    <option>불요</option>
+                                    <option>필요</option>
+                                </select>
+                            </div>
+                            <div class="field-col">
+                                <label>방청유</label>
+                                <select id="prod_bangch" name="prod_bangch">
+                                    <option>필요없음</option>
+                                    <option>수용성</option>
+                                    <option>유용성</option>
+                                    <option>기타</option>
+                                </select>
+                            </div>
+                            <div class="field-col">
+                                <label>후처리</label>
+                                <select id="prod_vnyl" name="prod_vnyl">
+                                    <option>불요</option>
+                                    <option>쇼트SHOT-H</option>
+                                    <option>쇼트SHOT-T</option>
+                                    <option>쇼트SHOT-A</option>
+                                    <option>센딩SAND-A</option>
+                                    <option>센딩SAND-index</option>
+                                    <option>센딩SAND-T</option>
+                                    <option>센딩SAND-conveyer</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>시편제목</label>
+                                <select id="prod_pad" name="prod_pad">
+                                    <option>본품</option>
+                                    <option>대체시편</option>
+                                    <option>시편절단(본품절단)</option>
+                                    <option>시편필요없음</option>
+                                </select>
+                            </div>
+                            <div class="field-col">
+                                <label>업종</label>
+                                <select id="prod_upjong" name="prod_upjong">
+                                    <option>자동차</option>
+                                    <option>선박</option>
+                                    <option>유압</option>
+                                    <option>방산</option>
+                                    <option>기타</option>
+                                </select>
+                            </div>
+                            <div class="field-col">
+                                <label>성적서</label>
+                                <select id="prod_plt" name="prod_plt">
+                                    <option>필요</option>
+                                    <option>불필요</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col-full">
+                                <label>제품실재고 현황</label>
+                                <input type="text" id="prod_realjai" name="prod_realjai" placeholder="재고현황">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- SPEC 정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">SPEC 정보</h3>
+                        
+                        <!-- 경도 정보 -->
+                        <div class="spec-grid">
+                            <div class="spec-item">
+                                <label>표면경도</label>
+                                <div class="spec-inputs">
+                                    <select id="prod_pg" name="prod_pg">
+                                        <option>HRC</option><option>HV</option><option>HS</option><option>HRA</option><option>HRB</option><option>HB</option><option>HR15N</option><option>HR30N</option><option>HR45N</option>
+                                    </select>
+                                    <input type="text" id="prod_pg1" name="prod_pg1" placeholder="MIN">
+                                    <span>~</span>
+                                    <input type="text" id="prod_pg2" name="prod_pg2" placeholder="MAX">
+                                </div>
+                            </div>
+                            <div class="spec-item">
+                                <label>소입경도</label>
+                                <div class="spec-inputs">
+                                    <select id="prod_si" name="prod_si">
+                                        <option>HRC</option><option>HV</option><option>HS</option><option>HRA</option><option>HRB</option><option>HB</option><option>HR15N</option><option>HR30N</option><option>HR45N</option>
+                                    </select>
+                                    <input type="text" id="prod_si1" name="prod_si1" placeholder="MIN">
+                                    <span>~</span>
+                                    <input type="text" id="prod_si2" name="prod_si2" placeholder="MAX">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="spec-grid">
+                            <div class="spec-item">
+                                <label>소려경도</label>
+                                <div class="spec-inputs">
+                                    <select id="prod_sr" name="prod_sr">
+                                        <option>HRC</option><option>HV</option><option>HS</option><option>HRA</option><option>HRB</option><option>HB</option><option>HR15N</option><option>HR30N</option><option>HR45N</option>
+                                    </select>
+                                    <input type="text" id="prod_sr1" name="prod_sr1" placeholder="MIN">
+                                    <span>~</span>
+                                    <input type="text" id="prod_sr2" name="prod_sr2" placeholder="MAX">
+                                </div>
+                            </div>
+                            <div class="spec-item">
+                                <label>심부경도</label>
+                                <div class="spec-inputs">
+                                    <select id="prod_sg" name="prod_sg">
+                                        <option>HRC</option><option>HV</option><option>HRA</option><option>HRB</option><option>HB</option>
+                                    </select>
+                                    <input type="text" id="prod_sg1" name="prod_sg1" placeholder="MIN">
+                                    <span>~</span>
+                                    <input type="text" id="prod_sg2" name="prod_sg2" placeholder="MAX">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 경화깊이 -->
+                        <div class="field-row">
+                            <div class="field-col-full">
+                                <label>경화깊이</label>
+                                <div class="depth-inputs">
+                                    <select id="prod_gd1" name="prod_gd1">
+                                        <option>유효경화</option><option>전경화</option>
+                                    </select>
+                                    <select id="prod_gd3" name="prod_gd3">
+                                        <option>HV</option><option>HRC</option>
+                                    </select>
+                                    <input type="text" id="prod_gd2" name="prod_gd2" placeholder="기준" style="width:60px;">
+                                    <span>기준,</span>
+                                    <input type="text" id="prod_gd4" name="prod_gd4" placeholder="MIN" style="width:60px;">
+                                    <span>~</span>
+                                    <input type="text" id="prod_gd5" name="prod_gd5" placeholder="MAX" style="width:60px;">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 기타 SPEC -->
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>화합물층 깊이</label>
+                                <div class="spec-inputs">
+                                    <select id="prod_whadeep" name="prod_whadeep">
+                                        <option>㎛</option><option>㎜</option>
+                                    </select>
+                                    <input type="text" id="prod_e1" name="prod_e1" placeholder="MIN">
+                                    <span>~</span>
+                                    <input type="text" id="prod_e2" name="prod_e2" placeholder="MAX">
+                                </div>
+                            </div>
+                            <div class="field-col">
+                                <label>연마여유(mm)</label>
+                                <input type="text" id="prod_polish" name="prod_polish" value="0">
+                            </div>
+                        </div>
+                        
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>금속조직</label>
+                                <input type="text" id="prod_gj" name="prod_gj" placeholder="금속조직">
+                            </div>
+                            <div class="field-col">
+                                <label>변형량</label>
+                                <input type="text" id="prod_bh" name="prod_bh" placeholder="변형량">
+                            </div>
+                        </div>
+                        
+                        <div class="field-row">
+                            <div class="field-col-full">
+                                <label>비고</label>
+                                <textarea id="prod_note" name="prod_note" rows="2" placeholder="비고"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 수입검사 -->
+                    <div class="field-section">
+                        <h3 class="section-title">수입검사</h3>
+                        <div class="inspection-grid">
+                            <div class="inspection-row">
+                                <label>치수1</label>
+                                <input type="text" id="prod_chisu1n" name="prod_chisu1n" placeholder="MIN">
+                                <span>~</span>
+                                <input type="text" id="prod_chisu1s" name="prod_chisu1s" placeholder="MAX">
+                            </div>
+                            <div class="inspection-row">
+                                <label>치수2</label>
+                                <input type="text" id="prod_chisu2n" name="prod_chisu2n" placeholder="MIN">
+                                <span>~</span>
+                                <input type="text" id="prod_chisu2s" name="prod_chisu2s" placeholder="MAX">
+                            </div>
+                            <div class="inspection-row">
+                                <label>치수3</label>
+                                <input type="text" id="prod_chisu3n" name="prod_chisu3n" placeholder="MIN">
+                                <span>~</span>
+                                <input type="text" id="prod_chisu3s" name="prod_chisu3s" placeholder="MAX">
+                            </div>
+                            <div class="inspection-row">
+                                <label>치수4</label>
+                                <input type="text" id="prod_chisu4n" name="prod_chisu4n" placeholder="MIN">
+                                <span>~</span>
+                                <input type="text" id="prod_chisu4s" name="prod_chisu4s" placeholder="MAX">
+                            </div>
+                            <div class="inspection-row">
+                                <label>치수5</label>
+                                <input type="text" id="prod_chisu5n" name="prod_chisu5n" placeholder="MIN">
+                                <span>~</span>
+                                <input type="text" id="prod_chisu5s" name="prod_chisu5s" placeholder="MAX">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 공정 체크 -->
+                    <div class="field-section">
+                        <h3 class="section-title">공정 체크</h3>
+                        <div class="process-check-grid">
+                            <div class="process-item">
+                                <input type="checkbox" id="prod_fac1" name="prod_fac1">
+                                <label for="prod_fac1">전세정</label>
+                            </div>
+                            <div class="process-item">
+                                <input type="checkbox" id="prod_fac2" name="prod_fac2">
+                                <label for="prod_fac2">방탄</label>
+                            </div>
+                            <div class="process-item">
+                                <input type="checkbox" id="prod_fac3" name="prod_fac3">
+                                <label for="prod_fac3">침탄</label>
+                            </div>
+                            <div class="process-item">
+                                <input type="checkbox" id="prod_fac4" name="prod_fac4">
+                                <label for="prod_fac4">고주파</label>
+                            </div>
+                            <div class="process-item">
+                                <input type="checkbox" id="prod_fac5" name="prod_fac5">
+                                <label for="prod_fac5">후세정</label>
+                            </div>
+                            <div class="process-item">
+                                <input type="checkbox" id="prod_fac6" name="prod_fac6">
+                                <label for="prod_fac6">템퍼링</label>
+                            </div>
+                            <div class="process-item">
+                                <input type="checkbox" id="prod_fac7" name="prod_fac7">
+                                <label for="prod_fac7">쇼트</label>
+                            </div>
+                            <div class="process-item">
+                                <input type="checkbox" id="prod_fac8" name="prod_fac8">
+                                <label for="prod_fac8">후처리</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </td>
-            </tr>
-                                    
-                                    <tr>
-              <th>공정</th>
-              <td>
-                <div class="resultArea2">
-                  <div class="contentList" style="">							
-                    <table>						
-                      <thead>
-                        <tr>
-                          <th scope="col" class="left seq" width="50%">공정명</th>
-                          <th scope="col" width="50%">공정순서</th>
-                        </tr>
-                      </thead>
-                      <tbody id="contentListTBody">									
-                        <tr>
-                          <td class="left seq" width="50%">전세정</td>
-                          <td width="50%"><input type="checkbox" id="prod_fac1" name="prod_fac1" class="basic valPost valClean" value=""></td>
-                        </tr>
-                        <tr>
-                          <td class="left seq" width="50%">방탄</td>
-                          <td width="50%"><input type="checkbox" id="prod_fac2" name="prod_fac2" class="basic valPost valClean" value=""></td>
-                        </tr>
-                        <tr>
-                          <td class="left seq" width="50%">침탄</td>
-                          <td width="50%"><input type="checkbox" id="prod_fac3" name="prod_fac3"class="basic valPost valClean" value=""></td>
-                        </tr>
-                        <tr>
-                          <td class="left seq" width="50%">고주파</td>
-                          <td width="50%"><input type="checkbox" id="prod_fac4" name="prod_fac4"class="basic valPost valClean" value=""></td>
-                        </tr>
-                        <tr>
-                          <td class="left seq" width="50%">후세정</td>
-                          <td width="50%"><input type="checkbox" id="prod_fac5" name="prod_fac5"class="basic valPost valClean" value=""></td>
-                        </tr>
-                        <tr>
-                          <td class="left seq" width="50%">템퍼링</td>
-                          <td width="50%"><input type="checkbox" id="prod_fac6" name="prod_fac6"class="basic valPost valClean" value=""></td>
-                        </tr>
-                        <tr>
-                          <td class="left seq" width="50%">쇼트</td>
-                          <td width="50%"><input type="checkbox" id="prod_fac7" name="prod_fac7"class="basic valPost valClean" value=""></td>
-                        </tr>	
-                        <tr>
-                          <td class="left seq" width="50%">후처리</td>
-                          <td width="50%"><input type="checkbox" id="prod_fac8" name="prod_fac8"class="basic valPost valClean" value=""></td>
-                        </tr>										
-                      </tbody>
-                    </table>
-                  </div>
+                
+                <!-- 오른쪽: 이미지 및 도면 -->
+                <div class="modal-right">
+                    <div class="field-section">
+                        <h3 class="section-title">제품 이미지</h3>
+                        <div class="img-upload-area">
+                            <input type="file" id="imgInput0" class="imgInputClass" name="product_file_url" accept="image/*">
+                            <div class="img-preview">
+                                <img id="img0" src="/tkheat/css/image/no_image.png" alt="제품이미지">
+                            </div>
+                            <a href="" class="aphoto file-link" download="">다운로드</a>
+                        </div>
+                    </div>
+                    
+                    <div class="field-section">
+                        <h3 class="section-title">외형사진</h3>
+                        <div class="img-upload-area">
+                            <input type="file" id="imgInput1" class="imgInputClass" name="apperance_file_url" accept="image/*">
+                            <div class="img-preview img-preview-small">
+                                <img id="img1" src="/tkheat/css/image/no_image.png" alt="외형사진">
+                            </div>
+                            <button type="button" class="btn-clear" onclick="$('#img1').attr('src', '/tkheat/css/image/no_image.png'); $('#imgInput1').val('');">X</button>
+                        </div>
+                    </div>
+                    
+                    <div class="field-section">
+                        <h3 class="section-title">열처리공정</h3>
+                        <div class="img-upload-area">
+                            <input type="file" id="imgInput2" class="imgInputClass" name="heat_file_url" accept="image/*">
+                            <div class="img-preview img-preview-small">
+                                <img id="img2" src="/tkheat/css/image/no_image.png" alt="열처리공정">
+                            </div>
+                            <button type="button" class="btn-clear" onclick="$('#img2').attr('src', '/tkheat/css/image/no_image.png'); $('#imgInput2').val('');">X</button>
+                        </div>
+                    </div>
+                    
+                    <div class="field-section">
+                        <h3 class="section-title">도면파일</h3>
+                        <div class="file-upload-area">
+                            <input type="file" id="file" name="drawing_file_url">
+                            <button type="button" class="btn-clear" onclick="$('#fileLink').text('');">X</button>
+                            <a href="#" id="fileLink" onclick="openDrawingModal(event)"></a>
+                        </div>
+                    </div>
                 </div>
-              </td>
-            </tr>
-                                    
-          </tbody></table>
-        </td>
-      </tr>
-    </tbody></table>
-	    <div class="btnSaveClose">
-	    		<button class="delete" type="button" onclick="deleteProduct();"  style="display: none;">삭제</button>
-	            <button class="save" type="button" onclick="save();">저장</button>
-	            <button id="btnSaveAs" class="saveAs" type="button" onclick="saveAsNew();" style="display:none;">다른이름저장</button>
-	            <button class="close" type="button" onclick="window.close();">닫기</button>
-	    </div>
-	    </div>
-	  </div>
-	</div>
+            </div>
+        </div>
+        
+        <!-- 푸터 (버튼) -->
+        <div class="modal-footer">
+            <button type="button" class="btn-delete" onclick="deleteProduct();" style="display:none;">삭제</button>
+            <button type="button" class="btn-save" onclick="save();">저장</button>
+            <button type="button" class="btn-saveas" id="btnSaveAs" onclick="saveAsNew();" style="display:none;">다른이름저장</button>
+            <button type="button" class="btn-cancel">닫기</button>
+        </div>
+    </div>
 </form>
 	    
 	    
@@ -933,149 +1317,249 @@ textarea {
     </div>
 </div>
 <script>
+//========== 전역변수 ==========
+let now_page_code = "h01";  // ✅ 페이지 코드 (필수)
+var productTable;
+var isEditMode = false;
+var selectedRowData = null;
 
+// ========== 페이지 로드 ==========
+$(function(){
+    // ✅ 권한 체크 실행
+    if (typeof userInfoList === 'function') {
+        userInfoList(now_page_code);
+    }
+    getProductList();
+});
 
+// ========== 파일 미리보기 ==========
 $('.imgInputClass').change(function(event){
     var selectedFile = event.target.files[0];
+    if (!selectedFile) return;
+    
     var reader = new FileReader();
-    var img = $(this).parent().parent().find('img')[0];
+    var img = $(this).parent().find('img')[0];
+    
+    if (!img) {
+        img = $(this).siblings('.img-preview').find('img')[0];
+    }
+    
     img.title = selectedFile.name;
 
     reader.onload = function(event) {
-        img.src = event.target.result; // base64 URI로 넣기 때문에 file:// 아님
+        img.src = event.target.result;
     };
     reader.readAsDataURL(selectedFile);
 });
 
-	//전역변수
-    var productTable;	
-    var isEditMode = false; //수정,최초저장 구분값
+// ========== 모달 열기 (입력) ==========
+$('.insert-button').on('click', function() {
+    isEditMode = false;
+    selectedRowData = null;
+    $('#productInsertForm')[0].reset();
+    $('#img0, #img1, #img2').attr('src', '/tkheat/css/image/no_image.png');
+    $('.aphoto, .bphoto, .cphoto, #fileLink').attr('href', '').text('');
+    $('.btn-delete, #btnSaveAs').hide();
     
-	//로드
-	$(function(){
-		//전체 거래처목록 조회
-		getProductList();
-	});
+    // 숫자 필드 기본값 설정
+    $('#prod_dang, #prod_danj, #prod_boxsu, #prod_polish, #tech_pattern').val('0');
+    
+    // 모달 중앙 정렬
+    $('.product-modal').css({
+        'left': '50%',
+        'top': '50%',
+        'transform': 'translate(-50%, -50%)'
+    });
+    
+    $('.modal-overlay, .product-modal').addClass('active');
+});
 
-	//이벤트
-	//함수
-	function getProductList(){
-	userTable = new Tabulator("#tab1", {
-	    height:"750px",
-	    layout:"fitColumns",
-	    selectable:true,
-	    tooltips:true,
-	    selectableRangeMode:"click",
-	    reactiveData:true,
-	    headerHozAlign:"center",
-	    ajaxConfig:"POST",
-	    ajaxLoader:false,
-	    ajaxURL:"/tkheat/management/productInsert/productList",
-	    // ❌ ajaxProgressiveLoad 제거 (스크롤 페이징이 아니라 클라이언트 페이징 사용)
-	    // ajaxProgressiveLoad:"scroll",
-	    ajaxParams:{"corp_name": $("#corp_name").val(),},
-	    placeholder:"조회된 데이터가 없습니다.",
+// ========== 모달 닫기 ==========
+$('.modal-close-btn, .btn-cancel').on('click', function() {
+    $('.modal-overlay, .product-modal').removeClass('active');
+});
 
-	    // ✅ [추가] Tabulator 기본 페이징 설정
-	    pagination:"local",               // 클라이언트 사이드 페이징
-	    paginationSize:20,                // 기본 페이지당 표시 개수
-	    paginationSizeSelector:[20,50,100,500,1000],  // 사용자가 개수 선택 가능
-	    paginationCounter:"rows",         // "rows" = 현재 페이지 범위/전체 행수 표시
+// ========== 모달 드래그 ==========
+let isDragging = false;
+let startX, startY, modalLeft, modalTop;
 
-	    ajaxResponse:function(url, params, response){
-	        $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-	        /* return response; // 데이터 그대로 반환 */
-	        return response.data ? response.data : response;
-	    },
+$('.product-modal .modal-header').on('mousedown', function(e) {
+    if ($(e.target).hasClass('modal-close-btn') || $(e.target).closest('.modal-close-btn').length) {
+        return;
+    }
+    
+    isDragging = true;
+    const modal = $('.product-modal');
+    const offset = modal.offset();
+    
+    startX = e.pageX;
+    startY = e.pageY;
+    modalLeft = offset.left;
+    modalTop = offset.top;
+    
+    modal.css('transform', 'none');
+    e.preventDefault();
+});
 
-	    columns:[
-	    	{title:"제품", field:"product_file_name", width:70,
-				hozAlign:"center", formatter:"image",
-			    cssClass:"rp-img-popup",
-		      	formatterParams:{
-			      	height:"30px", width:"30px",
-			      	urlPrefix:"/tkPrint/사진/제품등록/"
-			      	}, 
-			    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
-			    },
-	        {title:"NO", field:"idx", sorter:"int", width:50, hozAlign:"center"},
-	        {title:"코드", field:"prod_code", sorter:"string", width:120, hozAlign:"center", headerFilter:"input", visible:false},	
-		    {title:"등록일", field:"prod_date", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},     
-			{title:"거래처명", field:"corp_name", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"}, 
-			{title:"품명", field:"prod_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"}, 
-	        {title:"품번", field:"prod_no", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},		        
-	        {title:"규격", field:"prod_gyu", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
-	        {title:"재질", field:"prod_jai", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
-	        {title:"공정", field:"tech_te", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},	
-	        {title:"단중", field:"prod_danj", sorter:"int", width:70, hozAlign:"center", headerFilter:"input"},  	
-	        {title:"단위", field:"prod_danw", sorter:"int", width:70, hozAlign:"center", headerFilter:"input"},	
-		    {title:"단가(EA)", field:"prod_dang", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},	
-			{title:"단가(kG)", field:"prod_dang", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
-			{title:"표면경도", field:"prod_pg", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
-		    {title:"경화깊이", field:"prod_gd3", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
- 		    {title:"심부경도", field:"prod_sg", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
-	    ],
+$(document).on('mousemove', function(e) {
+    if (isDragging) {
+        const dx = e.pageX - startX;
+        const dy = e.pageY - startY;
+        
+        $('.product-modal').css({
+            left: (modalLeft + dx) + 'px',
+            top: (modalTop + dy) + 'px'
+        });
+    }
+});
 
-	    rowFormatter:function(row){
-		    row.getElement().style.fontWeight = "700";
-			row.getElement().style.backgroundColor = "#FFFFFF";
-		},
+$(document).on('mouseup', function() {
+    isDragging = false;
+});
 
-		rowClick:function(e, row){
-			$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-				if($(this).hasClass("row_select")){							
-					$(this).removeClass('row_select');
-					row.getElement().className += " row_select";
-				}else{
-					$("#tab1 div.row_select").removeClass("row_select");
-					row.getElement().className += " row_select";	
-				}
-			});
-		},
+// ========== 제품 리스트 조회 ==========
+function getProductList(){
+    console.log("🔄 getProductList 시작");
+    
+    // 기존 테이블 완전히 제거
+    if (productTable) {
+        productTable.destroy();
+        productTable = null;
+    }
+    
+    // DOM 초기화
+    $('#tab1').empty();
+    
+    productTable = new Tabulator("#tab1", {
+        height:"750px",
+        layout:"fitColumns",
+        selectable:true,
+        tooltips:true,
+        selectableRangeMode:"click",
+        reactiveData:true,
+        headerHozAlign:"center",
+        ajaxConfig:"POST",
+        ajaxLoader:false,
+        ajaxURL:"/tkheat/management/productInsert/productList",
+        ajaxParams:{"corp_name": $("#corp_name").val()},
+        placeholder:"조회된 데이터가 없습니다.",
+        pagination:"local",
+        paginationSize:20,
+        paginationSizeSelector:[20,50,100,500,1000],
+        paginationCounter:"rows",
+        headerFilterPlaceholder: "",
 
-		rowDblClick:function(e, row){
-			var data = row.getData();
-			selectedRowData = data;
-			isEditMode = true;
-			$('#productInsertForm')[0].reset();
-			productInsertDetail(data.prod_code);
-			$("#btnSaveAs").show();
-			$('.delete').show();
-		},
-	});		
+        ajaxResponse:function(url, params, response){
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
+            console.log("📊 서버 응답:", response);
+            
+            const data = response.data ? response.data : response;
+            console.log("📊 데이터 개수:", data.length);
+            
+            return data;
+        },
+
+        columns:[
+            {title:"제품", field:"product_file_name", width:70, hozAlign:"center", formatter:"image",
+                cssClass:"rp-img-popup",
+                formatterParams:{height:"30px", width:"30px", urlPrefix:"/tkPrint/사진/제품등록/"}, 
+                cellMouseEnter:function(e, cell){ 
+                    if(typeof productImage === 'function') {
+                        productImage(cell.getValue());
+                    }
+                } 
+            },
+            {title:"NO", field:"idx", sorter:"int", width:50, hozAlign:"center"},
+            {title:"코드", field:"prod_code", sorter:"string", width:120, hozAlign:"center", headerFilter:"input", visible:false},	
+            {title:"등록일", field:"prod_date", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},     
+            {title:"거래처명", field:"corp_name", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"}, 
+            {title:"품명", field:"prod_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"}, 
+            {title:"품번", field:"prod_no", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},		        
+            {title:"규격", field:"prod_gyu", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"재질", field:"prod_jai", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"공정", field:"tech_te", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},	
+            {title:"단중", field:"prod_danj", sorter:"int", width:70, hozAlign:"center", headerFilter:"input"},  	
+            {title:"단위", field:"prod_danw", sorter:"int", width:70, hozAlign:"center", headerFilter:"input"},	
+            {title:"단가(EA)", field:"prod_dang", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},	
+            {title:"단가(kG)", field:"prod_dang", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"표면경도", field:"prod_pg", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"경화깊이", field:"prod_gd3", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"심부경도", field:"prod_sg", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
+        ],
+
+        rowFormatter:function(row){
+            row.getElement().style.fontWeight = "700";
+            row.getElement().style.backgroundColor = "#FFFFFF";
+        },
+
+        rowClick:function(e, row){
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").removeClass('row_select');
+            row.getElement().classList.add("row_select");
+        },
+
+        // ✅ 더블클릭 이벤트에 권한 체크 추가
+        rowDblClick:function(e, row){
+            // 수정 권한 체크
+            const permission = userPermissions?.[now_page_code];
+            
+            if (!['U', 'D'].includes(permission)) {
+                alert("수정 권한이 없습니다.");
+                console.log("⚠️ 더블클릭 차단 - 현재 권한:", permission);
+                return false;
+            }
+            
+            console.log("✅ 더블클릭(수정) 권한 확인 완료");
+            
+            var data = row.getData();
+            selectedRowData = data;
+            isEditMode = true;
+            productInsertDetail(data.prod_code);
+            
+            // ✅ 버튼 표시 제어
+            if (permission === 'D') {
+                // 삭제 권한: 저장, 다른이름저장, 삭제 모두 표시
+                $("#btnSave, #btnSaveAs, .btn-delete").show();
+                console.log("✅ 모든 버튼 표시 (삭제 권한)");
+            } else if (permission === 'U') {
+                // 수정 권한: 저장, 다른이름저장만 표시
+                $("#btnSave, #btnSaveAs").show();
+                $(".btn-delete").hide();
+                console.log("✅ 저장/다른이름저장 버튼만 표시 (수정 권한)");
+            }
+        },
+    });
+    
+    console.log("✅ Tabulator 생성 완료");
 }
 
-	
-
-	// 상세 조회
-	function productInsertDetail(prod_code) {
+// ========== 제품 상세 조회 ==========
+function productInsertDetail(prod_code) {
     $.ajax({
         url: "/tkheat/management/productInsert/productInsertDetail",
         type: "post",
         dataType: "json",
         data: { "prod_code": prod_code },
         success: function (result) {
-            console.log("result", result);
             const d = result.data;
 
             // 폼 초기화
             $('#productInsertForm')[0].reset();
 
             // 기본 데이터 바인딩
-           for (let key in d) {
-			    if (key === "prod_date") {
-			        $("[name='" + key + "']").val(d[key].substring(0, 10));
-			    } else if (key.startsWith("prod_fac")) {
-			        const checkbox = $("#" + key);
-			        if (checkbox.length) {
-			            const val = d[key] || "";
-			            checkbox.prop("checked", val.includes("1"));
-			        }
-			    } else {
-			        $("[name='" + key + "']").val(d[key]);
-			        
-			    }
-			}
+            for (let key in d) {
+                if (key === "prod_date") {
+                    $("[name='" + key + "']").val(d[key].substring(0, 10));
+                } else if (key.startsWith("prod_fac")) {
+                    const checkbox = $("#" + key);
+                    if (checkbox.length) {
+                        const val = d[key] || "";
+                        checkbox.prop("checked", val.includes("1"));
+                    }
+                } else {
+                    $("[name='" + key + "']").val(d[key]);
+                }
+            }
+
             // 이미지 초기화
             $("#img0, #img1, #img2").attr("src", "/tkheat/css/image/no_image.png");
             $(".aphoto, .bphoto, .cphoto").attr("href", "").text("");
@@ -1101,16 +1585,14 @@ $('.imgInputClass').change(function(event){
                 $(".cphoto").attr("href", path).text(d.heat_file_name);
             }
 
-            //도면파일
+            // 도면파일
             if (d.drawing_file_name) {
                 const path = "/tkPrint/사진/제품등록/" + d.drawing_file_name;
-                $("#fileLink")
-                    .attr("href", path)
-                    .text(d.drawing_file_name); // 파일명을 텍스트로 표시
+                $("#fileLink").attr("href", path).text(d.drawing_file_name);
             }
 
             // 모달 열기
-            $('.productModal').show().addClass('show');
+            $('.modal-overlay, .product-modal').addClass('active');
         },
         error: function (xhr, status, error) {
             console.error("제품 상세 조회 오류:", error);
@@ -1118,136 +1600,95 @@ $('.imgInputClass').change(function(event){
     });
 }
 
-</script>
+// ========== 거래처 검색 모달 ==========
+function openCutumModal() {
+    document.getElementById('cutumListModal').style.display = 'flex';
+
+    let cutumListTable = new Tabulator("#cutumListTabulator", {
+        height:"450px",
+        layout:"fitColumns",
+        selectable:true,
+        ajaxURL:"/tkheat/management/cutumInsert/cutumInsertList",
+        ajaxConfig:"POST",
+        ajaxParams:{
+            "corp_name": "",
+            "corp_plc": "",
+            "corp_gubn": "",
+            "corp_mast": "",
+            "corp_code": "",   
+        },
+        ajaxResponse:function(url, params, response){
+            return response.data;
+        },    
+        columns:[
+            {title:"구분ID", field:"corp_gubn", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"거래처명", field:"corp_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"사업자번호", field:"corp_no", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"거래처코드", field:"corp_code", width:120, hozAlign:"center", visible:false},	
+        ],
+        rowDblClick:function(e, row){
+            let data = row.getData();
+            document.getElementById('corp_name').value = data.corp_name;
+            document.getElementById('corp_code').value = data.corp_code;
+            document.getElementById('cutumListModal').style.display = 'none';
+        }
+    });
+}
+
+function closeCutumListModal() {
+    document.getElementById('cutumListModal').style.display = 'none';
+}
+
+// ========== 저장 ==========
+function save() {
+    console.log("💾 save() 함수 시작");
     
+    // ✅ 권한 체크
+    const permission = userPermissions?.[now_page_code];
     
-    <script>
-		
- // 드래그 기능 추가
-	const modal = document.querySelector('.productModal');
-	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
-
-	header.addEventListener('mousedown', function(e) {
-		// transform 제거를 위한 초기 위치 설정
-		const rect = modal.getBoundingClientRect();
-		modal.style.left = rect.left + 'px';
-		modal.style.top = rect.top + 'px';
-		modal.style.transform = 'none'; // 중앙 정렬 해제
-
-		let offsetX = e.clientX - rect.left;
-		let offsetY = e.clientY - rect.top;
-
-		function moveModal(e) {
-			modal.style.left = (e.clientX - offsetX) + 'px';
-			modal.style.top = (e.clientY - offsetY) + 'px';
-		}
-
-		function stopMove() {
-			window.removeEventListener('mousemove', moveModal);
-			window.removeEventListener('mouseup', stopMove);
-		}
-
-		window.addEventListener('mousemove', moveModal);
-		window.addEventListener('mouseup', stopMove);
-	});
-
-		
-
-	// 모달 열기
-	const insertButton = document.querySelector('.insert-button');
-	const productModal = document.querySelector('.productModal');
-	const closeButton = document.querySelector('.close');
-	const headerCloseButton = document.querySelector('.header-close');
-
-	insertButton.addEventListener('click', function() {
-		isEditMode = false;  // 추가 모드
-	    $('#productInsertForm')[0].reset(); // 폼 초기화
-
-		// 이미지 초기화
-		$("#img0, #img1, #img2").attr("src", "/tkheat/css/image/no_image.png");
-		$(".aphoto, .bphoto, .cphoto").attr("href", "").text("");
-		
-	    productModal.style.display = 'block'; // 모달 표시
-
-		$('.delete').hide();
-		$("#btnSaveAs").hide();
-	});
-
-	closeButton.addEventListener('click', function() {
-		productModal.style.display = 'none'; // 모달 숨김
-	});
-
-	headerCloseButton.addEventListener('click', function() {
-		productModal.style.display = 'none';
-	});
-
-
-	//설비검색버튼 리스트 모달
-    function openCutumModal() {
-        document.getElementById('cutumListModal').style.display = 'flex';
-
-        
-        let cutumListTable = new Tabulator("#cutumListTabulator", {
-            height:"450px",
-            layout:"fitColumns",
-            selectable:true,
-            ajaxURL:"/tkheat/management/cutumInsert/cutumInsertList",
-            ajaxConfig:"POST",
-            ajaxParams:{
-            	"corp_name": "",
-                "corp_plc": "",
-                "corp_gubn": "",
-                "corp_mast": "",
-                "corp_code": "",   
-            },
-		    ajaxResponse:function(url, params, response){
-//				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-				console.log(response);
-		        return response.data; //return the response data to tabulator
-		    },    
-            columns:[
-            	{title:"구분ID", field:"corp_gubn", sorter:"string", width:120,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"거래처명", field:"corp_name", sorter:"string", width:150,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"사업자번호", field:"corp_no", sorter:"string", width:200,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"거래처코드", field:"corp_code", width:120, hozAlign:"center",visible:false},	
-            ],
-            rowDblClick:function(e, row){
-                let data = row.getData();
-                
-               
-                document.getElementById('corp_name').value = data.corp_name;
-                document.getElementById('corp_code').value = data.corp_code;
-                
-                document.getElementById('cutumListModal').style.display = 'none';
-            }
-        });
+    // 신규 등록인 경우
+    if (!isEditMode) {
+        if (!['I', 'U', 'D'].includes(permission)) {
+            alert("등록 권한이 없습니다.");
+            console.log("⚠️ 등록 권한 없음 - 현재 권한:", permission);
+            return false;
+        }
+        console.log("✅ 등록 권한 확인 완료");
+    } 
+    // 수정인 경우
+    else {
+        if (!['U', 'D'].includes(permission)) {
+            alert("수정 권한이 없습니다.");
+            console.log("⚠️ 수정 권한 없음 - 현재 권한:", permission);
+            return false;
+        }
+        console.log("✅ 수정 권한 확인 완료");
     }
+    
+    // 숫자 필드 검증
+    const numericFields = ['prod_dang', 'prod_danj', 'prod_boxsu', 'prod_polish', 'tech_pattern'];
+    numericFields.forEach(field => {
+        const value = $('#' + field).val();
+        if (value === '' || value === null || isNaN(value)) {
+            $('#' + field).val('0');
+        }
+    });
 
-    function closeCutumListModal() {
-        document.getElementById('cutumListModal').style.display = 'none';
-    }
-
-
-  //제품등록 저장
-   function save() {
-    // 체크박스 처리: 체크 안된 것도 'N'으로 강제로 값 지정
+    // 체크박스 처리
     const checkboxFields = ["prod_fac1", "prod_fac2", "prod_fac3", "prod_fac4", "prod_fac5", "prod_fac6", "prod_fac7", "prod_fac8"];
+    
+    checkboxFields.forEach(field => {
+        $("#hidden_" + field).remove();
+    });
+    
     checkboxFields.forEach(field => {
         const checked = $("#" + field).is(":checked");
-        // 존재하는 hidden input이 있으면 set, 없으면 추가
-        if ($("#hidden_" + field).length === 0) {
-            $("<input>").attr({
-                type: "hidden",
-                id: "hidden_" + field,
-                name: field,
-                value: checked ? "1" : "0"
-            }).appendTo("#productInsertForm");
-        } else {
-            $("#hidden_" + field).val(checked ? "1" : "0");
-        }
+        $("<input>").attr({
+            type: "hidden",
+            id: "hidden_" + field,
+            name: field,
+            value: checked ? "1" : "0"
+        }).appendTo("#productInsertForm");
     });
 
     var formData = new FormData($("#productInsertForm")[0]);
@@ -1260,6 +1701,7 @@ $('.imgInputClass').change(function(event){
     } else {
         formData.append("mode", "insert");
         confirmMsg = "저장하시겠습니까?";
+        formData.delete("prod_code");
     }
 
     if (!confirm(confirmMsg)) {
@@ -1274,104 +1716,195 @@ $('.imgInputClass').change(function(event){
         processData: false,
         dataType: "json",
         success: function (result) {
-            console.log(result);
-            alert("저장 되었습니다.");
-            $(".productModal").hide();
+            console.log("💾 저장 완료:", result);
+            
+            // ✅ 모달 닫기
+            $('.modal-overlay, .product-modal').removeClass('active');
+            
+            // ✅ 모달 위치 초기화
+            $('.product-modal').css({
+                'left': '50%',
+                'top': '50%',
+                'transform': 'translate(-50%, -50%)'
+            });
+            
+            // ✅ 폼 초기화
+            $('#productInsertForm')[0].reset();
+            isEditMode = false;
+            selectedRowData = null;
+            
+            // ✅ 테이블 리로드 먼저
+            console.log("🔄 테이블 리로드 시작");
             getProductList();
+            
+            // ✅ 알림은 약간 지연 후 표시
+            setTimeout(function() {
+                alert("저장 되었습니다.");
+            }, 200);
         },
         error: function (xhr, status, error) {
-            console.error("저장 오류:", error);
+            console.error("❌ 저장 오류:", error);
+            console.error("응답:", xhr.responseText);
+            alert("저장 중 오류가 발생했습니다.");
         }
     });
 }
 
-   function saveAsNew() {
-	    const checkboxFields = ["prod_fac1", "prod_fac2", "prod_fac3", "prod_fac4", "prod_fac5", "prod_fac6", "prod_fac7", "prod_fac8"];
-	    checkboxFields.forEach(field => {
-	        const checked = $("#" + field).is(":checked");
-	        if ($("#hidden_" + field).length === 0) {
-	            $("<input>").attr({
-	                type: "hidden",
-	                id: "hidden_" + field,
-	                name: field,
-	                value: checked ? "1" : "0"
-	            }).appendTo("#productInsertForm");
-	        } else {
-	            $("#hidden_" + field).val(checked ? "1" : "0");
-	        }
-	    });
+// ========== 다른이름으로 저장 ==========
+function saveAsNew() {
+    console.log("💾 saveAsNew() 함수 시작");
+    
+    // ✅ 권한 체크 (등록 권한 필요)
+    const permission = userPermissions?.[now_page_code];
+    
+    if (!['I', 'U', 'D'].includes(permission)) {
+        alert("등록 권한이 없습니다.");
+        console.log("⚠️ 다른이름으로 저장 권한 없음 - 현재 권한:", permission);
+        return false;
+    }
+    console.log("✅ 다른이름으로 저장 권한 확인 완료");
+    
+    const checkboxFields = ["prod_fac1", "prod_fac2", "prod_fac3", "prod_fac4", "prod_fac5", "prod_fac6", "prod_fac7", "prod_fac8"];
+    
+    checkboxFields.forEach(field => {
+        $("#hidden_" + field).remove();
+    });
+    
+    checkboxFields.forEach(field => {
+        const checked = $("#" + field).is(":checked");
+        $("<input>").attr({
+            type: "hidden",
+            id: "hidden_" + field,
+            name: field,
+            value: checked ? "1" : "0"
+        }).appendTo("#productInsertForm");
+    });
 
-	    var formData = new FormData($("#productInsertForm")[0]);
+    var formData = new FormData($("#productInsertForm")[0]);
+    formData.append("mode", "insert");
+    formData.delete("prod_code");
 
-	    formData.append("mode", "insert");
-	    formData.delete("prod_code");
+    if (!confirm("현재 데이터를 바탕으로 새 제품을 등록하시겠습니까?")) {
+        return;
+    }
 
-	    if (!confirm("현재 데이터를 바탕으로 새 제품을 등록하시겠습니까?")) {
-	        return;
-	    }
+    $.ajax({
+        url: "/tkheat/management/productInsert/productInsertSave",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "json",
+        success: function (result) {
+            console.log("💾 다른이름 저장 완료:", result);
+            
+            // ✅ 모달 닫기
+            $('.modal-overlay, .product-modal').removeClass('active');
+            
+            // ✅ 모달 위치 초기화
+            $('.product-modal').css({
+                'left': '50%',
+                'top': '50%',
+                'transform': 'translate(-50%, -50%)'
+            });
+            
+            // ✅ 폼 초기화
+            $('#productInsertForm')[0].reset();
+            isEditMode = false;
+            selectedRowData = null;
+            
+            // ✅ 테이블 리로드 먼저
+            console.log("🔄 테이블 리로드 시작");
+            getProductList();
+            
+            // ✅ 알림은 약간 지연 후 표시
+            setTimeout(function() {
+                alert("새로운 제품으로 저장되었습니다.");
+            }, 200);
+        },
+        error: function (xhr, status, error) {
+            console.error("❌ 다른이름 저장 오류:", error);
+            alert("저장 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-	    $.ajax({
-	        url: "/tkheat/management/productInsert/productInsertSave",
-	        type: "POST",
-	        data: formData,
-	        contentType: false,
-	        processData: false,
-	        dataType: "json",
-	        success: function (result) {
-	            console.log(result);
-	            alert("새로운 제품으로 저장되었습니다.");
-	            $(".productModal").hide();
-	            getProductList();
-	        },
-	        error: function (xhr, status, error) {
-	            console.error("다른이름으로 저장 오류:", error);
-	            alert("저장 중 오류가 발생했습니다.");
-	        }
-	    });
-	}
-	
-    function deleteProduct() {
-	    if (!selectedRowData || !selectedRowData.prod_code) {
-	        alert("삭제할 대상을 선택하세요.");
-	        return;
-	    }
+// ========== 삭제 ==========
+function deleteProduct() {
+    console.log("🗑️ deleteProduct() 함수 시작");
+    
+    // ✅ 권한 체크 (삭제 권한 필요)
+    const permission = userPermissions?.[now_page_code];
+    
+    if (permission !== 'D') {
+        alert("삭제 권한이 없습니다.");
+        console.log("⚠️ 삭제 권한 없음 - 현재 권한:", permission);
+        return false;
+    }
+    console.log("✅ 삭제 권한 확인 완료");
+    
+    if (!selectedRowData || !selectedRowData.prod_code) {
+        alert("삭제할 대상을 선택하세요.");
+        return;
+    }
 
-	    if (!confirm("삭제하시겠습니까?")) {
-	        return;
-	    }
+    if (!confirm("삭제하시겠습니까?")) {
+        return;
+    }
 
-	    $.ajax({
-	        url: "/tkheat/management/productInsert/productDelete",
-	        type: "POST",
-	        data: {
-	        	prod_code: selectedRowData.prod_code
-	        },
-	        dataType: "json",
-	        success: function(result) {
-	            if (result.status === "success") {
-	                alert("삭제되었습니다.");
-	                $(".productModal").hide();
-	                getProductList();
-	            } else {
-	                alert("삭제 중 오류가 발생했습니다: " + result.message);
-	            }
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("삭제 오류:", error);
-	            alert("삭제 요청 중 오류가 발생했습니다.");
-	        }
-	    });
-	}
-    //엑셀 다운로드
-	$(".excel-button").click(function () {
-	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-	    const filename = "제품등록_" + today + ".xlsx";
-	    userTable.download("xlsx", filename, { sheetName: "제품등록" });
-	});
+    $.ajax({
+        url: "/tkheat/management/productInsert/productDelete",
+        type: "POST",
+        data: { prod_code: selectedRowData.prod_code },
+        dataType: "json",
+        success: function(result) {
+            if (result.status === "success") {
+                console.log("✅ 삭제 완료");
+                
+                // ✅ 모달 닫기
+                $('.modal-overlay, .product-modal').removeClass('active');
+                
+                // ✅ 모달 위치 초기화
+                $('.product-modal').css({
+                    'left': '50%',
+                    'top': '50%',
+                    'transform': 'translate(-50%, -50%)'
+                });
+                
+                // ✅ 폼 초기화
+                $('#productInsertForm')[0].reset();
+                isEditMode = false;
+                selectedRowData = null;
+                
+                // ✅ 테이블 리로드 먼저
+                console.log("🔄 테이블 리로드 시작");
+                getProductList();
+                
+                // ✅ 알림은 약간 지연 후 표시
+                setTimeout(function() {
+                    alert("삭제되었습니다.");
+                }, 200);
+            } else {
+                alert("삭제 중 오류가 발생했습니다: " + result.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 삭제 오류:", error);
+            alert("삭제 요청 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-//pdf 미리보기
+// ========== 엑셀 다운로드 ==========
+$(".excel-button").click(function () {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const filename = "제품등록_" + today + ".xlsx";
+    productTable.download("xlsx", filename, { sheetName: "제품등록" });
+});
+
+// ========== PDF 미리보기 ==========
 function openDrawingModal(event) {
-    event.preventDefault(); // 링크의 기본 동작 방지
+    event.preventDefault();
     
     const fileLink = $("#fileLink");
     const filePath = fileLink.attr("href");
@@ -1384,19 +1917,14 @@ function openDrawingModal(event) {
 
     $("#drawingFileName").text(fileName);
     $("#pdfViewer").attr("src", filePath);
-    
-    // 모달 표시
-    $('#drawingFileModal').show();
+    $('#drawingFileModal').css('display', 'flex');
 }
-//pdf 모달 닫기
+
 function closeDrawingModal() {
-    $('#drawingFileModal').hide()
+    $('#drawingFileModal').css('display', 'none');
     $("#pdfViewer").attr("src", ""); 
 }
-	
-	
-
-    </script>
+</script>
 
 	</body>
 </html>

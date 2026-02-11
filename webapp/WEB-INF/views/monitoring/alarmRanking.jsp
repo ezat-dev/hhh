@@ -108,6 +108,7 @@
 	    
 <script>
 //전역변수
+		let now_page_code = "d06";
 		var alarmHistory;
 		
 		window.alarmRanking1 = function(){
@@ -132,6 +133,7 @@
 		        },
 		        placeholder:"조회된 데이터가 없습니다.",
 		        paginationSize:20,
+		        headerFilterPlaceholder: "",
 		        columns:[
 		            {title:"PLC주소", field:"a_addr", sorter:"string", width:160, hozAlign:"center", headerFilter:"input"},
 		            {title:"알람내용", field:"a_comment", sorter:"string", width:500, hozAlign:"center", headerFilter:"input"},

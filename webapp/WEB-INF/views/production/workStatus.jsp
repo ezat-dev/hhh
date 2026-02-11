@@ -124,6 +124,7 @@
 	    
 <script>
 	//전역변수
+	let now_page_code = "b02";
     var cutumTable;	
 
 	//로드
@@ -148,6 +149,7 @@
 		    selectableRangeMode:"click",
 		    reactiveData:true,
 		    headerHozAlign:"center",
+		    headerSort:false,
 		    ajaxConfig:"POST",
 		    ajaxLoader:false,
 		    ajaxURL:"/tkheat/production/workStatus/getWorkStatusList",
@@ -157,10 +159,14 @@
 		    	"edate": $("#edate").val(),
 			    },
 		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
+		    pagination:"local",
+	        paginationSize:20,
+	        paginationSizeSelector:[20,50,100,500,1000],
+	        paginationCounter:"rows",
+	        headerFilterPlaceholder: "",
 		    ajaxResponse:function(url, params, response){
 				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
+				return response.data ? response.data : [];
 		    },
 		    columns:[
 		        {title:"NO", field:"idx", sorter:"int", width:80,

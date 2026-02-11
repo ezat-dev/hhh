@@ -3,7 +3,6 @@ package com.tkheat.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,7 @@ import com.tkheat.domain.AlarmHistory;
 import com.tkheat.domain.AlarmRanking;
 import com.tkheat.domain.Monitoring;
 import com.tkheat.domain.WorkJisi;
-import com.tkheat.util.OpcDataMap;
+import com.tkheat.domain.WorkJisiTk;
 
 @Service
 public class MonitoringServiceImpl implements MonitoringService{
@@ -35,11 +34,6 @@ public class MonitoringServiceImpl implements MonitoringService{
 		    return monitoringDao.gettrend(monitoring); 	   
 		}
 
-
-		@Override
-		public List<WorkJisi> getMonitoringDataList() {
-			return monitoringDao.getMonitoringDataList();
-		}
 		
 		@Override
 		public List<AlarmHistory> alarmHistory1(AlarmHistory alarmHistory) {
@@ -55,4 +49,21 @@ public class MonitoringServiceImpl implements MonitoringService{
 		public List<Monitoring> getCurrentAlarmList() {
 		    return monitoringDao.getCurrentAlarmList();
 		}
+		
+		@Override
+		public List<WorkJisiTk> getMonitoringDataList() {
+			return monitoringDao.getMonitoringDataList();
+		}
+
+		@Override
+		public List<WorkJisiTk> getMonitoringDataListStd(WorkJisiTk workJisiTk) {
+			return monitoringDao.getMonitoringDataListStd(workJisiTk);
+		}		
+		
+		@Override
+		public Map<String, Object> getOverviewData() {
+			return monitoringDao.getOverviewData();
+		}
+		
+		
 }

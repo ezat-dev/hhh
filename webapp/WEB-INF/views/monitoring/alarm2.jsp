@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>통합모니터링</title>
+<title>알람-2</title>
 <link rel="stylesheet" href="/tkheat/css/monitoring/alarm2.css">
 <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
 <%@include file="../include/pluginpage.jsp"%>
@@ -148,7 +148,7 @@ div {
 	<script>
 
 
-
+	let now_page_code = "d03";
 				
 
 

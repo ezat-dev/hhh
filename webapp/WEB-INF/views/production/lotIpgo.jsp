@@ -190,6 +190,7 @@
 	    
 <script>
 	//전역변수
+	let now_page_code = "b04";
     var cutumTable;	
 
 	//로드

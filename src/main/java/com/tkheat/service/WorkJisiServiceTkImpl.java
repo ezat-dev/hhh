@@ -80,4 +80,14 @@ public class WorkJisiServiceTkImpl implements WorkJisiServiceTk {
 		workJisiDaoTk.workInstructionTkBcfDataSave(wSave);
 	}
 
+	@Override
+	public List<WorkJisiTk> workInstructionTkTfDataSearch(WorkJisiTk w) {
+		return workJisiDaoTk.workInstructionTkTfDataSearch(w);
+	}
+
+	@Override
+	public void workInstructionTkTfDataSave(WorkJisiTk wSave) {
+		workJisiDaoTk.workInstructionTkTfDataSave(wSave);
+	}
+
 }

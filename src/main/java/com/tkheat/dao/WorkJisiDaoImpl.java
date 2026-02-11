@@ -207,4 +207,14 @@ public class WorkJisiDaoImpl implements WorkJisiDao{
 	public void barcodeDataProc(WorkJisi ww) {
 		sqlSession.update("workJisi.barcodeDataProc",ww);
 	}	
+
+	@Override
+	public List<WorkJisi> getIpgoTechList(WorkJisi w) {
+		return sqlSession.selectList("workjisi.getIpgoTechList",w);
+	}
+
+	@Override
+	public void setChulgoUpdate(WorkJisi chulgo) {
+		sqlSession.update("workjisi.setChulgoUpdate",chulgo);		
+	}	
 }

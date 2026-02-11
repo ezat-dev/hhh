@@ -464,11 +464,15 @@ th{
        
 <script>
 	//전역변수
+	let now_page_code = "e08";
     var cutumTable;	
     var isEditMode = false; //수정,최초저장 구분값
     
 	//로드
 	$(function(){
+		if (typeof userInfoList === 'function') {
+	        userInfoList(now_page_code);
+	    }
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
@@ -499,6 +503,7 @@ th{
 			    },
 		    placeholder:"조회된 데이터가 없습니다.",
 		    paginationSize:20,
+		    headerFilterPlaceholder: "",
 		    ajaxResponse:function(url, params, response){
 				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
 		        return response; //return the response data to tabulator
@@ -578,6 +583,11 @@ th{
 			},
 			rowDblClick:function(e, row){
 
+				if (window.disableRowDblClick) {
+	                alert("수정 권한이 없습니다.");
+	                return false;
+	            }
+
 				var data = row.getData();
 				selectedRowData = data;
 				isEditMode = true;
@@ -593,6 +603,14 @@ th{
 				}); */
 				gigiGojangtDetail(data.terr_code);
 				 $('.delete').show();
+
+				 const permission = userPermissions?.[now_page_code];
+		            if (permission === 'D') {
+		                $('.btn-delete').show();
+		            } else {
+		                $('.btn-delete').hide();
+		            }
+		            
 			},
 		});		
 	}
@@ -622,6 +640,28 @@ th{
 
 	//측정기기고장이력 저장
     function save() {
+
+    	const permission = userPermissions?.[now_page_code];
+        
+        // 저장함수
+        if (!isEditMode) {
+            if (!['I', 'U', 'D'].includes(permission)) {
+                alert("등록 권한이 없습니다.");
+                console.log("등록 권한 없음 - 현재 권한:", permission);
+                return false;
+            }
+            console.log("등록 권한 확인 완료");
+        } 
+        // 수정함수
+        else {
+            if (!['U', 'D'].includes(permission)) {
+                alert("수정 권한이 없습니다.");
+                console.log("수정 권한 없음 - 현재 권한:", permission);
+                return false;
+            }
+            console.log("수정 권한 확인 완료");
+        }
+        
 	    var formData = new FormData($("#gigiGojangForm")[0]);
 
 	    let confirmMsg = "";
@@ -659,6 +699,16 @@ th{
 
 
 	function deleteGigiGojang() {
+
+		const permission = userPermissions?.[now_page_code];
+	    
+	    if (permission !== 'D') {
+	        alert("삭제 권한이 없습니다.");
+	        console.log("삭제 권한 없음 - 현재 권한:", permission);
+	        return false;
+	    }
+	    console.log("삭제 권한 확인 완료")
+	    
 	    if (!selectedRowData || !selectedRowData.terr_code) {
 	        alert("삭제할 대상을 선택하세요.");
 	        return;

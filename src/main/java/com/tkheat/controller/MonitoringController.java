@@ -4,9 +4,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpSession;
@@ -22,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.tkheat.domain.AlarmHistory;
 import com.tkheat.domain.AlarmRanking;
 import com.tkheat.domain.Monitoring;
-import com.tkheat.domain.WorkJisi;
+import com.tkheat.domain.WorkJisiTk;
 import com.tkheat.service.MonitoringService;
 import com.tkheat.util.OpcDataMap;
 
@@ -41,6 +44,12 @@ public class MonitoringController {
 		 return "/monitoring/pumMonitoring.jsp";
 	 }
 	 
+	//설비모니터링 - 화면로드
+	 @RequestMapping(value = "/monitoring/overView", method = RequestMethod.GET)
+	 public String overView() {
+		 return "/monitoring/overView.jsp";
+	 }
+
 	//통합모니터링 - 화면로드
 	@RequestMapping(value = "/monitoring/monitoring", method = RequestMethod.GET)
 	public String monitoring() {
@@ -151,11 +160,90 @@ public class MonitoringController {
 	 public Map<String, Object> getMonitoringDataList(){
 		 Map<String, Object> rtnMap = new HashMap<String, Object>();
 		 
-		 List<WorkJisi> result = monitoringService.getMonitoringDataList();
+		 List<WorkJisiTk> result = monitoringService.getMonitoringDataList();
 		 
-		 rtnMap.put("data",result);
+		 List<WorkJisiTk> rList = new ArrayList<WorkJisiTk>();
+		
+		 for(int i=0; i<result.size(); i++) {
+			 
+			 WorkJisiTk r = new WorkJisiTk();
+			 
+			 r.setFac_name_view(result.get(i).getFac_name_view());
+			 r.setProc_gb_view(result.get(i).getProc_gb_view());
+			 r.setIlbo_lot(result.get(i).getIlbo_lot());
+			 
+			 r.setBcf_pre_view("");
+			 r.setBcf_chim_view("");
+			 r.setBcf_diff_view("");
+			 r.setBcf_gang_view("");
+			 r.setBcf_cold_view("");
+			 r.setTemp_view("");
+			 
+			 switch (result.get(i).getCol_name_view()) {
+				 case "pre": r.setBcf_pre_view(result.get(i).getBcf_pre_view()); 
+				 			 r.setTemp_view(result.get(i).getTemp_view());
+				 break;
+				 case "chim": r.setBcf_chim_view(result.get(i).getBcf_chim_view());
+				 			  r.setTemp_view(result.get(i).getTemp_view());
+				 break;
+				 case "diff": r.setBcf_diff_view(result.get(i).getBcf_diff_view());
+				 			  r.setTemp_view(result.get(i).getTemp_view());
+				 break;
+				 case "gang": r.setBcf_gang_view(result.get(i).getBcf_gang_view());
+				 			  r.setTemp_view(result.get(i).getTemp_view());
+				 break;
+				 case "cold": r.setBcf_cold_view(result.get(i).getBcf_cold_view());
+				 			  r.setTemp_view(result.get(i).getTemp_view());
+				 break;
+			 }
+/*			 
+			 if(result.get(i).getBcf_pre() == 1) {
+				 r.setBcf_pre_view(result.get(i).getBcf_pre_view());
+			 }else {
+				 r.setBcf_pre_view("");
+			 }
+*/			 
+				 List<WorkJisiTk> tList = monitoringService.getMonitoringDataListStd(result.get(i));
+//				 Set<String> cnameSet = new HashSet<String>();
+//				 Set<String> pnameSet = new HashSet<String>();
+				 Set<String> cnameSet = new TreeSet<String>();
+				 Set<String> pnameSet = new TreeSet<String>();
+				 
+				 for(int j=0; j<tList.size(); j++) {
+					 cnameSet.add(tList.get(j).getCorp_name());
+					 pnameSet.add(tList.get(j).getProd_name());				 
+				 }
+				 
+				 Iterator<String> cnameIte = cnameSet.iterator();
+				 Iterator<String> pnameIte = pnameSet.iterator();
+				 String cname = "";
+				 String pname = "";
+				 while(cnameIte.hasNext()) { cname += cnameIte.next()+";"; }
+				 while(pnameIte.hasNext()) { pname += pnameIte.next()+";"; }
+			 
+			r.setCorp_name(cname);
+			r.setProd_name(pname);
+			rList.add(r);
+		 }
+		 
+		 
+		 
+		 rtnMap.put("data",rList);
 		 
 		 return rtnMap;
+	 }
+	 
+	 public String strLengthChkRtn(String strValue, int len) {
+		 String rtnValue = strValue;
+		 
+		 if(strValue.length() > len) {
+			 String v1 = strValue.substring(0,len);
+			 String v2 = strValue.substring(len,strValue.length());
+			 
+			 rtnValue = v1+"</br>"+v2;
+		 }
+		 
+		 return rtnValue;
 	 }
 	 
 	 
@@ -236,7 +324,11 @@ public class MonitoringController {
 	 
 	 
 	 
-	 
+	 @RequestMapping(value = "/monitoring/getOverviewData", method = RequestMethod.POST)
+	    @ResponseBody
+	    public Map<String, Object> getOverviewData() {
+	        return monitoringService.getOverviewData();
+	    }
 	 
 	 
 	 

@@ -3,6 +3,8 @@ package com.tkheat.domain;
 import java.util.List;
 
 public class WorkJisiTk {
+	
+	private String lotno_date;
 
 	private String sdate; // 시작일
 	private String edate; // 종료일
@@ -123,13 +125,19 @@ public class WorkJisiTk {
 	private String wstd_gj15;
 	private String wstd_gj16;
 	private String wstd_gj17;
+	private String wstd_gj18;
 	private String wstd_gj21;
 	private String wstd_gj22;
 	private String wstd_gj23;
 	private String wstd_gj24;
+	private String wstd_gj25;
+	private String wstd_gj28;
+	private String wstd_gj31;
 	private String wstd_gj32;
 	private String wstd_gj33;
 	private String wstd_gj34;
+	private String wstd_gj35;
+	private String wstd_gj38;
 	private String wstd_gj42;
 	
 	//CORP 테이블(거래처)
@@ -229,6 +237,14 @@ public class WorkJisiTk {
 	private String ilbo_ck05;	
 	
 	
+	private String tracking_heat;
+	private String tracking_chim;
+	private String tracking_diff;
+	private String tracking_gang;
+	private String tracking_cold;
+	
+	
+	
 	/*출고관리*/
 	//OCHULGO 테이블
 	private int och_code;			//출고코드
@@ -298,8 +314,85 @@ public class WorkJisiTk {
 	private String ilbo_lot_date;
 	private String ilbo_lot_count;
 	
+	private String ilbo_pg1_si;
+	private String ilbo_pg2_si;
+	private String ilbo_pg3_si;
+	private String ilbo_pg4_si;
+	private String ilbo_pg5_si;
+	private String ilbo_pg1_sr;
+	private String ilbo_pg2_sr;
+	private String ilbo_pg3_sr;
+	private String ilbo_pg4_sr;
+	private String ilbo_pg5_sr;
+	
+	private String ilbo_ck01_si;
+	private String ilbo_ck02_si;
+	private String ilbo_ck03_si;
+	private String ilbo_ck04_si;
+	private String ilbo_ck05_si;
+	private String ilbo_ck01_sr;
+	private String ilbo_ck02_sr;
+	private String ilbo_ck03_sr;
+	private String ilbo_ck04_sr;
+	private String ilbo_ck05_sr;
+	private String ilbo_okng_si;
+	private String ilbo_okng_sr;
+	
+	private String wstd_ready;
+	private String wstd_worktime;
+	private String prod_si;
+	private String prod_sr;
+	private String prod_si1;
+	private String prod_si2;
+	private String prod_sr1;
+	private String prod_sr2;
+	
+	private int ilbo_lot_yn_chk;
+	
+	//모니터링용
+	private String hogi;
+	private int bcf_up;
+	private int bcf_pre;
+	private int bcf_chim;
+	private int bcf_diff;
+	private int bcf_gang;
+	private int bcf_cold;
+	private int bcf_out;
+	private int bcf_sum;
+	private int r_num;	
+	private int hogi_code;		
+	private int hogi_proc;
+	private String hogi_proc_view;	//진행,대기 표시
+	private int work_proc;
+	private String col_name;
+	private String col_name_view;
+	private String temp_view;
+	
+	//문자열로 화면에 리턴할 변수
+	private String fac_name_view;
+	private String bcf_up_view;
+	private String bcf_pre_view;
+	private String bcf_chim_view;
+	private String bcf_diff_view;
+	private String bcf_gang_view;
+	private String bcf_cold_view;
+	private String bcf_out_view;
+	private String proc_gb_view;
+	
 	//수주번호 리스트로 선입제품 제외로 사용
 	private List<Integer> sunipOrdList;
+	//일보코드 리스트로 이미 선택한 제품은 안보이도록
+	private List<Integer> ilboCodeList;
+	
+	private String danch_barcode;
+	private String ilbo_strt_time;
+	private String ilbo_end_time;
+	private String ilbo_strt_date;
+	private String prod_si1_msg;	//경도 기준값에 한글, 공백이 섞여있는지
+	private String prod_si2_msg;	//경도 기준값에 한글, 공백이 섞여있는지
+	private String prod_sr1_msg;	//경도 기준값에 한글, 공백이 섞여있는지
+	private String prod_sr2_msg;	//경도 기준값에 한글, 공백이 섞여있는지
+
 	
 	public String getSdate() {
 		return sdate;
@@ -1800,5 +1893,473 @@ public class WorkJisiTk {
 	}
 	public void setIlbo_lot_count(String ilbo_lot_count) {
 		this.ilbo_lot_count = ilbo_lot_count;
+	}
+	public String getIlbo_pg1_si() {
+		return ilbo_pg1_si;
+	}
+	public void setIlbo_pg1_si(String ilbo_pg1_si) {
+		this.ilbo_pg1_si = ilbo_pg1_si;
+	}
+	public String getIlbo_pg2_si() {
+		return ilbo_pg2_si;
+	}
+	public void setIlbo_pg2_si(String ilbo_pg2_si) {
+		this.ilbo_pg2_si = ilbo_pg2_si;
+	}
+	public String getIlbo_pg3_si() {
+		return ilbo_pg3_si;
+	}
+	public void setIlbo_pg3_si(String ilbo_pg3_si) {
+		this.ilbo_pg3_si = ilbo_pg3_si;
+	}
+	public String getIlbo_pg4_si() {
+		return ilbo_pg4_si;
+	}
+	public void setIlbo_pg4_si(String ilbo_pg4_si) {
+		this.ilbo_pg4_si = ilbo_pg4_si;
+	}
+	public String getIlbo_pg5_si() {
+		return ilbo_pg5_si;
+	}
+	public void setIlbo_pg5_si(String ilbo_pg5_si) {
+		this.ilbo_pg5_si = ilbo_pg5_si;
+	}
+	public String getIlbo_pg1_sr() {
+		return ilbo_pg1_sr;
+	}
+	public void setIlbo_pg1_sr(String ilbo_pg1_sr) {
+		this.ilbo_pg1_sr = ilbo_pg1_sr;
+	}
+	public String getIlbo_pg2_sr() {
+		return ilbo_pg2_sr;
+	}
+	public void setIlbo_pg2_sr(String ilbo_pg2_sr) {
+		this.ilbo_pg2_sr = ilbo_pg2_sr;
+	}
+	public String getIlbo_pg3_sr() {
+		return ilbo_pg3_sr;
+	}
+	public void setIlbo_pg3_sr(String ilbo_pg3_sr) {
+		this.ilbo_pg3_sr = ilbo_pg3_sr;
+	}
+	public String getIlbo_pg4_sr() {
+		return ilbo_pg4_sr;
+	}
+	public void setIlbo_pg4_sr(String ilbo_pg4_sr) {
+		this.ilbo_pg4_sr = ilbo_pg4_sr;
+	}
+	public String getIlbo_pg5_sr() {
+		return ilbo_pg5_sr;
+	}
+	public void setIlbo_pg5_sr(String ilbo_pg5_sr) {
+		this.ilbo_pg5_sr = ilbo_pg5_sr;
+	}
+	public String getIlbo_ck01_si() {
+		return ilbo_ck01_si;
+	}
+	public void setIlbo_ck01_si(String ilbo_ck01_si) {
+		this.ilbo_ck01_si = ilbo_ck01_si;
+	}
+	public String getIlbo_ck02_si() {
+		return ilbo_ck02_si;
+	}
+	public void setIlbo_ck02_si(String ilbo_ck02_si) {
+		this.ilbo_ck02_si = ilbo_ck02_si;
+	}
+	public String getIlbo_ck03_si() {
+		return ilbo_ck03_si;
+	}
+	public void setIlbo_ck03_si(String ilbo_ck03_si) {
+		this.ilbo_ck03_si = ilbo_ck03_si;
+	}
+	public String getIlbo_ck04_si() {
+		return ilbo_ck04_si;
+	}
+	public void setIlbo_ck04_si(String ilbo_ck04_si) {
+		this.ilbo_ck04_si = ilbo_ck04_si;
+	}
+	public String getIlbo_ck05_si() {
+		return ilbo_ck05_si;
+	}
+	public void setIlbo_ck05_si(String ilbo_ck05_si) {
+		this.ilbo_ck05_si = ilbo_ck05_si;
+	}
+	public String getIlbo_ck01_sr() {
+		return ilbo_ck01_sr;
+	}
+	public void setIlbo_ck01_sr(String ilbo_ck01_sr) {
+		this.ilbo_ck01_sr = ilbo_ck01_sr;
+	}
+	public String getIlbo_ck02_sr() {
+		return ilbo_ck02_sr;
+	}
+	public void setIlbo_ck02_sr(String ilbo_ck02_sr) {
+		this.ilbo_ck02_sr = ilbo_ck02_sr;
+	}
+	public String getIlbo_ck03_sr() {
+		return ilbo_ck03_sr;
+	}
+	public void setIlbo_ck03_sr(String ilbo_ck03_sr) {
+		this.ilbo_ck03_sr = ilbo_ck03_sr;
+	}
+	public String getIlbo_ck04_sr() {
+		return ilbo_ck04_sr;
+	}
+	public void setIlbo_ck04_sr(String ilbo_ck04_sr) {
+		this.ilbo_ck04_sr = ilbo_ck04_sr;
+	}
+	public String getIlbo_ck05_sr() {
+		return ilbo_ck05_sr;
+	}
+	public void setIlbo_ck05_sr(String ilbo_ck05_sr) {
+		this.ilbo_ck05_sr = ilbo_ck05_sr;
+	}
+	public String getIlbo_okng_si() {
+		return ilbo_okng_si;
+	}
+	public void setIlbo_okng_si(String ilbo_okng_si) {
+		this.ilbo_okng_si = ilbo_okng_si;
+	}
+	public String getIlbo_okng_sr() {
+		return ilbo_okng_sr;
+	}
+	public void setIlbo_okng_sr(String ilbo_okng_sr) {
+		this.ilbo_okng_sr = ilbo_okng_sr;
+	}
+	public String getWstd_ready() {
+		return wstd_ready;
+	}
+	public void setWstd_ready(String wstd_ready) {
+		this.wstd_ready = wstd_ready;
+	}
+	public String getWstd_worktime() {
+		return wstd_worktime;
+	}
+	public void setWstd_worktime(String wstd_worktime) {
+		this.wstd_worktime = wstd_worktime;
+	}
+	public String getProd_si() {
+		return prod_si;
+	}
+	public void setProd_si(String prod_si) {
+		this.prod_si = prod_si;
+	}
+	public String getProd_sr() {
+		return prod_sr;
+	}
+	public void setProd_sr(String prod_sr) {
+		this.prod_sr = prod_sr;
+	}
+	public String getProd_si1() {
+		return prod_si1;
+	}
+	public void setProd_si1(String prod_si1) {
+		this.prod_si1 = prod_si1;
+	}
+	public String getProd_si2() {
+		return prod_si2;
+	}
+	public void setProd_si2(String prod_si2) {
+		this.prod_si2 = prod_si2;
+	}
+	public String getProd_sr1() {
+		return prod_sr1;
+	}
+	public void setProd_sr1(String prod_sr1) {
+		this.prod_sr1 = prod_sr1;
+	}
+	public String getProd_sr2() {
+		return prod_sr2;
+	}
+	public void setProd_sr2(String prod_sr2) {
+		this.prod_sr2 = prod_sr2;
+	}
+	public int getIlbo_lot_yn_chk() {
+		return ilbo_lot_yn_chk;
+	}
+	public void setIlbo_lot_yn_chk(int ilbo_lot_yn_chk) {
+		this.ilbo_lot_yn_chk = ilbo_lot_yn_chk;
+	}
+	public String getHogi() {
+		return hogi;
+	}
+	public void setHogi(String hogi) {
+		this.hogi = hogi;
+	}
+	public int getBcf_up() {
+		return bcf_up;
+	}
+	public void setBcf_up(int bcf_up) {
+		this.bcf_up = bcf_up;
+	}
+	public int getBcf_pre() {
+		return bcf_pre;
+	}
+	public void setBcf_pre(int bcf_pre) {
+		this.bcf_pre = bcf_pre;
+	}
+	public int getBcf_chim() {
+		return bcf_chim;
+	}
+	public void setBcf_chim(int bcf_chim) {
+		this.bcf_chim = bcf_chim;
+	}
+	public int getBcf_diff() {
+		return bcf_diff;
+	}
+	public void setBcf_diff(int bcf_diff) {
+		this.bcf_diff = bcf_diff;
+	}
+	public int getBcf_gang() {
+		return bcf_gang;
+	}
+	public void setBcf_gang(int bcf_gang) {
+		this.bcf_gang = bcf_gang;
+	}
+	public int getBcf_cold() {
+		return bcf_cold;
+	}
+	public void setBcf_cold(int bcf_cold) {
+		this.bcf_cold = bcf_cold;
+	}
+	public int getBcf_out() {
+		return bcf_out;
+	}
+	public void setBcf_out(int bcf_out) {
+		this.bcf_out = bcf_out;
+	}
+	public int getBcf_sum() {
+		return bcf_sum;
+	}
+	public void setBcf_sum(int bcf_sum) {
+		this.bcf_sum = bcf_sum;
+	}
+	public int getR_num() {
+		return r_num;
+	}
+	public void setR_num(int r_num) {
+		this.r_num = r_num;
+	}
+	public String getFac_name_view() {
+		return fac_name_view;
+	}
+	public void setFac_name_view(String fac_name_view) {
+		this.fac_name_view = fac_name_view;
+	}
+	public String getBcf_up_view() {
+		return bcf_up_view;
+	}
+	public void setBcf_up_view(String bcf_up_view) {
+		this.bcf_up_view = bcf_up_view;
+	}
+	public String getBcf_pre_view() {
+		return bcf_pre_view;
+	}
+	public void setBcf_pre_view(String bcf_pre_view) {
+		this.bcf_pre_view = bcf_pre_view;
+	}
+	public String getBcf_chim_view() {
+		return bcf_chim_view;
+	}
+	public void setBcf_chim_view(String bcf_chim_view) {
+		this.bcf_chim_view = bcf_chim_view;
+	}
+	public String getBcf_diff_view() {
+		return bcf_diff_view;
+	}
+	public void setBcf_diff_view(String bcf_diff_view) {
+		this.bcf_diff_view = bcf_diff_view;
+	}
+	public String getBcf_gang_view() {
+		return bcf_gang_view;
+	}
+	public void setBcf_gang_view(String bcf_gang_view) {
+		this.bcf_gang_view = bcf_gang_view;
+	}
+	public String getBcf_cold_view() {
+		return bcf_cold_view;
+	}
+	public void setBcf_cold_view(String bcf_cold_view) {
+		this.bcf_cold_view = bcf_cold_view;
+	}
+	public String getBcf_out_view() {
+		return bcf_out_view;
+	}
+	public void setBcf_out_view(String bcf_out_view) {
+		this.bcf_out_view = bcf_out_view;
+	}
+	public String getProc_gb_view() {
+		return proc_gb_view;
+	}
+	public void setProc_gb_view(String proc_gb_view) {
+		this.proc_gb_view = proc_gb_view;
+	}
+	public String getDanch_barcode() {
+		return danch_barcode;
+	}
+	public void setDanch_barcode(String danch_barcode) {
+		this.danch_barcode = danch_barcode;
+	}
+	public String getIlbo_strt_time() {
+		return ilbo_strt_time;
+	}
+	public void setIlbo_strt_time(String ilbo_strt_time) {
+		this.ilbo_strt_time = ilbo_strt_time;
+	}
+	public String getIlbo_end_time() {
+		return ilbo_end_time;
+	}
+	public void setIlbo_end_time(String ilbo_end_time) {
+		this.ilbo_end_time = ilbo_end_time;
+	}
+	public String getIlbo_strt_date() {
+		return ilbo_strt_date;
+	}
+	public void setIlbo_strt_date(String ilbo_strt_date) {
+		this.ilbo_strt_date = ilbo_strt_date;
+	}
+	public String getLotno_date() {
+		return lotno_date;
+	}
+	public void setLotno_date(String lotno_date) {
+		this.lotno_date = lotno_date;
+	}
+	public List<Integer> getIlboCodeList() {
+		return ilboCodeList;
+	}
+	public void setIlboCodeList(List<Integer> ilboCodeList) {
+		this.ilboCodeList = ilboCodeList;
+	}
+	public String getProd_si1_msg() {
+		return prod_si1_msg;
+	}
+	public void setProd_si1_msg(String prod_si1_msg) {
+		this.prod_si1_msg = prod_si1_msg;
+	}
+	public String getProd_si2_msg() {
+		return prod_si2_msg;
+	}
+	public void setProd_si2_msg(String prod_si2_msg) {
+		this.prod_si2_msg = prod_si2_msg;
+	}
+	public String getProd_sr1_msg() {
+		return prod_sr1_msg;
+	}
+	public void setProd_sr1_msg(String prod_sr1_msg) {
+		this.prod_sr1_msg = prod_sr1_msg;
+	}
+	public String getProd_sr2_msg() {
+		return prod_sr2_msg;
+	}
+	public void setProd_sr2_msg(String prod_sr2_msg) {
+		this.prod_sr2_msg = prod_sr2_msg;
+	}
+	public int getHogi_code() {
+		return hogi_code;
+	}
+	public void setHogi_code(int hogi_code) {
+		this.hogi_code = hogi_code;
+	}
+	public int getHogi_proc() {
+		return hogi_proc;
+	}
+	public void setHogi_proc(int hogi_proc) {
+		this.hogi_proc = hogi_proc;
+	}
+	public String getHogi_proc_view() {
+		return hogi_proc_view;
+	}
+	public void setHogi_proc_view(String hogi_proc_view) {
+		this.hogi_proc_view = hogi_proc_view;
+	}
+	public int getWork_proc() {
+		return work_proc;
+	}
+	public void setWork_proc(int work_proc) {
+		this.work_proc = work_proc;
+	}
+	public String getCol_name() {
+		return col_name;
+	}
+	public void setCol_name(String col_name) {
+		this.col_name = col_name;
+	}
+	public String getCol_name_view() {
+		return col_name_view;
+	}
+	public void setCol_name_view(String col_name_view) {
+		this.col_name_view = col_name_view;
+	}
+	public String getTemp_view() {
+		return temp_view;
+	}
+	public void setTemp_view(String temp_view) {
+		this.temp_view = temp_view;
+	}
+	public String getWstd_gj18() {
+		return wstd_gj18;
+	}
+	public void setWstd_gj18(String wstd_gj18) {
+		this.wstd_gj18 = wstd_gj18;
+	}
+	public String getWstd_gj25() {
+		return wstd_gj25;
+	}
+	public void setWstd_gj25(String wstd_gj25) {
+		this.wstd_gj25 = wstd_gj25;
+	}
+	public String getWstd_gj28() {
+		return wstd_gj28;
+	}
+	public void setWstd_gj28(String wstd_gj28) {
+		this.wstd_gj28 = wstd_gj28;
+	}
+	public String getWstd_gj31() {
+		return wstd_gj31;
+	}
+	public void setWstd_gj31(String wstd_gj31) {
+		this.wstd_gj31 = wstd_gj31;
+	}
+	public String getWstd_gj35() {
+		return wstd_gj35;
+	}
+	public void setWstd_gj35(String wstd_gj35) {
+		this.wstd_gj35 = wstd_gj35;
+	}
+	public String getWstd_gj38() {
+		return wstd_gj38;
+	}
+	public void setWstd_gj38(String wstd_gj38) {
+		this.wstd_gj38 = wstd_gj38;
+	}
+	public String getTracking_heat() {
+		return tracking_heat;
+	}
+	public void setTracking_heat(String tracking_heat) {
+		this.tracking_heat = tracking_heat;
+	}
+	public String getTracking_chim() {
+		return tracking_chim;
+	}
+	public void setTracking_chim(String tracking_chim) {
+		this.tracking_chim = tracking_chim;
+	}
+	public String getTracking_diff() {
+		return tracking_diff;
+	}
+	public void setTracking_diff(String tracking_diff) {
+		this.tracking_diff = tracking_diff;
+	}
+	public String getTracking_gang() {
+		return tracking_gang;
+	}
+	public void setTracking_gang(String tracking_gang) {
+		this.tracking_gang = tracking_gang;
+	}
+	public String getTracking_cold() {
+		return tracking_cold;
+	}
+	public void setTracking_cold(String tracking_cold) {
+		this.tracking_cold = tracking_cold;
 	}
 }

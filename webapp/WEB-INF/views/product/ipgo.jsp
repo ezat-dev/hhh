@@ -97,6 +97,85 @@
 	transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+/*입고등록 모달*/
+.ipgoModal{
+	position: fixed; /* 화면에 고정 */
+	width:1400px;
+	height:720px;	
+	top: 50%; /* 수직 중앙 */
+	left: 50%; /* 수평 중앙 */
+	display: none;
+	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+	z-index: 20010; /* 다른 요소 위에 표시 */
+	border:2px solid black;
+	background-color:white;
+}
+
+.ipgoModal .j_container{
+	display:flex;	
+}
+
+.ipgoModal .j_row1{
+	display:flex;
+	margin-top:1px;
+}
+
+.ipgoModal .margin_left{
+	margin-left:5px;
+}
+
+.ipgoModal .iRowBtn{
+	display:block;
+	cursor:pointer;
+	width:70px;
+	height:30px;
+	font-size:12pt;
+}
+
+.ipgoModal .iRowBtn2{
+	display:block;
+	cursor:pointer;
+	width:120px;
+	height:30px;
+	font-size:12pt;
+}
+
+.ipgoModal .iRowLabel{
+	display:block;
+	width:120px;
+	height:20px;
+	text-align:center;
+	margin-bottom:2px;
+	font-size:12pt;
+}
+
+.ipgoModal .iRowLabel2{
+	display:block;
+	width:120px;
+	height:24px;
+	text-align:left;
+	margin-bottom:7px;
+	font-size:12pt;
+	margin-left:10px;
+}
+
+.ipgoModal .iRowInput{
+	/*display:flex;*/
+	width:120px !important;
+	height:20px;
+	font-size:12pt;
+	text-align:center;
+}
+
+.ipgoModal .iRowInput2{
+	display:block;
+	width:120px !important;
+	height:20px;
+	font-size:12pt;
+	text-align:center;
+	margin-bottom:5px;
+}
+
 /* 저장 버튼 호버 시 */
 .btnSaveClose .save:hover {
 	background-color: #FFC107;
@@ -181,30 +260,84 @@ input[type="date"] {
 
 .search_input{
  font-size: 12pt; 
- width:90px;
+ width:100px !important;
 }
 
+.search_select{
+ font-size: 12pt; 
+ width:120px !important;
+}
+
+.search_margin_left{
+ margin-left:5px;
+}
+
+
+.datetimepicker_date{
+	width: 100px !important;
+	text-align:center;
+}
 
     </style>
     
     
     <body>
     
-    
-    
     <div class="tab">
     <div class="box1">
-         <p class="tabP" style="font-size: 20px; margin-left: 20px; color: white; font-weight: 800;"></p>
-		<form action="">
-			<label class="daylabel">입고일 :</label>
-			<input type="date" name="sdate" id="sdate">
-			~
-			<input type="date" name="edate" id="edate">
-			<select name="ord_print_gb" id="ord_print_gb" class="search_input">
-				<option value="1">열처리 수주서</option>
-				<option value="2">열후TAG</option>
-				<option value="3">입고현황표</option>
-			</select>
+		<p class="tabP" style="font-size: 20px; margin-left: 20px; color: white; font-weight: 800;"></p>
+		<form id="searchForm" name="searchForm">
+			<div class="j_container">
+			
+				<label class="daylabel">입고일 </label>
+				<input type="text" name="sdate" id="sdate" class="datetimepicker_date">
+				~
+				<input type="text" name="edate" id="edate" class="datetimepicker_date">
+				<label class="daylabel search_margin_left">거래처명&nbsp;</label>
+				<input type="text" name="corp_name" id="s_corp_name" class="search_input">
+				<label class="daylabel search_margin_left">품명&nbsp;</label>
+				<input type="text" name="prod_name" id="s_prod_name" class="search_input">
+				<label class="daylabel search_margin_left">품번&nbsp;</label>
+				<input type="text" name="prod_no" id="s_prod_no" class="search_input">
+				&nbsp;&nbsp;
+				<label class="daylabel search_margin_left">입고/타각LOT&nbsp;</label>
+				<input type="text" name="ord_lot" id="s_ordlot" class="search_input">
+				
+				<select name="ord_print_gb" id="ord_print_gb" class="search_select search_margin_left">
+					<option value="1">열처리 수주서</option>
+					<option value="2">열후TAG</option>
+					<option value="3">입고현황표</option>
+				</select>
+			</div>
+			<div class="j_container">
+				<div class="j_row">
+					<label class="daylabel">제품구분 </label>
+					<select name="prod_gubn" id="s_prod_gubn" class="search_select">
+						<option value="">전체</option>
+						<option value="양산">양산</option>
+						<option value="개발">개발</option>
+					</select>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<label class="daylabel">규격&nbsp;</label>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="text" name="prod_gyu" id="s_prod_gyu" class="search_input">
+					<label class="daylabel">재질 </label>
+					<input type="text" name="prod_jai" id="s_prod_jai" class="search_input">
+					<label class="daylabel">공정 </label>
+					<select name="tech_te" id="s_tech_te" class="search_select">
+					
+					</select>
+					<label class="daylabel">담당자&nbsp;</label>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="text" name="ord_name" id="s_ord_name" class="search_input">
+					<label class="daylabel">수주NO </label>
+					<input type="number" name="ord_code" id="s_ord_code" class="search_input" value="0">
+
+
+				</div>
+			</div>
 		</form>	
 	</div>
 	
@@ -241,9 +374,32 @@ input[type="date"] {
 		입고등록
 		</div>
 		<div class="setRow">
-			<label class="daylabel">입고일 :</label>
-			<input type="date" class="ord_date" id="s_ord_date" 
-				style="font-size: 12pt;" autocomplete="off">		
+			<form action="" id="searchAddForm" autocomplete="off">
+				<div class="j_container">
+					<label class="daylabel">입고일 :</label>
+					<input type="text" class="ord_date datetimepicker_date" id="s_ord_date" 
+						style="font-size: 12pt;">
+					<label class="daylabel search_margin_left">거래처명&nbsp;</label>
+					<input type="text" name="corp_name" id="sa_corp_name" class="search_input">
+					<label class="daylabel search_margin_left">품명&nbsp;</label>
+					<input type="text" name="prod_name" id="sa_prod_name" class="search_input">
+					<label class="daylabel search_margin_left">품번&nbsp;</label>
+					<input type="text" name="prod_no" id="sa_prod_no" class="search_input">
+					<label class="daylabel search_margin_left">제품구분 </label>
+					<select name="prod_gubn" id="sa_prod_gubn" class="search_select" style="width:60px important!;">
+						<option value="">전체</option>
+						<option value="양산">양산</option>
+						<option value="개발">개발</option>
+					</select>
+					<label class="daylabel">규격</label>
+					<input type="text" name="prod_gyu" id="sa_prod_gyu" class="search_input">
+					<label class="daylabel search_margin_left">재질 </label>
+					<input type="text" name="prod_jai" id="sa_prod_jai" class="search_input">
+					<label class="daylabel search_margin_left">공정 </label>
+					<input type="text" name="tech_te" id="sa_prod_jai" class="search_input">
+					<button class="iRowBtn margin_left" type="button" onclick="getIpgoAddData();">검색</button>
+				</div>
+			</form>
 		</div>		
 		<div id="tabuData"></div>
 	</div>
@@ -314,6 +470,7 @@ input[type="date"] {
 		$("#s_ord_date").val(tdate);
 		
 		//전체 거래처목록 조회
+		getIpgoData();
 		getIpgoList();		
 		
 	});
@@ -454,7 +611,9 @@ input[type="date"] {
 	    
 	    input = document.createElement("input");
 
-	    input.setAttribute("type", "date");
+	    
+	    input.setAttribute("type", "text");
+	    input.className = "datetimepicker_date";
 
 	    input.style.padding = "4px";
 	    input.style.width = "100%";
@@ -463,6 +622,7 @@ input[type="date"] {
 	    input.value = cellValue;
 
 	    onRendered(function(){
+	    	datePickerDate();   	
 	        input.focus();
 	        input.style.height = "100%";
 	    });
@@ -497,19 +657,41 @@ input[type="date"] {
 	};	
 	
 	
-	
-	
 	function getIpgoList(){
+		var searchForm = new FormData($("#searchForm")[0]);
+		
+		$.ajax({
+			url:"/tkheat/product/ipgo/getIpgoList",
+			type:"post",
+			dataType:"json",
+	        contentType: false,
+	        processData: false,
+			data:searchForm,
+			success:function(result){
+				console.log(result);
+				//공정값 채우기
+				
+				ipgoListTable.setData(result.data);
+			}
+		});
+	}
+	
+	
+	function getIpgoData(){
 		
 		ipgoListTable = new Tabulator("#tab1", {
 		    height:"750px",
 		    layout:"fitColumns",
-//		    selectable:true,	//로우 선택설정
+		    selectable:true,
+		    selectableCheck:function(row){
+		        return false;   // ⭐ 모든 rowClick 선택 차단
+		    },
 		    tooltips:true,
 //		    selectableRangeMode:"click",
 		    reactiveData:true,
 		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
+		    
+/*		    ajaxConfig:"POST",
 		    ajaxLoader:false,
 		    ajaxURL:"/tkheat/product/ipgo/getIpgoList",
 		    ajaxProgressiveLoad:"scroll",
@@ -517,16 +699,16 @@ input[type="date"] {
 		    	"sdate": $("#sdate").val(),
 		    	"edate": $("#edate").val(),
 			    },
-		    placeholder:"조회된 데이터가 없습니다.",
+*/		    placeholder:"조회된 데이터가 없습니다.",
 		    paginationSize:20,
 		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
+//				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
 		        return response; //return the response data to tabulator
 		    },
 		    columns:[
 		    	{formatter:"rowSelection", titleFormatter:"rowSelection", width:40, headerSort:false,
 		    		cellClick:function(e, cell){
-//		    			cell.getRow().toggleSelect();
+		    			cell.getRow().toggleSelect();
 		    		}
 		    	},
 /*
@@ -570,26 +752,26 @@ input[type="date"] {
 		        	hozAlign:"center", headerSort:false},
 		        {title:"출력", field:"ord_prn", sorter:"string", width:30,
 			        hozAlign:"center", headerSort:false},	
-			    {title:"수주NO", field:"ord_code", sorter:"string", width:85,
-				    hozAlign:"center", headerFilter:"input"},
-				{title:"입고일", field:"ord_date", sorter:"string", width:100,
+			    {title:"수주NO", field:"ord_code", sorter:"string", width:80,
+				    hozAlign:"center"},
+				{title:"입고일", field:"ord_date", sorter:"string", width:60,
 				    hozAlign:"center",  headerSort:false,
 				    editor:dateEditor}, 
-				{title:"출고예정", field:"ord_nap", sorter:"string", width:100,
+				{title:"출고예정", field:"ord_nap", sorter:"string", width:60,
 				    hozAlign:"center",  headerSort:false,
 				    editor:dateEditor}, 
 		        {title:"거래처", field:"corp_name", sorter:"string", width:100,
-		        	hozAlign:"center", headerSort:false, headerFilter:"input"},		        
+		        	hozAlign:"center", headerSort:false},		        
 		        {title:"품명", field:"prod_name", sorter:"string", width:100,
-		        	hozAlign:"center",  headerSort:false, headerFilter:"input"},
+		        	hozAlign:"center",  headerSort:false},
 		        {title:"품번", field:"prod_no", sorter:"string", width:120,
-		        	hozAlign:"center",  headerSort:false, headerFilter:"input"},
+		        	hozAlign:"center",  headerSort:false},
 		        {title:"규격", field:"prod_gyu", sorter:"string", width:80,
-			        hozAlign:"center",  headerSort:false, headerFilter:"input"},	
+			        hozAlign:"center",  headerSort:false},	
 		        {title:"재질", field:"prod_jai", sorter:"int", width:80,
-		        	hozAlign:"center",  headerSort:false, headerFilter:"input"},  	
+		        	hozAlign:"center",  headerSort:false},  	
 		        {title:"공정", field:"tech_te", sorter:"int", width:60,
-			        hozAlign:"center",  headerSort:false, headerFilter:"select",
+			        hozAlign:"center",  headerSort:false,
 			    	headerFilterParams:{
 			    		values:{
 			    			"":"전체",
@@ -616,18 +798,18 @@ input[type="date"] {
 				{title:"중량", field:"ord_amnt", sorter:"int", width:50,
 					hozAlign:"center",  headerSort:false
 				},	
-				{title:"입고/<br/>타각LOT", field:"ord_lot", sorter:"int", width:65,
+				{title:"입고/타각LOT", field:"ord_lot", sorter:"int", width:65,
 					hozAlign:"center",  headerSort:false,
 					editor:"input"
 				},	
 				
-				{title:"수입<br/>검사", field:"itst_wp", sorter:"int", width:40,
+				{title:"수입검사", field:"itst_wp", sorter:"int", width:40,
 					hozAlign:"center",  headerSort:false,
 					editor:"input"
 				},
 				{title:"담당자", field:"ord_name", sorter:"int", width:60,
 					hozAlign:"center",  headerSort:false,
-					editor:"input", headerFilter:"input"
+					editor:"input"
 				},
 				{title:"선입", field:"ord_sunip", sorter:"int", width:45,
 					hozAlign:"center",  headerSort:false,
@@ -661,18 +843,13 @@ input[type="date"] {
 			},
 			rowClick:function(e, row){
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+			    // 모든 행 색상 초기화
+			    $("#tab1 div.row_select").removeClass("row_select");
 
-				var rowData = row.getData();
+			    // 클릭한 행만 색상 변경
+			    row.getElement().classList.add("row_select");
+			    
+			    e.stopPropagation();
 				
 			},
 			cellEdited: function(cell) {
@@ -698,42 +875,40 @@ input[type="date"] {
 		});		
 	}
 
-	function getIpgoAddList(){
+	function getIpgoAddData(){
+		var searchAddForm = new FormData($("#searchAddForm")[0]);
+		
+		$.ajax({
+			url:"/tkheat/product/ipgo/getIpgoAddList",
+			type:"post",
+			dataType:"json",
+	        contentType: false,
+	        processData: false,
+			data:searchAddForm,
+			success:function(result){
+				
+				ipgoAddTable.setData(result.data);
+			}
+		});
+	}
+	
+	function getIpgoAddDataList(){
 		
 		ipgoAddTable = new Tabulator("#tabuData", {
 		    height:"550px",
 		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
+		    selectable:true,
 		    tooltips:true,
 		    selectableRangeMode:"click",
 		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,		    
-		    ajaxURL:"/tkheat/product/ipgo/getIpgoAddList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	"sdate": $("#sdate").val(),
-		    	"edate": $("#edate").val(),
-			    },
-			headerSort:false,
+		    headerHozAlign:"center",			
+		    headerSort:false,
 		    placeholder:"조회된 데이터가 없습니다.",
 		    paginationSize:20,
 		    ajaxResponse:function(url, params, response){
 				$("#tabuData .tabulator-col.tabulator-sortable").css("height","55px");
 		        return response; //return the response data to tabulator
 		    },
-		    rowSelectionChanged:function(data, rows){
-		    	//rows - array of row components for the selected rows in order of selection
-		        //data - array of data objects for the selected rows in order of selection
-		        //여기에 이벤트 정의
-		        
-//		        console.log(rows);
-		        if(data.length != 0){
-		        	console.log(data);
-		        	ipgoData = data;
-		        }
-		    },		    
 		    columns:[
 			    {formatter:"rowSelection", titleFormatter:"rowSelection",
 			    	hozAlign:"center", width:30,
@@ -741,39 +916,39 @@ input[type="date"] {
 			        }
 		        },			    	
 		        {title:"제품단중", field:"prod_danj", sorter:"string", width:100,
-			        hozAlign:"center", headerFilter:"input", visible:false},	
+			        hozAlign:"center", visible:false},	
 			    {title:"제품코드", field:"prod_code", sorter:"string", width:100,
-				    hozAlign:"center", headerFilter:"input", visible:false},     
+				    hozAlign:"center", visible:false},     
 				{title:"수주NO", field:"ord_code", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input", visible:false}, 
+				    hozAlign:"center", visible:false}, 
 				{title:"거래처", field:"corp_name", sorter:"string", width:150,
-				    hozAlign:"center", headerFilter:"input"}, 
+				    hozAlign:"center", }, 
 		        {title:"품명", field:"prod_name", sorter:"string", width:160,
-		        	hozAlign:"center", headerFilter:"input"},
+		        	hozAlign:"center", },
 		        {title:"품번", field:"prod_no", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
+		        	hozAlign:"center", },
 		        {title:"규격", field:"prod_gyu", sorter:"string", width:100,
-			        hozAlign:"center", headerFilter:"input"},	
+			        hozAlign:"center", },	
 		        {title:"재질", field:"prod_jai", sorter:"int", width:100,
-		        	hozAlign:"center", headerFilter:"input"},  	
+		        	hozAlign:"center", },  	
 		        {title:"공정", field:"tech_te", sorter:"int", width:80,
-			        hozAlign:"center", headerFilter:"input"},	
+			        hozAlign:"center", },	
 			    {title:"표면경도", field:"prod_pg", sorter:"int", width:100,
-				    hozAlign:"center", headerFilter:"input"},	
+				    hozAlign:"center", },	
 				{title:"심부경도", field:"prod_sg", sorter:"int", width:100,
-				    hozAlign:"center", headerFilter:"input"},
+				    hozAlign:"center", },
 				{title:"경화깊이", field:"prod_cd", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},
+					hozAlign:"center", },
 				{title:"단위", field:"prod_danw", sorter:"int", width:60,
-					hozAlign:"center", headerFilter:"input", headerSort:false},	
+					hozAlign:"center", headerSort:false},	
 				{title:"박스수량", field:"prod_boxsu", sorter:"int", width:70,
-					hozAlign:"center", headerFilter:"input", headerSort:false,editor:true},	
+					hozAlign:"center", headerSort:false,editor:true},	
 				{title:"수량", field:"ord_su", sorter:"int", width:60,
-					hozAlign:"center", headerFilter:"input", headerSort:false,editor:true},
+					hozAlign:"center", headerSort:false,editor:true},
 				{title:"ROWS*", field:"ord_row", sorter:"int", width:60,
-					hozAlign:"center", headerFilter:"input", headerSort:false,editor:true},
+					hozAlign:"center", headerSort:false,editor:true},
 				{title:"단가", field:"prod_dang", sorter:"int", width:80,
-					hozAlign:"center", headerFilter:"input", headerSort:false},
+					hozAlign:"center", headerSort:false},
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
@@ -782,17 +957,13 @@ input[type="date"] {
 				row.getElement().style.backgroundColor = "#FFFFFF";
 			},
 			rowClick:function(e, row){
+			    // 모든 행 색상 초기화
+			    $("#tabuData div.row_select").removeClass("row_select");
 
-				$("#tabuData .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tabuData div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+			    // 클릭한 행만 색상 변경
+			    row.getElement().classList.add("row_select");
+			    
+			    e.stopPropagation();
 
 				var rowData = row.getData();
 				
@@ -800,14 +971,18 @@ input[type="date"] {
 		});		
 	}
 	
-	var ipgoData = new Array();
+	
 	
 	//입고저장
 	function save(){
 		//ipgoAddTable
 		//tabuData
-		console.log("저장버튼");
+		
+		
+		var ipgoData = ipgoAddTable.getSelectedData();
+		
 		console.log(ipgoData);
+		
 		
 		if(ipgoData.length >= 1){
 			
@@ -889,7 +1064,8 @@ input[type="date"] {
 
 
 	insertButton.addEventListener('click', function() {
-		getIpgoAddList();
+		getIpgoAddData();
+		getIpgoAddDataList();
 		ipgoModal.style.display = 'block'; // 모달 표시
 	});
 

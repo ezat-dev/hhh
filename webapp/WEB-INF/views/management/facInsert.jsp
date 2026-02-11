@@ -11,214 +11,415 @@
     <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 	<%@include file="../include/pluginpage.jsp" %>    
 <style>
+/* ========== 기존 스타일 유지 ========== */
 .main {
-	width: 98%;
+    width: 98%;
 }
 
 .container {
-	display: flex;
-	justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
 }
 
-.detail {
-	background: #ffffff;
-	border: 1px solid #000000;
-	width: 1000px; /* 가로 길이 고정 */
-	height: 630px; /* 세로 길이 고정 */
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-	margin: 20px auto; /* 중앙 정렬 */
-	padding: 20px;
-	border-radius: 5px; /* 모서리 둥글게 */
-	overflow-y: auto; /* 세로 스크롤 추가 */
+.box1 {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    width: 1500px;
+    margin-left: -1050px;
+    gap: 10px;
 }
 
-.insideTable {
-	width: 100%; /* 내부 테이블 너비 100% */
-	border-collapse: collapse;
+/* ========== 모달 오버레이 ========== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
 }
 
-.insideTable th, .insideTable td {
-	padding: 5px; /* 셀 패딩을 줄여 세로 길이 감소 */
-	border: 1px solid #ccc; /* 셀 경계선 */
-	text-align: left; /* 텍스트 왼쪽 정렬 */
+.modal-overlay.active {
+    display: block;
 }
 
-.insideTable th {
-	background: #f0f0f0; /* 헤더 배경색 */
-	font-weight: bold; /* 굵은 글씨 */
+/* ========== 모달 컨테이너 ========== */
+.fac-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1500px;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    overflow: hidden;
 }
 
-.basic {
-	background: #ffffff;
-	border: 1px solid #949494; /* 경계선 색상 */
-	width: calc(50% - 10px); /* 입력 박스 너비 조정 */
-	padding: 5px; /* 내부 여백 */
-	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* 내부 그림자 */
-	border-radius: 3px; /* 둥근 모서리 */
-	display: inline-block; /* 인라인 블록으로 설정하여 가로 정렬 */
-	margin-right: 5px; /* 입력 박스 간격 조정 */
+.fac-modal.active {
+    display: flex;
+    flex-direction: column;
 }
 
-.basic:last-child {
-	margin-right: 0; /* 마지막 입력 박스의 여백 제거 */
+/* ========== 모달 헤더 ========== */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+    cursor: move;
+    flex-shrink: 0;
 }
 
-.btnSearchCorp, .btn1T {
-	background: #007bff; /* 버튼 배경색 */
-	color: white; /* 버튼 글자색 */
-	border: none; /* 경계선 없음 */
-	padding: 5px 10px; /* 내부 여백 */
-	cursor: pointer; /* 커서 변경 */
-	border-radius: 3px; /* 모서리 둥글게 */
-	margin-top: 5px; /* 위쪽 여백 */
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
 }
 
-.btnSearchCorp:hover, .btn1T:hover {
-	background: #0056b3; /* 호버 시 색상 변경 */
-}
-.btnSaveClose {
-	display: flex;
-	justify-content: center; /* 가운데 정렬 */
-	gap: 20px; /* 버튼 사이 여백 */
-	margin-bottom: 20px; /* 모달 하단과 버튼 사이 간격  */
-}
-.btnSaveClose button {
-	width: 100px;
-	height: 35px;
-	background-color: #FFD700; /* 기본 배경 - 노란색 */
-	color: black;
-	border: 2px solid #FFC107; /* 노란 테두리 */
-	border-radius: 5px;
-	font-weight: bold;
-	text-align: center;
-	cursor: pointer;
-	line-height: 35px;
-	margin: 0 10px;
-	margin-top: 10px;
-	transition: background-color 0.3s ease, transform 0.2s ease;
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.3s;
 }
 
-/* 저장 버튼 호버 시 */
-.btnSaveClose .save:hover {
-	background-color: #FFC107;
-	transform: scale(1.05);
+.modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
 }
 
-/* 닫기 버튼 - 회색 톤 */
-.btnSaveClose .close {
-	background-color: #A9A9A9;
-	color: black;
-	border: 2px solid #808080;
+/* ========== 모달 본문 ========== */
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #f5f7fa;
+    padding: 15px;
 }
 
-/* 닫기 버튼 호버 시 */
-.btnSaveClose .close:hover {
-	background-color: #808080;
-	transform: scale(1.05);
+.modal-body::-webkit-scrollbar {
+    width: 8px;
 }
 
-.resultArea2 {
-	background: #f9f9f9; /* 결과 영역 배경색 */
-	padding: 10px; /* 내부 여백 */
-	border: 1px solid #ddd; /* 경계선 */
-	border-radius: 5px; /* 모서리 둥글게 */
+.modal-body::-webkit-scrollbar-track {
+    background: #e0e0e0;
 }
 
-.imgArea {
-	width: 200px; /* 이미지 영역 너비 */
-	height: 150px; /* 이미지 영역 높이 */
-	border: 1px solid #ddd; /* 경계선 */
-	margin-bottom: 10px; /* 하단 여백 */
+.modal-body::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 4px;
 }
 
-.imgClass {
-	width: 100%; /* 이미지 너비 */
-	height: 100%; /* 이미지 높이 */
-	object-fit: cover; /* 이미지 비율 유지 */
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #666;
 }
 
-.tdRight {
-	text-align: right; /* 오른쪽 정렬 */
+/* ========== 컨텐츠 래퍼 ========== */
+.modal-content-wrapper {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr;
+    gap: 15px;
+    height: 100%;
 }
 
-.thSub2 {
-	width: 150px; /* 서브 헤더 너비 */
+/* ========== 왼쪽/오른쪽 영역 ========== */
+.modal-left,
+.modal-right {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.valClean {
-	margin-left: 5px; /* 여백 */
+/* ========== 섹션 ========== */
+.field-section {
+    background: white;
+    border-radius: 8px;
+    padding: 12px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2c3e50;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* ========== 필드 행/열 ========== */
+.field-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.field-row:last-child {
+    margin-bottom: 0;
+}
+
+.field-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field-col-full {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field-col label,
+.field-col-full label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.req {
+    color: #dc3545;
+    margin-left: 2px;
+}
+
+/* ========== 입력 필드 ========== */
+.field-col input[type="text"],
+.field-col select,
+.field-col-full input[type="text"],
+.field-col-full textarea,
+.modal-right textarea {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 13px;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+.field-col input:focus,
+.field-col select:focus,
+.field-col-full input:focus,
+.field-col-full textarea:focus,
+.modal-right textarea:focus {
+    outline: none;
+    border-color: #4dabf7;
+    box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.1);
+}
+
+.field-col select,
+.field-col-full select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 28px;
 }
 
 textarea {
-	border: 1px solid #949494; /* 경계선 색상 */
-	padding: 5px; /* 내부 여백 */
-	width: calc(100% - 10px); /* 너비 100%에서 여백 제외 */
-	height: 100px; /* 높이 */
-	border-radius: 3px; /* 둥근 모서리 */
+    resize: vertical;
+    min-height: 50px;
+    font-family: inherit;
+    line-height: 1.4;
 }
 
-.facModal {
-	position: fixed; /* 화면에 고정 */
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 1000; /* 다른 요소 위에 표시 */
+/* ========== 유닛 입력 ========== */
+.input-with-unit {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.header {
-	display: flex; /* 플렉스 박스 사용 */
-	justify-content: center; /* 중앙 정렬 */
-	align-items: center; /* 수직 중앙 정렬 */
-	margin-bottom: -20px; /* 상단 여백 */
-	background-color: #33363d; /* 배경색 */
-	height: 50px; /* 높이 */
-	color: white; /* 글자색 */
-	font-size: 20px; /* 글자 크기 */
-	text-align: center; /* 텍스트 정렬 */
-	position: relative;
-}
-.header-close {
-	position: absolute;
-	right: 15px;
-	top: 10px;
-	cursor: pointer;
-	font-size: 20px;
-	color: white;
-}
-.box1 {
-	display: flex;
-	justify-content: right;
-	align-items: center;
-	width: 1500px;
-	margin-left: -1050px;
+.input-with-unit input {
+    flex: 1;
 }
 
-.box1 select{
-	width: 5%
-}  
-.box1 input[type="date"] {
-	width: 150px;
-	padding: 5px 10px;
-	font-size: 16px;
-	border: 1px solid #ccc;
-	border-radius: 6px;
-	background-color: #f9f9f9;
-	color: #333;
-	outline: none;
-	transition: border 0.3s ease;
+.input-with-unit span {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d;
 }
 
-.box1 input[type="date"]:focus {
-	border: 1px solid #007bff;
-	background-color: #fff;
-}  
-.box1 label,
-.box1 input {
-	margin-right: 10px; /* 요소 사이 간격 */
-}  
-th{
-	font-size : 14px;
+/* ========== 체크박스 ========== */
+.checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 0;
+}
+
+.checkbox-field input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.checkbox-field label {
+    cursor: pointer;
+    margin: 0;
+}
+
+/* ========== 이미지 업로드 ========== */
+.img-upload-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.img-upload-area input[type="file"] {
+    padding: 6px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.img-upload-area input[type="file"]::-webkit-file-upload-button {
+    padding: 4px 10px;
+    border: none;
+    border-radius: 3px;
+    background: #4dabf7;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+.img-upload-area input[type="file"]::-webkit-file-upload-button:hover {
+    background: #339af0;
+}
+
+.img-preview {
+    width: 100%;
+    height: 280px;
+    border: 2px dashed #ced4da;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.img-preview:hover {
+    border-color: #4dabf7;
+    background: #e7f5ff;
+}
+
+.img-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* ========== 모달 푸터 ========== */
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: white;
+    border-top: 1px solid #dee2e6;
+    flex-shrink: 0;
+}
+
+.modal-footer button {
+    min-width: 100px;
+    height: 38px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #51cf66, #37b24d);
+    color: white;
+}
+
+.btn-save:hover {
+    background: linear-gradient(135deg, #40c057, #2f9e44);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(64, 192, 87, 0.3);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #ff6b6b, #fa5252);
+    color: white;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(135deg, #f03e3e, #e03131);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(240, 62, 62, 0.3);
+}
+
+.btn-cancel {
+    background: linear-gradient(135deg, #868e96, #495057);
+    color: white;
+}
+
+.btn-cancel:hover {
+    background: linear-gradient(135deg, #6c757d, #343a40);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* ========== 반응형 ========== */
+@media (max-width: 1600px) {
+    .fac-modal {
+        width: 1300px;
+    }
+    
+    .modal-content-wrapper {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+@media (max-width: 1400px) {
+    .fac-modal {
+        width: 95vw;
+    }
+    
+    .field-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .modal-content-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .field-row {
+        grid-template-columns: 1fr;
+    }
 }
     
 
@@ -268,592 +469,558 @@ th{
 	</main>
 	    
 	    
-	<form method="post" class="corrForm" id="facInsertForm" name="facInsertForm">
-			<div class="facModal">
-				<div class="header">설비등록
-					<span class="header-close">&times;</span>
-				</div>
-				<div class="detail">
-					<table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-						<colgroup span="4">
-							<col width="*" />
-							<col width="40%" />
-							<col width="*" />
-							<col width="40%" />
-						</colgroup>
-						<tr>
-							<th class="">설비번호</th>
-							<td class="">
-								<input id="fac_no" name="fac_no" class="basic" type="text" style="width:90%;" value="" />
-							</td>
-							<th class="">설비명</th>
-							<td class="">
-								<input id="fac_name" name="fac_name" class="basic" type="text" style="width:90%;" value="" />
-							</td>
-						</tr>
-						<tr>
-							<th class="">규격</th>
-							<td class="">
-<!-- 								<input id="facGyu" name="facGyu" class="basic" type="text" style="width:100%;" value="" /> -->
-								<select id="fac_gyu" name="fac_gyu" class="basic" style="width:90%;">
-									<option>가스질화</option>
-									<option>이온질화</option>
-									<option>침탄</option>
-									<option>VC</option>
-									<option>PQ</option>
-									<option>TEMPERING</option>
-									<option>진공</option>
-									<option>세척기</option>
-									<option>후처리</option>
-									<option>기타</option>
-								</select>
-							</td>
-							<th class="">형식</th>
-							<td class="">
-								<input id="fac_hyun" name="fac_hyun" class="basic" type="text" style="width:90%;" value="" />
-							</td>
-						</tr>
-						<tr>
-							<th class="">용도</th>
-							<td class="">
-								<input id="fac_yong" name="fac_yong" class="basic" type="text" style="width:90%;" value="" />
-							</td>
-							<th class="">설비종류</th>
-							<td class="">
-								<select id="tech_no" name="tech_no" class="basic">									
-									
-										<option value="A08">PIT로(A08)</option>
-									
-										<option value="A11">PIT로(A11)</option>
-									
-										<option value="A12">PIT로(A12)</option>
-									
-										<option value="A13">PIT로(A13)</option>
-									
-										<option value="A14">PIT로(A14)</option>
-									
-										<option value="A15">PIT로(A15)</option>
-									
-										<option value="A16">Box Type(A16)</option>
-									
-										<option value="A17">Box Type(A17)</option>
-									
-										<option value="A18">Box Type(A18)</option>
-									
-										<option value="A20">Box Type(A20)</option>
-									
-										<option value="A21">Box Type(A21)</option>
-									
-										<option value="A27">이온질화(A27)</option>
-									
-										<option value="A30">Salt로(A30)</option>
-									
-										<option value="A31">Box Type(A31)</option>
-									
-										<option value="A32">PIT로(A32)</option>
-									
-										<option value="A33">Box Type(A33)</option>
-									
-										<option value="A34">Box Type(A34)</option>
-									
-										<option value="A35">PIT로(A35)</option>
-									
-										<option value="B16">템퍼링로(B16)</option>
-									
-										<option value="B17">템퍼링로(B17)</option>
-									
-										<option value="B38">진공로(B38)</option>
-									
-										<option value="B39">이온질화(B39)</option>
-									
-										<option value="B40">진공로(B40)</option>
-									
-										<option value="B41">진공로(B41)</option>
-									
-										<option value="B42">진공로(B42)</option>
-									
-										<option value="C01">PQ(C01)</option>
-									
-										<option value="C02">PQ(C02)</option>
-									
-										<option value="C03">PQ(C03)</option>
-									
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<th class="">관리자(정)</th>
-							<td class="">
-								<input id="fac_man1" name="fac_man1" class="basic" type="text" style="width:90%;" value="" />
-							</td>
-							<th class="">관리자(부)</th>
-							<td class="">
-								<input id="fac_man2" name="fac_man2" class="basic" type="text" style="width:90%;" value="" />
-							</td>
-						</tr>
-						<tr>
-							<th class="">사용부서</th>
-							<td class="">
-								<input id="fac_lot" name="fac_lot" class="basic" type="text" style="width:90%;" value="" />
-							</td>
-							<th class="">제조번호</th>
-							<td class="">
-								<input id="fac_e1" name="fac_e1" class="basic" type="text" style="width:90%;" value="" />
-							</td>
-						</tr>
-						<tr>
-							<th class="">설치장소</th>
-							<td colspan="3" class="">
-								<input id="fac_plc" name="fac_plc" class="basic" type="text" style="width:90%;" value="" />
-							</td>
-						</tr>
-					</table>
-													
-					<p style="margin-top:4px; padding:4px 0; border-top:1px solid #bbb;">
-								
-					<table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-						<tr>
-							<td class="leftSide">
-								<table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-									<tr>
-										<th class="">제조사국적</th>
-										<td class="">
-											<input id="fac_e2" name="fac_e2" class="basic" type="text" style="width:90%;" value=""/>
-										</td>
-										<th class="">제조회사</th>
-										<td class="">
-											<input id="fac_make" name="fac_make" class="basic" type="text" style="width:90%;" value=""/>
-										</td>
-									</tr>
-									<tr>
-										<th class="">구입처</th>
-										<td class="">
-											<input id="fac_cBuy" name="fac_cBuy" class="basic" type="text" style="width:90%;" value=""/>
-										</td>
-										<th class="">유지보수업체</th>
-										<td class="">
-											<input id="fac_e3" name="fac_e3" class="basic" type="text" style="width:90%;" value=""/>
-										</td>
-									</tr>
-									<tr>
-										<th class="">도입시기</th>
-										<td class="">
-											<input id="fac_buy" class="date js-datepicker" type="text" style="width:100px;"  maxlength="20" size="20" name="fac_buy" />
-										</td>
-										<th class="">제조일자</th>
-										<td class="">
-											<input id="fac_mday" class="date js-datepicker" type="text" style="width:100px;"  maxlength="20" size="20" name="fac_mday" />
-										</td>
-									</tr>
-									<tr>
-										<th class="">구입가격</th>
-										<td class="">
-											<input id="fac_mon" name="fac_mon" class="basic" type="text" style="width:90;" value="0"/> 만원</td>
-										<th class="">실적및현황 출력</th>
-										<td class="">
-										 <input type="checkbox" id="fac_dan" name="fac_dan" checked="checked" class="">
-										</td>
-									</tr>
-									<tr>
-										<td class=""></td>
-										<td class=""></td>
-										<td class=""></td>
-										<td class=""></td>
-									</tr>
-								</table>
-								
-								<p style="margin-top:4px; padding:4px 0; border-top:1px solid #bbb;">
-								<table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-									<tr>
-										<th class="">처리용량</th>
-										<td colspan="3" class="">
-											<input id="fac_able" name="fac_able" class="basic" type="text" style="width:90%;" value=""/>
-										</td>
-										</tr>
-									<tr>
-										<th class="">가동기준시간</th>
-										<td class="">
-											<input id="fac_time" name="fac_time" class="basic" type="text" style="width:90%;" value=""/>
-										</td>
-										<th class="">점검주기</th>
-										<td class="">
-											<input id="fac_test" name="fac_test" class="basic" type="text" style="width:90%;" value=""/>
-										</td>
-									</tr>
-									<tr>
-										<td class=""></td>
-										<td class=""></td>
-										<td class=""></td>
-										<td class=""></td>
-									</tr>
-								</table>
-								
-								<p style="margin-top:4px; padding:4px 0; border-top:1px solid #bbb;">
-								
-								<table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-									<tr>
-										<th class="">주변설비 및<br />관련사항</th>
-										<td class="">
-											<textarea id="fac_e4" name="fac_e4" class="basic" style="width:90%;"></textarea></td>
-									</tr>
-									<tr>
-										<th class="">비고</th>
-										<td class="">
-											<textarea id="fac_bigo" name="fac_bigo" class="basic" style="width:90%;"></textarea></td>
-									</tr>
-									<tr>
-										<th class="left">설비점검주의사항</td>
-										<td class=""><textarea id="fac_cau" name="fac_cau" class="basic" style="width:90%;  height: 70px;"></textarea></td>
-									</tr>
-								</table>
-							</td>
-							<td class="rightSide">
-								<table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-									<tr>
-										<th class="">이미지</th>
-										<td class="findImage">
-											<input type="hidden" name="type" value="facility" />
-											<input id="imgInput0" class="imgInputClass" type="file" name="fac_file_url" title="이미지 찾기" onchange="previewImage(this,'previewId')">
-											<div class="imgArea" id='previewId' style="height:200px;border:1px solid #ddd;">
-												<img id="img0" src="/tkheat/css/image/no_image.png" width="100%" height="100%" />
-											</div>
-										</td>
-									</tr>
-								</table>
-									<table cellspacing="0" cellpadding="0" width="100%" class="popFieldTable2">
-										<colgroup span="3">
-											<col width="" />
-											<col width="" />
-										</colgroup>
-										<tr>
-											<th class="left" style="height: 70px;">특이사항</th>
-											<td class=""><textarea id="fac_unus" name="fac_unus" class="basic" style="width:90%;  height: 70px;"></textarea></td>
-										</tr>
-									</table>
-							</td>
-						</tr>
-					</table>
-					<div class="btnSaveClose">
-						<button class="delete" type="button" onclick="deleteFac();"  style="display: none;">삭제</button>
-			            <button class="save" type="button" onclick="save();">저장</button>
-			            <button class="close" type="button" onclick="window.close();">닫기</button>
-	    			</div>
-				</div>
-				
-				</div>
-			</form>
+	<form method="post" class="corrForm" id="facInsertForm" name="facInsertForm" enctype="multipart/form-data">
+    <input type="hidden" name="type" value="facility" />
+    
+    <div class="modal-overlay"></div>
+    
+    <div class="fac-modal">
+        <!-- 헤더 -->
+        <div class="modal-header">
+            <h2>설비등록</h2>
+            <button type="button" class="modal-close-btn">&times;</button>
+        </div>
+        
+        <!-- 본문 -->
+        <div class="modal-body">
+            <div class="modal-content-wrapper">
+                <!-- 왼쪽: 입력 필드 -->
+                <div class="modal-left">
+                    <!-- 기본 정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">기본 정보</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>설비번호 <span class="req">*</span></label>
+                                <input type="text" id="fac_no" name="fac_no" placeholder="설비번호">
+                            </div>
+                            <div class="field-col">
+                                <label>설비명 <span class="req">*</span></label>
+                                <input type="text" id="fac_name" name="fac_name" placeholder="설비명">
+                            </div>
+                            <div class="field-col">
+                                <label>규격</label>
+                                <select id="fac_gyu" name="fac_gyu">
+                                    <option value="">선택</option>
+                                    <option>가스질화</option>
+                                    <option>이온질화</option>
+                                    <option>침탄</option>
+                                    <option>VC</option>
+                                    <option>PQ</option>
+                                    <option>TEMPERING</option>
+                                    <option>진공</option>
+                                    <option>세척기</option>
+                                    <option>후처리</option>
+                                    <option>기타</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>형식</label>
+                                <input type="text" id="fac_hyun" name="fac_hyun" placeholder="형식">
+                            </div>
+                            <div class="field-col">
+                                <label>용도</label>
+                                <input type="text" id="fac_yong" name="fac_yong" placeholder="용도">
+                            </div>
+                            <div class="field-col">
+                                <label>설비종류</label>
+                                <select id="tech_no" name="tech_no">
+                                    <option value="">선택</option>
+                                    <option value="A08">PIT로(A08)</option>
+                                    <option value="A11">PIT로(A11)</option>
+                                    <option value="A12">PIT로(A12)</option>
+                                    <option value="A13">PIT로(A13)</option>
+                                    <option value="A14">PIT로(A14)</option>
+                                    <option value="A15">PIT로(A15)</option>
+                                    <option value="A16">Box Type(A16)</option>
+                                    <option value="A17">Box Type(A17)</option>
+                                    <option value="A18">Box Type(A18)</option>
+                                    <option value="A20">Box Type(A20)</option>
+                                    <option value="A21">Box Type(A21)</option>
+                                    <option value="A27">이온질화(A27)</option>
+                                    <option value="A30">Salt로(A30)</option>
+                                    <option value="A31">Box Type(A31)</option>
+                                    <option value="A32">PIT로(A32)</option>
+                                    <option value="A33">Box Type(A33)</option>
+                                    <option value="A34">Box Type(A34)</option>
+                                    <option value="A35">PIT로(A35)</option>
+                                    <option value="B16">템퍼링로(B16)</option>
+                                    <option value="B17">템퍼링로(B17)</option>
+                                    <option value="B38">진공로(B38)</option>
+                                    <option value="B39">이온질화(B39)</option>
+                                    <option value="B40">진공로(B40)</option>
+                                    <option value="B41">진공로(B41)</option>
+                                    <option value="B42">진공로(B42)</option>
+                                    <option value="C01">PQ(C01)</option>
+                                    <option value="C02">PQ(C02)</option>
+                                    <option value="C03">PQ(C03)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>관리자(정)</label>
+                                <input type="text" id="fac_man1" name="fac_man1" placeholder="정">
+                            </div>
+                            <div class="field-col">
+                                <label>관리자(부)</label>
+                                <input type="text" id="fac_man2" name="fac_man2" placeholder="부">
+                            </div>
+                            <div class="field-col">
+                                <label>사용부서</label>
+                                <input type="text" id="fac_lot" name="fac_lot" placeholder="사용부서">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>제조번호</label>
+                                <input type="text" id="fac_e1" name="fac_e1" placeholder="제조번호">
+                            </div>
+                            <div class="field-col-full">
+                                <label>설치장소</label>
+                                <input type="text" id="fac_plc" name="fac_plc" placeholder="설치장소">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 구매/제조 정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">구매/제조 정보</h3>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>제조사 국적</label>
+                                <input type="text" id="fac_e2" name="fac_e2" placeholder="국적">
+                            </div>
+                            <div class="field-col">
+                                <label>제조회사</label>
+                                <input type="text" id="fac_make" name="fac_make" placeholder="제조회사">
+                            </div>
+                            <div class="field-col">
+                                <label>구입처</label>
+                                <input type="text" id="fac_cBuy" name="fac_cBuy" placeholder="구입처">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>유지보수업체</label>
+                                <input type="text" id="fac_e3" name="fac_e3" placeholder="유지보수업체">
+                            </div>
+                            <div class="field-col">
+                                <label>도입시기</label>
+                                <input type="text" id="fac_buy" name="fac_buy" class="js-datepicker" placeholder="YYYY-MM-DD">
+                            </div>
+                            <div class="field-col">
+                                <label>제조일자</label>
+                                <input type="text" id="fac_mday" name="fac_mday" class="js-datepicker" placeholder="YYYY-MM-DD">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>구입가격</label>
+                                <div class="input-with-unit">
+                                    <input id="fac_mon" name="fac_mon" class="form-input" type="text" placeholder="0" value="0" />
+                                    <span>만원</span>
+                                </div>
+                            </div>
+                            <div class="field-col">
+                                <label>실적 및 현황 출력</label>
+                                <div class="checkbox-field">
+                                    <input type="checkbox" id="fac_dan" name="fac_dan" checked>
+                                    <label for="fac_dan">출력</label>
+                                </div>
+                            </div>
+                            <div class="field-col"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 운영 정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">운영 정보</h3>
+                        <div class="field-row">
+                            <div class="field-col-full">
+                                <label>처리용량</label>
+                                <input type="text" id="fac_able" name="fac_able" placeholder="처리용량">
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col">
+                                <label>가동기준시간</label>
+                                <input type="text" id="fac_time" name="fac_time" placeholder="가동기준시간">
+                            </div>
+                            <div class="field-col">
+                                <label>점검주기</label>
+                                <input type="text" id="fac_test" name="fac_test" placeholder="점검주기">
+                            </div>
+                            <div class="field-col"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 상세 정보 -->
+                    <div class="field-section">
+                        <h3 class="section-title">상세 정보</h3>
+                        <div class="field-row">
+                            <div class="field-col-full">
+                                <label>주변설비 및 관련사항</label>
+                                <textarea id="fac_e4" name="fac_e4" rows="2" placeholder="주변설비 및 관련사항"></textarea>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col-full">
+                                <label>비고</label>
+                                <textarea id="fac_bigo" name="fac_bigo" rows="2" placeholder="비고"></textarea>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field-col-full">
+                                <label>설비점검 주의사항</label>
+                                <textarea id="fac_cau" name="fac_cau" rows="2" placeholder="주의사항"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 오른쪽: 이미지 및 특이사항 -->
+                <div class="modal-right">
+                    <div class="field-section">
+                        <h3 class="section-title">이미지</h3>
+                        <div class="img-upload-area">
+                            <input type="file" id="imgInput0" class="imgInputClass" name="fac_file_url" accept="image/*" onchange="previewImage(this,'previewId')">
+                            <div class="img-preview" id="previewId">
+                                <img id="img0" src="/tkheat/css/image/no_image.png" alt="설비이미지">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="field-section">
+                        <h3 class="section-title">특이사항</h3>
+                        <textarea id="fac_unus" name="fac_unus" rows="5" placeholder="특이사항 입력"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 푸터 (버튼) -->
+        <div class="modal-footer">
+            <button type="button" class="btn-delete" onclick="deleteFac();" style="display:none;">삭제</button>
+            <button type="button" class="btn-save" onclick="save();">저장</button>
+            <button type="button" class="btn-cancel">닫기</button>
+        </div>
+    </div>
+</form>
 	    
 	    
 	    
 	    
 	    
 <script>
-	//전역변수
-    var cutumTable;	
-    var isEditMode = false; //수정,최초저장 구분값
+//전역변수
+let now_page_code = "h03";
+var cutumTable;	
+var isEditMode = false;
+var selectedRowData = null;
 
-	//로드
-	$(function(){
-		//전체 거래처목록 조회
-		getFacList();
-	});
+//로드
+$(function(){
+	if (typeof userInfoList === 'function') {
+        userInfoList(now_page_code);
+    }
+    getFacList();
+});
 
-    $(function(){	
-        // 파일 선택시 이미지 띄우기
-      $('.imgInputClass').change(function(event){
-        var selectedFile = event.target.files[0];
-      var reader = new FileReader();
-      
-      var img = $(this).parent().parent().find('img')[0];
-      img.title = selectedFile.name;
-      
-      reader.onload = function(event) {
-        img.src = event.target.result;
-      };
-      
-      reader.readAsDataURL(selectedFile);
-      });
+// 파일 미리보기
+function previewImage(input, previewId) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#img0').attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+$('.insert-button').on('click', function() {
+    isEditMode = false;
+    selectedRowData = null;
+    $('#facInsertForm')[0].reset();
+    $('#img0').attr('src', '/tkheat/css/image/no_image.png');
+    $('.btn-delete').hide();
+    $('.modal-overlay, .fac-modal').addClass('active');
+});
+
+// 모달 닫기
+$('.modal-close-btn, .btn-cancel').on('click', function() {
+    $('.modal-overlay, .fac-modal').removeClass('active');
+});
+
+// 모달 드래그
+let isDragging = false;
+let startX, startY, modalLeft, modalTop;
+
+$('.modal-header').on('mousedown', function(e) {
+    if ($(e.target).hasClass('modal-close-btn') || $(e.target).closest('.modal-close-btn').length) {
+        return;
+    }
+    
+    isDragging = true;
+    const modal = $('.fac-modal');
+    const offset = modal.offset();
+    
+    startX = e.pageX;
+    startY = e.pageY;
+    modalLeft = offset.left;
+    modalTop = offset.top;
+    
+    modal.css('transform', 'none');
+    
+    e.preventDefault();
+});
+
+$(document).on('mousemove', function(e) {
+    if (isDragging) {
+        const dx = e.pageX - startX;
+        const dy = e.pageY - startY;
+        
+        $('.fac-modal').css({
+            left: (modalLeft + dx) + 'px',
+            top: (modalTop + dy) + 'px'
+        });
+    }
+});
+
+$(document).on('mouseup', function() {
+    isDragging = false;
+});
+
+
+function getFacList(){
+    userTable = new Tabulator("#tab1", {
+        height:"750px",
+        layout:"fitColumns",
+        selectable:true,
+        tooltips:true,
+        selectableRangeMode:"click",
+        selectableRows:true,
+        reactiveData:true,
+        headerHozAlign:"center",
+        ajaxConfig:"POST",
+        ajaxLoader:false,
+        ajaxURL:"/tkheat/management/facInsert/getFacList",
+        ajaxProgressiveLoad:"scroll",
+        ajaxParams:{
+            "fac_no": $("#fac_no").val(),
+            "fac_name": $("#fac_name").val(),
+            "fac_code":"",
+        },
+        placeholder:"조회된 데이터가 없습니다.",
+        paginationSize:20,
+        headerFilterPlaceholder: "",
+        ajaxResponse:function(url, params, response){
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
+            return response;
+        },
+        columns:[
+            {title:"NO", field:"fac_code", sorter:"int", width:80, hozAlign:"center"},
+            {title:"설비NO", field:"fac_no", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"설비명", field:"fac_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"규격", field:"fac_gyu", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"형식", field:"fac_hyun", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"용도", field:"fac_yong", sorter:"int", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"설치장소", field:"fac_plc", sorter:"int", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"능력", field:"fac_able", sorter:"int", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"제작사", field:"fac_make", sorter:"int", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"구매처", field:"fac_cbuy", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},   
+            {title:"이미지", field:"fac_file_name", width:100, hozAlign:"center", formatter:"image",
+                cssClass:"rp-img-popup",
+                formatterParams:{
+                    height:"30px", width:"30px",
+                    urlPrefix:"/tkPrint/사진/설비등록/"
+                },   
+                cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
+            },		
+        ],
+        rowFormatter:function(row){
+            var data = row.getData();
+            row.getElement().style.fontWeight = "700";
+            row.getElement().style.backgroundColor = "#FFFFFF";
+        },
+        rowClick:function(e, row){
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").removeClass('row_select');
+            row.getElement().classList.add("row_select");
+        },
+        rowDblClick:function(e, row){
+            // 수정 권한 체크
+            if (window.disableRowDblClick) {
+                alert("수정 권한이 없습니다.");
+                return false;
+            }
+            
+            var data = row.getData();
+            selectedRowData = data;
+            isEditMode = true;
+            facInsertDetail(data.fac_code);
+            
+            // 삭제 버튼 표시 여부 (권한 체크)
+            const permission = userPermissions?.[now_page_code];
+            if (permission === 'D') {
+                $('.btn-delete').show();
+            } else {
+                $('.btn-delete').hide();
+            }
+        },
+    });		
+}
+
+function facInsertDetail(fac_code){
+    $.ajax({
+        url:"/tkheat/management/facInsert/facInsertDetail",
+        type:"post",
+        dataType:"json",
+        data:{"fac_code":fac_code},
+        success:function(result){
+            var allData = result.data;
+            
+            for(let key in allData){
+                $("#facInsertForm [name='"+key+"']").val(allData[key]);
+            }
+
+            $('#img0').attr("src", "/tkheat/css/image/no_image.png");
+
+            if (allData.fac_file_name) {
+                const path = "/tkPrint/사진/설비등록/" + allData.fac_file_name;
+                $('#img0').attr("src", path);
+            }
+
+            $('.modal-overlay, .fac-modal').addClass('active');
+        }
+    });
+}
+
+function save() {
+	 // ✅ 권한 체크
+    const permission = userPermissions?.[now_page_code];
+    
+    // 신규 등록인 경우
+    if (!isEditMode) {
+        if (!['I', 'U', 'D'].includes(permission)) {
+            alert("등록 권한이 없습니다.");
+            console.log("⚠️ 등록 권한 없음 - 현재 권한:", permission);
+            return false;
+        }
+        console.log("✅ 등록 권한 확인 완료");
+    } 
+    // 수정인 경우
+    else {
+        if (!['U', 'D'].includes(permission)) {
+            alert("수정 권한이 없습니다.");
+            console.log("⚠️ 수정 권한 없음 - 현재 권한:", permission);
+            return false;
+        }
+        console.log("✅ 수정 권한 확인 완료");
+    }
+    // ✅ 숫자 필드 검증 및 변환
+    const numericFields = ['fac_mon'];
+    numericFields.forEach(field => {
+        const value = $('#' + field).val();
+        if (value === '' || value === null || isNaN(value)) {
+            $('#' + field).val('0');
+        }
     });
 
-	//이벤트
-	//함수
-	function getFacList(){
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    selectableRows:true,
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/management/facInsert/getFacList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	"fac_no": $("#fac_no").val(),
-                "fac_name": $("#fac_name").val(),
-                "fac_code":"",
-			    },
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		        {title:"NO", field:"fac_code", sorter:"int", width:80,
-		        	hozAlign:"center"},
-		        {title:"설비NO", field:"fac_no", sorter:"string", width:120,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"설비명", field:"fac_name", sorter:"string", width:150,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"규격", field:"fac_gyu", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"형식", field:"fac_hyun", sorter:"string", width:200,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"용도", field:"fac_yong", sorter:"int", width:200,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"설치장소", field:"fac_plc", sorter:"int", width:200,
-			        hozAlign:"center", headerFilter:"input"},
-			    {title:"능력", field:"fac_able", sorter:"int", width:120,
-				    hozAlign:"center", headerFilter:"input"},
-				{title:"제작사", field:"fac_make", sorter:"int", width:150,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"구매처", field:"fac_cbuy", sorter:"int", width:100,
-					hozAlign:"center", headerFilter:"input"},   
-					{title:"이미지", field:"fac_file_name", width:100,
-						hozAlign:"center", formatter:"image",
-					    cssClass:"rp-img-popup",
-				      	formatterParams:{
-					      	height:"30px", width:"30px",
-					      	urlPrefix:"/tkPrint/사진/설비등록/"
-					      	},   
-						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
-				    },		
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
+    var formData = new FormData($("#facInsertForm")[0]);
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+    let confirmMsg = "";
 
-				var rowData = row.getData();
-				
-			},
-			rowDblClick:function(e, row){
+    if (isEditMode && selectedRowData && selectedRowData.fac_code) {
+        formData.append("mode", "update");
+        formData.append("fac_code", selectedRowData.fac_code);
+        confirmMsg = "수정하시겠습니까?";
+    } else {
+        formData.append("mode", "insert");
+        confirmMsg = "저장하시겠습니까?";
+        formData.delete("fac_code");
+    }
 
-				var data = row.getData();
-				selectedRowData = data;
-				isEditMode = true;
-				$('#facInsertForm')[0].reset();
-				
+    if (!confirm(confirmMsg)) {
+        return;
+    }
 
-				/* Object.keys(data).forEach(function (key) {
-			        const field = $('[name="' + key + '"]');
+    $.ajax({
+        url: "/tkheat/management/facInsert/facInsertSave",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "json",
+        success: function(result) {
+            console.log("✅ 저장 성공:", result);
+            alert("저장 되었습니다.");
+            $('.modal-overlay, .fac-modal').removeClass('active');
+            
+            // 모달 중앙 정렬 복원
+            $('.fac-modal').css({
+                'left': '50%',
+                'top': '50%',
+                'transform': 'translate(-50%, -50%)'
+            });
+            
+            // 테이블 새로고침
+            if (userTable) {
+                userTable.destroy();
+            }
+            getFacList();
+        },
+        error: function(xhr, status, error) {
+            console.error("저장 오류:", error);
+            console.error("응답:", xhr.responseText);
+            alert("저장 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-			        if (field.length) {
-			            field.val(data[key]);
-			        }
-				}); */
-				facInsertDetail(data.fac_code);	
+function deleteFac() {
+	// ✅ 권한 체크
+    const permission = userPermissions?.[now_page_code];
+    
+    if (permission !== 'D') {
+        alert("삭제 권한이 없습니다.");
+        console.log("⚠️ 삭제 권한 없음 - 현재 권한:", permission);
+        return false;
+    }
+    console.log("✅ 삭제 권한 확인 완료");
+    if (!selectedRowData || !selectedRowData.fac_code) {
+        alert("삭제할 대상을 선택하세요.");
+        return;
+    }
 
-				 $('.delete').show();
-			},
-			
-		});		
-	}
+    if (!confirm("삭제하시겠습니까?")) return;
 
-	function facInsertDetail(fac_code){
-		$.ajax({
-			url:"/tkheat/management/facInsert/facInsertDetail",
-			type:"post",
-			dataType:"json",
-			data:{
-				"fac_code":fac_code
-			},
-			success:function(result){
-//				console.log(result);
-				var allData = result.data;
-				
-				for(let key in allData){
-//					console.log(allData, key);	
-					$("#facInsertForm [name='"+key+"']").val(allData[key]);
-				}
+    $.ajax({
+        url: "/tkheat/management/facInsert/facDelete",
+        type: "POST",
+        data: {fac_code: selectedRowData.fac_code},
+        dataType: "json",
+        success: function(result) {
+            if (result.status === "success") {
+                alert("삭제되었습니다.");
+                $('.modal-overlay, .fac-modal').removeClass('active');
+                getFacList();
+            } else {
+                alert("삭제 중 오류가 발생했습니다: " + result.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("삭제 오류:", error);
+        }
+    });
+}
 
-				// 이미지 초기화
-				$("#img0").attr("src", "/tkheat/css/image/no_image.png");
-
-				// 이미지
-				if (allData.fac_file_name) {
-					console.log("원본 파일명:", allData.fac_file_name);
-					console.log("인코딩된 경로:", encodeURIComponent(allData.fac_file_name));
-					const path = "/tkPrint/사진/설비등록/" + allData.fac_file_name;
-					console.log("path: ", path);
-					$("#img0").attr("src", path);
-					//$(".aphoto").attr("href", path).text(d.product_file_name);
-				}
-
-				$('.facModal').show().addClass('show');
-			}
-		});
-	}
-
-
-	
-
-
-	// 드래그 기능 추가
-	const modal = document.querySelector('.facModal');
-	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
-
-	header.addEventListener('mousedown', function(e) {
-		// transform 제거를 위한 초기 위치 설정
-		const rect = modal.getBoundingClientRect();
-		modal.style.left = rect.left + 'px';
-		modal.style.top = rect.top + 'px';
-		modal.style.transform = 'none'; // 중앙 정렬 해제
-
-		let offsetX = e.clientX - rect.left;
-		let offsetY = e.clientY - rect.top;
-
-		function moveModal(e) {
-			modal.style.left = (e.clientX - offsetX) + 'px';
-			modal.style.top = (e.clientY - offsetY) + 'px';
-		}
-
-		function stopMove() {
-			window.removeEventListener('mousemove', moveModal);
-			window.removeEventListener('mouseup', stopMove);
-		}
-
-		window.addEventListener('mousemove', moveModal);
-		window.addEventListener('mouseup', stopMove);
-	});
-		
-
-	// 모달 열기
-	const insertButton = document.querySelector('.insert-button');
-	const facModal = document.querySelector('.facModal');
-	const closeButton = document.querySelector('.close');
-	const headerCloseButton = document.querySelector('.header-close');
-
-	
-	insertButton.addEventListener('click', function() {
-		isEditMode = false;  // 추가 모드
-	    $('#facInsertForm')[0].reset(); // 폼 초기화
-		facModal.style.display = 'block'; // 모달 표시
-
-		// 이미지 초기화
-		$("#img0").attr("src", "/tkheat/css/image/no_image.png");		
-		
-		$('.delete').hide();
-	});
-
-	closeButton.addEventListener('click', function() {
-	    facModal.style.display = 'none'; // 모달 숨김
-	});
-
-	headerCloseButton.addEventListener('click', function() {
-		facModal.style.display = 'none';
-	});
-
-	
-	
-	// 저장 and 수정
-	function save() {
-	    var formData = new FormData($("#facInsertForm")[0]);
-
-	    let confirmMsg = "";
-
-	    if (isEditMode && selectedRowData && selectedRowData.fac_code) {
-	        formData.append("mode", "update");
-	        formData.append("fac_code", selectedRowData.fac_code);
-	        confirmMsg = "수정하시겠습니까?";
-	    } else {
-	        formData.append("mode", "insert");
-	        confirmMsg = "저장하시겠습니까?";
-	    }
-
-	    if (!confirm(confirmMsg)) {
-	        return;
-	    }
-
-	    $.ajax({
-	        url: "/tkheat/management/facInsert/facInsertSave",
-	        type: "POST",
-	        data: formData,
-	        contentType: false,
-	        processData: false,
-	        dataType: "json",
-	        success: function(result) {
-	            alert("저장 되었습니다.");
-	            $(".facModal").hide();
-	            getFacList();
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("저장 오류:", error);
-	        }
-	    });
-	}
-
-
-	function deleteFac() {
-	    if (!selectedRowData || !selectedRowData.fac_code) {
-	        alert("삭제할 대상을 선택하세요.");
-	        return;
-	    }
-
-	    if (!confirm("삭제하시겠습니까?")) {
-	        return;
-	    }
-
-	    $.ajax({
-	        url: "/tkheat/management/facInsert/facDelete",
-	        type: "POST",
-	        data: {
-	        	fac_code: selectedRowData.fac_code
-	        },
-	        dataType: "json",
-	        success: function(result) {
-	            if (result.status === "success") {
-	                alert("삭제되었습니다.");
-	                $(".facModal").hide();
-	                getFacList();
-	            } else {
-	                alert("삭제 중 오류가 발생했습니다: " + result.message);
-	            }
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("삭제 오류:", error);
-	            alert("삭제 요청 중 오류가 발생했습니다.");
-	        }
-	    });
-	}
-
-    //엑셀 다운로드
-	$(".excel-button").click(function () {
-	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-	    const filename = "설비등록_" + today + ".xlsx";
-	    userTable.download("xlsx", filename, { sheetName: "설비등록" });
-	});
-
-
+$(".excel-button").click(function () {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const filename = "설비등록_" + today + ".xlsx";
+    userTable.download("xlsx", filename, { sheetName: "설비등록" });
+});
 	
     </script>
 

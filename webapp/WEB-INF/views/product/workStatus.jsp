@@ -110,6 +110,7 @@
 	    
 <script>
 	//전역변수
+	let now_page_code = "a05";
     var cutumTable;	
 
 	//로드
@@ -134,6 +135,7 @@
 		    selectableRangeMode:"click",
 		    reactiveData:true,
 		    headerHozAlign:"center",
+		    headerSort:false,
 		    ajaxConfig:"POST",
 		    ajaxLoader:false,
 		    ajaxURL:"/tkheat/product/workStatus/getWorkStatusList",
@@ -143,17 +145,21 @@
 			    "edate": $("#edate").val(),				  
 			    },
 		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
+		    pagination:"local",
+	        paginationSize:20,
+	        paginationSizeSelector:[20,50,100,500,1000],
+	        paginationCounter:"rows",
+	        headerFilterPlaceholder: "",
 		    ajaxResponse:function(url, params, response){
 				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
+				return response.data ? response.data : [];
 		    },
 		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:80,
+		        {title:"NO", field:"idx", sorter:"int", width:50,
 		        	hozAlign:"center"},
-		        {title:"담당자", field:"ord_name", sorter:"string", width:120,
+		        {title:"담당자", field:"ord_name", sorter:"string", width:70,
 			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"수주NO", field:"ord_code", sorter:"string", width:120,
+			    {title:"수주NO", field:"ord_code", sorter:"string", width:100,
 				    hozAlign:"center", headerFilter:"input"},     
 				{title:"거래처", field:"corp_name", sorter:"string", width:120,
 				    hozAlign:"center", headerFilter:"input"}, 
@@ -165,23 +171,23 @@
 		        	hozAlign:"center", headerFilter:"input"},
 		        {title:"재질", field:"prod_jai", sorter:"string", width:100,
 		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"입고", field:"ord_su", sorter:"string", width:100,
+		        {title:"입고", field:"ord_su", sorter:"string", width:80,
 			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"준비", field:"prod_j", sorter:"int", width:100,
+		        {title:"준비", field:"prod_j", sorter:"int", width:80,
 		        	hozAlign:"center", headerFilter:"input"},  	
-		        {title:"전세정", field:"prod_p", sorter:"int", width:100,
+		        {title:"전세정", field:"prod_p", sorter:"int", width:80,
 			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"침탄", field:"prod_a", sorter:"int", width:100,
+			    {title:"침탄", field:"prod_a", sorter:"int", width:80,
 				    hozAlign:"center", headerFilter:"input"},	
-				{title:"고주파", field:"prod_h", sorter:"int", width:100,
+				{title:"고주파", field:"prod_h", sorter:"int", width:80,
 				    hozAlign:"center", headerFilter:"input"},
-				{title:"후세정", field:"prod_f", sorter:"int", width:100,
+				{title:"후세정", field:"prod_f", sorter:"int", width:80,
 					hozAlign:"center", headerFilter:"input"},
-			    {title:"템퍼링", field:"prod_r", sorter:"int", width:100,
+			    {title:"템퍼링", field:"prod_r", sorter:"int", width:80,
 					hozAlign:"center", headerFilter:"input"},
- 			    {title:"쇼트", field:"prod_s", sorter:"int", width:100,
+ 			    {title:"쇼트", field:"prod_s", sorter:"int", width:80,
 					hozAlign:"center", headerFilter:"input"},
-				{title:"출고", field:"och_su", sorter:"int", width:100,
+				{title:"출고", field:"och_su", sorter:"int", width:80,
 					hozAlign:"center", headerFilter:"input"},
 				    
 		    ],

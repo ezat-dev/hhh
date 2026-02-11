@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>통합모니터링</title>
+<title>알람-1</title>
 <link rel="stylesheet" href="/tkheat/css/monitoring/alarm1.css">
 <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
 <%@include file="../include/pluginpage.jsp"%>
@@ -225,7 +225,7 @@ div {
 
 	<script>
 
-
+	let now_page_code = "d02";
 
 	$(document).ready(function () {
 	var alarmMap = {
@@ -402,32 +402,60 @@ div {
 
 	var alarmTimer = null;
 
-    function alarmOn() {
+	function alarmOn() {
         $.ajax({
             url: "/tkheat/monitoring/currentAlarmList",
             type: "POST",
             dataType: "json",
             success: function(res) {
                 var alarms = res.data;
+                
+                if (!alarms || alarms.length === 0) {
+                    console.warn("⚠️ 알람 데이터 없음");
+                    return;
+                }
 
-               
+                console.log("📊 전체 알람 데이터:", alarms.length + "개");
+
+                // ✅ Step 1: regtime 기준으로 내림차순 정렬 (최신이 먼저)
+                alarms.sort(function(a, b) {
+                    return new Date(b.regtime) - new Date(a.regtime);
+                });
+
+                // ✅ Step 2: a_addr별로 최신 데이터만 선택
                 var latestAlarms = {};
                 alarms.forEach(function(row) {
-                    latestAlarms[row.a_addr] = row;
-                });
-                
-                $(".main > div[class^='alarm_']").removeClass("alarm-on");
-
-            
-                Object.values(latestAlarms).forEach(function(row) {
-                    var cls = alarmMap[row.a_addr];
-                    if(cls && Number(row.a_value) === 1) {
-                        $("." + cls).addClass("alarm-on");
+                    if (!latestAlarms[row.a_addr]) {
+                        latestAlarms[row.a_addr] = row;
                     }
                 });
+
+                console.log("✅ 최신 알람 개수:", Object.keys(latestAlarms).length + "개");
+
+                // ✅ Step 3: 모든 알람 초기화
+                $(".main > div[class^='alarm_']").removeClass("alarm-on");
+
+                // ✅ Step 4: 값이 1인 알람만 켜기
+                var activeCount = 0;
+                Object.values(latestAlarms).forEach(function(row) {
+                    var cls = alarmMap[row.a_addr];
+                    var value = Number(row.a_value);
+                    
+                    if (cls) {
+                        if (value === 1) {
+                            $("." + cls).addClass("alarm-on");
+                            activeCount++;
+                            console.log(`🔴 ON: ${row.a_addr} (${cls})`);
+                        } else {
+                            console.log(`⚪ OFF: ${row.a_addr} (${cls})`);
+                        }
+                    }
+                });
+
+                console.log(`🔔 활성 알람: ${activeCount}개`);
             },
-            error: function() {
-                console.error("알람 데이터 조회 실패");
+            error: function(xhr, status, error) {
+                console.error("❌ 알람 조회 실패:", error);
             },
             complete: function() {
                 clearTimeout(alarmTimer);
@@ -439,8 +467,6 @@ div {
     // 최초 호출
     alarmOn();
 });
-</script>
-	
 </script>
 </body>
 </html>

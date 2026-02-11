@@ -156,6 +156,7 @@
 	    
 <script>
 	//전역변수
+	let now_page_code = "b05";
     var cutumTable;	
 
 	//로드

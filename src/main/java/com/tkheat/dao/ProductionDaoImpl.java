@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.tkheat.domain.Ipgo;
 import com.tkheat.domain.Work;
+import com.tkheat.domain.WorkJisiTk;
 
 @Repository
 public class ProductionDaoImpl implements ProductionDao{
@@ -191,8 +192,14 @@ public class ProductionDaoImpl implements ProductionDao{
 	
 	
 	
+	@Override
+	 public List<WorkJisiTk> getLotList(WorkJisiTk workJisiTk) {
+		 return sqlSession.selectList("workjisitk.getLotList",workJisiTk);
+	 }
 	
-	
-	
+	@Override
+	public List<WorkJisiTk> getLotListReport(WorkJisiTk workJisiTk){
+		return sqlSession.selectList("workjisitk.getLotListReport", workJisiTk);
+	}
 	
 }

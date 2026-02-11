@@ -111,6 +111,7 @@
 	    
 <script>
 	//전역변수
+	let now_page_code = "a06";
     var cutumTable;	
 
 	//로드
@@ -135,6 +136,7 @@
 	    selectableRangeMode: "click",
 	    reactiveData: true,
 	    headerHozAlign: "center",
+	    headerSort:false,
 	    ajaxConfig: "POST",
 	    ajaxLoader: false,
 	    ajaxURL: "/tkheat/product/jaegoStatus/getJaegoStatusList",
@@ -144,11 +146,15 @@
 	        "edate": $("#edate").val(),
 	    },
 	    placeholder: "조회된 데이터가 없습니다.",
-	    paginationSize: 20,
-	    ajaxResponse: function(url, params, response){
-	        $("#tab1 .tabulator-col.tabulator-sortable").css("height", "55px");
-	        return response;
-	    },
+	    pagination:"local",
+        paginationSize:20,
+        paginationSizeSelector:[20,50,100,500,1000],
+        paginationCounter:"rows",
+        headerFilterPlaceholder: "",
+        ajaxResponse:function(url, params, response){
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height", "55px");
+            return response.data ? response.data : []; 
+        },
 	    columns: [
 	        {title: "NO", field: "idx", sorter: "int", width: 40, hozAlign: "center"},
 	        {title: "수주NO", field: "ord_code", sorter: "string", width: 100, hozAlign: "center", headerFilter: "input"},

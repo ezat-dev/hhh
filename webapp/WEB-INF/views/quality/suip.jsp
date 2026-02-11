@@ -10,139 +10,376 @@
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
-    
-.main{
-	width:98%;
+/* ========== 기본 스타일 ========== */
+.main {
+    width: 98%;
 }
+
 .container {
-	display: flex;
-	justify-content: space-between;
-}
-.suipModal {
-	position: fixed; /* 화면에 고정 */
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 1000; /* 다른 요소 위에 표시 */
+    display: flex;
+    justify-content: space-between;
 }
 
-.header {
-	display: flex; /* 플렉스 박스 사용 */
-	justify-content: center; /* 중앙 정렬 */
-	align-items: center; /* 수직 중앙 정렬 */
-	background-color: #33363d; /* 배경색 */
-	height: 50px; /* 높이 */
-	color: white; /* 글자색 */
-	font-size: 20px; /* 글자 크기 */
-	text-align: center; /* 텍스트 정렬 */
-	position: relative;
-}
-.header-close {
-	position: absolute;
-	right: 15px;
-	top: 10px;
-	cursor: pointer;
-	font-size: 20px;
-	color: white;
-}
-.detail {
-	background: #ffffff;
-	border: 1px solid #000000;
-	width: 800px; /* 가로 길이 고정 */
-	height: 550px; /* 세로 길이 고정 */
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-	padding: 20px;
-	border-radius: 5px; /* 모서리 둥글게 */
-	overflow-y: auto; /* 세로 스크롤 추가 */
-}
 .tabulator {
-	width: 100%;
-	max-width: 100%;
-	max-height: 900px;
-	overflow-x: hidden !important;  
-}
-        
-.tabulator .tabulator-cell {
-	white-space: normal !important;
-	word-break: break-word; 
-	text-align: center;
-}
-        
-.row_select{
-	background-color:#9ABCEA !important;
-}
-.box1 {
-	display: flex;
-	justify-content: right;
-	align-items: center;
-	width: 1500px;
-	margin-left: -1050px;
+    width: 100%;
+    max-width: 100%;
+    max-height: 900px;
+    overflow-x: hidden !important;
 }
 
-.box1 select{
-	width: 5%
-}  
+.tabulator .tabulator-cell {
+    white-space: normal !important;
+    word-break: break-word;
+    text-align: center;
+}
+
+.row_select {
+    background-color: #9ABCEA !important;
+}
+
+.box1 {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    width: 1500px;
+    margin-left: -1030px;
+    gap: 10px;
+}
+
+.box1 select {
+    width: 5%;
+}
+
 .box1 input[type="date"] {
-	width: 150px;
-	padding: 5px 10px;
-	font-size: 16px;
-	border: 1px solid #ccc;
-	border-radius: 6px;
-	background-color: #f9f9f9;
-	color: #333;
-	outline: none;
-	transition: border 0.3s ease;
+    width: 150px;
+    padding: 5px 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    color: #333;
+    outline: none;
+    transition: border 0.3s ease;
 }
 
 .box1 input[type="date"]:focus {
-	border: 1px solid #007bff;
-	background-color: #fff;
-}  
+    border: 1px solid #007bff;
+    background-color: #fff;
+}
+
 .box1 label,
 .box1 input {
-	margin-right: 10px; /* 요소 사이 간격 */
-}   
-.btnSaveClose {
-	display: flex;
-	justify-content: center; /* 가운데 정렬 */
-	gap: 20px; /* 버튼 사이 여백 */
-	margin-top: 30px; /* 모달 내용과의 간격 */
-	margin-bottom: 20px; /* 모달 하단과 버튼 사이 간격  */
-}
-.btnSaveClose button {
-	width: 100px;
-	height: 35px;
-	background-color: #FFD700; /* 기본 배경 - 노란색 */
-	color: black;
-	border: 2px solid #FFC107; /* 노란 테두리 */
-	border-radius: 5px;
-	font-weight: bold;
-	text-align: center;
-	cursor: pointer;
-	line-height: 35px;
-	margin: 0 10px;
-	margin-top: 10px;
-	transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-right: 10px;
 }
 
-/* 저장 버튼 호버 시 */
-.btnSaveClose .save:hover {
-	background-color: #FFC107;
-	transform: scale(1.05);
+/* ========== 모달 오버레이 ========== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
 }
 
-/* 닫기 버튼 - 회색 톤 */
-.btnSaveClose .close {
-	background-color: #A9A9A9;
-	color: black;
-	border: 2px solid #808080;
+.modal-overlay.active {
+    display: block;
 }
 
-/* 닫기 버튼 호버 시 */
-.btnSaveClose .close:hover {
-	background-color: #808080;
-	transform: scale(1.05);
+/* ========== 수입검사 모달 컨테이너 ========== */
+.suip-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+.suip-modal.active {
+    display: block;
+}
+
+.suip-insert-box {
+    width: 900px;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== 모달 헤더 ========== */
+.suip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: move;
+}
+
+.header-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.header-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* ========== 모달 본문 ========== */
+.suip-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #f5f7fa;
+    padding: 20px;
+    max-height: 700px;
+}
+
+.suip-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.suip-modal-body::-webkit-scrollbar-track {
+    background: #e0e0e0;
+}
+
+.suip-modal-body::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 4px;
+}
+
+/* ========== 섹션 ========== */
+.suip-section {
+    background: white;
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.suip-section:last-child {
+    margin-bottom: 0;
+}
+
+.suip-section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* ========== 기본 행/열 레이아웃 ========== */
+.suip-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.suip-row:last-child {
+    margin-bottom: 0;
+}
+
+.suip-col {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.suip-col label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+}
+
+/* ========== 입력 필드 ========== */
+.suip-col input[type="text"],
+.suip-col input[type="date"],
+.suip-col select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 13px;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+.suip-col input:focus,
+.suip-col select:focus {
+    outline: none;
+    border-color: #4dabf7;
+    box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.1);
+}
+
+.suip-col select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 32px;
+}
+
+/* ========== 검사내용 특별 레이아웃 ========== */
+.inspection-row {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.inspection-row:last-child {
+    margin-bottom: 0;
+}
+
+.inspection-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+    text-align: right;
+}
+
+.inspection-fields {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.inspection-fields input[type="text"],
+.inspection-fields select {
+    padding: 6px 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 12px;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+.inspection-fields input[type="text"]:first-child,
+.inspection-fields input[type="text"]:nth-child(2) {
+    width: 120px;
+}
+
+.inspection-fields select,
+.inspection-fields .small-input {
+    width: 60px;
+    flex-shrink: 0;
+}
+
+.inspection-fields input:focus,
+.inspection-fields select:focus {
+    outline: none;
+    border-color: #4dabf7;
+    box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.1);
+}
+
+.inspection-fields select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    padding-right: 22px;
+}
+
+/* ========== 모달 푸터 ========== */
+.suip-modal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 20px;
+    background: white;
+    border-top: 1px solid #dee2e6;
+}
+
+.suip-modal-footer button {
+    min-width: 100px;
+    height: 38px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.save {
+    background: linear-gradient(135deg, #51cf66, #37b24d);
+    color: white;
+}
+
+.save:hover {
+    background: linear-gradient(135deg, #40c057, #2f9e44);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(64, 192, 87, 0.3);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #ff6b6b, #fa5252);
+    color: white;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(135deg, #f03e3e, #e03131);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(240, 62, 62, 0.3);
+}
+
+.close {
+    background: linear-gradient(135deg, #868e96, #495057);
+    color: white;
+}
+
+.close:hover {
+    background: linear-gradient(135deg, #6c757d, #343a40);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* ========== 반응형 ========== */
+@media (max-width: 1000px) {
+    .suip-insert-box {
+        width: 95vw;
+    }
+    
+    .suip-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .inspection-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .inspection-label {
+        text-align: left;
+    }
 }
     </style>
     
@@ -186,475 +423,616 @@
 	</main>
 	    
 	    
-	    <form method="post" name="suipForm" id="suipForm">	
-	    	<div class="suipModal">
-			<div id="detail">
-				<div class="header">
-				수입검사
-			</div>
-				
-				
-				
-				<!-- Article List -->
-				<div class="detail">								
-					<table cellspacing="0" cellpadding="0" width="100%">
-						<colgroup>
-							<col width="60%" />
-							<col width="40%" />
-						</colgroup>
-						<tr>
-							<td class="" style="width: 100%;">
-								
-								<div class="subTitle">
-									<div class="h3">입고정보</div>
-								</div>
-								
-								<div class="searchOption">
-								<table cellspacing="0" cellpadding="0" id="">
-								<tr>
-									<th class="">검사일</th>
-									<td class=""><input id="itst_date" class="date" type="date" style="width:100px;"  maxlength="20" size="20" name="itst_date" /></td>
-									<input type="hidden" name="corp_code" id="corp_code"/>
-									<input type="hidden" name="corp_name" id="corp_name"/>
-									<th class="">최종판정</th>
-									<td class="">
-										<select id="itst_wp" name="itst_wp" class="basic">
-									<option selected>합격</option>
-									<option >불합격</option>
-									<option >부적합</option>
-									<option >보류</option>
-									<option >검사대기</option>
-								</select>
-							</td>
-						</tr>
-					</table>
-				</div>
-								
-								<table cellspacing="0" cellpadding="0" width="100%" class="">									
-									<tr>
-										<th class="">거래처</th>
-										<td class=""><input id="corp_code" name="corp_code" class="basic" type="text" style="width:100%;" value="(주)동양" /></td>
-										<th class="">품번</th>
-										<td class=""><input id="prod_no" name="prod_no" class="basic" type="text" style="width:100%;" value="MHB0143-R0-60" /></td>
-										</tr>
-									<tr>
-										<th class="">품명</th>
-										<td class=""><input id="prod_name" name="prod_name" class="basic" type="text" style="width:100%;" value="M5ZR1 허브1&2단" /></td>
-										<th class="">재질</th>
-										<td class=""><input id="prod_jai" name="prod_jai" class="basic" type="text" style="width:100%;" value="SCR420" /></td>
-										</tr>
-									<tr>
-										<th class="">입고량</th>
-										<td class=""><input id="ord_su" name="ord_su" class="basic" type="text" style="width:100%;" value="369" /></td>
-										<th class="">입고LOT</th>
-										<td class=""><input id="ord_lot" name="ord_lot" class="basic" type="text" style="width:100%;" value="" /></td>
-									</tr>
-								</table>
-								
-								<div class="subTitle">
-									<div class="h3">검사내용</div>
-								</div>
-								
-								<table cellspacing="0" cellpadding="0" width="100%" class="">									
-									<tr>
-										<th class="">외관</th>
-										<td class="">
-											<input id="itst_wn" name="itst_wn" class="basic" type="text" style="width:100px;" value="외관" />
-											<input id="itst_ws" name="itst_ws" class="basic" type="text" style="width:100px;" value="녹없을것" />
-											<select id="itst_w1" name="itst_w1" class="basic" style="width:58px;"><option selected>OK</option><option >NG</option></select>
-											<select id="itst_w2" name="itst_w2" class="basic" style="width:58px;"><option selected>OK</option><option >NG</option></select>
-											<select id="itst_w3" name="itst_w3" class="basic" style="width:58px;"><option selected>OK</option><option >NG</option></select>
-											<select id="itst_w4" name="itst_w4" class="basic" style="width:58px;"><option selected>OK</option><option >NG</option></select>
-											<select id="itst_w5" name="itst_w5" class="basic" style="width:58px;"><option selected>OK</option><option >NG</option></select>
-										</td>
-										
-									</tr>
-                                    <tr>
-										<th class="">외관</th>
-										<td class="">
-											<input id="itst_05n" name="itst_05n" class="basic" type="text" style="width:100px;" value="가공칩" />
-											<input id="itst_05s" name="itst_05s" class="basic" type="text" style="width:100px;" value="가공칩없을것" />
-											<input id="itst_051" name="itst_051" class="basic" type="text" style="width:50px;" value="OK" /> 
-											<input id="itst_052" name="itst_052" class="basic" type="text" style="width:50px;" value="OK" /> 
-											<input id="itst_053" name="itst_053" class="basic" type="text" style="width:50px;" value="OK" /> 
-											<input id="itst_054" name="itst_054" class="basic" type="text" style="width:50px;" value="OK" /> 
-											<input id="itst_055" name="itst_055" class="basic" type="text" style="width:50px;" value="OK" />
-										</td>
-									</tr>
-                                    <tr>
-										<th class="">외관</th>
-										<td class="">
-											<input id="itst_03n" name="itst_03n" class="basic" type="text" style="width:100px;" value="이물질" />
-											<input id="itst_03s" name="itst_03s" class="basic" type="text" style="width:100px;" value="이물질없을것" />
-											<input id="itst_031" name="itst_031" class="basic" type="text" style="width:50px;" value="OK" /> 
-											<input id="itst_032" name="itst_032" class="basic" type="text" style="width:50px;" value="OK" /> 
-											<input id="itst_033" name="itst_033" class="basic" type="text" style="width:50px;" value="OK" /> 
-											<input id="itst_034" name="itst_034" class="basic" type="text" style="width:50px;" value="OK" /> 
-											<input id="itst_035" name="itst_035" class="basic" type="text" style="width:50px;" value="OK" />
-										</td>
-									</tr>
-									<tr>
-										<th class="">외관</th>
-										<td class="">
-											<input id="itst_01n" name="itst_01n" class="basic" type="text" style="width:100px;" value="찍힘" />
-											<input id="itst_01s" name="itst_01s" class="basic" type="text" style="width:100px;" value="찍힘없을것" />
-											<input id="itst_011" name="itst_011" class="basic startOK" type="text" style="width:50px;" value="OK" /> 
-											<input id="itst_012" name="itst_012" class="basic" type="text" style="width:50px;" value="OK" /> 
-											<input id="itst_013" name="itst_013" class="basic" type="text" style="width:50px;" value="OK" /> 
-											<input id="itst_014" name="itst_014" class="basic" type="text" style="width:50px;" value="OK" /> 
-											<input id="itst_015" name="itst_015" class="basic" type="text" style="width:50px;" value="OK" />
-										</td>
-									</tr>								
-									<tr>
-										<th class="">치수1</th>
-										<td class="">
-											<input id="itst_06n" name="itst_06n" class="basic min" type="text" style="width:100px;" value="" />
-											<input id="itst_06s" name="itst_06s" class="basic max" type="text" style="width:100px;" value="" />
-											<input id="itst_061" name="itst_061" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_062" name="itst_062" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_063" name="itst_063" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_064" name="itst_064" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_065" name="itst_065" class="basic chisuInput" type="text" style="width:50px;" value="" />
-										</td>
-									</tr>
-									<tr>
-										<th class="">치수2</th>
-										<td class="">
-											<input id="itst_07n" name="itst_07n" class="basic min" type="text" style="width:100px;" value="" />
-											<input id="itst_07s" name="itst_07s" class="basic max" type="text" style="width:100px;" value="" />
-											<input id="itst_07s" name="itst_071" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_072" name="itst_072" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_073" name="itst_073" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_074" name="itst_074" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_075" name="itst_075" class="basic chisuInput" type="text" style="width:50px;" value="" />
-										</td>
-									</tr>
-									<tr>
-										<th class="">치수3</th>
-										<td class="">
-											<input id="itst_08n" name="itst_08n" class="basic min" type="text" style="width:100px;" value="" />
-											<input id="itst_08s" name="itst_08s" class="basic max" type="text" style="width:100px;" value="" />
-											<input id="itst_081" name="itst_081" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_082" name="itst_082" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_083" name="itst_083" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_084" name="itst_084" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_085" name="itst_085" class="basic chisuInput" type="text" style="width:50px;" value="" />
-										</td>
-									</tr>
-                                    <tr>
-										<th class="">치수4</th>
-										<td class="">
-											<input id="itst_04n" name="itst_04n" class="basic min" type="text" style="width:100px;" value="" />
-											<input id="itst_04s" name="itst_04s" class="basic max" type="text" style="width:100px;" value="" />
-											<input id="itst_041" name="itst_041" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_042" name="itst_042" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_043" name="itst_043" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_044" name="itst_044" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_045" name="itst_045" class="basic chisuInput" type="text" style="width:50px;" value="" />
-										</td>
-									</tr>
-                                    <tr>
-										<th class="">치수5</th>
-										<td class="">
-											<input id="itst_02n" name="itst_02n" class="basic min" type="text" style="width:100px;" value="" />
-											<input id="itst_02s" name="itst_02s" class="basic max" type="text" style="width:100px;" value="" />
-											<input id="itst_021" name="itst_021" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_022" name="itst_022" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_023" name="itst_023" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_024" name="itst_024" class="basic chisuInput" type="text" style="width:50px;" value="" />
-											<input id="itst_025" name="itst_025" class="basic chisuInput" type="text" style="width:50px;" value="" />
-										</td>
-									</tr>
-								</table>
-								
-								<div class="subTitle">
-									<div class="h3">검사정보</div>
-								</div>
-								<table cellspacing="0" cellpadding="0" width="100%" class="">									
-									<tr>
-										<th class="">검사자</th>
-										<td class="">
-											
-											<input id="itst_p" name="itst_p" class="basic" type="text" style="width:100%;" value="최균홍" />
-										</td>
-										<th class="">비고</th>
-										<td class=""><input id="itst_bigo" name="itst_bigo" class="basic" type="text" style="width:100%;" value="" /></td>
-									</tr>
-									<tr>
-										<th class="">샘플수</th>
-										<td class=""><input id="itst_su" name="itst_su" class="basic" type="text" style="width:100%;" value="5EA"/></td>
-										<th class="">검사내역</th>
-										<td class=""><input id="itst_test" name="itst_test" class="basic" type="text" style="width:100%;" value="" /></td>
-									</tr>
-									<tr>
-										<th class="">불량수</th>
-										<td class=""><input id="itst_poor" name="itst_poor" class="basic" type="text" style="width:100%;" value=""/></td>
-										<td class=""></td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-					<div class="btnSaveClose">
-                	 <button class="delete" type="button" onclick="();"  style="display: none;">삭제</button>
-					 <button class="save" type="button" onclick="save();">저장</button>
-					 <button class="close" type="button" onclick="window.close();">닫기</button>
-    	  		</div>
-				</div>
-				
-			</div>
-			</div>
-			</form>
+	    <form method="post" name="suipForm" id="suipForm">
+    <div class="modal-overlay"></div>
+    
+    <div class="suip-modal">
+        <div class="suip-insert-box">
+            <!-- 헤더 -->
+            <div class="suip-header">
+                수입검사
+                <button type="button" class="header-close-btn">&times;</button>
+            </div>
+            
+            <!-- 본문 -->
+            <div class="suip-modal-body">
+                <!-- 입고정보 섹션 -->
+                <div class="suip-section">
+                    <div class="suip-section-title">입고정보</div>
+                    
+                    <div class="suip-row">
+                        <div class="suip-col">
+                            <label>검사일</label>
+                            <input type="date" id="itst_date" name="itst_date">
+                        </div>
+                        <div class="suip-col">
+                            <label>최종판정</label>
+                            <select id="itst_wp" name="itst_wp">
+                                <option selected>합격</option>
+                                <option>불합격</option>
+                                <option>부적합</option>
+                                <option>보류</option>
+                                <option>검사대기</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="suip-row">
+                        <div class="suip-col">
+                            <label>거래처</label>
+                            <input type="text" id="corp_code" name="corp_code" value="(주)동양">
+                        </div>
+                        <div class="suip-col">
+                            <label>품번</label>
+                            <input type="text" id="prod_no" name="prod_no" value="MHB0143-R0-60">
+                        </div>
+                    </div>
+                    
+                    <div class="suip-row">
+                        <div class="suip-col">
+                            <label>품명</label>
+                            <input type="text" id="prod_name" name="prod_name" value="M5ZR1 허브1&2단">
+                        </div>
+                        <div class="suip-col">
+                            <label>재질</label>
+                            <input type="text" id="prod_jai" name="prod_jai" value="SCR420">
+                        </div>
+                    </div>
+                    
+                    <div class="suip-row">
+                        <div class="suip-col">
+                            <label>입고량</label>
+                            <input type="text" id="ord_su" name="ord_su" value="369">
+                        </div>
+                        <div class="suip-col">
+                            <label>입고LOT</label>
+                            <input type="text" id="ord_lot" name="ord_lot">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 검사내용 섹션 -->
+                <div class="suip-section">
+                    <div class="suip-section-title">검사내용</div>
+                    
+                    <!-- 외관 검사 -->
+                    <div class="inspection-row">
+                        <label class="inspection-label">외관</label>
+                        <div class="inspection-fields">
+                            <input type="text" id="itst_wn" name="itst_wn" value="외관" placeholder="항목">
+                            <input type="text" id="itst_ws" name="itst_ws" value="녹없을것" placeholder="기준">
+                            <select id="itst_w1" name="itst_w1"><option selected>OK</option><option>NG</option></select>
+                            <select id="itst_w2" name="itst_w2"><option selected>OK</option><option>NG</option></select>
+                            <select id="itst_w3" name="itst_w3"><option selected>OK</option><option>NG</option></select>
+                            <select id="itst_w4" name="itst_w4"><option selected>OK</option><option>NG</option></select>
+                            <select id="itst_w5" name="itst_w5"><option selected>OK</option><option>NG</option></select>
+                        </div>
+                    </div>
+                    
+                    <!-- 가공칩 -->
+                    <div class="inspection-row">
+                        <label class="inspection-label">가공칩</label>
+                        <div class="inspection-fields">
+                            <input type="text" id="itst_05n" name="itst_05n" value="가공칩" placeholder="항목">
+                            <input type="text" id="itst_05s" name="itst_05s" value="가공칩없을것" placeholder="기준">
+                            <input type="text" id="itst_051" name="itst_051" value="OK" class="small-input">
+                            <input type="text" id="itst_052" name="itst_052" value="OK" class="small-input">
+                            <input type="text" id="itst_053" name="itst_053" value="OK" class="small-input">
+                            <input type="text" id="itst_054" name="itst_054" value="OK" class="small-input">
+                            <input type="text" id="itst_055" name="itst_055" value="OK" class="small-input">
+                        </div>
+                    </div>
+                    
+                    <!-- 이물질 -->
+                    <div class="inspection-row">
+                        <label class="inspection-label">이물질</label>
+                        <div class="inspection-fields">
+                            <input type="text" id="itst_03n" name="itst_03n" value="이물질" placeholder="항목">
+                            <input type="text" id="itst_03s" name="itst_03s" value="이물질없을것" placeholder="기준">
+                            <input type="text" id="itst_031" name="itst_031" value="OK" class="small-input">
+                            <input type="text" id="itst_032" name="itst_032" value="OK" class="small-input">
+                            <input type="text" id="itst_033" name="itst_033" value="OK" class="small-input">
+                            <input type="text" id="itst_034" name="itst_034" value="OK" class="small-input">
+                            <input type="text" id="itst_035" name="itst_035" value="OK" class="small-input">
+                        </div>
+                    </div>
+                    
+                    <!-- 찍힘 -->
+                    <div class="inspection-row">
+                        <label class="inspection-label">찍힘</label>
+                        <div class="inspection-fields">
+                            <input type="text" id="itst_01n" name="itst_01n" value="찍힘" placeholder="항목">
+                            <input type="text" id="itst_01s" name="itst_01s" value="찍힘없을것" placeholder="기준">
+                            <input type="text" id="itst_011" name="itst_011" value="OK" class="small-input">
+                            <input type="text" id="itst_012" name="itst_012" value="OK" class="small-input">
+                            <input type="text" id="itst_013" name="itst_013" value="OK" class="small-input">
+                            <input type="text" id="itst_014" name="itst_014" value="OK" class="small-input">
+                            <input type="text" id="itst_015" name="itst_015" value="OK" class="small-input">
+                        </div>
+                    </div>
+                    
+                    <!-- 치수1 -->
+                    <div class="inspection-row">
+                        <label class="inspection-label">치수1</label>
+                        <div class="inspection-fields">
+                            <input type="text" id="itst_06n" name="itst_06n" placeholder="MIN">
+                            <input type="text" id="itst_06s" name="itst_06s" placeholder="MAX">
+                            <input type="text" id="itst_061" name="itst_061" class="small-input">
+                            <input type="text" id="itst_062" name="itst_062" class="small-input">
+                            <input type="text" id="itst_063" name="itst_063" class="small-input">
+                            <input type="text" id="itst_064" name="itst_064" class="small-input">
+                            <input type="text" id="itst_065" name="itst_065" class="small-input">
+                        </div>
+                    </div>
+                    
+                    <!-- 치수2 -->
+                    <div class="inspection-row">
+                        <label class="inspection-label">치수2</label>
+                        <div class="inspection-fields">
+                            <input type="text" id="itst_07n" name="itst_07n" placeholder="MIN">
+                            <input type="text" id="itst_07s" name="itst_07s" placeholder="MAX">
+                            <input type="text" id="itst_071" name="itst_071" class="small-input">
+                            <input type="text" id="itst_072" name="itst_072" class="small-input">
+                            <input type="text" id="itst_073" name="itst_073" class="small-input">
+                            <input type="text" id="itst_074" name="itst_074" class="small-input">
+                            <input type="text" id="itst_075" name="itst_075" class="small-input">
+                        </div>
+                    </div>
+                    
+                    <!-- 치수3 -->
+                    <div class="inspection-row">
+                        <label class="inspection-label">치수3</label>
+                        <div class="inspection-fields">
+                            <input type="text" id="itst_08n" name="itst_08n" placeholder="MIN">
+                            <input type="text" id="itst_08s" name="itst_08s" placeholder="MAX">
+                            <input type="text" id="itst_081" name="itst_081" class="small-input">
+                            <input type="text" id="itst_082" name="itst_082" class="small-input">
+                            <input type="text" id="itst_083" name="itst_083" class="small-input">
+                            <input type="text" id="itst_084" name="itst_084" class="small-input">
+                            <input type="text" id="itst_085" name="itst_085" class="small-input">
+                        </div>
+                    </div>
+                    
+                    <!-- 치수4 -->
+                    <div class="inspection-row">
+                        <label class="inspection-label">치수4</label>
+                        <div class="inspection-fields">
+                            <input type="text" id="itst_04n" name="itst_04n" placeholder="MIN">
+                            <input type="text" id="itst_04s" name="itst_04s" placeholder="MAX">
+                            <input type="text" id="itst_041" name="itst_041" class="small-input">
+                            <input type="text" id="itst_042" name="itst_042" class="small-input">
+                            <input type="text" id="itst_043" name="itst_043" class="small-input">
+                            <input type="text" id="itst_044" name="itst_044" class="small-input">
+                            <input type="text" id="itst_045" name="itst_045" class="small-input">
+                        </div>
+                    </div>
+                    
+                    <!-- 치수5 -->
+                    <div class="inspection-row">
+                        <label class="inspection-label">치수5</label>
+                        <div class="inspection-fields">
+                            <input type="text" id="itst_02n" name="itst_02n" placeholder="MIN">
+                            <input type="text" id="itst_02s" name="itst_02s" placeholder="MAX">
+                            <input type="text" id="itst_021" name="itst_021" class="small-input">
+                            <input type="text" id="itst_022" name="itst_022" class="small-input">
+                            <input type="text" id="itst_023" name="itst_023" class="small-input">
+                            <input type="text" id="itst_024" name="itst_024" class="small-input">
+                            <input type="text" id="itst_025" name="itst_025" class="small-input">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 검사정보 섹션 -->
+                <div class="suip-section">
+                    <div class="suip-section-title">검사정보</div>
+                    
+                    <div class="suip-row">
+                        <div class="suip-col">
+                            <label>검사자</label>
+                            <input type="text" id="itst_p" name="itst_p" value="최균홍">
+                        </div>
+                        <div class="suip-col">
+                            <label>비고</label>
+                            <input type="text" id="itst_bigo" name="itst_bigo">
+                        </div>
+                    </div>
+                    
+                    <div class="suip-row">
+                        <div class="suip-col">
+                            <label>샘플수</label>
+                            <input type="text" id="itst_su" name="itst_su" value="5EA">
+                        </div>
+                        <div class="suip-col">
+                            <label>검사내역</label>
+                            <input type="text" id="itst_test" name="itst_test">
+                        </div>
+                    </div>
+                    
+                    <div class="suip-row">
+                        <div class="suip-col">
+                            <label>불량수</label>
+                            <input type="text" id="itst_poor" name="itst_poor">
+                        </div>
+                        <div class="suip-col"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 푸터 버튼 -->
+            <div class="suip-modal-footer">
+                <button type="button" class="btn-delete" onclick="deleteSuip();" style="display:none;">삭제</button>
+                <button type="button" class="save">저장</button>
+                <button type="button" class="close">닫기</button>
+            </div>
+        </div>
+    </div>
+</form>
 	    
 <script>
-	//전역변수
-    var cutumTable;	
+//========== 전역변수 ==========
+let now_page_code = "f01";
+var suipTable;
+var isEditMode = false;
+var selectedRowData = null;
 
-	//로드
-	$(function(){
-		var tdate = todayDate();
-		var ydate = yesterDate();
-		
-		$("#sdate").val(ydate);
-		$("#edate").val(tdate);
-		getSuipList();
-	});
+// ========== 페이지 로드 ==========
+$(function(){
+	if (typeof userInfoList === 'function') {
+        userInfoList(now_page_code);
+    }
+    var tdate = todayDate();
+    var ydate = yesterDate();
+    
+    $("#sdate").val(ydate);
+    $("#edate").val(tdate);
+    getSuipList();
+});
 
-	//이벤트
-	//함수
-	function getSuipList(){
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/quality/suip/getSuipList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	"sdate": $("#sdate").val(),
-                "edate": $("#edate").val(),
-			    },
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},
-		        {title:"검사일", field:"itst_date", sorter:"string", width:120,
-			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"입고일", field:"ord_date", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"},     
-				{title:"거래처", field:"corp_name", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"}, 
-				    {title:"거래처", field:"corp_code", sorter:"string", width:120,
-					    hozAlign:"center", headerFilter:"input",visible:false},     
-				{title:"품명", field:"prod_name", sorter:"string", width:150,
-				    hozAlign:"center", headerFilter:"input"}, 
-		        {title:"품번", field:"prod_no", sorter:"string", width:120,
-		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"규격", field:"prod_gyu", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"재질", field:"prod_jai", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"불량수", field:"itst_poor", sorter:"string", width:100,
-			        hozAlign:"center", headerFilter:"input"},	
-			        { 
-			        	  title:"판정", 
-			        	  field:"itst_wp", 
-			        	  sorter:"string", 
-			        	  width:100, 
-			        	  hozAlign:"center", 
-			        	  headerFilter:"input",
-			        	  formatter:function(cell, formatterParams, onRendered){
-			        	    const value = cell.getValue();
-			        	    const el = cell.getElement();
+// ========== 수입검사 리스트 조회 ==========
+function getSuipList(){
+    // 기존 테이블 완전히 제거
+    if (suipTable) {
+        suipTable.destroy();
+        suipTable = null;
+    }
+    
+    // DOM 초기화
+    $('#tab1').empty();
+    
+    suipTable = new Tabulator("#tab1", {
+        height:"750px",
+        layout:"fitColumns",
+        selectable:true,
+        tooltips:true,
+        selectableRangeMode:"click",
+        reactiveData:true,
+        headerHozAlign:"center",
+        ajaxConfig:"POST",
+        ajaxLoader:false,
+        ajaxURL:"/tkheat/quality/suip/getSuipList",
+        ajaxParams:{
+            "sdate": $("#sdate").val(),
+            "edate": $("#edate").val(),
+        },
+        placeholder:"조회된 데이터가 없습니다.",
+        pagination:"local",
+        paginationSize:20,
+        paginationSizeSelector:[20,50,100,500,1000],
+        paginationCounter:"rows",
+        headerFilterPlaceholder: "",
+        ajaxResponse:function(url, params, response){
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
+            console.log("📊 서버 응답:", response);
+            return response.data ? response.data : [];
+        },
+        
+        columns:[
+            {title:"NO", field:"idx", sorter:"int", width:80, hozAlign:"center"},
+            {title:"검사일", field:"itst_date", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"입고일", field:"ord_date", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"거래처", field:"corp_name", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"거래처코드", field:"corp_code", sorter:"string", width:120, hozAlign:"center", headerFilter:"input", visible:false},
+            {title:"품명", field:"prod_name", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"품번", field:"prod_no", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"규격", field:"prod_gyu", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"재질", field:"prod_jai", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"불량수", field:"itst_poor", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
+            {
+                title:"판정",
+                field:"itst_wp",
+                sorter:"string",
+                width:100,
+                hozAlign:"center",
+                headerFilter:"input",
+                formatter:function(cell, formatterParams, onRendered){
+                    const value = cell.getValue();
+                    const el = cell.getElement();
+                    
+                    if(value === "합격"){
+                        el.style.backgroundColor = "#a3d8f4";
+                    } else if(value === "불합격"){
+                        el.style.backgroundColor = "#f4a3a3";
+                    } else {
+                        el.style.backgroundColor = "";
+                    }
+                    return value;
+                }
+            },
+        ],
+        
+        rowFormatter:function(row){
+            row.getElement().style.fontWeight = "700";
+            row.getElement().style.backgroundColor = "#FFFFFF";
+        },
+        
+        rowClick:function(e, row){
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").removeClass('row_select');
+            row.getElement().classList.add("row_select");
+        },
+        
+        rowDblClick:function(e, row){
 
-			        	    if(value === "합격"){
-			        	      el.style.backgroundColor = "#a3d8f4";  // 연한 파란색
-			        	    } else if(value === "불합격"){
-			        	      el.style.backgroundColor = "#f4a3a3";  // 연한 빨간색
-			        	    } else {
-			        	      el.style.backgroundColor = ""; // 기본
-			        	    }
-			        	    return value;
-			        	  }
-			        	},
-				    
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
+        	if (window.disableRowDblClick) {
+                alert("수정 권한이 없습니다.");
+                return false;
+            }
+            
+            var data = row.getData();
+            selectedRowData = data;
+            isEditMode = true;
+            console.log("더블클릭 데이터:", selectedRowData.itst_code);
+            $('#suipForm')[0].reset();
+            
+            suipDetail(data.itst_code);
+            $('.btn-delete').show();
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+            const permission = userPermissions?.[now_page_code];
+            if (permission === 'D') {
+                $('.btn-delete').show();
+            } else {
+                $('.btn-delete').hide();
+            }
+        },
+    });
+    
+    console.log("✅ Tabulator 생성 완료");
+}
 
-				var rowData = row.getData();
-				
-			},
-			rowDblClick:function(e, row){
+// ========== 수입검사 상세 조회 ==========
+function suipDetail(itst_code){
+    $.ajax({
+        url:"/tkheat/quality/suip/suipDetail",
+        type:"post",
+        dataType:"json",
+        data:{
+            "itst_code":itst_code
+        },
+        success:function(result){
+            console.log("📄 상세 데이터:", result);
+            var allData = result.data;
+            
+            for(let key in allData){
+                const lowerKey = key.toLowerCase();
+                
+                if(lowerKey === 'itst_date'){
+                    const formattedDate = allData[key]?.replace(/[./]/g, '-').substring(0,10);
+                    $("#suipForm [name='itst_date']").val(formattedDate);
+                    continue;
+                }
+                
+                $("#suipForm [name='"+lowerKey+"']").val(allData[key]);
+            }
+            
+            // ✅ 수정: .suipModal → .suip-modal
+            $('.modal-overlay').addClass('active');
+            $('.suip-modal').addClass('active');
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 상세 조회 오류:", error);
+        }
+    });
+}
 
-				var data = row.getData();
-				selectedRowData = data;
-				isEditMode = true;
-				console.log(selectedRowData.itst_code)
-				$('#suipForm')[0].reset();
+// ========== 저장 ==========
+function save() {
 
-				/* Object.keys(data).forEach(function (key) {
-			        const field = $('#begaInsertForm [name="' + key + '"]');
+	const permission = userPermissions?.[now_page_code];
+    
+    // 저장함수
+    if (!isEditMode) {
+        if (!['I', 'U', 'D'].includes(permission)) {
+            alert("등록 권한이 없습니다.");
+            console.log("등록 권한 없음 - 현재 권한:", permission);
+            return false;
+        }
+        console.log("등록 권한 확인 완료");
+    } 
+    // 수정함수
+    else {
+        if (!['U', 'D'].includes(permission)) {
+            alert("수정 권한이 없습니다.");
+            console.log("수정 권한 없음 - 현재 권한:", permission);
+            return false;
+        }
+        console.log("수정 권한 확인 완료");
+    }
+    
+    var formData = new FormData($("#suipForm")[0]);
+    
+    let confirmMsg = "";
+    
+    if (isEditMode && selectedRowData && selectedRowData.itst_code) {
+        formData.append("mode", "update");
+        formData.append("itst_code", selectedRowData.itst_code);
+        confirmMsg = "수정하시겠습니까?";
+    } else {
+        formData.append("mode", "insert");
+        confirmMsg = "저장하시겠습니까?";
+    }
+    
+    if (!confirm(confirmMsg)) {
+        return;
+    }
+    
+    $.ajax({
+        url: "/tkheat/quality/suip/suipSave",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "json",
+        success: function(result) {
+            console.log("💾 저장 완료:", result);
+            alert("저장 되었습니다.");
+            
+            // ✅ 수정: .suipModal → .suip-modal
+            $('.modal-overlay').removeClass('active');
+            $('.suip-modal').removeClass('active');
+            
+            // 모달 위치 초기화
+            $('.suip-modal').css({
+                'left': '50%',
+                'top': '50%',
+                'transform': 'translate(-50%, -50%)'
+            });
+            
+            // 테이블 리로드
+            setTimeout(function() {
+                console.log("🔄 테이블 리로드 시작");
+                getSuipList();
+            }, 300);
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 저장 오류:", error);
+            console.error("응답:", xhr.responseText);
+            alert("저장 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-			        if (field.length) {
-			            field.val(data[key]);
-			        }
-				}); */
-				suipDetail(data.itst_code);
-				 $('.delete').show();
-			},
-		});		
-	}
+// ========== 삭제 ==========
+function deleteSuip() {
 
+	const permission = userPermissions?.[now_page_code];
+    
+    if (permission !== 'D') {
+        alert("삭제 권한이 없습니다.");
+        console.log("삭제 권한 없음 - 현재 권한:", permission);
+        return false;
+    }
+    console.log("삭제 권한 확인 완료");
+    
+    if (!selectedRowData || !selectedRowData.itst_code) {
+        alert("삭제할 대상을 선택하세요.");
+        return;
+    }
+    
+    if (!confirm("삭제하시겠습니까?")) {
+        return;
+    }
+    
+    $.ajax({
+        url: "/tkheat/quality/suip/suipDelete",
+        type: "POST",
+        data: {
+            itst_code: selectedRowData.itst_code
+        },
+        dataType: "json",
+        success: function(result) {
+            if (result.status === "success") {
+                alert("삭제되었습니다.");
+                $('.modal-overlay').removeClass('active');
+                $('.suip-modal').removeClass('active');
+                
+                setTimeout(function() {
+                    getSuipList();
+                }, 300);
+            } else {
+                alert("삭제 중 오류가 발생했습니다: " + result.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 삭제 오류:", error);
+            alert("삭제 요청 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-	function suipDetail(itst_code){
-		$.ajax({
-			url:"/tkheat/quality/suip/suipDetail",
-			type:"post",
-			dataType:"json",
-			data:{
-				"itst_code":itst_code
-			},
-			success:function(result){
-				var allData = result.data;
-				
-				for(let key in allData){
-					const lowerKey = key.toLowerCase();
+// ========== 드래그 기능 ==========
+const modal = document.querySelector('.suip-modal');
+const header = document.querySelector('.suip-header');
 
-					
-					if(lowerKey === 'itst_date'){
-						const formattedDate = allData[key]?.replace(/[./]/g, '-').substring(0,10);
-						$("#suipForm [name='itst_date']").val(formattedDate);
-						continue;
-					}
+header.addEventListener('mousedown', function(e) {
+    // X 버튼 클릭 시 드래그 방지
+    if (e.target.classList.contains('header-close-btn') || e.target.closest('.header-close-btn')) {
+        return;
+    }
+    
+    const rect = modal.getBoundingClientRect();
+    modal.style.left = rect.left + 'px';
+    modal.style.top = rect.top + 'px';
+    modal.style.transform = 'none';
+    
+    let offsetX = e.clientX - rect.left;
+    let offsetY = e.clientY - rect.top;
+    
+    function moveModal(e) {
+        modal.style.left = (e.clientX - offsetX) + 'px';
+        modal.style.top = (e.clientY - offsetY) + 'px';
+    }
+    
+    function stopMove() {
+        window.removeEventListener('mousemove', moveModal);
+        window.removeEventListener('mouseup', stopMove);
+    }
+    
+    window.addEventListener('mousemove', moveModal);
+    window.addEventListener('mouseup', stopMove);
+});
 
-					$("#suipForm [name='"+lowerKey+"']").val(allData[key]);
-				}
+// ========== 모달 열기/닫기 ==========
+const insertButton = document.querySelector('.insert-button');
+const suipModal = document.querySelector('.suip-modal');
+const modalOverlay = document.querySelector('.modal-overlay');
+const closeButton = document.querySelector('.close');
+const headerCloseBtn = document.querySelector('.header-close-btn');
 
-				$('.suipModal').show().addClass('show');
-			}
-		});
-	}
+insertButton.addEventListener('click', function() {
+    isEditMode = false;
+    $('#suipForm')[0].reset();
+    
+    // 중앙 정렬
+    suipModal.style.left = '50%';
+    suipModal.style.top = '50%';
+    suipModal.style.transform = 'translate(-50%, -50%)';
+    
+    modalOverlay.classList.add('active');
+    suipModal.classList.add('active');
+    
+    $('.btn-delete').hide();
+});
 
+closeButton.addEventListener('click', function() {
+    modalOverlay.classList.remove('active');
+    suipModal.classList.remove('active');
+});
 
-	 function save() {
-		    var formData = new FormData($("#suipForm")[0]);
+headerCloseBtn.addEventListener('click', function() {
+    modalOverlay.classList.remove('active');
+    suipModal.classList.remove('active');
+});
 
-		    let confirmMsg = "";
+// ========== 저장 버튼 ==========
+$('.save').click(function() {
+    save();
+});
 
-		    if (isEditMode && selectedRowData && selectedRowData.itst_code) {
-		        formData.append("mode", "update");
-		        formData.append("itst_code", selectedRowData.itst_code);
-		        confirmMsg = "수정하시겠습니까?";
-		    } else {
-		        formData.append("mode", "insert");
-		        confirmMsg = "저장하시겠습니까?";
-		    }
-
-		    if (!confirm(confirmMsg)) {
-		        return;
-		    }
-
-		    $.ajax({
-		        url: "/tkheat/quality/suip/suipSave",
-		        type: "POST",
-		        data: formData,
-		        contentType: false,
-		        processData: false,
-		        dataType: "json",
-		        success: function(result) {
-		            alert("저장 되었습니다.");
-		            $(".suipModal").hide();
-		            getSuipList();
-		        },
-		        error: function(xhr, status, error) {
-		            console.error("저장 오류:", error);
-		        }
-		    });
-		}
-	
-	
-	
-
-
-	// 드래그 기능 추가
-	const modal = document.querySelector('.suipModal');
-	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
-
-	header.addEventListener('mousedown', function(e) {
-		// transform 제거를 위한 초기 위치 설정
-		const rect = modal.getBoundingClientRect();
-		modal.style.left = rect.left + 'px';
-		modal.style.top = rect.top + 'px';
-		modal.style.transform = 'none'; // 중앙 정렬 해제
-
-		let offsetX = e.clientX - rect.left;
-		let offsetY = e.clientY - rect.top;
-
-		function moveModal(e) {
-			modal.style.left = (e.clientX - offsetX) + 'px';
-			modal.style.top = (e.clientY - offsetY) + 'px';
-		}
-
-		function stopMove() {
-			window.removeEventListener('mousemove', moveModal);
-			window.removeEventListener('mouseup', stopMove);
-		}
-
-		window.addEventListener('mousemove', moveModal);
-		window.addEventListener('mouseup', stopMove);
-	});
-
-
-	// 모달 열기
-	const insertButton = document.querySelector('.insert-button');
-	const suipModal = document.querySelector('.suipModal');
-	const closeButton = document.querySelector('.close');
-	const headerCloseButton = document.querySelector('.header-close');
-	
-	insertButton.addEventListener('click', function() {
-		isEditMode = false;  // 추가 모드
-	    $('#suipForm')[0].reset(); // 폼 초기화
-	    suipModal.style.display = 'block'; // 모달 표시
-
-		$('.delete').hide();
-	});
-
-	closeButton.addEventListener('click', function() {
-		suipModal.style.display = 'none'; // 모달 숨김
-	});
-
-	headerCloseButton.addEventListener('click', function() {
-		suipModal.style.display = 'none';
-	});
-
+// ========== 엑셀 다운로드 ==========
+$(".excel-button").click(function () {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const filename = "수입검사_" + today + ".xlsx";
+    suipTable.download("xlsx", filename, { sheetName: "수입검사" });
+});
     </script>
 
 	</body>

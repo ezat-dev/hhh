@@ -12,204 +12,377 @@
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
     
-.main{
-	width:98%;
+/* ========== 기본 스타일 ========== */
+.main {
+    width: 98%;
 }
+
 .container {
-	display: flex;
-	justify-content: space-between;
-}
-.suriHistoryModal {
-    position: fixed; /* 화면에 고정 */
-    top: 50%; /* 수직 중앙 */
-    left: 50%; /* 수평 중앙 */
-    display : none;
-    transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-    z-index: 1000; /* 다른 요소 위에 표시 */
-}
-.header {
-    display: flex; /* 플렉스 박스 사용 */
-    justify-content: center; /* 중앙 정렬 */
-    align-items: center; /* 수직 중앙 정렬 */
-    margin-bottom: 10px; /* 상단 여백 */
-    background-color: #33363d; /* 배경색 */
-    height: 50px; /* 높이 */
-    color: white; /* 글자색 */
-    font-size: 20px; /* 글자 크기 */
-    text-align: center; /* 텍스트 정렬 */
-    position: relative;
-}
-.header-close {
-	position: absolute;
-	right: 15px;
-	top: 10px;
-	cursor: pointer;
-	font-size: 20px;
-	color: white;
-}
-.detail {
-      background: #ffffff;
-      border: 1px solid #000000;
-      width: 800px;
-      height: 660px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-      margin: 20px auto;
-      padding: 20px;
-      border-radius: 5px;
-      overflow-y: auto;
-    }
-
-    .insideTable {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-    }
-
-    .insideTable th,
-    .insideTable td {
-      padding: 10px 12px;
-      border: 1px solid #ccc;
-      vertical-align: middle;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-
-    .insideTable th {
-      background-color: #f5f5f5;
-      text-align: left;
-      font-weight: 600;
-      width: 15%;
-      white-space: nowrap;
-    }
-
-    .insideTable td {
-      text-align: left;
-      width: 35%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .basic,
-    .rp-input,
-    select,
-    input[type="text"],
-    input[type="date"],
-    textarea {
-      width: 100%;
-      padding: 6px 8px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .findImage {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      align-items: flex-start;
-    }
-
-    .imgArea {
-      width: 200px;
-      height: 130px;
-      border: 1px solid #ddd;
-      background-color: #f9f9f9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .imgArea img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-.btnSaveClose {
-	display: flex;
-	justify-content: center; /* 가운데 정렬 */
-	gap: 20px; /* 버튼 사이 여백 */
-	margin-top: 30px; /* 모달 내용과의 간격 */
-	margin-bottom: 20px; /* 모달 하단과 버튼 사이 간격  */
-}
-.btnSaveClose button {
-	width: 100px;
-	height: 35px;
-	background-color: #FFD700; /* 기본 배경 - 노란색 */
-	color: black;
-	border: 2px solid #FFC107; /* 노란 테두리 */
-	border-radius: 5px;
-	font-weight: bold;
-	text-align: center;
-	cursor: pointer;
-	line-height: 35px;
-	margin: 0 10px;
-	margin-top: 10px;
-	transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    justify-content: space-between;
 }
 
-/* 저장 버튼 호버 시 */
-.btnSaveClose .save:hover {
-	background-color: #FFC107;
-	transform: scale(1.05);
+.tabulator {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden !important;
 }
 
-/* 닫기 버튼 - 회색 톤 */
-.btnSaveClose .close {
-	background-color: #A9A9A9;
-	color: black;
-	border: 2px solid #808080;
+.tabulator .tabulator-cell {
+    white-space: normal !important;
+    word-break: break-word;
+    text-align: center;
 }
 
-/* 닫기 버튼 호버 시 */
-.btnSaveClose .close:hover {
-	background-color: #808080;
-	transform: scale(1.05);
+.row_select {
+    background-color: #9ABCEA !important;
 }
+
 .box1 {
-	display: flex;
-	justify-content: right;
-	align-items: center;
-	width: 1500px;
-	margin-left: -1050px;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    width: 1500px;
+    margin-left: -1030px;
+    gap: 10px;
 }
 
-.box1 select{
-	width: 5%
-}  
+.box1 select {
+    width: 5%;
+}
+
 .box1 input[type="date"] {
-	width: 150px;
-	padding: 5px 10px;
-	font-size: 16px;
-	border: 1px solid #ccc;
-	border-radius: 6px;
-	background-color: #f9f9f9;
-	color: #333;
-	outline: none;
-	transition: border 0.3s ease;
+    width: 150px;
+    padding: 5px 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    color: #333;
+    outline: none;
+    transition: border 0.3s ease;
 }
 
 .box1 input[type="date"]:focus {
-	border: 1px solid #007bff;
-	background-color: #fff;
-}  
+    border: 1px solid #007bff;
+    background-color: #fff;
+}
+
 .box1 label,
 .box1 input {
-	margin-right: 10px; /* 요소 사이 간격 */
-}  
-
-.findImage{
-
-	width:100%
+    margin-right: 10px;
 }
+
+/* ========== 모달 오버레이 ========== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.modal-overlay.active {
+    display: block;
+}
+
+/* ========== 수리이력 모달 컨테이너 ========== */
+.suri-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+.suri-modal.active {
+    display: block;
+}
+
+.suri-insert-box {
+    width: 900px;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== 모달 헤더 ========== */
+.suri-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: move;
+}
+
+.header-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.header-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* ========== 모달 본문 ========== */
+.suri-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #f5f7fa;
+    padding: 20px;
+    max-height: 700px;
+}
+
+.suri-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.suri-modal-body::-webkit-scrollbar-track {
+    background: #e0e0e0;
+}
+
+.suri-modal-body::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 4px;
+}
+
+/* ========== 섹션 ========== */
+.suri-section {
+    background: white;
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.suri-section:last-child {
+    margin-bottom: 0;
+}
+
+.suri-section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* ========== 기본 행/열 레이아웃 ========== */
+.suri-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.suri-row:last-child {
+    margin-bottom: 0;
+}
+
+.suri-col {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.suri-col-full {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.suri-col label,
+.suri-col-full label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+}
+
+/* ========== 입력 필드 ========== */
+.suri-col input[type="text"],
+.suri-col input[type="date"],
+.suri-col select,
+.suri-col-full textarea {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 13px;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+.suri-col input[type="text"],
+.suri-col input[type="date"],
+.suri-col select,
+.suri-col-full textarea {
+    width: 100%;
+}
+
+.suri-col input:focus,
+.suri-col select:focus,
+.suri-col-full textarea:focus {
+    outline: none;
+    border-color: #4dabf7;
+    box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.1);
+}
+
+.suri-col select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 32px;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+}
+
+/* ========== 이미지 업로드 영역 ========== */
+.image-upload-area {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 0;
+}
+
+.image-upload-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.image-upload-col label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.image-upload-col input[type="file"] {
+    padding: 6px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.img-preview {
+    width: 100%;
+    height: 200px;
+    border: 2px dashed #ced4da;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    overflow: hidden;
+}
+
+.img-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* ========== 모달 푸터 ========== */
+.suri-modal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 20px;
+    background: white;
+    border-top: 1px solid #dee2e6;
+}
+
+.suri-modal-footer button {
+    min-width: 100px;
+    height: 38px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.save {
+    background: linear-gradient(135deg, #51cf66, #37b24d);
+    color: white;
+}
+
+.save:hover {
+    background: linear-gradient(135deg, #40c057, #2f9e44);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(64, 192, 87, 0.3);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #ff6b6b, #fa5252);
+    color: white;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(135deg, #f03e3e, #e03131);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(240, 62, 62, 0.3);
+}
+
+.close {
+    background: linear-gradient(135deg, #868e96, #495057);
+    color: white;
+}
+
+.close:hover {
+    background: linear-gradient(135deg, #6c757d, #343a40);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* ========== 반응형 ========== */
+@media (max-width: 1000px) {
+    .suri-insert-box {
+        width: 95vw;
+    }
     
+    .suri-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .image-upload-area {
+        grid-template-columns: 1fr;
+    }
+}
     </style>
     
     
@@ -252,159 +425,140 @@
 	    
 	    
 	    
-	    
 <form method="post" id="suriHistoryForm" name="suriHistoryForm" enctype="multipart/form-data">
-  <div class="suriHistoryModal">
-    <div class="detail">
-      <div class="header">설비수리이력
-      	<span class="header-close">&times;</span>
-      </div>
-      <table class="insideTable">
-        <colgroup>
-          <col width="15%">
-          <col width="35%">
-          <col width="15%">
-          <col width="35%">
-        </colgroup>
-        <tbody>
-          <!-- 설비 / 일자 -->
-          <tr>
-            <th>설비</th>
-            <td>
-              <select id="fac_code" name="fac_code" class="basic">
-                <option value="5">고주파 1호기(폐기):(5)</option>
-                                        <option value="6">고주파 2호기 (폐기):(6)</option>
-                                        <option value="9">고주파 5호기:(9)</option>
-                                        <option value="21">급수시설:(21)</option>
-                                        <option value="10">변성로 1호기:(10)</option>
-                                        <option value="11">변성로 2호기:(11)</option>
-                                        <option value="12">쇼트 1호기:(12)</option>
-                                        <option value="13">쇼트 2호기:(13)</option>
-                                        <option value="14">쇼트 3호기:(14)</option>
-                                        <option value="19">쇼트 4호기:(19)</option>
-                                        <option value="20">전기시설:(20)</option>
-                                        <option value="15">진공세정기 2호기:(15)</option>
-                                        <option value="1">침탄로 1호기:(1)</option>
-                                        <option value="2">침탄로 2호기:(2)</option>
-                                        <option value="3">침탄로 3호기:(3)</option>
-                                        <option value="4">침탄로 4호기:(4)</option>
-                                        <option value="18">침탄로 5호기:(18)</option>
-                                        <option value="22">콤프레샤:(22)</option>
-                                        <option value="16">템퍼링기 1호기:(16)</option>
-                                        <option value="17">템퍼링기 2호기:(17)</option>
-              </select>
-            </td>
-            <th>일자</th>
-            <td><input id="ffx_date" name="ffx_date" type="date" class="basic"></td>
-          </tr>
+    <div class="modal-overlay"></div>
+    
+    <div class="suri-modal">
+        <div class="suri-insert-box">
+            <!-- 헤더 -->
+            <div class="suri-header">
+                설비수리이력
+                <button type="button" class="header-close-btn">&times;</button>
+            </div>
+            
+            <!-- 본문 -->
+            <div class="suri-modal-body">
+                <!-- 기본정보 섹션 -->
+                <div class="suri-section">
+                    <div class="suri-section-title">기본정보</div>
+                    
+                    <div class="suri-row">
+                        <div class="suri-col">
+                            <label>설비</label>
+                            <select id="fac_code" name="fac_code">
+                                <option value="1">침탄로 1호기</option>
+                                <option value="2">침탄로 2호기</option>
+                                <option value="3">침탄로 3호기</option>
+                                <option value="4">침탄로 4호기</option>
+                                <option value="18">침탄로 5호기</option>
+                                <option value="5">고주파 1호기(폐기)</option>
+                                <option value="6">고주파 2호기(폐기)</option>
+                                <option value="9">고주파 5호기</option>
+                                <option value="10">변성로 1호기</option>
+                                <option value="11">변성로 2호기</option>
+                                <option value="12">쇼트 1호기</option>
+                                <option value="13">쇼트 2호기</option>
+                                <option value="14">쇼트 3호기</option>
+                                <option value="19">쇼트 4호기</option>
+                                <option value="15">진공세정기 2호기</option>
+                                <option value="16">템퍼링기 1호기</option>
+                                <option value="17">템퍼링기 2호기</option>
+                                <option value="20">전기시설</option>
+                                <option value="21">급수시설</option>
+                                <option value="22">콤프레샤</option>
+                            </select>
+                        </div>
+                        <div class="suri-col">
+                            <label>일자</label>
+                            <input type="date" id="ffx_date" name="ffx_date">
+                        </div>
+                    </div>
+                    
+                    <div class="suri-row">
+                        <div class="suri-col">
+                            <label>수리처</label>
+                            <input type="text" id="ffx_wrk" name="ffx_wrk">
+                        </div>
+                        <div class="suri-col">
+                            <label>수리비용</label>
+                            <input type="text" id="ffx_cost" name="ffx_cost">
+                        </div>
+                    </div>
+                    
+                    <div class="suri-row">
+                        <div class="suri-col">
+                            <label>담당자</label>
+                            <select id="ffx_man" name="ffx_man">
+                                <option value="admin">admin</option>
+                                <option value="정중환">정중환</option>
+                                <option value="김성우">김성우</option>
+                                <option value="조병수">조병수</option>
+                                <option value="이용희">이용희</option>
+                                <option value="이은영">이은영</option>
+                                <option value="산지와">산지와</option>
+                                <option value="이주영">이주영</option>
+                                <option value="가얀">가얀</option>
+                                <option value="두사르">두사르</option>
+                                <option value="피얀타">피얀타</option>
+                                <option value="김영수">김영수</option>
+                                <option value="패툼">패툼</option>
+                                <option value="응웬티하">응웬티하</option>
+                                <option value="양수석">양수석</option>
+                                <option value="최균홍">최균홍</option>
+                                <option value="정희주">정희주</option>
+                                <option value="장무강">장무강</option>
+                            </select>
+                        </div>
+                        <div class="suri-col">
+                            <label>차기점검일</label>
+                            <input type="date" id="ffx_next" name="ffx_next">
+                        </div>
+                    </div>
+                    
+                    <div class="suri-row">
+                        <div class="suri-col-full">
+                            <label>내용</label>
+                            <textarea id="ffx_note" name="ffx_note" rows="4"></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Hidden Fields -->
+                    <input type="hidden" id="ffx_evt" name="ffx_evt">
+                    <input type="hidden" id="ffx_time" name="ffx_time">
+                    <input type="hidden" id="ffx_end" name="ffx_end">
+                </div>
 
-          <!-- 내용 / 수리처 -->
-          <tr>
-            <th>내용</th>
-            <td><textarea id="ffx_note" name="ffx_note" class="basic"></textarea></td>
-            <th>수리처</th>
-            <td><input id="ffx_wrk" name="ffx_wrk" type="text" class="basic"></td>
-          </tr>
-
-          <!-- 수리비용 / 담당자 -->
-          <tr>
-            <th>수리비용</th>
-            <td>
-              <input id="ffx_evt" name="ffx_evt" type="hidden">
-              <input id="ffx_time" name="ffx_time" type="hidden">
-              <input id="ffx_end" name="ffx_end" type="hidden">
-              <input id="ffx_cost" name="ffx_cost" type="text" class="basic">
-            </td>
-            <th>담당자</th>
-            <td>
-              <select id="ffx_man" name="ffx_man" class="basic">
-                <option value="admin">admin:(0)</option>
-                                        <option value="정중환">정중환:(2)</option>
-                                        <option value="김성우">김성우:(4)</option>
-                                        <option value="조병수">조병수:(5)</option>
-                                        <option value="이용희">이용희:(7)</option>
-                                        <option value="외국인전용ID">외국인전용ID:(9)</option>
-                                        <option value=".">.:(10)</option>
-                                        <option value="이은영">이은영:(12)</option>
-                                        <option value=".">.:(13)</option>
-                                        <option value="두사르(이전등록)">두사르(이전등록):(14)</option>
-                                        <option value=".">.:(15)</option>
-                                        <option value="피안트(퇴사)">피안트(퇴사):(16)</option>
-                                        <option value="라시크 (퇴사)">라시크 (퇴사):(17)</option>
-                                        <option value="자리드(퇴사)">자리드(퇴사):(18)</option>
-                                        <option value="김희관(퇴사)">김희관(퇴사):(19)</option>
-                                        <option value="박영훈(퇴사)">박영훈(퇴사):(20)</option>
-                                        <option value="김동우(퇴사)">김동우(퇴사):(21)</option>
-                                        <option value="전광석(퇴사)">전광석(퇴사):(22)</option>
-                                        <option value="기한(퇴사)">기한(퇴사):(23)</option>
-                                        <option value="배정은(퇴사)">배정은(퇴사):(24)</option>
-                                        <option value="산지와">산지와:(26)</option>
-                                        <option value="마메쉬(퇴사)">마메쉬(퇴사):(27)</option>
-                                        <option value="두민드(퇴사)">두민드(퇴사):(28)</option>
-                                        <option value="황윤민(퇴사)">황윤민(퇴사):(29)</option>
-                                        <option value="조성환(퇴사)">조성환(퇴사):(30)</option>
-                                        <option value="이주영">이주영:(31)</option>
-                                        <option value="가얀">가얀:(32)</option>
-                                        <option value="스푼(퇴사)">스푼(퇴사):(33)</option>
-                                        <option value="남태욱(퇴사)">남태욱(퇴사):(34)</option>
-                                        <option value="니산타(퇴사)">니산타(퇴사):(35)</option>
-                                        <option value="두사르">두사르:(36)</option>
-                                        <option value="피얀타">피얀타:(37)</option>
-                                        <option value="사미라(퇴사)">사미라(퇴사):(38)</option>
-                                        <option value="민학기( 퇴사)">민학기( 퇴사):(39)</option>
-                                        <option value="김영수">김영수:(40)</option>
-                                        <option value="패툼">패툼:(41)</option>
-                                        <option value="응웬티하">응웬티하:(42)</option>
-                                        <option value="양수석">양수석:(43)</option>
-                                        <option value="최균홍">최균홍:(44)</option>
-                                        <option value="정희주">정희주:(45)</option>
-                                        <option value="장무강">장무강:(46)</option>
-                                        <option value="">:(47)</option>
-                                        <option value="">:(48)</option>
-                                        <option value="123">123:(49)</option>
-                                        <option value="22">22:(50)</option>
-                                        <option value="">:(51)</option>
-                                        <option value="123123">123123:(52)</option>
-                                        <option value="ㅁㅁㅁ">ㅁㅁㅁ:(53)</option>
-              </select>
-            </td>
-          </tr>
-
-          <!-- 차기점검일 -->
-          <tr>
-            <th>차기점검일</th>
-            <td><input id="ffx_next" name="ffx_next" type="date" class="basic"></td>
-            <th></th>
-            <td></td>
-          </tr>
-
-          <!-- 수리전 사진 / 수리후 사진 -->
-          <tr>
-            <th>수리 전 사진</th>
-            <td class="findImage">
-              <input type="file" name="file_url1" onchange="previewImage(this, 'previewId')">
-              <div class="imgArea" id="previewId">
-                <img id="img0" src="/resources/images/noimage_01.gif" class="imgClass rp-img-popup">
-              </div>
-            </td>
-            <th>수리 후 사진</th>
-            <td class="findImage">
-              <input type="file" name="file_url2" onchange="previewImage(this, 'previewId2')">
-              <div class="imgArea" id="previewId2">
-                <img id="img1" src="/resources/images/noimage_01.gif" class="imgClass rp-img-popup">
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <div class="btnSaveClose">
-        <button class="delete" type="button" onclick="deleteSuri();" style="display: none;">삭제</button>
-        <button class="save" type="button" onclick="save();">저장</button>
-        <button class="close" type="button" onclick="window.close();">닫기</button>
-      </div>
+                <!-- 수리사진 섹션 -->
+                <div class="suri-section">
+                    <div class="suri-section-title">수리사진</div>
+                    
+                    <div class="image-upload-area">
+                        <div class="image-upload-col">
+                            <label>수리 전 사진</label>
+                            <input type="file" name="file_url1" onchange="previewImage(this, 'previewId')">
+                            <div class="img-preview" id="previewId">
+                                <img id="img0" src="/resources/images/noimage_01.gif" alt="수리 전">
+                            </div>
+                        </div>
+                        <div class="image-upload-col">
+                            <label>수리 후 사진</label>
+                            <input type="file" name="file_url2" onchange="previewImage(this, 'previewId2')">
+                            <div class="img-preview" id="previewId2">
+                                <img id="img1" src="/resources/images/noimage_01.gif" alt="수리 후">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 푸터 버튼 -->
+            <div class="suri-modal-footer">
+                <button type="button" class="btn-delete" onclick="deleteSuri();" style="display:none;">삭제</button>
+                <button type="button" class="save">저장</button>
+                <button type="button" class="close">닫기</button>
+            </div>
+        </div>
     </div>
-  </div>
 </form>
 
 
@@ -412,333 +566,493 @@
 
 	    
 <script>
-	//전역변수
-    var cutumTable;	
-    var isEditMode = false; //수정,최초저장 구분값
-	//로드
-	$(function(){
-		var tdate = todayDate();
-		var ydate = yesterDate();
-		
-		$("#sdate").val(ydate);
-		$("#edate").val(tdate);
-		getSuriHistoryList();
-	});
+//========== 전역변수 ==========
+let now_page_code = "e04";	
+var suriTable;
+var isEditMode = false;
+var selectedRowData = null;
 
-	$(function(){
-		// 파일 선택시 이미지 띄우기
-		$('.imgInputClass').change(function(event){
-			var selectedFile = event.target.files[0];
-			var reader = new FileReader();
-
-			var img = $(this).parent().parent().find('img')[0];
-			img.title = selectedFile.name;
-
-			reader.onload = function(event) {
-				img.src = event.target.result;
-			};
-
-			reader.readAsDataURL(selectedFile);
-		});
-	});
-
-	//이벤트
-	//함수
-	function getSuriHistoryList(){
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"750px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/preservation/suriHistory/getSuriHistoryList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	"sdate": $("#sdate").val(),
-                "edate": $("#edate").val(),
-			},
-			placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},	
-		        {title:"NO", field:"fac_no", sorter:"int", width:80,
-			        hozAlign:"center"},	
-			    {title:"설비명", field:"fac_name", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"},     
-				{title:"점검일", field:"ffx_date", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"},
-		        {title:"담당자", field:"ffx_man", sorter:"string", width:120,
-		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"수리처", field:"ffx_wrk", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"금액", field:"ffx_cost", sorter:"int", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"내용", field:"ffx_note", sorter:"string", width:600,
-			        hozAlign:"center", headerFilter:"input"},      
-			    {title:"NO", field:"ffx_no", sorter:"int", width:80,
-			        	hozAlign:"center" ,visible:false},   
-			    {title:"NO", field:"fac_code", sorter:"int", width:80,
-				        hozAlign:"center" ,visible:false}, 
-						{title:"수리 전 사진", field:"file_name1", width:100,
-							hozAlign:"center", formatter:"image",
-						    cssClass:"rp-img-popup",
-					      	formatterParams:{
-						      	height:"30px", width:"30px",
-						      	urlPrefix:"/tkPrint/사진/설비수리이력관리/"
-						      	}, 
-						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
-						    },
-							{title:"수리 후 사진", field:"file_name2", width:100,
-								hozAlign:"center", formatter:"image",
-							    cssClass:"rp-img-popup",
-						      	formatterParams:{
-							      	height:"30px", width:"30px",
-							      	urlPrefix:"/tkPrint/사진/설비수리이력관리/"
-							      	}, 
-							    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
-							    },
-				        	
-				    
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
-
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
-
-				var rowData = row.getData();
-				
-			},
-			rowDblClick:function(e, row){
-
-				var data = row.getData();
-				selectedRowData = data;
-				isEditMode = true;
-				$('#suriHistoryForm')[0].reset();
-				
-
-				/* Object.keys(data).forEach(function (key) {
-			        const field = $('#suriHistoryForm [name="' + key + '"]');
-
-			        if (field.length) {
-			            field.val(data[key]);
-			        }
-				}); */
-
-				suriHistoryDetail(data.ffx_no);
-				 $('.delete').show();
-			},
-		});		
-	}
-
-	function suriHistoryDetail(ffx_no){
-		$.ajax({
-			url:"/tkheat/preservation/suriHistory/suriHistoryDetail",
-			type:"post",
-			dataType:"json",
-			data:{
-				"ffx_no":ffx_no
-			},
-			success:function(result){
-//				console.log(result);
-				var allData = result.data;
-				
-				for(let key in allData){
-//					console.log(allData, key);	
-					$("[name='"+key+"']").val(allData[key]);
-				}
-
-				// 이미지, 제목 초기화
-				$("#img0").attr("src", "/resources/images/noimage_01.gif");
-				$("#img1").attr("src", "/resources/images/noimage_01.gif");
-				$("#img0").attr("title", "");
-				$("#img1").attr("title", "");
-
-				// 이미지
-				if (allData.file_name1) {
-					console.log("원본 파일명:", allData.file_name1);
-					console.log("인코딩된 경로:", encodeURIComponent(allData.file_name1));
-					const path = "/excelTest/태경출력파일/사진/설비수리이력관리/" + allData.file_name1;
-					console.log("path: ", path);
-					$("#img0").attr("src", path);
-				}
-
-				if (allData.file_name2) {
-					console.log("원본 파일명:", allData.file_name2);
-					console.log("인코딩된 경로:", encodeURIComponent(allData.file_name2));
-					const path = "/excelTest/태경출력파일/사진/설비수리이력관리/" + allData.file_name2;
-					console.log("path: ", path);
-					$("#img1").attr("src", path);
-				}
-
-				$('.suriHistoryModal').show().addClass('show');
-			}
-		});
-	}
-	
-
-    </script>
+// ========== 페이지 로드 ==========
+$(function() {
+	if (typeof userInfoList === 'function') {
+        userInfoList(now_page_code);
+    }
+    var tdate = todayDate();
+    var ydate = yesterDate();
     
+    $("#sdate").val(ydate);
+    $("#edate").val(tdate);
+    getSuriHistoryList();
     
-    <script>
-		
- 	// 드래그 기능 추가
-	const modal = document.querySelector('.suriHistoryModal');
-	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
+    // 파일 선택시 이미지 띄우기
+    $('.imgInputClass').change(function(event){
+        var selectedFile = event.target.files[0];
+        var reader = new FileReader();
+        
+        var img = $(this).parent().parent().find('img')[0];
+        img.title = selectedFile.name;
+        
+        reader.onload = function(event) {
+            img.src = event.target.result;
+        };
+        
+        reader.readAsDataURL(selectedFile);
+    });
+});
 
-	header.addEventListener('mousedown', function(e) {
-		// transform 제거를 위한 초기 위치 설정
-		const rect = modal.getBoundingClientRect();
-		modal.style.left = rect.left + 'px';
-		modal.style.top = rect.top + 'px';
-		modal.style.transform = 'none'; // 중앙 정렬 해제
+// ========== 설비수리이력 리스트 조회 ==========
+function getSuriHistoryList(){
+    // 기존 테이블 완전히 제거
+    if (suriTable) {
+        suriTable.destroy();
+        suriTable = null;
+    }
+    
+    // DOM 초기화
+    $('#tab1').empty();
+    
+    suriTable = new Tabulator("#tab1", {
+        height:"750px",
+        layout:"fitColumns",
+        selectable:true,
+        tooltips:true,
+        selectableRangeMode:"click",
+        reactiveData:true,
+        headerHozAlign:"center",
+        ajaxConfig:"POST",
+        ajaxLoader:false,
+        ajaxURL:"/tkheat/preservation/suriHistory/getSuriHistoryList",
+        ajaxParams:{
+            "sdate": $("#sdate").val(),
+            "edate": $("#edate").val(),
+        },
+        placeholder:"조회된 데이터가 없습니다.",
+        pagination:"local",
+        paginationSize:20,
+        paginationSizeSelector:[20,50,100,500,1000],
+        paginationCounter:"rows",
+        headerFilterPlaceholder: "",
+        ajaxResponse:function(url, params, response){
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
+            console.log("📊 서버 응답:", response);
+            return response.data ? response.data : [];
+        },
+        
+        columns:[
+            {title:"NO", field:"idx", sorter:"int", width:80, hozAlign:"center"},
+            {title:"설비NO", field:"fac_no", sorter:"int", width:80, hozAlign:"center"},
+            {title:"설비명", field:"fac_name", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"점검일", field:"ffx_date", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"담당자", field:"ffx_man", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"수리처", field:"ffx_wrk", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"금액", field:"ffx_cost", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"내용", field:"ffx_note", sorter:"string", width:600, hozAlign:"center", headerFilter:"input"},
+            {
+                title:"수리 전 사진", 
+                field:"file_name1", 
+                width:100,
+                hozAlign:"center", 
+                formatter:"image",
+                cssClass:"rp-img-popup",
+                formatterParams:{
+                    height:"30px", 
+                    width:"30px",
+                    urlPrefix:"/tkPrint/사진/설비수리이력관리/"
+                }, 
+                cellMouseEnter:function(e, cell){ 
+                    if(cell.getValue()) {
+                        productImage(cell.getValue());
+                    }
+                }
+            },
+            {
+                title:"수리 후 사진", 
+                field:"file_name2", 
+                width:100,
+                hozAlign:"center", 
+                formatter:"image",
+                cssClass:"rp-img-popup",
+                formatterParams:{
+                    height:"30px", 
+                    width:"30px",
+                    urlPrefix:"/tkPrint/사진/설비수리이력관리/"
+                }, 
+                cellMouseEnter:function(e, cell){ 
+                    if(cell.getValue()) {
+                        productImage(cell.getValue());
+                    }
+                }
+            },
+            {title:"ffx_no", field:"ffx_no", sorter:"int", width:80, hozAlign:"center", visible:false},
+            {title:"fac_code", field:"fac_code", sorter:"int", width:80, hozAlign:"center", visible:false},
+        ],
+        
+        rowFormatter:function(row){
+            row.getElement().style.fontWeight = "700";
+            row.getElement().style.backgroundColor = "#FFFFFF";
+        },
+        
+        rowClick:function(e, row){
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").removeClass('row_select');
+            row.getElement().classList.add("row_select");
+        },
+        
+        rowDblClick:function(e, row){
+        	if (window.disableRowDblClick) {
+                alert("수정 권한이 없습니다.");
+                return false;
+            }
+            var data = row.getData();
+            selectedRowData = data;
+            isEditMode = true;
+            console.log("더블클릭 데이터:", selectedRowData.ffx_no);
+            $('#suriHistoryForm')[0].reset();
+            
+            suriHistoryDetail(data.ffx_no);
+            $('.btn-delete').show();
 
-		let offsetX = e.clientX - rect.left;
-		let offsetY = e.clientY - rect.top;
+            const permission = userPermissions?.[now_page_code];
+            if (permission === 'D') {
+                $('.btn-delete').show();
+            } else {
+                $('.btn-delete').hide();
+            }
+        },
+    });
+    
+    console.log("✅ Tabulator 생성 완료");
+}
 
-		function moveModal(e) {
-			modal.style.left = (e.clientX - offsetX) + 'px';
-			modal.style.top = (e.clientY - offsetY) + 'px';
-		}
+// ========== 설비수리이력 상세 조회 ==========
+function suriHistoryDetail(ffx_no){
+    $.ajax({
+        url:"/tkheat/preservation/suriHistory/suriHistoryDetail",
+        type:"post",
+        dataType:"json",
+        data:{
+            "ffx_no":ffx_no
+        },
+        success:function(result){
+            console.log("📄 상세 데이터:", result);
+            var allData = result.data;
+            
+            // ✅ 폼 초기화
+            $('#suriHistoryForm')[0].reset();
+            
+            // ✅ 데이터 바인딩
+            for(let key in allData){
+                const value = allData[key];
+                const $element = $("[name='"+key+"']");
+                
+                if ($element.length) {
+                    const safeValue = (value === null || value === undefined) ? '' : value;
+                    
+                    if ($element.attr('type') === 'date') {
+                        if (safeValue && safeValue !== '') {
+                            const formattedDate = safeValue.replace(/[./]/g, '-').substring(0, 10);
+                            $element.val(formattedDate);
+                        }
+                    } else {
+                        $element.val(safeValue);
+                    }
+                }
+            }
+            
+            // ✅ 이미지 초기화
+            $("#img0").attr("src", "/resources/images/noimage_01.gif");
+            $("#img1").attr("src", "/resources/images/noimage_01.gif");
+            $("#img0").attr("title", "");
+            $("#img1").attr("title", "");
+            
+            // ✅ 이미지 로드
+            if (allData.file_name1) {
+                console.log("수리 전 파일명:", allData.file_name1);
+                const path1 = "/excelTest/태경출력파일/사진/설비수리이력관리/" + allData.file_name1;
+                $("#img0").attr("src", path1);
+                $("#img0").attr("title", allData.file_name1);
+            }
+            
+            if (allData.file_name2) {
+                console.log("수리 후 파일명:", allData.file_name2);
+                const path2 = "/excelTest/태경출력파일/사진/설비수리이력관리/" + allData.file_name2;
+                $("#img1").attr("src", path2);
+                $("#img1").attr("title", allData.file_name2);
+            }
+            
+            // 모달 열기
+            $('.modal-overlay').addClass('active');
+            $('.suri-modal').addClass('active');
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 상세 조회 오류:", error);
+            alert("데이터를 불러오는 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-		function stopMove() {
-			window.removeEventListener('mousemove', moveModal);
-			window.removeEventListener('mouseup', stopMove);
-		}
-
-		window.addEventListener('mousemove', moveModal);
-		window.addEventListener('mouseup', stopMove);
-	});
-		
-
-	// 모달 열기
-	const insertButton = document.querySelector('.insert-button');
-	const suriHistoryModal = document.querySelector('.suriHistoryModal');
-	const closeButton = document.querySelector('.close');
-	const headerCloseButton = document.querySelector('.header-close');
-
-	insertButton.addEventListener('click', function() {
-		isEditMode = false;  // 추가 모드
-	    $('#suriHistoryForm')[0].reset(); // 폼 초기화
-
-	    //사진 초기화
-		$("#img0").attr("src", "/resources/images/noimage_01.gif");
-		$("#img1").attr("src", "/resources/images/noimage_01.gif");
-		
-	    suriHistoryModal.style.display = 'block'; // 모달 표시
-
-		$('.delete').hide();
-	});
-
-	closeButton.addEventListener('click', function() {
-		suriHistoryModal.style.display = 'none'; // 모달 숨김
-	});
-
-	headerCloseButton.addEventListener('click', function() {
-		suriHistoryModal.style.display = 'none';
-	});
-
-	//설비수리이력 저장
-    function save() {
-	    var formData = new FormData($("#suriHistoryForm")[0]);
-
-	    let confirmMsg = "";
-
-	    if (isEditMode && selectedRowData && selectedRowData.ffx_no) {
-	        formData.append("mode", "update");
-	        formData.append("ffx_no", selectedRowData.ffx_no);
-	        confirmMsg = "수정하시겠습니까?";
-	    } else {
-	        formData.append("mode", "insert");
-	        confirmMsg = "저장하시겠습니까?";
-	    }
-
-	    if (!confirm(confirmMsg)) {
-	        return;
-	    }
-
-	    $.ajax({
-	        url: "/tkheat/preservation/suriHistory/suriHistorySave",
-	        type: "POST",
-	        data: formData,
-	        contentType: false,
-	        processData: false,
-	        dataType: "json",
-	        success: function(result) {
-	            alert("저장 되었습니다.");
-	            $(".suriHistoryModal").hide();
-	            getSuriHistoryList();
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("저장 오류:", error);
+// ========== 저장 ==========
+function save() {
+	const permission = userPermissions?.[now_page_code];
+	    
+	    // 저장함수
+	    if (!isEditMode) {
+	        if (!['I', 'U', 'D'].includes(permission)) {
+	            alert("등록 권한이 없습니다.");
+	            console.log("등록 권한 없음 - 현재 권한:", permission);
+	            return false;
 	        }
-	    });
-	}
+	        console.log("등록 권한 확인 완료");
+	    } 
+	    // 수정함수
+	    else {
+	        if (!['U', 'D'].includes(permission)) {
+	            alert("수정 권한이 없습니다.");
+	            console.log("수정 권한 없음 - 현재 권한:", permission);
+	            return false;
+	        }
+	        console.log("수정 권한 확인 완료");
+	    }
+    var formData = new FormData($("#suriHistoryForm")[0]);
+    let confirmMsg = "";
+    
+    if (isEditMode && selectedRowData && selectedRowData.ffx_no) {
+        formData.append("mode", "update");
+        formData.append("ffx_no", selectedRowData.ffx_no);
+        confirmMsg = "수정하시겠습니까?";
+    } else {
+        formData.append("mode", "insert");
+        confirmMsg = "저장하시겠습니까?";
+    }
+    
+    // ✅ 필수 입력 검증
+    if (!$("#fac_code").val() || $("#fac_code").val() === '') {
+        alert("설비를 선택해주세요.");
+        $("#fac_code").focus();
+        return;
+    }
+    
+    if (!$("#ffx_date").val() || $("#ffx_date").val() === '') {
+        alert("일자를 입력해주세요.");
+        $("#ffx_date").focus();
+        return;
+    }
+    
+    // ✅ 숫자 필드 빈값 처리
+    if (!$("#ffx_cost").val() || $("#ffx_cost").val() === '') {
+        formData.set("ffx_cost", "0");
+    }
+    
+    // ✅ Hidden 필드 처리
+    ['ffx_evt', 'ffx_time', 'ffx_end'].forEach(field => {
+        const value = $("#" + field).val();
+        if (!value || value === '' || value === 'null') {
+            formData.delete(field);
+        }
+    });
+    
+    // ✅ 파일 필드 빈값 제거
+    if (!$('input[name="file_url1"]')[0].files.length) {
+        formData.delete('file_url1');
+    }
+    if (!$('input[name="file_url2"]')[0].files.length) {
+        formData.delete('file_url2');
+    }
+    
+    console.log("=== 전송 데이터 확인 ===");
+    for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+    }
+    
+    if (!confirm(confirmMsg)) return;
+    
+    $.ajax({
+        url: "/tkheat/preservation/suriHistory/suriHistorySave",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: "json",
+        success: function(result) {
+            console.log("💾 저장 완료:", result);
+            alert("저장 되었습니다.");
+            
+            $('.modal-overlay').removeClass('active');
+            $('.suri-modal').removeClass('active');
+            
+            // 모달 위치 초기화
+            $('.suri-modal').css({
+                'left': '50%',
+                'top': '50%',
+                'transform': 'translate(-50%, -50%)'
+            });
+            
+            // 폼 초기화
+            $('#suriHistoryForm')[0].reset();
+            isEditMode = false;
+            selectedRowData = null;
+            
+            setTimeout(function() {
+                getSuriHistoryList();
+            }, 300);
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 저장 오류:", xhr.status, error);
+            console.error("응답 텍스트:", xhr.responseText);
+            alert("저장 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-
-	function deleteSuri() {
-	    if (!selectedRowData || !selectedRowData.ffx_no) {
+// ========== 삭제 ==========
+function deleteSuri() {
+	const permission = userPermissions?.[now_page_code];
+	    
+	    if (permission !== 'D') {
+	        alert("삭제 권한이 없습니다.");
+	        console.log("삭제 권한 없음 - 현재 권한:", permission);
+	        return false;
+	    }
+	    console.log("삭제 권한 확인 완료");
+	    
+	    if (!selectedRowData || !selectedRowData.corp_code) {
 	        alert("삭제할 대상을 선택하세요.");
 	        return;
 	    }
-
+	    
 	    if (!confirm("삭제하시겠습니까?")) {
 	        return;
 	    }
+	    
+    if (!selectedRowData || !selectedRowData.ffx_no) {
+        alert("삭제할 대상을 선택하세요.");
+        return;
+    }
+    
+    if (!confirm("삭제하시겠습니까?")) {
+        return;
+    }
+    
+    $.ajax({
+        url: "/tkheat/preservation/suriHistory/suriHistoryDelete",
+        type: "POST",
+        data: {
+            ffx_no: selectedRowData.ffx_no
+        },
+        dataType: "json",
+        success: function(result) {
+            if (result.status === "success") {
+                alert("삭제되었습니다.");
+                $('.modal-overlay').removeClass('active');
+                $('.suri-modal').removeClass('active');
+                
+                setTimeout(function() {
+                    getSuriHistoryList();
+                }, 300);
+            } else {
+                alert("삭제 중 오류가 발생했습니다: " + result.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("❌ 삭제 오류:", error);
+            alert("삭제 요청 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-	    $.ajax({
-	        url: "/tkheat/preservation/suriHistory/suriHistoryDelete",
-	        type: "POST",
-	        data: {
-	        	ffx_no: selectedRowData.ffx_no
-	        },
-	        dataType: "json",
-	        success: function(result) {
-	            if (result.status === "success") {
-	                alert("삭제되었습니다.");
-	                $(".suriHistoryModal").hide();
-	                getSuriHistoryList();
-	            } else {
-	                alert("삭제 중 오류가 발생했습니다: " + result.message);
-	            }
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("삭제 오류:", error);
-	            alert("삭제 요청 중 오류가 발생했습니다.");
-	        }
-	    });
-	}
+// ========== 이미지 미리보기 ==========
+function previewImage(input, previewId) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#' + previewId + ' img').attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
-    //엑셀 다운로드
-	$(".excel-button").click(function () {
-	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-	    const filename = "설비수리이력관리_" + today + ".xlsx";
-	    userTable.download("xlsx", filename, { sheetName: "설비수리이력관리" });
-	});
+// ========== 드래그 기능 ==========
+const modal = document.querySelector('.suri-modal');
+const header = document.querySelector('.suri-header');
 
+header.addEventListener('mousedown', function(e) {
+    if (e.target.classList.contains('header-close-btn') || e.target.closest('.header-close-btn')) {
+        return;
+    }
+    
+    const rect = modal.getBoundingClientRect();
+    modal.style.left = rect.left + 'px';
+    modal.style.top = rect.top + 'px';
+    modal.style.transform = 'none';
+    
+    let offsetX = e.clientX - rect.left;
+    let offsetY = e.clientY - rect.top;
+    
+    function moveModal(e) {
+        modal.style.left = (e.clientX - offsetX) + 'px';
+        modal.style.top = (e.clientY - offsetY) + 'px';
+    }
+    
+    function stopMove() {
+        window.removeEventListener('mousemove', moveModal);
+        window.removeEventListener('mouseup', stopMove);
+    }
+    
+    window.addEventListener('mousemove', moveModal);
+    window.addEventListener('mouseup', stopMove);
+});
+
+// ========== 모달 열기/닫기 ==========
+const insertButton = document.querySelector('.insert-button');
+const suriModal = document.querySelector('.suri-modal');
+const modalOverlay = document.querySelector('.modal-overlay');
+const closeButton = document.querySelector('.close');
+const headerCloseBtn = document.querySelector('.header-close-btn');
+
+insertButton.addEventListener('click', function() {
+    isEditMode = false;
+    selectedRowData = null;
+    
+    // ✅ 폼 완전 초기화
+    $('#suriHistoryForm')[0].reset();
+    
+    // ✅ 이미지 초기화
+    $("#img0").attr("src", "/resources/images/noimage_01.gif");
+    $("#img1").attr("src", "/resources/images/noimage_01.gif");
+    $("#img0").attr("title", "");
+    $("#img1").attr("title", "");
+    
+    // 중앙 정렬
+    suriModal.style.left = '50%';
+    suriModal.style.top = '50%';
+    suriModal.style.transform = 'translate(-50%, -50%)';
+    
+    modalOverlay.classList.add('active');
+    suriModal.classList.add('active');
+    
+    $('.btn-delete').hide();
+});
+
+closeButton.addEventListener('click', function() {
+    modalOverlay.classList.remove('active');
+    suriModal.classList.remove('active');
+});
+
+headerCloseBtn.addEventListener('click', function() {
+    modalOverlay.classList.remove('active');
+    suriModal.classList.remove('active');
+});
+
+// ========== 저장 버튼 ==========
+$('.save').click(function() {
+    save();
+});
+
+// ========== 엑셀 다운로드 ==========
+$(".excel-button").click(function () {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const filename = "설비수리이력관리_" + today + ".xlsx";
+    suriTable.download("xlsx", filename, { sheetName: "설비수리이력관리" });
+});
 
     </script>
 

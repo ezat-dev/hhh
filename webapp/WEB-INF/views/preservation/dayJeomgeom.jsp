@@ -363,6 +363,7 @@
 	    
 <script>
 	//전역변수
+	let now_page_code = "e06";
     var cutumTable;	
 
 	//로드

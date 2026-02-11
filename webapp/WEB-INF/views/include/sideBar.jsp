@@ -47,47 +47,58 @@
    
    
    .menuDivTab {
-       text-align: center;
-       cursor: pointer;
-       background: white;
-       border-radius: 10px;
-       padding: 12px 18px;
-       font-size: 14px;
-       font-weight: 700;
-       color: #333;
-       border: 1px solid #ddd;
-       transition: all 0.3s ease-in-out;
-       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-       user-select: none;
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       gap: 6px;
-       min-width: 100px;  
-       height: 43px;
-       cursor:pointer;
-   }
+    text-align: center;
+    cursor: pointer;
+    background: white;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;  /* ✅ 변경 */
+    gap: 6px;
+    
+    /* ✅ 고정 크기 설정 */
+    min-width: 150px;  
+    max-width: 150px;
+    width: 150px;
+    height: 43px;
+    cursor: pointer;
+}
    
+.menuDivTab .menuName {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    text-align: left;  /* 왼쪽 정렬 */
+}
    
-   .menuDivTab:hover {
-       background: #f0f2f5;
-       transform: translateY(-2px);
-       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-   }
-   
-   .menuDivTab.active {
-       background: #007aff;
-       color: white;
-       border: 1px solid #0062cc;
-       box-shadow: 0 3px 8px rgba(0, 122, 255, 0.3);
-       transform: translateY(-2px);
-   }
-   
-   
-   .menuDivTab i {
-       font-size: 16px;
-       color: inherit;
-   }
+	   .menuDivTab:hover {
+	    background: #f0f2f5;
+	    transform: translateY(-2px);
+	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	}
+	
+	.menuDivTab.active {
+	    background: #007aff;
+	    color: white;
+	    border: 1px solid #0062cc;
+	    box-shadow: 0 3px 8px rgba(0, 122, 255, 0.3);
+	    transform: translateY(-2px);
+	}
+	
+	.menuDivTab i {
+	    font-size: 16px;
+	    color: inherit;
+	}
    
    
    .menuDivTab .close-btn {
@@ -169,19 +180,21 @@
 .loginName{
 	display: flex;
 }
-   .menuDivTab .close-btn {
-       font-size: 19px; 
-       background: none;
-       border: none;
-       color: #888; 
-       cursor: pointer;
-       padding: 0;
-       margin-left: 10px;
-       display: flex;
-       align-items: center; 
-       justify-content: center;
-       transition: color 0.2s ease-in-out;
-   }
+   /* ✅ X 버튼 고정 위치 */
+.menuDivTab .close-btn {
+    font-size: 19px; 
+    background: none;
+    border: none;
+    color: #888; 
+    cursor: pointer;
+    padding: 0;
+    margin-left: 6px;
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    transition: color 0.2s ease-in-out;
+    flex-shrink: 0;  /* ✅ X 버튼 크기 고정 */
+}
 
    
    .menuDivTab .close-btn:hover {
@@ -362,7 +375,26 @@
  -->					        
                         </ul>
                     </div>
-                   
+					<div class="nav__link collapse">
+                        <ion-icon name="people-outline" class="nav__icon"></ion-icon>
+                        <span class="nav_name">작업지시</span>
+                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+                        <ul class="collapse__menu" id="iMenu">
+<!--                         
+                            <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/cutumInsert','')">거래처등록</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/productInsert', '')">제품등록</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/facInsert', '')">설비등록</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/chimStandard', '')">침탄로작업표준</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/goStandard', '')">고주파로작업표준</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/coilInsert', '')">코일등록</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/plugInsert', '등록')">PLUG등록</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('PLUG점검기준등록')">PLUG점검기준등록</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/userinsert', '')">작업자등록</a></li>
+       						<li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/authority', '')">사원별권한등록</a></li>
+					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('측정기기관리')">측정기기관리</a></li>
+ -->					        
+                        </ul>
+                    </div>
 
                   
 	
@@ -381,284 +413,287 @@
     </div>
    <script>
 
-   $(document).on('click', '.menuDivTab', function () {
-       // 기존 active 클래스 제거
-       $('.menuDivTab').removeClass('active');
-
-       // 현재 클릭된 탭에 active 클래스 추가
-       $(this).addClass('active');
-   });
-
-   //로드
-   $(function(){
-		var loginInfo = "${loginUser.user_name}";
-
-
-		$(".loginName").text(loginInfo+"님 로그인");
-	   
-		loginUserMenuSetting();
-		menuList();
-   });
-
-	function loginUserMenuSetting(){
-		$.ajax({
-			url:"/tkheat/user/login/menuSetting",
-			type:"post",
-			dataType:"json",
-			success:function(result){
-				console.log(result.data);
-				var data = result.data;
-				var idx = 0;
-				for(let key in data){
-//					console.log(key);
-//					console.log(data[key]);
-					
-					
-					if(key != "perm_code" && key != "user_code"){
-						if(data[key] != null && data[key] != "N"){
-							
-							if(typeof pageObject(key) != "undefined"){
-								var _link = pageObject(key)[0];
-								var _name = pageObject(key)[1];
-								
-								if(typeof _link != "undefined" && typeof _name != "undefined"){
-									
-									var _group = "";
-									var _groupID = "";
-
-									if(key.indexOf("a") != -1){
-										_group = "제품관리";
-										_groupID = "aMenu";
-									}else if(key.indexOf("b") != -1){
-										_group = "생산관리";
-										_groupID = "bMenu";
-									}else if(key.indexOf("c") != -1){
-										_group = "생산공정관리";
-										_groupID = "cMenu";
-									}else if(key.indexOf("d") != -1){
-										_group = "모니터링";
-										_groupID = "dMenu";
-									}else if(key.indexOf("e") != -1){
-										_group = "설비보존관리";
-										_groupID = "eMenu";
-									}else if(key.indexOf("f") != -1){
-			                              _group = "품질관리";
-			                              _groupID = "fMenu";
-			                           }else if(key.indexOf("g") != -1){
-			                              _group = "경영정보";
-			                              _groupID = "gMenu";
-			                           }else if(key.indexOf("h") != -1){
-			                              _group = "기준정보";
-			                              _groupID = "hMenu";
-			                           }
-
-									_group_t = _group.replace(/\s/gi,"&nbsp;");
-									_name_t = _name.replace(/\s/gi,"&nbsp;");
-									
-									var _menu = "<li>";
-									_menu += "<a class='collapse__sublink' onClick=updateHeaderAndNavigate(event,'"+_link+"','"+_group+"-"+_name+"');>"+_name+"</a>"
-									_menu += "</li>";
-									
-									$("#"+_groupID).append(_menu);
-									if(idx == 0){
-										iframeSrc(_link,(_group+"-"+_name));
-									}
-									idx++;
-								}
-							}
-						}
-					}					
-				}				
-			}
-		});
-    }
+// ✅ 메뉴 클릭 시 활성 상태 유지 함수
+function setActiveMenu(menuUrl) {
+    // 모든 메뉴에서 active 클래스 제거
+    $('.collapse__sublink').removeClass('active');
     
-	
-	
-    
-   	function iframeSrc(url, menuGroupName){
-   		$("#pageFrame").attr("src",url);
-   		$(".headerP").text(menuGroupName);
-   	}
-    
-        // 메뉴 클릭 시 헤더 업데이트
-	function updateHeader(menuGroupName) {
-//		document.getElementById('header-title').innerText = menuName;
-	}
-
-	function updateHeaderAndNavigate(event, url, menuGroupName) {
-		event.preventDefault(); // 기본 링크 동작 방지
+    // 현재 클릭한 메뉴에 active 클래스 추가
+    $('.collapse__sublink').each(function() {
+        const clickAttr = $(this).attr('onclick');
+        if(clickAttr && clickAttr.includes(menuUrl)) {
+            $(this).addClass('active');
             
-		iframeSrc(url,menuGroupName);
-		//각 사용자별 메뉴 저장
-		var loginCode = "${loginUser.user_code}";
-		var menuUrl = url;
-		var menuName = menuGroupName;
+            // ✅ 부모 collapse 메뉴를 열린 상태로 유지
+            const $parentCollapse = $(this).closest('.collapse__menu');
+            const $parentLink = $parentCollapse.prev('.nav__link.collapse');
+            
+            $parentCollapse.addClass('showCollapse');
+            $parentLink.find('.collapse__link').addClass('rotate');
+        }
+    });
+}
+
+$(document).on('click', '.menuDivTab', function () {
+    // 기존 active 클래스 제거
+    $('.menuDivTab').removeClass('active');
+    // 현재 클릭된 탭에 active 클래스 추가
+    $(this).addClass('active');
+});
+
+// 로드
+$(function(){
+    var loginInfo = "${loginUser.user_name}";
+    $(".loginName").text(loginInfo+"님 로그인");
+   
+    loginUserMenuSetting();
+    menuList();
+});
+
+function loginUserMenuSetting(){
+    $.ajax({
+        url:"/tkheat/user/login/menuSetting",
+        type:"post",
+        dataType:"json",
+        success:function(result){
+            console.log(result.data);
+            var data = result.data;
+            var idx = 0;
+            for(let key in data){
+                if(key != "perm_code" && key != "user_code"){
+                    if(data[key] != null && data[key] != "N"){
+                        
+                        if(typeof pageObject(key) != "undefined"){
+                            var _link = pageObject(key)[0];
+                            var _name = pageObject(key)[1];
+                            
+                            if(typeof _link != "undefined" && typeof _name != "undefined"){
+                                
+                                var _group = "";
+                                var _groupID = "";
+
+                                if(key.indexOf("a") != -1){
+                                    _group = "제품관리";
+                                    _groupID = "aMenu";
+                                }else if(key.indexOf("b") != -1){
+                                    _group = "생산관리";
+                                    _groupID = "bMenu";
+                                }else if(key.indexOf("c") != -1){
+                                    _group = "생산공정관리";
+                                    _groupID = "cMenu";
+                                }else if(key.indexOf("d") != -1){
+                                    _group = "모니터링";
+                                    _groupID = "dMenu";
+                                }else if(key.indexOf("e") != -1){
+                                    _group = "설비보존관리";
+                                    _groupID = "eMenu";
+                                }else if(key.indexOf("f") != -1){
+                                    _group = "품질관리";
+                                    _groupID = "fMenu";
+                                }else if(key.indexOf("g") != -1){
+                                    _group = "경영정보";
+                                    _groupID = "gMenu";
+                                }else if(key.indexOf("h") != -1){
+                                    _group = "기준정보";
+                                    _groupID = "hMenu";
+                                }else if(key.indexOf("i") != -1){
+                                    _group = "작업지시";
+                                    _groupID = "iMenu";
+                                }
+
+                                _group_t = _group.replace(/\s/gi,"&nbsp;");
+                                _name_t = _name.replace(/\s/gi,"&nbsp;");
+                                
+                                var _menu = "<li>";
+                                _menu += "<a class='collapse__sublink' onClick=updateHeaderAndNavigate(event,'"+_link+"','"+_group+"-"+_name+"');>"+_name+"</a>"
+                                _menu += "</li>";
+                                
+                                $("#"+_groupID).append(_menu);
+                                if(idx == 0){
+
+                                    const savedUrl = localStorage.getItem("currentPageUrl");
+                                    const savedName = localStorage.getItem("currentPageName");
+
+                                    if(savedUrl){
+                                        iframeSrc(savedUrl, savedName);
+                                    }else{
+                                        iframeSrc("/tkheat/monitoring/overView", "모니터링-설비모니터링");
+                                    }
+                                }
+
+                                idx++;
+                            }
+                        }
+                    }
+                }                    
+            }                
+        }
+    });
+}
+
+function iframeSrc(url, menuGroupName){
+
+    $("#pageFrame").attr("src",url);
+    $(".headerP").text(menuGroupName);
+
+    localStorage.setItem("currentPageUrl", url);
+    localStorage.setItem("currentPageName", menuGroupName);
+
+    setActiveMenu(url);
+}
+
+// 메뉴 클릭 시 헤더 업데이트
+function updateHeader(menuGroupName) {
+}
+
+function updateHeaderAndNavigate(event, url, menuGroupName) {
+    event.preventDefault();
+    event.stopPropagation();  // ✅ 이벤트 전파 방지
+    
+    iframeSrc(url,menuGroupName);
+    
+    // 각 사용자별 메뉴 저장
+    var loginCode = "${loginUser.user_code}";
+    var menuUrl = url;
+    var menuName = menuGroupName;
+    
+    menuSave(loginCode, menuUrl, menuName);
+}
+
+function menuSave(loginCode, menuUrl, menuName){
+    $.ajax({
+        url:"/tkheat/user/login/menuSave",
+        type:"post",
+        dataType:"json",
+        data:{
+            "user_code":loginCode,
+            "menu_url":menuUrl,
+            "menu_name":menuName
+        },
+        success:function(result){                
+            menuList();
+        }
+    });
+}
+
+function menuList(){
+    var loginCode = "${loginUser.user_code}";
         
-		menuSave(loginCode, menuUrl, menuName);
-	}
+    $.ajax({
+        url:"/tkheat/user/login/menuList",
+        type:"post",
+        dataType:"json",
+        data:{
+            "user_code":loginCode
+        },
+        success:function(result){
+            var data = result.data;
+            var _div = "";
+            var idx = 0;
+            $(".menuDiv").empty();
         
-	function menuSave(loginCode, menuUrl, menuName){
-		$.ajax({
-			url:"/tkheat/user/login/menuSave",
-			type:"post",
-			dataType:"json",
-			data:{
-				"user_code":loginCode,
-				"menu_url":menuUrl,
-				"menu_name":menuName
-			},
-			success:function(result){     			
-				menuList();
-			}
-		});
-	}
+            for(let key in data){
+                var menuName = data[key].menu_name;
+                var menuNameIndex = (data[key].menu_name).indexOf("-")+1;
+                
+                menuName = menuName.substring(menuNameIndex,menuName.length);                
+                menuName = menuName.replace("/\s/g","&nbsp;");
 
-	function menuList(){
-		var loginCode = "${loginUser.user_code}";
-        	
-		$.ajax({
-			url:"/tkheat/user/login/menuList",
-			type:"post",
-			dataType:"json",
-			data:{
-				"user_code":loginCode
-			},
-			success:function(result){
-				var data = result.data;
-				var _div = "";
-				var idx = 0;
-				$(".menuDiv").empty();
-        		
-				for(let key in data){
-					 var menuName = data[key].menu_name;
-		                var menuNameIndex = (data[key].menu_name).indexOf("-")+1;
-		                
-		                menuName = menuName.substring(menuNameIndex,menuName.length);                
-		                menuName = menuName.replace("/\s/g","&nbsp;");
+                _div = "<div class='menuDivTab' onClick=iframeSrc('"+data[key].menu_url+"','"+menuName+"')>";
+                _div += "<label class='menuName' onClick=iframeSrc('"+data[key].menu_url+"','"+menuName+"')>" + menuName + "</label>";
+                _div += "<button class='close-btn' onClick=removeMenu('"+data[key].menu_url+"')>×</button>";
+                _div += "</div>";
 
-		                _div = "<div class='menuDivTab' onClick=iframeSrc('"+data[key].menu_url+"','"+menuName+"')>";
-						_div += "<label class='menuName' onClick=iframeSrc('"+data[key].menu_url+"','"+menuName+"')>" + menuName + "</label>";
-		                _div += "<button class='close-btn' onClick=removeMenu('"+data[key].menu_url+"')>×</button>";
-		                _div += "</div>";
-
-		                $(".menuDiv").append(_div);
-				}
-         			
-			}
-		});
-	}
-
-
-	document.addEventListener('DOMContentLoaded', function () {
-		  const collapseItems = document.querySelectorAll('.nav__link.collapse');
-
-		  collapseItems.forEach(item => {
-		    item.addEventListener('click', function (e) {
-		      e.stopPropagation(); // 이벤트 전파 방지
-
-		      const collapseMenu = this.querySelector('.collapse__menu');
-		      const icon = this.querySelector('.collapse__link');
-
-		      // toggle 상태만 제어 (닫거나 열기)
-		      collapseMenu.classList.toggle('showCollapse');
-		      icon.classList.toggle('rotate');
-		    });
-		  });
-
-		  // 하위 메뉴 클릭 시 상위 메뉴 닫히지 않게
-		  document.querySelectorAll('.collapse__menu a').forEach(link => {
-		    link.addEventListener('click', function (e) {
-		      e.stopPropagation(); // 반드시 필요
-		      // 페이지 이동 또는 iframeSrc 등 호출 가능
-		    });
-		  });
-		});
-
-
-
-
-
-		
-	   function removeMenu(url) {
-			var loginCode = "${loginUser.user_code}";		   
-		   
-		   $.ajax({
-			  url:"/tkheat/user/login/menuRemove",
-			  type:"post",
-			  dataType:"json",
-			  data:{
-				  "user_code":loginCode,
-				  "menu_url":url},
-			  success:function(result){
-				  menuList();
-			  }
-		   });
-/*		   
-		   console.log(button);
-		   
-	       var menuName = $(button).siblings('.menuName').text(); 
-	       console.log(menuName + " 메뉴 엑스 .");
-	    
-	       $(button).parent().remove();
-*/	       
-	   }	
-
-        // DOMContentLoaded 이벤트로 DOM이 준비된 후 스크립트 실행
-        document.addEventListener('DOMContentLoaded', function() {
-            const linkColor = document.querySelectorAll('.nav__link');
-
-            // 메뉴 클릭 시 활성화
-            function colorLink() {
-                linkColor.forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
+                $(".menuDiv").append(_div);
             }
-            linkColor.forEach(l => l.addEventListener('click', colorLink));
+        }
+    });
+}
 
-            const linkCollapse = document.getElementsByClassName('collapse__link');
-            let i;
-            for(i = 0; i < linkCollapse.length; i++) {
-                linkCollapse[i].addEventListener('click', function() {
-                    const collapseMenu = this.nextElementSibling;
-                    collapseMenu.classList.toggle('showCollapse');
-                    const rotate = collapseMenu.previousElementSibling;
-                    rotate.classList.toggle('rotate');
-                });
+// ✅ DOMContentLoaded - 메뉴 클릭 이벤트 개선
+document.addEventListener('DOMContentLoaded', function () {
+    const collapseItems = document.querySelectorAll('.nav__link.collapse');
+
+    collapseItems.forEach(item => {
+        item.addEventListener('click', function (e) {
+            // ✅ 하위 메뉴 클릭 시에는 토글하지 않음
+            if (e.target.closest('.collapse__menu')) {
+                return;
             }
+            
+            e.stopPropagation();
+
+            const collapseMenu = this.querySelector('.collapse__menu');
+            const icon = this.querySelector('.collapse__link');
+
+            // toggle 상태만 제어
+            collapseMenu.classList.toggle('showCollapse');
+            icon.classList.toggle('rotate');
         });
+    });
 
+    // ✅ 하위 메뉴 클릭 시 이벤트 전파 방지 (메뉴 닫히지 않도록)
+    document.querySelectorAll('.collapse__menu a').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+    });
+});
 
+function removeMenu(url) {
+    event.stopPropagation();  // ✅ X 버튼 클릭 시 탭 활성화 방지
+    
+    var loginCode = "${loginUser.user_code}";       
+   
+    $.ajax({
+        url:"/tkheat/user/login/menuRemove",
+        type:"post",
+        dataType:"json",
+        data:{
+            "user_code":loginCode,
+            "menu_url":url
+        },
+        success:function(result){
+            menuList();
+        }
+    });
+}    
 
+// DOMContentLoaded 이벤트로 DOM이 준비된 후 스크립트 실행
+document.addEventListener('DOMContentLoaded', function() {
+    const linkColor = document.querySelectorAll('.nav__link');
 
-        $(".logout-button").on("click",function(){
-       		$.ajax({
-       			url:"/tkheat/user/logout",
-       			type:"get",
-       			dataTypa:"json",
-       			success:function(result){
-       				location.href = "/tkheat";
-       			}
-       		});
-       	});  
+    // 메뉴 클릭 시 활성화
+    function colorLink() {
+        linkColor.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+    }
+    linkColor.forEach(l => l.addEventListener('click', colorLink));
 
+    const linkCollapse = document.getElementsByClassName('collapse__link');
+    let i;
+    for(i = 0; i < linkCollapse.length; i++) {
+        linkCollapse[i].addEventListener('click', function() {
+            const collapseMenu = this.nextElementSibling;
+            collapseMenu.classList.toggle('showCollapse');
+            const rotate = collapseMenu.previousElementSibling;
+            rotate.classList.toggle('rotate');
+        });
+    }
+});
 
+$(".logout-button").on("click",function(){
+    $.ajax({
+        url:"/tkheat/user/logout",
+        type:"get",
+        dataTypa:"json",
+        success:function(result){
+            location.href = "/tkheat";
+        }
+    });
+});  
 
-
-		
-
-
-
-
-
-
-
-
-
-
-
-        
 </script>
-
     
 </body>
 </html>

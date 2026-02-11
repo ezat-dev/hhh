@@ -153,6 +153,7 @@
 	    
 <script>
 	//전역변수
+	let now_page_code = "g08";
     var cutumTable;	
     var sdate = $("#sdate").val();
 	//로드

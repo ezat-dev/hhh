@@ -5,387 +5,775 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>권한 설정</title>
-    <%-- <%@ include file="../include/sideBar.jsp" %> --%>
+    <title>작업자등록</title>
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
     <%@include file="../include/pluginpage.jsp" %>
-    <link rel="stylesheet" href="/tkheat/css/management/userinsert2.css">
-    <style>
-
     
-	.container {
-            display: flex;
-            justify-content: space-between;
-            margin-left:5px;
-        }
-
-        #tab1, #tab2, #tab3, #tab4 {
-            visibility: hidden;
-        }
-
-        #tab1 {
-            visibility: visible;
-        }
-
-        .tabulator {
-            width: 100%;
-            max-width: 100%;
-            max-height: 1200px;
-            overflow-x: hidden !important;  
-        }
-        
-        .tabulator .tabulator-cell {
-            white-space: normal !important;
-            word-break: break-word; 
-            text-align: center;
-        }
-        
-.row_select{
-	background-color:#9ABCEA !important;
+<style>
+/* ========== 기존 스타일 유지 ========== */
+.main {
+    width: 98%;
 }
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
 .box1 {
-	display: flex;
-	justify-content: right;
-	align-items: center;
-	width: 1500px;
-	margin-left: -350px;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    width: 1500px;
+    margin-left: -350px;
+    gap: 10px;
 }
 
-.box1 select{
-	width: 5%
-}  
+.box1 label {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+}
+
 .box1 input[type="text"] {
-	width: 100px;
-	padding: 5px 10px;
-	font-size: 16px;
-	border: 1px solid #ccc;
-	border-radius: 6px;
-	background-color: #f9f9f9;
-	color: #333;
-	outline: none;
-	transition: border 0.3s ease;
+    width: 100px;
+    padding: 5px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    color: #333;
+    outline: none;
+    transition: border 0.3s ease;
 }
 
 .box1 input[type="text"]:focus {
-	border: 1px solid #007bff;
-	background-color: #fff;
-}  
-.box1 label,
-.box1 input {
-	margin-right: 10px; /* 요소 사이 간격 */
-}  
-    </style>
+    border: 1px solid #007bff;
+    background-color: #fff;
+}
+
+.row_select {
+    background-color: #9ABCEA !important;
+}
+
+/* ========== 모달 오버레이 ========== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.modal-overlay.active {
+    display: block;
+}
+
+/* ========== 모달 컨테이너 ========== */
+.user-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.user-modal.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== 모달 헤더 ========== */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white;
+    cursor: move;
+    flex-shrink: 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.modal-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+/* ========== 모달 본문 ========== */
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #f5f7fa;
+    padding: 15px;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #e0e0e0;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #666;
+}
+
+/* ========== 섹션 ========== */
+.field-section {
+    background: white;
+    border-radius: 8px;
+    padding: 12px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 12px;
+}
+
+.section-title {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2c3e50;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* ========== 필드 행/열 ========== */
+.field-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.field-row:last-child {
+    margin-bottom: 0;
+}
+
+.field-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field-col-full {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field-col label,
+.field-col-full label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.req {
+    color: #dc3545;
+    margin-left: 2px;
+}
+
+/* ========== 입력 필드 ========== */
+.field-col input[type="text"],
+.field-col input[type="date"],
+.field-col input[type="password"],
+.field-col-full input[type="text"],
+.field-col-full textarea {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 13px;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+.field-col input:focus,
+.field-col-full input:focus,
+.field-col-full textarea:focus {
+    outline: none;
+    border-color: #4dabf7;
+    box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.1);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 50px;
+    font-family: inherit;
+    line-height: 1.4;
+}
+
+/* ========== 모달 푸터 ========== */
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: white;
+    border-top: 1px solid #dee2e6;
+    flex-shrink: 0;
+}
+
+.modal-footer button {
+    min-width: 100px;
+    height: 38px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-save {
+    background: linear-gradient(135deg, #51cf66, #37b24d);
+    color: white;
+}
+
+.btn-save:hover {
+    background: linear-gradient(135deg, #40c057, #2f9e44);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(64, 192, 87, 0.3);
+}
+
+.btn-delete {
+    background: linear-gradient(135deg, #ff6b6b, #fa5252);
+    color: white;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(135deg, #f03e3e, #e03131);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(240, 62, 62, 0.3);
+}
+
+.btn-cancel {
+    background: linear-gradient(135deg, #868e96, #495057);
+    color: white;
+}
+
+.btn-cancel:hover {
+    background: linear-gradient(135deg, #6c757d, #343a40);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+/* ========== 반응형 ========== */
+@media (max-width: 900px) {
+    .field-row {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
     
-    
-    <body>
-    
-    <div class="tab">
-    <div class="box1">
-           <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>
+<div class="tab">
+    <!-- <div class="box1">
+        <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>
         
-        
-		<label class="daylabel">부서 :</label>
-		<input type="text" class="user_buso" id="user_buso" style="font-size: 16px;" autocomplete="off">
-			
-		<label class="daylabel">직책 :</label>
-		<input type="text" class="user_jick" id="user_jick" style="font-size: 16px;" autocomplete="off">
-			
-		<label class="daylabel">이름 :</label>
-		<input type="text" class="user_name" id="user_name" style="font-size: 16px;" autocomplete="off">
-			
-		<label class="daylabel">재직구분 :</label>
-		<input type="text" class="user_ret" id="user_ret" style="font-size: 16px; autocomplete="off">
-			
-		<label class="daylabel">보고서타입 :</label>
-		<input type="text" class="" id="" style="font-size: 16px; autocomplete="off">
-			
-	</div>
+        <label class="daylabel">부서 :</label>
+        <input type="text" class="user_buso" id="user_buso" style="font-size: 14px;" autocomplete="off">
+            
+        <label class="daylabel">직책 :</label>
+        <input type="text" class="user_jick" id="user_jick" style="font-size: 14px;" autocomplete="off">
+            
+        <label class="daylabel">이름 :</label>
+        <input type="text" class="user_name" id="user_name" style="font-size: 14px;" autocomplete="off">
+    </div> -->
     <div class="button-container">
         <button class="select-button" onclick="getAllUserList();">
             <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
-           조회
+            조회
         </button>
         <button class="insert-button">
             <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
-         입력 
+            입력 
         </button>
         <button class="excel-button">
             <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
-        엑셀    
-        </button>
-        <button class="printer-button">
-            <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
-       보고서출력     
+            엑셀    
         </button>
     </div>
 </div>
 
 <main class="main">
-	
-	<div class="container">
-	  <div id="tab1" class="tabulator"></div>
-	</div>
-	
-	
-	<div class="userModal">
-	<div class="user-insert-box"></div>
-    <div class="user-inser-header">작업자등록</div>
-    <div class="user-no-box">사원번호</div>
-    <div class="user-buso-box">부서</div>
-    <div class="user-name-box">이름</div>
-    <div class="user-jick-box">직책</div>
-    <div class="user-jdate-box">입사일</div>
-    <div class="user-odate-box">퇴사일</div>
-    <div class="user-id-box">아이디</div>
-    <div class="user-pwd-box">패스워드</div>
-    <div class="user-phone-box">휴대전화</div>
-    <div class="user-add-box">주소</div>
-    <div class="user-bigo-box">비고</div>
-    <div class="user-sms-box">SMS 발송</div>
-    <input type="text" class="user-no">
-    <input type="text" class="user-name">
-    <input type="text" class="user-buso">
-    <input type="text" class="user-jick">
-    <input type="date" class="user-jdate">
-    <input type="date" class="user-odate">
-    <input type="text" class="user-id">
-    <input type="text" class="user-pwd">
-    <input type="text" class="user-phone">
-    <input type="text" class="user-add">
-    <input type="text" class="user-bigo">
-    <div class="save">저장</div>
-    <div class="close">닫기</div>
-	</div>
-	
-	
-	
-	
+    <div class="container">
+        <div id="tab1" class="tabulator"></div>
+    </div>
 </main>
+
+<!-- 모달 폼 -->
+<form method="post" class="userForm" id="userInsertForm" name="userInsertForm">
+    <input type="hidden" id="user_code" name="user_code" />
     
+    <div class="modal-overlay"></div>
+    
+    <div class="user-modal">
+        <!-- 헤더 -->
+        <div class="modal-header">
+            <h2>작업자등록</h2>
+            <button type="button" class="modal-close-btn">&times;</button>
+        </div>
+        
+        <!-- 본문 -->
+        <div class="modal-body">
+            <!-- 기본 정보 -->
+            <div class="field-section">
+                <h3 class="section-title">기본 정보</h3>
+                <div class="field-row">
+                    <div class="field-col">
+                        <label>사원번호 <span class="req">*</span></label>
+                        <input type="text" id="user_no" name="user_no" placeholder="사원번호">
+                    </div>
+                    <div class="field-col">
+                        <label>이름 <span class="req">*</span></label>
+                        <input type="text" id="user_name" name="user_name" placeholder="이름">
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field-col">
+                        <label>부서</label>
+                        <input type="text" id="user_buso" name="user_buso" placeholder="부서">
+                    </div>
+                    <div class="field-col">
+                        <label>직책</label>
+                        <input type="text" id="user_jick" name="user_jick" placeholder="직책">
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field-col">
+                        <label>입사일</label>
+                        <input type="date" id="user_jdate" name="user_jdate">
+                    </div>
+                    <div class="field-col">
+                        <label>퇴사일</label>
+                        <input type="date" id="user_odate" name="user_odate">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 계정 정보 -->
+            <div class="field-section">
+                <h3 class="section-title">계정 정보</h3>
+                <div class="field-row">
+                    <div class="field-col">
+                        <label>아이디 <span class="req">*</span></label>
+                        <input type="text" id="user_id" name="user_id" placeholder="아이디">
+                    </div>
+                    <div class="field-col">
+                        <label>패스워드 <span class="req">*</span></label>
+                        <input type="password" id="user_pwd" name="user_pwd" placeholder="패스워드">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 연락처 정보 -->
+            <div class="field-section">
+                <h3 class="section-title">연락처 정보</h3>
+                <div class="field-row">
+                    <div class="field-col-full">
+                        <label>휴대전화</label>
+                        <input type="text" id="user_phone" name="user_phone" placeholder="휴대전화">
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field-col-full">
+                        <label>주소</label>
+                        <input type="text" id="user_add" name="user_add" placeholder="주소">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 비고 -->
+            <div class="field-section">
+                <h3 class="section-title">비고</h3>
+                <div class="field-row">
+                    <div class="field-col-full">
+                        <textarea id="user_bigo" name="user_bigo" rows="3" placeholder="비고"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 푸터 (버튼) -->
+        <div class="modal-footer">
+            <button type="button" class="btn-delete" onclick="deleteUser();" style="display:none;">삭제</button>
+            <button type="button" class="btn-save" onclick="saveUser();">저장</button>
+            <button type="button" class="btn-cancel">닫기</button>
+        </div>
+    </div>
+</form>
 
 <script>
+// 전역변수
+let now_page_code = "h05";
+var userTable;
+var isEditMode = false;
+var selectedRowData = null;
 
-	//전역변수
-    var userTable;	
-	
+// 로드
+$(function(){
+	if (typeof userInfoList === 'function') {
+        userInfoList(now_page_code);
+    }
+    getAllUserList();
+});
 
-	//로드
-	$(function(){
-		//전체 사용자목록 조회
-		getAllUserList();
-	});
-	//함수
-	function getAllUserList(){
-		
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"760px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    selectableRangeMode:"click",
-		    selectableRows:true,
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/management/authority/userList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	"user_buso": $("#user_buso").val(),
-                "user_jick": $("#user_jick").val(),
-                "user_name": $("#user_name").val(),
-                "user_ret": $("#user_ret").val(),
-			   },
-		    ajaxResponse:function(url, params, response){
-		    	console.log(response);
-		    	console.log(params);
-		    	console.log(url);
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","29px");
-		        return response; //return the response data to tabulator
-		    },
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:180,
-		        	hozAlign:"center"},
-		        {title:"아이디", field:"user_no", sorter:"string", width:250,
-		        	hozAlign:"center"},
-		        {title:"부서", field:"user_buso", sorter:"string", width:250,
-		        	hozAlign:"center"},
-		        {title:"직책", field:"user_jick", sorter:"string", width:250,
-		        	hozAlign:"center"},
-		        {title:"성명", field:"user_name", sorter:"string", width:250,
-		        	hozAlign:"center"},
-		        {title:"입사일", field:"user_jdate", sorter:"string", width:200,
-			        hozAlign:"center"},	
-		        {title:"퇴사", field:"user_ret", sorter:"string", width:100,
-		        	hozAlign:"center",visible:false},
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
-
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
-
-				var rowData = row.getData();
-				$(".userName").text(rowData.user_name);
-				
-				
-			},
-			rowDblClick:function(e, row){
-
-
-				var d = row.getData();
-
-			    $('.userModal').attr('data-mode', 'edit');
-			    $('.userModal').attr('data-code', d.user_code);
-
-			    $('.user-no').val(d.user_no);
-			    $('.user-name').val(d.user_name);
-			    $('.user-buso').val(d.user_buso);
-			    $('.user-jick').val(d.user_jick);
-
-			    // ★ 날짜 데이터는 YYYY-MM-DD 형태로 변환 필요
-			    $('.user-jdate').val(d.user_jdate ? d.user_jdate.substring(0,10) : '');
-			    $('.user-odate').val(d.user_odate ? d.user_odate.substring(0,10) : '');
-
-			    $('.user-id').val(d.user_id);
-			    $('.user-pwd').val(d.user_pwd);
-			    $('.user-phone').val(d.user_phone);
-			    $('.user-add').val(d.user_add);
-			    $('.user-bigo').val(d.user_bigo);
-
-			    $('.userModal').show();
-				
-				
-			},			
-		});		
-	}
-	
-	
-	// 드래그 기능 추가
-	const modal = document.querySelector('.userModal');
-	const header = document.querySelector('.user-inser-header'); // 헤더를 드래그할 요소로 사용
-
-	header.addEventListener('mousedown', function(e) {
-	    let offsetX = e.clientX - modal.getBoundingClientRect().left; // 마우스와 모달의 x 위치 차이
-	    let offsetY = e.clientY - modal.getBoundingClientRect().top; // 마우스와 모달의 y 위치 차이
-
-	    function moveModal(e) {
-	        modal.style.left = (e.clientX - offsetX) + 'px';
-	        modal.style.top = (e.clientY - offsetY) + 'px';
-	    }
-
-	    function stopMove() {
-	        window.removeEventListener('mousemove', moveModal); // 이동 중지
-	        window.removeEventListener('mouseup', stopMove); // 마우스 업 이벤트 제거
-	    }
-
-	    window.addEventListener('mousemove', moveModal); // 마우스 이동 이벤트
-	    window.addEventListener('mouseup', stopMove); // 마우스 업 이벤트
-	});
-		
-
-	// 모달 열기
-	const insertButton = document.querySelector('.insert-button');
-	const userModal = document.querySelector('.userModal');
-	const closeButton = document.querySelector('.close');
-
-	insertButton.addEventListener('click', function() {
-		resetModal();
-	    userModal.style.display = 'block'; // 모달 표시
-	});
-
-	closeButton.addEventListener('click', function() {
-	    userModal.style.display = 'none'; // 모달 숨김
-	});
-
-
-	
-	// 사용자 등록 모달 ajax
-	$('.save').click(function() {
-
-    const mode = $('.userModal').attr('data-mode');  
-    const user_code = $('.userModal').attr('data-code');  
-
+// 전체 사용자목록 조회
+function getAllUserList(){
+    // ✅ 기존 테이블 완전히 제거
+    if (userTable) {
+        try {
+            userTable.destroy();
+        } catch(e) {
+            console.log("테이블 destroy 오류 무시:", e);
+        }
+        $("#tab1").empty();
+    }
     
-    const user_ret_val = $('.user-odate').val() ? 1 : 0;
+    // ✅ 딜레이 후 테이블 생성
+    setTimeout(function() {
+        userTable = new Tabulator("#tab1", {
+            height:"760px",
+            layout:"fitColumns",
+            selectable:true,
+            tooltips:true,
+            selectableRangeMode:"click",
+            selectableRows:true,
+            reactiveData:true,
+            headerHozAlign:"center",
+            ajaxConfig:"POST",
+            ajaxLoader:false,
+            ajaxURL:"/tkheat/management/authority/userList",
+            ajaxProgressiveLoad:"scroll",
+            ajaxParams:{
+                "user_buso": "",
+                "user_jick": "",
+                "user_name": ""
+            },
+            placeholder:"조회된 데이터가 없습니다.",
+            paginationSize:20,
+            headerFilterPlaceholder: "",
+            ajaxResponse:function(url, params, response){
+                $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
+                return response;
+            },
+            columns:[
+                {title:"NO", field:"idx", sorter:"int", width:80, hozAlign:"center"},
+                {title:"사원번호", field:"user_no", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
+                {title:"부서", field:"user_buso", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
+                {title:"직책", field:"user_jick", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
+                {title:"성명", field:"user_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
+                {title:"입사일", field:"user_jdate", sorter:"string", width:150, hozAlign:"center"},
+                {title:"퇴사", field:"user_ret", sorter:"string", width:80, hozAlign:"center", visible:false},
+            ],
+            rowFormatter:function(row){
+                var data = row.getData();
+                row.getElement().style.fontWeight = "700";
+                row.getElement().style.backgroundColor = "#FFFFFF";
+            },
+            rowClick:function(e, row){
+                $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").removeClass('row_select');
+                row.getElement().classList.add("row_select");
+            },
+            rowDblClick:function(e, row){
+                // 수정 권한 체크
+                if (window.disableRowDblClick) {
+                    alert("수정 권한이 없습니다.");
+                    return false;
+                }
+                
+                var data = row.getData();
+                selectedRowData = data;
+                isEditMode = true;
+                userInsertDetail(data.user_code);
+                
+                // 삭제 버튼 표시 여부 (권한 체크)
+                const permission = userPermissions?.[now_page_code];
+                if (permission === 'D') {
+                    $('.btn-delete').show();
+                } else {
+                    $('.btn-delete').hide();
+                }
+            },
+        });
+    }, 200);
+}
 
+// 사용자 상세 조회
+function userInsertDetail(user_code){
+    $.ajax({
+        url:"/tkheat/management/authority/userDetail",
+        type:"post",
+        dataType:"json",
+        data:{"user_code":user_code},
+        success:function(result){
+            var allData = result.data;
+            
+            for(let key in allData){
+                $("#userInsertForm [name='"+key+"']").val(allData[key]);
+            }
+
+            if(allData.user_jdate) {
+                $('#user_jdate').val(allData.user_jdate.substring(0, 10));
+            }
+            
+            if(allData.user_odate) {
+                const odateStr = allData.user_odate.substring(0, 10);
+                if(odateStr === '1900-01-01') {
+                    $('#user_odate').val('');
+                } else {
+                    $('#user_odate').val(odateStr);
+                }
+            }
+
+            $('.modal-overlay, .user-modal').addClass('active');
+        }
+    });
+}
+
+// 입력 버튼 클릭
+$('.insert-button').on('click', function() {
+    isEditMode = false;
+    selectedRowData = null;
+    $('#userInsertForm')[0].reset();
+    $('.btn-delete').hide();
+    $('.modal-overlay, .user-modal').addClass('active');
+});
+
+// 모달 닫기
+$('.modal-close-btn, .btn-cancel').on('click', function() {
+    $('.modal-overlay, .user-modal').removeClass('active');
+});
+
+// 모달 드래그
+let isDragging = false;
+let startX, startY, modalLeft, modalTop;
+
+$('.modal-header').on('mousedown', function(e) {
+    if ($(e.target).hasClass('modal-close-btn') || $(e.target).closest('.modal-close-btn').length) {
+        return;
+    }
+    
+    isDragging = true;
+    const modal = $('.user-modal');
+    const offset = modal.offset();
+    
+    startX = e.pageX;
+    startY = e.pageY;
+    modalLeft = offset.left;
+    modalTop = offset.top;
+    
+    modal.css('transform', 'none');
+    
+    e.preventDefault();
+});
+
+$(document).on('mousemove', function(e) {
+    if (isDragging) {
+        const dx = e.pageX - startX;
+        const dy = e.pageY - startY;
+        
+        $('.user-modal').css({
+            left: (modalLeft + dx) + 'px',
+            top: (modalTop + dy) + 'px'
+        });
+    }
+});
+
+$(document).on('mouseup', function() {
+    isDragging = false;
+});
+
+// 저장 함수
+function saveUser() {
+	// ✅ 권한 체크
+    const permission = userPermissions?.[now_page_code];
+    
+    // 신규 등록인 경우
+    if (!isEditMode) {
+        if (!['I', 'U', 'D'].includes(permission)) {
+            alert("등록 권한이 없습니다.");
+            console.log("⚠️ 등록 권한 없음 - 현재 권한:", permission);
+            return false;
+        }
+        console.log("✅ 등록 권한 확인 완료");
+    } 
+    // 수정인 경우
+    else {
+        if (!['U', 'D'].includes(permission)) {
+            alert("수정 권한이 없습니다.");
+            console.log("⚠️ 수정 권한 없음 - 현재 권한:", permission);
+            return false;
+        }
+        console.log("✅ 수정 권한 확인 완료");
+    }
+    const odateValue = $('#user_odate').val();
+    
+    let finalOdateValue;
+    let user_ret_val;
+    
+    if (!odateValue || odateValue.trim() === '') {
+        finalOdateValue = '1900-01-01';
+        user_ret_val = 0;
+    } else if (odateValue === '1900-01-01') {
+        finalOdateValue = '1900-01-01';
+        user_ret_val = 0;
+    } else {
+        finalOdateValue = odateValue;
+        user_ret_val = 1;
+    }
+    
     const userData = {
-        user_code: user_code,
-        user_no: $('.user-no').val(),
-        user_name: $('.user-name').val(),
-        user_buso: $('.user-buso').val(),
-        user_jick: $('.user-jick').val(),
-        user_jdate: $('.user-jdate').val(),
-        user_odate: $('.user-odate').val(),
-        user_id: $('.user-id').val(),
-        user_pwd: $('.user-pwd').val(),
-        user_phone: $('.user-phone').val(),
-        user_add: $('.user-add').val(),
-        user_bigo: $('.user-bigo').val(),
+        user_no: $('#user_no').val(),
+        user_name: $('#user_name').val(),
+        user_buso: $('#user_buso').val(),
+        user_jick: $('#user_jick').val(),
+        user_jdate: $('#user_jdate').val(),
+        user_odate: finalOdateValue,
+        user_id: $('#user_id').val(),
+        user_pwd: $('#user_pwd').val(),
+        user_phone: $('#user_phone').val(),
+        user_add: $('#user_add').val(),
+        user_bigo: $('#user_bigo').val(),
         user_ret: user_ret_val
     };
 
+    let confirmMsg = "";
+
+    if (isEditMode && selectedRowData && selectedRowData.user_code) {
+        userData.user_code = selectedRowData.user_code;
+        confirmMsg = "수정하시겠습니까?";
+    } else {
+        confirmMsg = "저장하시겠습니까?";
+    }
+
+    if (!confirm(confirmMsg)) {
+        return;
+    }
+
     $.ajax({
+        url: "/tkheat/management/userinsert/save",
         type: "POST",
-        url: mode === 'edit'
-            ? "/tkheat/management/userinsert/update"
-            : "/tkheat/management/userinsert/save",
         contentType: "application/json",
         data: JSON.stringify(userData),
-        success: function(response) {
-            alert(response.message);
-            $('.userModal').hide();
-            getAllUserList();    // 리스트 새로고침
+        dataType: "json",
+        success: function(result) {
+            alert(result.message || "저장 되었습니다.");
+            $('.modal-overlay, .user-modal').removeClass('active');
+            
+            $('.user-modal').css({
+                'left': '50%',
+                'top': '50%',
+                'transform': 'translate(-50%, -50%)'
+            });
+            
+            // ✅ 테이블 새로고침
+            getAllUserList();
         },
-        error: function(xhr) {
-            alert("저장 실패: " + xhr.responseText);
+        error: function(xhr, status, error) {
+            console.error("저장 오류:", error);
+            alert("저장 중 오류가 발생했습니다.");
         }
     });
+}
+
+// 삭제
+function deleteUser() {
+	// ✅ 권한 체크
+    const permission = userPermissions?.[now_page_code];
+    
+    if (permission !== 'D') {
+        alert("삭제 권한이 없습니다.");
+        console.log("⚠️ 삭제 권한 없음 - 현재 권한:", permission);
+        return false;
+    }
+    console.log("✅ 삭제 권한 확인 완료");
+    if (!selectedRowData || !selectedRowData.user_code) {
+        alert("삭제할 대상을 선택하세요.");
+        return;
+    }
+
+    if (!confirm("삭제하시겠습니까?")) return;
+
+    $.ajax({
+        url: "/tkheat/management/userinsert/delete",
+        type: "POST",
+        data: {user_code: selectedRowData.user_code},
+        dataType: "json",
+        success: function(result) {
+            if (result.status === "success") {
+                alert("삭제되었습니다.");
+                $('.modal-overlay, .user-modal').removeClass('active');
+                
+                $('.user-modal').css({
+                    'left': '50%',
+                    'top': '50%',
+                    'transform': 'translate(-50%, -50%)'
+                });
+                
+                getAllUserList();
+            } else {
+                alert("삭제 중 오류가 발생했습니다: " + result.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("삭제 오류:", error);
+        }
+    });
+}
+
+// 엑셀 다운로드
+$(".excel-button").click(function () {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const filename = "작업자등록_" + today + ".xlsx";
+    userTable.download("xlsx", filename, { sheetName: "작업자등록" });
 });
+</script>
 
-
-
-
-	function resetModal() {
-	    $('.userModal').attr('data-mode', 'insert');   // 신규 입력 모드
-	    $('.userModal').attr('data-code', '');         // PK 초기화
-
-	    $('.user-no').val('');
-	    $('.user-name').val('');
-	    $('.user-buso').val('');
-	    $('.user-jick').val('');
-	    $('.user-jdate').val('');
-	    $('.user-odate').val('');
-	    $('.user-id').val('');
-	    $('.user-pwd').val('');
-	    $('.user-phone').val('');
-	    $('.user-add').val('');
-	    $('.user-bigo').val('');
-	}
-
-
-
-
-
-	
-
-    </script>
-
-	</body>
+</body>
 </html>

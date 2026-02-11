@@ -133,6 +133,7 @@
 	    
 <script>
 	//전역변수
+	let now_page_code = "c03";
     var cutumTable;	
 
 	//로드
@@ -157,6 +158,7 @@
 		    selectableRangeMode:"click",
 		    reactiveData:true,
 		    headerHozAlign:"center",
+		    headerSort:false,
 		    ajaxConfig:"POST",
 		    ajaxLoader:false,
 		    ajaxURL:"/tkheat/process/temSiljuk/getTemSiljukList",
@@ -166,45 +168,50 @@
                 "edate": $("#edate").val(),
 			    },
 		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
+		    pagination:"local",
+	        paginationSize:20,
+	        paginationSizeSelector:[20,50,100,500,1000],
+	        paginationCounter:"rows",
+	        
+	        headerFilterPlaceholder: "",
 		    ajaxResponse:function(url, params, response){
 				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
+				return response.data ? response.data : [];
 		    },
 		    columns:[
 		        {title:"NO", field:"idx", sorter:"int", width:80,
 		        	hozAlign:"center"},
-		        {title:"작업일", field:"ilbo_strt", sorter:"string", width:200,
+		        {title:"작업일", field:"ilbo_strt", sorter:"string", width:60,
 			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"준비코드", field:"ilbo_code", sorter:"string", width:120,
+			    {title:"준비코드", field:"ilbo_code", sorter:"string", width:80,
 				    hozAlign:"center", headerFilter:"input"},     
-				{title:"수주NO", field:"ord_code", sorter:"string", width:120,
+				{title:"수주NO", field:"ord_code", sorter:"string", width:80,
 				    hozAlign:"center", headerFilter:"input"}, 
-				{title:"설비", field:"fac_name", sorter:"string", width:120,
+				{title:"설비", field:"fac_name", sorter:"string", width:80,
 				    hozAlign:"center", headerFilter:"input"}, 
-		        {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:200,
+		        {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:80,
 		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"시작", field:"ilbo_strt", sorter:"string", width:200,
+		        {title:"시작", field:"ilbo_strt", sorter:"string", width:80,
 		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"완료", field:"ilbo_end", sorter:"string", width:200,
+		        {title:"완료", field:"ilbo_end", sorter:"string", width:80,
 		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"입고LOT", field:"ord_lot", sorter:"string", width:200,
+		        {title:"입고LOT", field:"ord_lot", sorter:"string", width:80,
 			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"거래처", field:"corp_name", sorter:"string", width:200,
+		        {title:"거래처", field:"corp_name", sorter:"string", width:130,
 		        	hozAlign:"center", headerFilter:"input"},  	
-		        {title:"픔명", field:"prod_name", sorter:"string", width:200,
+		        {title:"픔명", field:"prod_name", sorter:"string", width:130,
 			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"품번", field:"prod_no", sorter:"string", width:200,
+			    {title:"품번", field:"prod_no", sorter:"string", width:130,
 				    hozAlign:"center", headerFilter:"input"},	
-				{title:"규격", field:"prod_gyu", sorter:"string", width:140,
+				{title:"규격", field:"prod_gyu", sorter:"string", width:130,
 				    hozAlign:"center", headerFilter:"input"},
-				{title:"재질", field:"prod_jai", sorter:"string", width:140,
+				{title:"재질", field:"prod_jai", sorter:"string", width:130,
 					hozAlign:"center", headerFilter:"input"},
-			    {title:"작업량", field:"ilbo_su", sorter:"string", width:100,
+			    {title:"작업량", field:"ilbo_su", sorter:"string", width:80,
 					hozAlign:"center", headerFilter:"input"},
- 			    {title:"작업자", field:"user_name", sorter:"string", width:100,
+ 			    {title:"작업자", field:"user_name", sorter:"string", width:80,
 					hozAlign:"center", headerFilter:"input"},
-				{title:"담당자", field:"ord_name", sorter:"string", width:100,
+				{title:"담당자", field:"ord_name", sorter:"string", width:80,
 					hozAlign:"center", headerFilter:"input"},						    
 		    ],
 		    rowFormatter:function(row){
