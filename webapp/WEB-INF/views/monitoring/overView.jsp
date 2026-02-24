@@ -11,14 +11,7 @@
 <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
 <%@include file="../include/pluginpage.jsp"%>
 <style>
-.tkMain{
-    	width: 1351px;
-  height: 360px;
-  position: absolute;
-  left: 160px;
-  top: 160px;
-  object-fit: cover;
-  aspect-ratio: 1724/460;
+
     	
     	}
     	main{
@@ -26,35 +19,98 @@
     	}
     	
 
-
-.bcf_table_wrap {
+body{
+	overflow : hidden;
+}
+.equipment_label {
     position: absolute;
-    left: 42px;
-    top: 660px;
+    top: -10px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #0b63ce;
+    background: #e8eef8;
+    border: 1px solid #b0bcd4;
+    border-radius: 4px;
+    padding: 3px 10px;
+    text-align: center;
+    transform: translateX(-50%);
 }
 
+.label_bcf1 { left: 138px; }
+.label_bcf2 { left: 407px; }
+.label_bcf3 { left: 679px; }
+.label_bcf4 { left: 952px; }
+.label_bcf5 { left: 1224px; }
+.label_tf   { left: 1500px; }
+
+.bcf_tables_container {
+    position: absolute;
+    left: 32px;
+    top: 705px;
+    display: flex;
+    flex-direction: row;
+    gap: 18px;
+    align-items: flex-start;
+}
+.bcf_unit_wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.bcf_unit_label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #0b63ce;
+    background: #e8eef8;
+    border: 1px solid #d0d3d8;
+    border-bottom: none;
+    width: 100%;
+    text-align: center;
+    padding: 3px 0;
+    box-sizing: border-box;
+}
 .bcf_table {
     border-collapse: collapse;
-    width: 1600px;
 }
-
 .bcf_table th {
     background: #f3f6fb;
     border: 1px solid #d0d3d8;
     text-align: center;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: bold;
     color: #0b63ce;
     height: 25px;
+    white-space: nowrap;
+    padding: 0 6px;
 }
-
+.bcf_table th:first-child {
+    width: auto;
+    min-width: auto;
+    max-width: none;
+    padding: 0 6px;
+    font-size: 11px;
+    writing-mode: horizontal-tb;
+}
 .bcf_table td {
     border: 1px solid #d0d3d8;
     text-align: center;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: bold;
     color: #333;
     height: 28px;
+    min-width: 58px;
+}
+.bcf_row_label {
+    background: #f3f6fb;
+    color: #0b63ce !important;
+    font-size: 11px !important;
+    font-weight: bold;
+    white-space: nowrap;
+    width: auto;
+    min-width: auto;
+    max-width: none;
+    padding: 0 6px;
+    writing-mode: horizontal-tb;
 }
 
 /* 회전 애니메이션 */
@@ -87,9 +143,17 @@
 
 	<main class="main">
       <div class="group_58">
-      <img class="background" src="/tkheat/image/tkimg/background0.png" />
-    <!-- <img class="rail" src="/tkheat/image/tkimg/rail0.png" /> -->
-    <img class="rail_2" src="/tkheat/image/tkimg/rail-20.png" />
+        <div class="equipment_label label_bcf1">BCF 1</div>
+		<div class="equipment_label label_bcf2">BCF 2</div>
+		<div class="equipment_label label_bcf3">BCF 3</div>
+		<div class="equipment_label label_bcf4">BCF 4</div>
+		<div class="equipment_label label_bcf5">BCF 5</div>
+		<div class="equipment_label label_tf">TF</div>
+      <!-- <img class="background" src="/tkheat/image/tkimg/background0.png" /> -->
+      <img class="bcf_1_back" src="/tkheat/image/tkimg/bcf-back.png" />
+      <img class="bcf_2_back" src="/tkheat/image/tkimg/bcf-back.png" />
+      <img class="bcf_3_back" src="/tkheat/image/tkimg/bcf-3-back.png" />
+      <img class="bcf_4_back" src="/tkheat/image/tkimg/bcf-3-back.png" />
     <div class="group_57">
       <div class="bcf_1">
         <div class="group_13">
@@ -612,76 +676,182 @@
   </div>
   
   
-  <div class="bcf_table_wrap">
-    <table class="bcf_table">
-        <thead>
-            <tr>
-                <th>온도</th>
-                <th>CF #1</th>
-                <th>QT #1</th>
-                <th>CP #1</th>
-                <th>CF #2</th>
-                <th>QT #2</th>
-                <th>CP #2</th>
-                <th>CF #3</th>
-                <th>QT #3</th>
-                <th>CP #3</th>
-                <th>CF #4</th>
-                <th>QT #4</th>
-                <th>CP #4</th>
-                <th>소입 #5</th>
-                <th>가열 #5</th>
-                <th>CP #5</th>
-                <th>소려1존</th>
-                <th>소려2존</th>
-                <th>소려3존</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="background: #f3f6fb; border: 1px solid #d0d3d8; color: #0b63ce;">현재값</td>
-                <td class="bcf_1_cf_pv"></td>
-                <td class="bcf_1_qt_pv"></td>
-                <td class="bcf_1_cp_pv"></td>
-                <td class="bcf_2_cf_pv"></td>
-                <td class="bcf_2_qt_pv"></td>
-                <td class="bcf_2_cp_pv"></td>
-                <td class="bcf_3_cf_pv"></td>
-                <td class="bcf_3_qt_pv"></td>
-                <td class="bcf_3_cp_pv"></td>
-                <td class="bcf_4_cf_pv"></td>
-                <td class="bcf_4_qt_pv"></td>
-                <td class="bcf_4_cp_pv"></td>
-                <td class="bcf_5_cf_pv"></td>
-                <td class="bcf_5_qt_pv"></td>
-                <td class="bcf_5_cp_pv"></td>
-                <td class="tf_1_pv"></td>
-                <td class="tf_2_pv"></td>
-                <td class="tf_3_pv"></td>
-            </tr>
-            <tr>
-                <td style="background: #f3f6fb; border: 1px solid #d0d3d8; color: #0b63ce;">설정값</td>
-                <td class="bcf_1_cf_sv"></td>
-                <td class="bcf_1_qt_sv"></td>
-                <td class="bcf_1_cp_sv"></td>
-                <td class="bcf_2_cf_sv"></td>
-                <td class="bcf_2_qt_sv"></td>
-                <td class="bcf_2_cp_sv"></td>
-                <td class="bcf_3_cf_sv"></td>
-                <td class="bcf_3_qt_sv"></td>
-                <td class="bcf_3_cp_sv"></td>
-                <td class="bcf_4_cf_sv"></td>
-                <td class="bcf_4_qt_sv"></td>
-                <td class="bcf_4_cp_sv"></td>
-                <td class="bcf_5_cf_sv"></td>
-                <td class="bcf_5_qt_sv"></td>
-                <td class="bcf_5_cp_sv"></td>
-                <td class="tf_1_sv"></td>
-                <td class="tf_2_sv"></td>
-                <td class="tf_3_sv"></td>
-            </tr>
-        </tbody>
-    </table>
+  <div class="bcf_tables_container">
+
+    <!-- 1호기 -->
+    <div class="bcf_unit_wrap">
+        <div class="bcf_unit_label">1호기</div>
+        <table class="bcf_table">
+            <thead>
+                <tr>
+                    <th>온도</th>
+                    <th>CF #1</th>
+                    <th>QT #1</th>
+                    <th>CP #1</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="bcf_row_label">현재값</td>
+                    <td class="bcf_1_cf_pv"></td>
+                    <td class="bcf_1_qt_pv"></td>
+                    <td class="bcf_1_cp_pv"></td>
+                </tr>
+                <tr>
+                    <td class="bcf_row_label">설정값</td>
+                    <td class="bcf_1_cf_sv"></td>
+                    <td class="bcf_1_qt_sv"></td>
+                    <td class="bcf_1_cp_sv"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 2호기 -->
+    <div class="bcf_unit_wrap">
+        <div class="bcf_unit_label">2호기</div>
+        <table class="bcf_table">
+            <thead>
+                <tr>
+                    <th>온도</th>
+                    <th>CF #2</th>
+                    <th>QT #2</th>
+                    <th>CP #2</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="bcf_row_label">현재값</td>
+                    <td class="bcf_2_cf_pv"></td>
+                    <td class="bcf_2_qt_pv"></td>
+                    <td class="bcf_2_cp_pv"></td>
+                </tr>
+                <tr>
+                    <td class="bcf_row_label">설정값</td>
+                    <td class="bcf_2_cf_sv"></td>
+                    <td class="bcf_2_qt_sv"></td>
+                    <td class="bcf_2_cp_sv"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 3호기 -->
+    <div class="bcf_unit_wrap">
+        <div class="bcf_unit_label">3호기</div>
+        <table class="bcf_table">
+            <thead>
+                <tr>
+                    <th>온도</th>
+                    <th>CF #3</th>
+                    <th>QT #3</th>
+                    <th>CP #3</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="bcf_row_label">현재값</td>
+                    <td class="bcf_3_cf_pv"></td>
+                    <td class="bcf_3_qt_pv"></td>
+                    <td class="bcf_3_cp_pv"></td>
+                </tr>
+                <tr>
+                    <td class="bcf_row_label">설정값</td>
+                    <td class="bcf_3_cf_sv"></td>
+                    <td class="bcf_3_qt_sv"></td>
+                    <td class="bcf_3_cp_sv"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 4호기 -->
+    <div class="bcf_unit_wrap">
+        <div class="bcf_unit_label">4호기</div>
+        <table class="bcf_table">
+            <thead>
+                <tr>
+                    <th>온도</th>
+                    <th>CF #4</th>
+                    <th>QT #4</th>
+                    <th>CP #4</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="bcf_row_label">현재값</td>
+                    <td class="bcf_4_cf_pv"></td>
+                    <td class="bcf_4_qt_pv"></td>
+                    <td class="bcf_4_cp_pv"></td>
+                </tr>
+                <tr>
+                    <td class="bcf_row_label">설정값</td>
+                    <td class="bcf_4_cf_sv"></td>
+                    <td class="bcf_4_qt_sv"></td>
+                    <td class="bcf_4_cp_sv"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 5호기 (소입/가열/CP 구성) -->
+    <div class="bcf_unit_wrap">
+        <div class="bcf_unit_label">5호기</div>
+        <table class="bcf_table">
+            <thead>
+                <tr>
+                    <th>온도</th>
+                    <th>소입 #5</th>
+                    <th>가열 #5</th>
+                    <th>CP #5</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="bcf_row_label">현재값</td>
+                    <td class="bcf_5_cf_pv"></td>
+                    <td class="bcf_5_qt_pv"></td>
+                    <td class="bcf_5_cp_pv"></td>
+                </tr>
+                <tr>
+                    <td class="bcf_row_label">설정값</td>
+                    <td class="bcf_5_cf_sv"></td>
+                    <td class="bcf_5_qt_sv"></td>
+                    <td class="bcf_5_cp_sv"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 소려 (1존/2존/3존) -->
+    <div class="bcf_unit_wrap">
+        <div class="bcf_unit_label">소려</div>
+        <table class="bcf_table">
+            <thead>
+                <tr>
+                    <th>온도</th>
+                    <th>소려1존</th>
+                    <th>소려2존</th>
+                    <th>소려3존</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="bcf_row_label">현재값</td>
+                    <td class="tf_1_pv"></td>
+                    <td class="tf_2_pv"></td>
+                    <td class="tf_3_pv"></td>
+                </tr>
+                <tr>
+                    <td class="bcf_row_label">설정값</td>
+                    <td class="tf_1_sv"></td>
+                    <td class="tf_2_sv"></td>
+                    <td class="tf_3_sv"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
 </div>
   
   
