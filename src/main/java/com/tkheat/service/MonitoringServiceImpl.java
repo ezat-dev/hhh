@@ -65,5 +65,10 @@ public class MonitoringServiceImpl implements MonitoringService{
 			return monitoringDao.getOverviewData();
 		}
 		
+		@Override
+		public Map<String, Object> getCurrentAlarms() {
+		    return monitoringDao.getCurrentAlarms();
+		}
+		
 		
 }

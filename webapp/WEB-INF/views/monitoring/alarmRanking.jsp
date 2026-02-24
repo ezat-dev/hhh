@@ -108,7 +108,7 @@
 	    
 <script>
 //전역변수
-		let now_page_code = "d06";
+		let now_page_code = "d05";
 		var alarmHistory;
 		
 		window.alarmRanking1 = function(){

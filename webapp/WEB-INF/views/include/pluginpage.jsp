@@ -318,11 +318,10 @@ function pageObject(paramKey){
 		"c07":["/tkheat/process/readySiljuk","준비작업실적"],
 		
 		"d01":["/tkheat/monitoring/overView","설비모니터링"],
-		"d02":["/tkheat/monitoring/alarm1","알람-1"],
-		"d03":["/tkheat/monitoring/alarm2","알람-2"],
-		"d04":["/tkheat/monitoring/trend","트렌드"],
-		"d05":["/tkheat/monitoring/alarmHistory","알람내역"],
-		"d06":["/tkheat/monitoring/alarmRanking","알람랭킹"],
+		"d02":["/tkheat/monitoring/alarm1","실시간알람현황"],
+		"d03":["/tkheat/monitoring/trend","트렌드"],
+		"d04":["/tkheat/monitoring/alarmHistory","알람내역"],
+		"d05":["/tkheat/monitoring/alarmRanking","알람랭킹"],
 		
 		"e01":["/tkheat/preservation/sparePart","SparePart관리"],
 		"e02":["/tkheat/preservation/begaInsert","설비비가동등록"],

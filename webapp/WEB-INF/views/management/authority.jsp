@@ -466,36 +466,29 @@ body {
                         </select>
                     </div>
                     <div class="permission-control">
-                        <label>알람-1</label>
+                        <label>실시간 알람현황</label>
                         <select id="d02" name="d02">
                             <option value="N">없음</option>
                             <option value="R">조회</option>
                         </select>
                     </div>
                     <div class="permission-control">
-                        <label>알람-2</label>
-                        <select id="d03" name="d03">
-                            <option value="N">없음</option>
-                            <option value="R">조회</option>
-                        </select>
-                    </div>
-                    <div class="permission-control">
                         <label>트렌드</label>
-                        <select id="d04" name="d04">
+                        <select id="d03" name="d04">
                             <option value="N">없음</option>
                             <option value="R">조회</option>
                         </select>
                     </div>
                     <div class="permission-control">
                         <label>알람내역</label>
-                        <select id="d05" name="d05">
+                        <select id="d04" name="d05">
                             <option value="N">없음</option>
                             <option value="R">조회</option>
                         </select>
                     </div>
                     <div class="permission-control">
                         <label>알람랭킹</label>
-                        <select id="d06" name="d06">
+                        <select id="d05" name="d06">
                             <option value="N">없음</option>
                             <option value="R">조회</option>
                         </select>

@@ -331,7 +331,11 @@ public class MonitoringController {
 	    }
 	 
 	 
-	 
+	 @RequestMapping(value = "/monitoring/alarm/currentAlarms", method = RequestMethod.POST)
+	 @ResponseBody
+	 public Map<String, Object> getCurrentAlarms() {
+	     return monitoringService.getCurrentAlarms();
+	 }
 	 
 	 
 	 

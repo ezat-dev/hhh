@@ -36,4 +36,6 @@ public interface MonitoringDao {
 	List<WorkJisiTk> getMonitoringDataListStd(WorkJisiTk workJisiTk);
 	
 	Map<String, Object> getOverviewData();
+	
+	Map<String, Object> getCurrentAlarms();
 }

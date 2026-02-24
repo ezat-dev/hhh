@@ -88,7 +88,7 @@
 	<main class="main">
       <div class="group_58">
       <img class="background" src="/tkheat/image/tkimg/background0.png" />
-    <img class="rail" src="/tkheat/image/tkimg/rail0.png" />
+    <!-- <img class="rail" src="/tkheat/image/tkimg/rail0.png" /> -->
     <img class="rail_2" src="/tkheat/image/tkimg/rail-20.png" />
     <div class="group_57">
       <div class="bcf_1">

@@ -263,6 +263,12 @@
     FROM [dbo].[tb_overview_new]
     WHERE id = 1
 </select>
+
+<select id="getCurrentAlarms" resultType="map">
+    SELECT *
+    FROM tb_alarm_current
+    WHERE id = 1
+</select>
    
    
 </mapper>

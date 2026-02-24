@@ -85,5 +85,10 @@ public class MonitoringDaoImpl implements MonitoringDao {
 	public Map<String, Object> getOverviewData() {
 		return sqlSession.selectOne("monitoring.getOverviewData");
 	}
+	
+	@Override
+	public Map<String, Object> getCurrentAlarms() {
+		return sqlSession.selectOne("monitoring.getCurrentAlarms");
+	}
     
 }
