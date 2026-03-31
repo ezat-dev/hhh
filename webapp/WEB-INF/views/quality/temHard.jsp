@@ -49,7 +49,18 @@
 .box1 input {
 	margin-right: 10px; /* 요소 사이 간격 */
 }  
-    
+/* 헤더 컬럼 높이 고정 */
+.tabulator .tabulator-col {
+    height: 55px !important;
+}
+
+/* 헤더 필터 input 위치 고정 */
+.tabulator .tabulator-col .tabulator-col-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}    
     
     </style>
     
@@ -110,7 +121,7 @@
 	function getTemHardList(){
 		
 		userTable = new Tabulator("#tab1", {
-		    height:"750px",
+		    height:"730px",
 		    layout:"fitColumns",
 		    selectable:true,	//로우 선택설정
 		    tooltips:true,
@@ -134,32 +145,37 @@
 	        headerFilterPlaceholder: "",
 		    ajaxResponse:function(url, params, response){
 				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
+				console.log("📊 서버 응답:", response);
+	            
+	            const data = response.data ? response.data : response;
+	            console.log("📊 데이터 개수:", data.length);
+	            
+	            return data;
 		    },
 		    columns:[
 		    	{title:"준비코드", field:"juckjaecode", sorter:"string", width:90,
-			        hozAlign:"center", headerFilter:"input"},	
+			        hozAlign:"center", headerFilter:"input", headerSort:false},	
 			    {title:"작업일", field:"ilbo_strt", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"},     
+				    hozAlign:"center", headerFilter:"input", headerSort:false},     
 				{title:"시작", field:"ilbo_strt", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"}, 
+				    hozAlign:"center", headerFilter:"input", headerSort:false}, 
 				{title:"종료", field:"ilbo_end", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"}, 
+				    hozAlign:"center", headerFilter:"input", headerSort:false}, 
 		        {title:"LOTNO", field:"ilbo_lot", sorter:"string", width:110,
-		        	hozAlign:"center", headerFilter:"input"},		        
+		        	hozAlign:"center", headerFilter:"input", headerSort:false},		        
 		        {title:"작업자", field:"user_name", sorter:"string", width:80,
 		        	hozAlign:"center", headerFilter:"input"},
 		        {title:"품명", field:"prod_name", sorter:"string", width:170,
-		        	hozAlign:"center", headerFilter:"input"},
+		        	hozAlign:"center", headerFilter:"input", headerSort:false},
 		        {title:"품번", field:"prod_no", sorter:"string", width:110,
-			        hozAlign:"center", headerFilter:"input"},	
+			        hozAlign:"center", headerFilter:"input", headerSort:false},	
 		        {title:"규격", field:"prod_gyu", sorter:"string", width:90,
-		        	hozAlign:"center", headerFilter:"input"},  	
+		        	hozAlign:"center", headerFilter:"input", headerSort:false},  	
 		        {title:"재질", field:"prod_jai", sorter:"string", width:90,
-			        hozAlign:"center", headerFilter:"input"},	
+			        hozAlign:"center", headerFilter:"input", headerSort:false},	
 			        { 
 			        	  title: "표면경도", field: "prod_pg", sorter: "string", width: 90,
-			        	  hozAlign: "center", headerFilter: "input",
+			        	  hozAlign: "center", headerFilter: "input",  headerSort:false,
 			        	  formatter: function(cell) {
 			        	    const el = cell.getElement();
 			        	    el.style.backgroundColor = "#fff599"; // 연노랑
@@ -169,7 +185,7 @@
 			        	},
 			        	{ 
 			        		  title: "판정", field: "ilbo_okng", sorter: "string", width: 80,
-			        		  hozAlign: "center", headerFilter: "input",
+			        		  hozAlign: "center", headerFilter: "input", headerSort:false,
 			        		  formatter: function(cell) {
 			        		    const el = cell.getElement();
 			        		    const value = cell.getValue();
@@ -195,15 +211,15 @@
 			        		},
 
 				{title:"x1", field:"ilbo_pg1", sorter:"String", width:70,
-					hozAlign:"center", headerFilter:"input"},
+					hozAlign:"center", headerFilter:"input", headerSort:false},
 			    {title:"x2", field:"ilbo_pg2", sorter:"String", width:70,
-					hozAlign:"center", headerFilter:"input"},
+					hozAlign:"center", headerFilter:"input", headerSort:false},
  			    {title:"x3", field:"ilbo_pg3", sorter:"String", width:70,
-					hozAlign:"center", headerFilter:"input"},
+					hozAlign:"center", headerFilter:"input", headerSort:false},
 				{title:"x4", field:"ilbo_pg4", sorter:"String", width:70,
-					hozAlign:"center", headerFilter:"input"},
+					hozAlign:"center", headerFilter:"input", headerSort:false},
 	 			{title:"x5", field:"ilbo_pg5", sorter:"String", width:70,
-				    hozAlign:"center", headerFilter:"input"},	
+				    hozAlign:"center", headerFilter:"input", headerSort:false},	
 				    
 		    ],
 		    rowFormatter:function(row){

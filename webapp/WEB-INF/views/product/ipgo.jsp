@@ -220,7 +220,7 @@ input[type="date"] {
 .orderPrintStatusModal {
 	position: fixed; /* 화면에 고정 */
 	width:350px;
-	height:150px;	
+	height:200px;	
 	top: 50%; /* 수직 중앙 */
 	left: 40%; /* 수평 중앙 */
 	display: none;
@@ -278,6 +278,18 @@ input[type="date"] {
 	text-align:center;
 }
 
+.orderPrintStatusModal .j_row1 button{
+	width:100px;
+	height:40px;
+	font-size:16pt;
+}
+
+.orderReportModal .j_row1 button{
+	width:100px;
+	height:40px;
+	font-size:16pt;
+}
+
     </style>
     
     
@@ -317,6 +329,7 @@ input[type="date"] {
 						<option value="양산">양산</option>
 						<option value="개발">개발</option>
 					</select>
+					&nbsp;&nbsp;&nbsp;&nbsp;
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -505,7 +518,6 @@ input[type="date"] {
 			var ordCodeArray = new Array();
 			
 			for(var i=0; i<selectArray.length; i++){
-				
 				if(selectArray[i].ord_code != null){
 					//작업번호가 다를경우 alert창
 					ordCodeArray.push(selectArray[i].ord_code);	
@@ -576,6 +588,21 @@ input[type="date"] {
 		}
 		
 	});
+	
+	$("#searchForm input").on("keydown", function(e){
+		if(e.key == 'Enter'){
+			e.preventDefault();
+			getIpgoList();
+		}
+	});
+	
+	$("#searchAddForm input").on("keydown", function(e){
+		if(e.key == 'Enter'){
+			e.preventDefault();
+			getIpgoAddData();
+		}
+	});
+	
 	
 	//함수
 	var beforePrintIcon = function(cell, formatterParams){ //plain text value
@@ -668,9 +695,6 @@ input[type="date"] {
 	        processData: false,
 			data:searchForm,
 			success:function(result){
-				console.log(result);
-				//공정값 채우기
-				
 				ipgoListTable.setData(result.data);
 			}
 		});
@@ -680,12 +704,9 @@ input[type="date"] {
 	function getIpgoData(){
 		
 		ipgoListTable = new Tabulator("#tab1", {
-		    height:"750px",
+		    height:"730px",
 		    layout:"fitColumns",
 		    selectable:true,
-		    selectableCheck:function(row){
-		        return false;   // ⭐ 모든 rowClick 선택 차단
-		    },
 		    tooltips:true,
 //		    selectableRangeMode:"click",
 		    reactiveData:true,
@@ -897,9 +918,9 @@ input[type="date"] {
 		ipgoAddTable = new Tabulator("#tabuData", {
 		    height:"550px",
 		    layout:"fitColumns",
-		    selectable:true,
+//		    selectable:true,
 		    tooltips:true,
-		    selectableRangeMode:"click",
+//		    selectableRangeMode:"click",
 		    reactiveData:true,
 		    headerHozAlign:"center",			
 		    headerSort:false,
@@ -909,11 +930,21 @@ input[type="date"] {
 				$("#tabuData .tabulator-col.tabulator-sortable").css("height","55px");
 		        return response; //return the response data to tabulator
 		    },
+		    rowSelectionChanged:function(data, rows){
+		        
+		        // 전체 초기화
+		        ipgoAddTable.getRows().forEach(function(row){
+		            row.getElement().style.backgroundColor = "";
+		        });
+
+		        // 선택된 행만 색 변경
+		        rows.forEach(function(row){
+		            row.getElement().style.backgroundColor = "#d0ebff"; // 원하는 색
+		        });
+		    },
 		    columns:[
 			    {formatter:"rowSelection", titleFormatter:"rowSelection",
-			    	hozAlign:"center", width:30,
-				    headerSort:false, cellClick:function(e, cell){
-			        }
+			    	hozAlign:"center", width:30, headerSort:false			    
 		        },			    	
 		        {title:"제품단중", field:"prod_danj", sorter:"string", width:100,
 			        hozAlign:"center", visible:false},	
@@ -942,11 +973,23 @@ input[type="date"] {
 				{title:"단위", field:"prod_danw", sorter:"int", width:60,
 					hozAlign:"center", headerSort:false},	
 				{title:"박스수량", field:"prod_boxsu", sorter:"int", width:70,
-					hozAlign:"center", headerSort:false,editor:true},	
+					hozAlign:"center", headerSort:false,editor:true,
+		            mutatorData: function(value, data) {
+		                return 1; // 값이 없으면 1
+		            }
+				},	
 				{title:"수량", field:"ord_su", sorter:"int", width:60,
-					hozAlign:"center", headerSort:false,editor:true},
+					hozAlign:"center", headerSort:false,editor:true,
+		            mutatorData: function(value, data) {
+		                return 1; // 값이 없으면 1
+		            }
+				},
 				{title:"ROWS*", field:"ord_row", sorter:"int", width:60,
-					hozAlign:"center", headerSort:false,editor:true},
+					hozAlign:"center", headerSort:false,editor:true,
+		            mutatorData: function(value, data) {
+		                return 1; // 값이 없으면 1
+		            }
+				},
 				{title:"단가", field:"prod_dang", sorter:"int", width:80,
 					hozAlign:"center", headerSort:false},
 		    ],
@@ -956,18 +999,7 @@ input[type="date"] {
 			    row.getElement().style.fontWeight = "700";
 				row.getElement().style.backgroundColor = "#FFFFFF";
 			},
-			rowClick:function(e, row){
-			    // 모든 행 색상 초기화
-			    $("#tabuData div.row_select").removeClass("row_select");
 
-			    // 클릭한 행만 색상 변경
-			    row.getElement().classList.add("row_select");
-			    
-			    e.stopPropagation();
-
-				var rowData = row.getData();
-				
-			},
 		});		
 	}
 	
@@ -980,9 +1012,6 @@ input[type="date"] {
 		
 		
 		var ipgoData = ipgoAddTable.getSelectedData();
-		
-		console.log(ipgoData);
-		
 		
 		if(ipgoData.length >= 1){
 			

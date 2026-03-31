@@ -205,8 +205,8 @@ public class WorkJisiDaoImpl implements WorkJisiDao{
 
 	@Override
 	public void barcodeDataProc(WorkJisi ww) {
-		sqlSession.update("workJisi.barcodeDataProc",ww);
-	}	
+		sqlSession.update("workjisi.barcodeDataProc",ww);
+	}
 
 	@Override
 	public List<WorkJisi> getIpgoTechList(WorkJisi w) {
@@ -216,5 +216,37 @@ public class WorkJisiDaoImpl implements WorkJisiDao{
 	@Override
 	public void setChulgoUpdate(WorkJisi chulgo) {
 		sqlSession.update("workjisi.setChulgoUpdate",chulgo);		
+	}
+
+	@Override
+	public List<WorkJisi> getChulgoReportNormal(WorkJisi w) {
+		sqlSession.update("workjisi.setChulgoReportCountUpdate",w);
+		return sqlSession.selectList("workjisi.getChulgoReportNormal",w);
+	}
+
+	@Override
+	public List<WorkJisi> getChulgoReportSubNormal(WorkJisi w) {
+		return sqlSession.selectList("workjisi.getChulgoReportSubNormal",w);
+	}	
+
+	@Override
+	public void setChulgoDelete(WorkJisi chulgo) {
+		sqlSession.insert("workjisi.setChulgoDeleteLog",chulgo);
+		sqlSession.delete("workjisi.setChulgoDelete",chulgo);
+	}
+
+	@Override
+	public List<WorkJisi> getChulgoReportMainNormal(WorkJisi cw) {
+		return sqlSession.selectList("workjisi.getChulgoReportMainNormal",cw);
+	}	
+
+	@Override
+	public List<WorkJisi> getChulgoReportMainProd(WorkJisi cw) {
+		return sqlSession.selectList("workjisi.getChulgoReportMainProd",cw);
+	}
+
+	@Override
+	public List<WorkJisi> getChulgoReportSubProd(WorkJisi cw) {
+		return sqlSession.selectList("workjisi.getChulgoReportSubProd",cw);
 	}	
 }

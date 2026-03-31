@@ -176,4 +176,34 @@ public class WorkJisiServiceImpl implements WorkJisiService{
 		workJisiDao.setChulgoUpdate(chulgo);		
 	}
 
+	@Override
+	public List<WorkJisi> getChulgoReportNormal(WorkJisi w) {
+		return workJisiDao.getChulgoReportNormal(w);
+	}
+
+	@Override
+	public List<WorkJisi> getChulgoReportSubNormal(WorkJisi w) {
+		return workJisiDao.getChulgoReportSubNormal(w);
+	}
+
+	@Override
+	public void setChulgoDelete(WorkJisi chulgo) {
+		workJisiDao.setChulgoDelete(chulgo);	
+	}
+
+	@Override
+	public List<WorkJisi> getChulgoReportMainNormal(WorkJisi cw) {
+		return workJisiDao.getChulgoReportMainNormal(cw);
+	}
+
+	@Override
+	public List<WorkJisi> getChulgoReportMainProd(WorkJisi cw) {
+		return workJisiDao.getChulgoReportMainProd(cw);
+	}
+
+	@Override
+	public List<WorkJisi> getChulgoReportSubProd(WorkJisi cw) {
+		return workJisiDao.getChulgoReportSubProd(cw);
+	}
+
 }

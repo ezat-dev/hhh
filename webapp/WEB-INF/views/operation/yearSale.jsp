@@ -167,7 +167,7 @@
 	function getYearSaleList() {
 
     userTable = new Tabulator("#tab1", {
-        height: "350px",
+        height: "320px",
         layout: "fitColumns",
         selectable: true,
         tooltips: true,
@@ -215,8 +215,8 @@
         },
 
         columns: [
-            { title: "NO", field: "idx", sorter: "int", width: 60, hozAlign: "center" },
-            { title: "업체명", field: "corp_name", sorter: "string", width: 120, hozAlign: "center" },
+            { title: "NO", field: "idx", sorter: "int", width: 60, hozAlign: "center",headerSort: false },
+            { title: "업체명", field: "corp_name", sorter: "string", width: 120, hozAlign: "center",headerSort: false },
 
             // 1월 ~ 12월
             { title: "1월", field: "mm1", sorter: "int", width: 100, hozAlign: "center", 

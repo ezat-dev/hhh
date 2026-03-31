@@ -103,6 +103,7 @@ public class WorkJisiTk {
 	private String prod_chisu4s;
 	private String prod_chisu5n;
 	private String prod_chisu5s;
+	private String prod_cq;
 		
 	//WORDSTD
 	private int wstd_code;
@@ -150,6 +151,7 @@ public class WorkJisiTk {
 	
 	//설비
 	private int fac_code;
+	private String fac_no;
 	private String fac_name;
 	
 	private String user_name;
@@ -392,6 +394,18 @@ public class WorkJisiTk {
 	private String prod_si2_msg;	//경도 기준값에 한글, 공백이 섞여있는지
 	private String prod_sr1_msg;	//경도 기준값에 한글, 공백이 섞여있는지
 	private String prod_sr2_msg;	//경도 기준값에 한글, 공백이 섞여있는지
+	
+	//열처리 체크시트 표기용
+	private String ilbo_strt_bcf;
+	private String ilbo_strt_tf;
+	private String ilbo_end_bcf;
+	private String ilbo_end_tf;
+	
+	private float ilbo_su_sum;
+	private float ilbo_jung_sum;
+	
+	private String fac_name_bcf;
+	private String fac_name_tf;
 
 	
 	public String getSdate() {
@@ -2361,5 +2375,65 @@ public class WorkJisiTk {
 	}
 	public void setTracking_cold(String tracking_cold) {
 		this.tracking_cold = tracking_cold;
+	}
+	public String getFac_no() {
+		return fac_no;
+	}
+	public void setFac_no(String fac_no) {
+		this.fac_no = fac_no;
+	}
+	public String getIlbo_strt_bcf() {
+		return ilbo_strt_bcf;
+	}
+	public void setIlbo_strt_bcf(String ilbo_strt_bcf) {
+		this.ilbo_strt_bcf = ilbo_strt_bcf;
+	}
+	public String getIlbo_strt_tf() {
+		return ilbo_strt_tf;
+	}
+	public void setIlbo_strt_tf(String ilbo_strt_tf) {
+		this.ilbo_strt_tf = ilbo_strt_tf;
+	}
+	public String getIlbo_end_bcf() {
+		return ilbo_end_bcf;
+	}
+	public void setIlbo_end_bcf(String ilbo_end_bcf) {
+		this.ilbo_end_bcf = ilbo_end_bcf;
+	}
+	public String getIlbo_end_tf() {
+		return ilbo_end_tf;
+	}
+	public void setIlbo_end_tf(String ilbo_end_tf) {
+		this.ilbo_end_tf = ilbo_end_tf;
+	}
+	public float getIlbo_su_sum() {
+		return ilbo_su_sum;
+	}
+	public void setIlbo_su_sum(float ilbo_su_sum) {
+		this.ilbo_su_sum = ilbo_su_sum;
+	}
+	public float getIlbo_jung_sum() {
+		return ilbo_jung_sum;
+	}
+	public void setIlbo_jung_sum(float ilbo_jung_sum) {
+		this.ilbo_jung_sum = ilbo_jung_sum;
+	}
+	public String getFac_name_bcf() {
+		return fac_name_bcf;
+	}
+	public void setFac_name_bcf(String fac_name_bcf) {
+		this.fac_name_bcf = fac_name_bcf;
+	}
+	public String getFac_name_tf() {
+		return fac_name_tf;
+	}
+	public void setFac_name_tf(String fac_name_tf) {
+		this.fac_name_tf = fac_name_tf;
+	}
+	public String getProd_cq() {
+		return prod_cq;
+	}
+	public void setProd_cq(String prod_cq) {
+		this.prod_cq = prod_cq;
 	}
 }

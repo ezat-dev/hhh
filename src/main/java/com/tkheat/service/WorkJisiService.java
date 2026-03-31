@@ -71,5 +71,17 @@ public interface WorkJisiService {
 
 	List<WorkJisi> getIpgoTechList(WorkJisi w);
 
-	void setChulgoUpdate(WorkJisi chulgo);	
+	void setChulgoUpdate(WorkJisi chulgo);
+
+	List<WorkJisi> getChulgoReportNormal(WorkJisi w);
+
+	List<WorkJisi> getChulgoReportSubNormal(WorkJisi w);	
+	
+	void setChulgoDelete(WorkJisi chulgo);
+
+	List<WorkJisi> getChulgoReportMainNormal(WorkJisi cw);		
+
+	List<WorkJisi> getChulgoReportMainProd(WorkJisi cw);
+
+	List<WorkJisi> getChulgoReportSubProd(WorkJisi cw);	
 }

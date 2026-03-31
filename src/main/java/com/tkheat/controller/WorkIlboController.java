@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.tkheat.domain.WorkJisiTk;
 import com.tkheat.service.WorkIlboService;
+
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.engine.SimpleJasperReportsContext;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Controller
 public class WorkIlboController {
@@ -505,7 +515,8 @@ public class WorkIlboController {
 //			calcMap = workInstructionTkDanIpgoListDataCalc(selectViewObj, listJsonArray, danchForm, stdCntOverChk);
 			
 			if(sunipChkList.size() > 0) {
-				rtnMap.put("alert","선입된제품이 있습니다. 확인해주십시오!");	
+				rtnMap.put("alert","선입된제품이 있습니다. 확인해주십시오!");
+				rtnMap.put("sunipList",sunipChkList);
 			}else if(sunipChkList.size() == 0) {
 				//정상처리
 				
@@ -759,7 +770,7 @@ public class WorkIlboController {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		
 		JSONParser listParser = new JSONParser();
-		JSONParser searchParser = new JSONParser();		
+		JSONParser searchParser = new JSONParser();
 		
 		Object listObj = new Object();
 		Object searchObj = new Object();
@@ -1324,6 +1335,78 @@ public class WorkIlboController {
 		return rtnMap;
 	}
 
+
+	//단취 공정이동식별표
+	
+	//열처리,템퍼링 체크시트
+	@RequestMapping(value = "workilbo/checkSheetPrint", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> workIlboCheckSeetPrint(
+			@RequestBody String selectedDataJson,
+			HttpServletRequest request
+			){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		JSONParser selectParser = new JSONParser();
+		
+		JSONObject selectViewObj = new JSONObject();
+		JSONArray selectViewArray = new JSONArray();
+		WorkJisiTk w = new WorkJisiTk();
+				
+		try {
+			//선택 데이터
+			selectViewObj = (JSONObject)selectParser.parse(selectedDataJson);
+			selectViewArray = (JSONArray)selectViewObj.get("checkSheetData");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		String ilbo_lot = "";
+		
+		//선택한 행의 수만큼 반복
+		for(int i=0; i<selectViewArray.size(); i++) {
+			JSONObject rowObj = (JSONObject)selectViewArray.get(i);
+			ilbo_lot = rowObj.get("ilbo_lot").toString();
+		}
+		
+		
+		w.setIlbo_lot(ilbo_lot);
+		
+		//기준정보
+		WorkJisiTk wStd = workIlboService.workIlboCheckSeetPrintStd(w);
+		//작업로트별 수주번호 리스트
+		List<WorkJisiTk> wData = workIlboService.workIlboCheckSeetPrintOrdcodeList(w);
+		
+		String abPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/workheat.jrxml");
+		String fileName = ilbo_lot;
+		
+		try {
+			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(wData);
+			
+			JasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
+			JasperCompileManager compileManager = JasperCompileManager.getInstance(jasperReportsContext);
+			JasperReport report = JasperCompileManager.compileReport(abPath);
+			
+			Map<String, Object> reportMap = new HashMap<String, Object>();
+			reportMap.put("workJisiTk", wStd);
+			reportMap.put("workJisiTkList", wData);
+			
+			
+			JasperFillManager fillManager = JasperFillManager.getInstance(jasperReportsContext);
+			
+			JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);
+			
+			JasperExportManager exportManager = JasperExportManager.getInstance(jasperReportsContext); 
+			JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/체크시트/"+fileName+".pdf");			
+		
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		rtnMap.put("fileName",fileName+".pdf");
+		
+		return rtnMap;	
+	}
 	
 	//07.최종검사
 	

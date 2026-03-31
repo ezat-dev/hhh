@@ -33,6 +33,12 @@
 	.tabulator {
 		font-size: 10px;
 	}
+
+
+.xdsoft_datetimepicker {
+    z-index: 30020 !important;
+}
+
 </style>
 
 <script>
@@ -144,9 +150,43 @@ function datePickerDateTime(){
 	});
 }
 
+function datePickerMonth(){
+	$(".datetimepicker_month").datetimepicker({
+	    changeMonth: true,
+	    changeYear: true,
+	    showButtonPanel: true,
+	    format:'Y-m',
+	    step: 1,
+	    timepicker:false,
+	    defaultSelect: false,
+	    defaultDate: false,
+	    onClose: function(ct, $i) {
+	        let endDateInput = $("#dateEnd");
+	        if($("#dateEnd").val() != ''){
+	            let tempStartDate = new Date(ct);
+	            let tempEndDate = new Date(endDateInput.val());
+	            if(tempStartDate > tempEndDate){
+	                endDateInput.val(getFormatDateTime(ct));
+	            }
+	        }else {
+	            endDateInput.val(getFormatDateTime(ct));
+	        }
+	    },
+	    onSelectDate: function(ct, $i){
+	        $("#dateEnd").datetimepicker('setOptions', { minDate: ct });
+	        $("#dateEnd").datetimepicker('setOptions', { minTime: ct });
+	    },
+	    onSelectTime: function(ct, $i){
+	        $("#dateEnd").datetimepicker('setOptions', { minDate: ct });
+	        $("#dateEnd").datetimepicker('setOptions', { minTime: ct });
+	    }		
+	});
+
+}
+
 function thisYear() {
-	var now = new Date();
-	return now.getFullYear();
+    var now = new Date();
+    return now.getFullYear();
 }
 
 //오늘날짜 년-월-일

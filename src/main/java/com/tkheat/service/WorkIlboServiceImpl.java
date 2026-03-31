@@ -106,5 +106,13 @@ public class WorkIlboServiceImpl implements WorkIlboService{
 	public List<WorkJisiTk> workIlboTfBcfListDataSetting(WorkJisiTk w) {
 		return workIlboDao.workIlboTfBcfListDataSetting(w);
 	}
+	@Override
+	public WorkJisiTk workIlboCheckSeetPrintStd(WorkJisiTk w) {
+		return workIlboDao.workIlboCheckSeetPrintStd(w);
+	}
+	@Override
+	public List<WorkJisiTk> workIlboCheckSeetPrintOrdcodeList(WorkJisiTk w) {
+		return workIlboDao.workIlboCheckSeetPrintOrdcodeList(w);
+	}
 
 }

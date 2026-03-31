@@ -43,7 +43,7 @@
 	justify-content: right;
 	align-items: center;
 	width: 1500px;
-	margin-left: -620px;
+	margin-left: -770px;
 }
 
 .box1 select{
@@ -148,6 +148,10 @@
 	margin-top:1px;
 }
 
+.j_h_div{
+	width:130px;
+}
+
 
 .iRowHLabel{
 	display:block;
@@ -181,6 +185,47 @@
 .margin_left{
 	margin-left:5px;
 }
+.tabulator-col-title > input[type='checkbox']{
+	width:20px;
+	height:20px;
+}
+
+.tabulator-cell > input[type='checkbox']{
+	width:20px;
+	height:20px;
+}
+
+.datetimepicker_date{
+	width: 100px !important;
+	text-align:center;
+}
+
+.chulgoPrintStatusModal {
+	position: fixed; /* 화면에 고정 */
+	width:350px;
+	height:150px;	
+	top: 50%; /* 수직 중앙 */
+	left: 40%; /* 수평 중앙 */
+	display: none;
+	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+	z-index: 20010; /* 다른 요소 위에 표시 */
+	border:2px solid black;
+	background-color:white;
+}
+
+.chulgoReportModal {
+	position: fixed; /* 화면에 고정 */
+	width:850px;
+	height:800px;
+	top: 50%; /* 수직 중앙 */
+	left: 50%; /* 수평 중앙 */
+	display: none;
+	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+	z-index: 20010; /* 다른 요소 위에 표시 */
+	border:2px solid black;
+	background-color:white;
+}
+
 
 </style>
 <body>
@@ -202,12 +247,12 @@
 		</select>
 		
 		<label class="daylabel">거래명세서 출력 : </label>
-		<select id="report_type">
-			<option value="거래명세서-일반">거래명세서-일반</option>
-			<option value="거래명세서-A4">거래명세서-A4</option>
-			<option value="거래명세서-일반_2">거래명세서-일반_2</option>
-			<option value="거래명세서-A4_2">거래명세서-A4_2</option>
-			<option value="거래명세서-제품별">거래명세서-제품별</option>
+		<select id="report_type" style="width:140px;">
+			<option value="1">거래명세서-일반</option>
+			<option value="2">거래명세서-A4</option>
+			<option value="3">거래명세서-일반_2</option>
+			<option value="4">거래명세서-A4_2</option>
+			<option value="5">거래명세서-제품별</option>
 		</select>
 			
 	</div>
@@ -223,6 +268,10 @@
 					class="button-image">
 
 			</button>
+	        <button class="delete" onclick="setChulgoDelete();">
+	            <img src="/tkheat/css/image/delete-icon.png" alt="delete" class="button-image">
+	        </button>
+
 			<button class="excel-button">
 				<img src="/tkheat/css/image/excel-icon.png" alt="excel"
 					class="button-image">
@@ -233,7 +282,7 @@
 					onclick="report();"
 					class="button-image">
 
-			</button>
+			</button>			
 		</div>
 	</div>
 	<main class="main">
@@ -278,6 +327,52 @@
 			</div>
 		</div>
 	</div>
+<!-- 거래명세서-일반,A4, ...등등 출력중 모달 -->
+<div class="chulgoPrintStatusModal">
+	<div class="detail">
+		<div class="header">
+			<span style="display:inline-block; width:180px;" class="chulgoPrint1">거래명세서-일반</span>
+			<span style="display:inline-block; width:180px;" class="chulgoPrint2">거래명세서-A4</span>
+			<span style="display:inline-block; width:180px;" class="chulgoPrint3">거래명세서-일반_2</span>
+			<span style="display:inline-block; width:180px;" class="chulgoPrint4">거래명세서-A4_2</span>
+			<span style="display:inline-block; width:180px;" class="chulgoPrint5">거래명세서-제품별</span>
+		</div>
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<span style="display:inline-block; width:350px;" class="chulgoPrint1">거래명세서-일반 파일 생성중입니다....</span>
+					<span style="display:inline-block; width:350px;" class="chulgoPrint2">거래명세서-A4 파일 생성중입니다....</span>
+					<span style="display:inline-block; width:350px;" class="chulgoPrint3">거래명세서-일반_2 파일 생성중입니다....</span>
+					<span style="display:inline-block; width:350px;" class="chulgoPrint4">거래명세서-A4_2 파일 생성중입니다....</span>
+					<span style="display:inline-block; width:350px;" class="chulgoPrint5">거래명세서-제품별 파일 생성중입니다....</span>
+					<br />
+					<span style="display:inline-block; width:350px;">생성완료시 팝업창이 닫힙니다.</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	    <div class="j_container" style="justify-content:end;">
+    	<div class="j_row1">
+			<button class="orderPrintStatusClose iRowBtn margin_left" type="button" onclick="chulgoPrintStatusCloseBtn();">닫기</button>
+		</div>
+    </div>	
+</div>
+
+	
+	<!-- 거래명세서 표현 모달 -->
+	<div class="chulgoReportModal">
+		<div class="j_container">
+			<iframe src="" frameborder="0" width="800" height="700" id="chulgoReport">
+			</iframe>	
+		</div>
+	    <div class="j_container" style="justify-content:end;">
+	    	<div class="j_row1">
+				<button class="chulgoReportClose iRowBtn margin_left" type="button" onclick="chulgoReportCloseBtn();">닫기</button>
+			</div>
+	    </div>
+	</div>
 
 
 	<script>
@@ -287,7 +382,7 @@
 		//로드
 		$(function() {
 			var tdate = todayDate();
-			var ydate = yesterDate();
+			var ydate = beforeWeekDate();
 
 			var bforeWeek = beforeWeekDate();
 			
@@ -439,7 +534,7 @@
 	function getChulgoList() {
 
 		chulgoTable = new Tabulator("#tab1",{
-			height : "750px",
+			height : "730px",
 			layout : "fitColumns",
 			selectable : true, //로우 선택설정
 			tooltips : true,
@@ -450,7 +545,6 @@
 			ajaxLoader : false,
 			placeholder : "조회된 데이터가 없습니다.",
 			paginationSize : 20,
-			headerFilterPlaceholder: "",
 			ajaxResponse : function(url, params, response) {
 				$("#tab1 .tabulator-col.tabulator-sortable").css("height", "30px");
 					return response; //return the response data to tabulator
@@ -503,8 +597,14 @@
 		    	}
 		    },
 			columns : [
+		    	{formatter:"rowSelection", titleFormatter:"rowSelection", width:40, headerSort:false,
+		    		cellClick:function(e, cell){
+		    			cell.getRow().toggleSelect();
+		    		}
+		    	},
 				{title : "NO",field : "idx",sorter : "int",width : 40,hozAlign : "center", headerSort:false}, 
 				{title : "och_no",field : "och_no",sorter : "int",width : 40,hozAlign : "center", headerSort:false, visible:false}, 
+				{title : "och_code",field : "och_code",sorter : "int",width : 40,hozAlign : "center", headerSort:false, visible:false}, 
 				{title : "출력",field:"och_prn",sorter:"string",width:40,hozAlign:"center",headerFilter:"input", headerSort:false},
 				{title : "입고일",field : "ord_date",sorter : "string",width : 80,hozAlign : "center",headerFilter : "input", headerSort:false}, 
 				{title : "출고일",field : "och_date",sorter : "string",width : 80,hozAlign : "center",
@@ -550,28 +650,29 @@
 				{title : "비고",field : "och_bigo",sorter : "int",width : 80,hozAlign : "center",
 					headerFilter : "input", headerSort:false, editor:"input"
 				},
+				{title : "출력횟수",field : "och_prn",sorter : "int",width : 80,hozAlign : "center",
+					headerFilter : "input", headerSort:false, visible:false
+				},
 			],
 			rowFormatter : function(row) {
 				var data = row.getData();
-
 				row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+				
+			    if(data.och_prn == 0){				    
+				    row.getElement().style.backgroundColor = "#FAED7D";	
+			    }else{
+			    	row.getElement().style.backgroundColor = "#FFFFFF";
+			    }
 			},
 			rowClick : function(e, row) {
 
-			$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(
-				function(index, item) {
+			    // 모든 행 색상 초기화
+			    $("#tab1 div.row_select").removeClass("row_select");
 
-					if ($(this).hasClass("row_select")) {
-						$(this).removeClass('row_select');
-							row.getElement().className += " row_select";
-					} else {
-						$("#tab1 div.row_select").removeClass("row_select");
-							row.getElement().className += " row_select";
-					}
-				});
-
-				var rowData = row.getData();
+			    // 클릭한 행만 색상 변경
+			    row.getElement().classList.add("row_select");
+			    
+			    e.stopPropagation();
 
 			},
 		});
@@ -639,7 +740,6 @@
 				ajaxLoader : false,
 				placeholder : "조회된 데이터가 없습니다.",
 				paginationSize : 20,
-				headerFilterPlaceholder: "",
 			    rowSelectionChanged:function(data, rows){
 			    	if(data.length != 0){
 			        	
@@ -819,7 +919,7 @@
 				},
 				{title:"금액", field:"och_mon", sorter:"int", width:80,
 				hozAlign:"center", headerFilter:"input", headerSort:false},
-				{title:"비고", field:"och_bigo", sorter:"int", width:100,
+				{title:"비고", field:"och_bigo", sorter:"string", width:100,
 				hozAlign:"center", headerFilter:"input", headerSort:false, editor:"input"},
 				{title:"마감월", field:"och_ma", sorter:"int", width:60,
 				hozAlign:"center", headerFilter:"input", headerSort:false},
@@ -860,8 +960,6 @@
 					"ochDate":ochDate
 				}
 				
-				console.log(sendObj);
-				
 				$.ajax({
 					url:"/tkheat/product/chulgo/chulgoAdd",
 					type:"post",
@@ -883,77 +981,123 @@
 			}
 		}
 		
-	    function report() {
-	        if ($("#reportType").val() == "거래명세서-일반") {
-	            var ochNoList = jQuery(maingrid).jqGrid('getGridParam', 'selarrrow');
-	            if (ochNoList == "") ochNoList = jQuery(maingrid).jqGrid('getDataIDs');
-
-	            setPlusOCH_PRN(ochNoList);
-	            changeColorGridRowCheckPrintReport();
-
-	            var url = "TradePortfolioChulgo3?ochNoList=" + ochNoList;
-	            var mywin = window.open(url, '_win', 'toolbar=yes,location=no,status=yes,menubar=yes,scroll bars=yes,resizable=yes,width=1000,height=800,top=0,left =100');
-	            mywin.focus();
-
-	        } else if ($("#reportType").val() == "거래명세서-A4") {
-	            if (confirm("보고서를 출력하시겠습니까?")) {
-	                var ochNoList = jQuery(maingrid).jqGrid('getGridParam', 'selarrrow');
-	                if (ochNoList == "") ochNoList = jQuery(maingrid).jqGrid('getDataIDs');
-
-	                setPlusOCH_PRN(ochNoList);
-	                changeColorGridRowCheckPrintReport();
-
-	                var url = "tradePortfolio3A4?ochNoList=" + ochNoList;
-	                var mywin = window.open(url, '_win', 'toolbar=yes,location=no,status=yes,menubar=yes,scroll bars=yes,resizable=yes,width=1000,height=800,top=0,left =100');
-	                mywin.focus();
-	            } else {
-	                jAlert('출력이 취소되었습니다.');
+	    function report(){
+	    	
+	    	if(chulgoTable.getSelectedData().length <= 0){
+	    		alert("거래명세서를 출력할 제품을 선택하세요.");
+	    		return false;
+	    	}
+	    	
+			var chulgo_print_gb = $("#report_type").val();
+			
+			if(chulgo_print_gb == 1){
+				$(".chulgoPrint1").css("display","inline-block");
+				$(".chulgoPrint2").css("display","none");
+				$(".chulgoPrint3").css("display","none");
+				$(".chulgoPrint4").css("display","none");
+				$(".chulgoPrint5").css("display","none");
+			}else if(chulgo_print_gb == 2){
+				$(".chulgoPrint1").css("display","none");
+				$(".chulgoPrint2").css("display","inline-block");
+				$(".chulgoPrint3").css("display","none");
+				$(".chulgoPrint4").css("display","none");
+				$(".chulgoPrint5").css("display","none");
+			}else if(chulgo_print_gb == 3){
+				$(".chulgoPrint1").css("display","none");
+				$(".chulgoPrint2").css("display","none");
+				$(".chulgoPrint3").css("display","inline-block");
+				$(".chulgoPrint4").css("display","none");
+				$(".chulgoPrint5").css("display","none");
+			}else if(chulgo_print_gb == 4){
+				$(".chulgoPrint1").css("display","none");
+				$(".chulgoPrint2").css("display","none");
+				$(".chulgoPrint3").css("display","none");
+				$(".chulgoPrint4").css("display","inline-block");
+				$(".chulgoPrint5").css("display","none");
+			}else if(chulgo_print_gb == 5){
+				$(".chulgoPrint1").css("display","none");
+				$(".chulgoPrint2").css("display","none");
+				$(".chulgoPrint3").css("display","none");
+				$(".chulgoPrint4").css("display","none");
+				$(".chulgoPrint5").css("display","inline-block");
+			}
+			
+			chulgoPrintStatusModal.style.display = "block";
+				
+			var sendObj = {
+				"chulgo_print_gb":chulgo_print_gb,
+				"chulgoData": chulgoTable.getSelectedData()
+			}
+			
+			$.ajax({
+				url:"/tkheat/product/chulgo/chulgoReport",
+				type:"post",
+				contentType: false,
+				processData: false,			
+				dataType:"json",
+				data:JSON.stringify(sendObj),
+				success:function(result){
+	   				var fileUrl = result.fileName;
+                    $("#chulgoReport").attr("src",fileUrl);
+                    chulgoReportModal.style.display = "block";
+					
+                    chulgoPrintStatusCloseBtn();
+					getChulgoData();
+					
+				},error: function(xhr, status, status) {
+					console.log(xhr);
+					console.log(status);
+					console.log(status);
 	            }
-	        } else if ($("#reportType").val() == "거래명세서-일반_2") {
-	            if (confirm("보고서를 출력하시겠습니까?")) {
-	                var ochNoList = jQuery(maingrid).jqGrid('getGridParam', 'selarrrow');
-	                if (ochNoList == "") ochNoList = jQuery(maingrid).jqGrid('getDataIDs');
+			});
 
-	                setPlusOCH_PRN(ochNoList);
-	                changeColorGridRowCheckPrintReport();
-
-	                var url = "TradePortfolioChulgo3_2?ochNoList=" + ochNoList;
-	                var mywin = window.open(url, '_win', 'toolbar=yes,location=no,status=yes,menubar=yes,scroll bars=yes,resizable=yes,width=1000,height=800,top=0,left =100');
-	                mywin.focus();
-	            } else {
-	                jAlert('출력이 취소되었습니다.');
-	            }
-	        } else if ($("#reportType").val() == "거래명세서-A4_2") {
-	            if (confirm("보고서를 출력하시겠습니까?")) {
-	                var ochNoList = jQuery(maingrid).jqGrid('getGridParam', 'selarrrow');
-	                if (ochNoList == "") ochNoList = jQuery(maingrid).jqGrid('getDataIDs');
-
-	                setPlusOCH_PRN(ochNoList);
-	                changeColorGridRowCheckPrintReport();
-
-	                var url = "tradePortfolio3A4_2?ochNoList=" + ochNoList;
-	                var mywin = window.open(url, '_win', 'toolbar=yes,location=no,status=yes,menubar=yes,scroll bars=yes,resizable=yes,width=1000,height=800,top=0,left =100');
-	                mywin.focus();
-	            } else {
-	                jAlert('출력이 취소되었습니다.');
-	            }
-	        } else if ($("#reportType").val() == "거래명세서-제품별")
-	        {
-	            var ochNoList = jQuery(maingrid).jqGrid('getGridParam', 'selarrrow');
-	            if (ochNoList == "") ochNoList = jQuery(maingrid).jqGrid('getDataIDs');
-
-	            setPlusOCH_PRN(ochNoList);
-	            changeColorGridRowCheckPrintReport();
-
-	            var url = "TradePortfolioChulgo_prod?ochNoList=" + ochNoList;
-	            var mywin = window.open(url, '_win', 'toolbar=yes,location=no,status=yes,menubar=yes,scroll bars=yes,resizable=yes,width=1000,height=800,top=0,left =100');
-	            mywin.focus();
-	        }
 	    }
 
+	    
+	    function setChulgoDelete(){
+	    	if(!confirm("선택한 출고항목을 삭제하시겠습니까?")){
+	    		return false;
+	    	}
+	    	
+	    	var deleteData = chulgoTable.getSelectedData();
+	    	
+			if(deleteData.length <= 0){
+				alert("삭제할 항목을 선택하세요.");
+				return false;
+			}
+			
+			var sendObj = {
+				"chulgoData": deleteData
+			}
+			
+			$.ajax({
+				url:"/tkheat/product/chulgo/chulgoDelete",
+				type:"post",
+				contentType: false,
+				processData: false,			
+				dataType:"json",
+				data:JSON.stringify(sendObj),
+				success:function(result){
+					getChulgoData();
+				},error: function(xhr, status, status) {
+					console.log(xhr);
+					console.log(status);
+					console.log(status);
+	            }
+			});
+
+	    }
 		
 		function closeBtn(){
 			chulgoModal.style.display = 'none'; // 모달 숨김
+		}
+
+		function chulgoPrintStatusCloseBtn(){
+			chulgoPrintStatusModal.style.display = 'none'; // 모달 숨김
+		}
+
+		function chulgoReportCloseBtn(){
+			chulgoReportModal.style.display = 'none'; // 모달 숨김
 		}
 		
 		//모달기능	
@@ -961,6 +1105,8 @@
 		const insertButton = document.querySelector('.insert-button');
 		const chulgoModal = document.querySelector('.chulgoModal');
 		const closeButton = document.querySelector('.close');
+		const chulgoPrintStatusModal = document.querySelector('.chulgoPrintStatusModal');
+		const chulgoReportModal = document.querySelector('.chulgoReportModal');
 
 		header.addEventListener('mousedown', function(e) {
 			// transform 제거를 위한 초기 위치 설정

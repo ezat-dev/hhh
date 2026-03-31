@@ -129,7 +129,7 @@
 	function getChulgoWaitingList(){
 		
 		userTable = new Tabulator("#tab1", {
-		    height:"750px",
+		    height:"730px",
 		    layout:"fitColumns",
 		    selectable:true,	//로우 선택설정
 		    tooltips:true,

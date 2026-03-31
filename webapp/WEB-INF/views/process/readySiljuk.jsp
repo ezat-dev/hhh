@@ -147,7 +147,7 @@
 	//함수
 	function getReadySiljukList() {
     userTable = new Tabulator("#tab1", {
-        height: "750px",
+        height: "730px",
         layout: "fitColumns",
         selectable: true, // 로우 선택설정 (체크박스 선택용)
         tooltips: true,

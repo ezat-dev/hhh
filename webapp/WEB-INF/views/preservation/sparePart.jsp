@@ -440,7 +440,7 @@
                 <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
                 조회
             </button>
-            <button class="insert-button-main">
+            <button class="insert-button">
                 <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
                 입력
             </button>
@@ -580,7 +580,7 @@
     </form>
 
     <!-- ========== 관리내역 모달 ========== -->
-    <form method="post" id="sparePartHisForm" name="sparePartHisForm">
+    <form autocomplete="off" method="post" id="sparePartHisForm" name="sparePartHisForm">
         <div class="spare-his-modal">
             <div class="spare-his-box">
                 <!-- 헤더 -->
@@ -709,6 +709,7 @@ function getSparePartList(){
         layout:"fitColumns",
         selectable:true,
         tooltips:true,
+        headerSort:false,
         selectableRangeMode:"click",
         reactiveData:true,
         headerHozAlign:"center",
@@ -742,8 +743,8 @@ function getSparePartList(){
                 formatter:"image",
                 cssClass:"rp-img-popup",
                 formatterParams:{
-                    height:"30px", 
-                    width:"30px",
+                    height:"18px", 
+                    width:"18px",
                     urlPrefix:"/tkPrint/사진/SparePart관리/"
                 }, 
                 cellMouseEnter:function(e, cell){ 
@@ -755,10 +756,10 @@ function getSparePartList(){
             {title:"NO", field:"idx", width:60, hozAlign:"center"},
             {title:"spp_idx", field:"spp_idx", sorter:"int", width:80, hozAlign:"center", visible:false},
             {title:"spp_idx_his", field:"spp_idx_his", sorter:"int", width:80, hozAlign:"center", visible:false},
-            {title:"매입처", field:"spp_purchase", sorter:"string", width:140, hozAlign:"center", headerFilter:"input"},
-            {title:"품번", field:"spp_no", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
-            {title:"품명", field:"spp_name", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
-            {title:"규격", field:"spp_gyu", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"매입처", field:"spp_purchase", sorter:"string", width:160, hozAlign:"center", headerFilter:"input"},
+            {title:"품번", field:"spp_no", sorter:"string", width:140, hozAlign:"center", headerFilter:"input"},
+            {title:"품명", field:"spp_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"규격", field:"spp_gyu", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
             {title:"교체주기", field:"spp_yong", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
             {title:"적정재고", field:"spp_proper", sorter:"int", width:90, hozAlign:"center", headerFilter:"input"},
             {title:"비고", field:"spp_bigo", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
@@ -1095,10 +1096,11 @@ function getSpareSubList(spp_idx) {
     $('#sub').empty();
     
     subTable = new Tabulator("#sub", {
-        height: "350px",
+        height: "200px",
         layout: "fitColumns",
         selectable: true,
         tooltips: true,
+        headerSort:false,
         selectableRangeMode: "click",
         reactiveData: true,
         headerHozAlign: "center",
@@ -1125,10 +1127,10 @@ function getSpareSubList(spp_idx) {
         
         columns: [
             { title: "NO", field: "idx", sorter: "int", width: 60, hozAlign: "center" },
-            { title: "매입처", field: "spp_purchase_his", sorter: "string", width: 140, hozAlign: "center" },
-            { title: "품번", field: "spp_no_his", sorter: "string", width: 100, hozAlign: "center" },
-            { title: "품명", field: "spp_name_his", sorter: "string", width: 120, hozAlign: "center" },
-            { title: "규격", field: "spp_gyu_his", sorter: "string", width: 120, hozAlign: "center" },
+            { title: "매입처", field: "spp_purchase_his", sorter: "string", width: 170, hozAlign: "center" },
+            { title: "품번", field: "spp_no_his", sorter: "string", width: 140, hozAlign: "center" },
+            { title: "품명", field: "spp_name_his", sorter: "string", width: 140, hozAlign: "center" },
+            { title: "규격", field: "spp_gyu_his", sorter: "string", width: 140, hozAlign: "center" },
             { title: "교체주기", field: "spp_yong_his", sorter: "string", width: 100, hozAlign: "center" },
             { title: "입고", field: "sph_input", sorter: "int", width: 80, hozAlign: "center" },
             { title: "수리출고", field: "sph_suriout", sorter: "string", width: 90, hozAlign: "center" },
@@ -1419,7 +1421,7 @@ header2.addEventListener('mousedown', function(e) {
 });
 
 // ========== 모달 열기/닫기 (메인) ==========
-const insertButtonMain = document.querySelector('.insert-button-main');
+const insertButtonMain = document.querySelector('.insert-button');
 const spareModal = document.querySelector('.spare-modal');
 const modalOverlay = document.querySelector('.modal-overlay');
 const closeButton = document.querySelector('.spare-modal .close');
@@ -1471,14 +1473,13 @@ insertButton2.addEventListener('click', function() {
         return;
     }
     
-    // ✅ Insert 모드 설정
     isSubEditMode = false;
     selectedSubRowData = null;
     
-    // ✅ 입력 필드만 초기화
-    $("#sph_input").val('');
-    $("#sph_suriout").val('');
-    $("#sph_jasanout").val('');
+    $("#sph_input").val('0');
+    $("#sph_suriout").val('0');
+    $("#sph_jasanout").val('0');
+    
     $("#sph_bigo").val('');
     $("#sph_idx").val('');
 
@@ -1491,8 +1492,6 @@ insertButton2.addEventListener('click', function() {
         String(now.getSeconds()).padStart(2, '0');
     $("#sph_time").val(formatted);
     $("#sph_user").val($("#login_user").val() || "관리자");
-    
-    console.log("✅ Insert 모드 설정 완료 (서브)");
     
     spareHisModal.classList.add('active');
 });

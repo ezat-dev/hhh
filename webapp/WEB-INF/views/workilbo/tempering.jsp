@@ -25,12 +25,6 @@
 	overflow-x: hidden !important;  
 }
         
-.tabulator .tabulator-cell {
-	white-space: normal !important;
-	word-break: break-word; 
-	text-align: center;
-}
-        
 .row_select{
 	background-color:#9ABCEA !important;
 }
@@ -82,7 +76,7 @@
 	cursor:pointer;
 	width:70px;
 	height:30px;
-	font-size:12pt;
+	font-size:14pt;
 }
 
 .workTfModal .iRowBtn2{
@@ -90,7 +84,7 @@
 	cursor:pointer;
 	width:120px;
 	height:30px;
-	font-size:12pt;
+	font-size:14pt;
 }
 
 .workTfModal .iRowLabel{
@@ -99,7 +93,7 @@
 	height:20px;
 	text-align:center;
 	margin-bottom:2px;
-	font-size:12pt;
+	font-size:14pt;
 }
 
 .workTfModal .iRowLabel2{
@@ -108,7 +102,7 @@
 	height:24px;
 	text-align:left;
 	margin-bottom:7px;
-	font-size:12pt;
+	font-size:14pt;
 	margin-left:10px;
 }
 
@@ -116,7 +110,7 @@
 	/*display:flex;*/
 	width:120px !important;
 	height:20px;
-	font-size:12pt;
+	font-size:14pt;
 	text-align:center;
 }
 
@@ -124,15 +118,22 @@
 	display:block;
 	width:120px !important;
 	height:20px;
-	font-size:12pt;
+	font-size:14pt;
 	text-align:center;
 	margin-bottom:5px;
 }
 
+.workTfModal .iRowInput_180{
+	/*display:flex;*/
+	width:180px !important;
+	height:24px;
+	font-size:14pt;
+	text-align:center;
+}
 /*템퍼링 대기이력*/
 .workTfBcfModal{
 	position: fixed; /* 화면에 고정 */
-	width:1200px;
+	width:1300px;
 	height:750px;
 	top: 50%; /* 수직 중앙 */
 	left: 50%; /* 수평 중앙 */
@@ -148,7 +149,7 @@
 	cursor:pointer;
 	width:70px;
 	height:30px;
-	font-size:12pt;
+	font-size:14pt;
 }
 
 .workTfBcfModal .j_container{
@@ -162,6 +163,31 @@
 
 .workTfBcfModal .margin_left{
 	margin-left:5px;
+}
+
+.workTfBcfModal .iRowInput{
+	/*display:flex;*/
+	width:120px !important;
+	height:20px;
+	font-size:14pt;
+	text-align:center;
+}
+
+.workTfBcfModal .iRowInput2{
+	display:block;
+	width:120px !important;
+	height:20px;
+	font-size:14pt;
+	text-align:center;
+	margin-bottom:5px;
+}
+
+.workTfBcfModal .iRowInput_180{
+	/*display:flex;*/
+	width:180px !important;
+	height:24px;
+	font-size:14pt;
+	text-align:center;
 }
 
 
@@ -200,8 +226,13 @@
 	height:30px !important;
 }
 
+.tabulator {
+	font-size: 11pt;
+	font-weight: 700;
+}
+
 .tabulator-header > .tabulator-headers > .tabulator-col > .tabulator-col-content > .tabulator-col-title-holder > .tabulator-col-title{
-	font-size: 10pt !important;
+	font-size: 12pt !important;	
 }
 
 .tabulator-col-title > input[type='checkbox']{
@@ -224,6 +255,51 @@
 select[readonly] {
   background-color: #fff;
   pointer-events: none;
+}
+
+.checkSheetStatusModal {
+	position: fixed; /* 화면에 고정 */
+	width:350px;
+	height:150px;	
+	top: 50%; /* 수직 중앙 */
+	left: 40%; /* 수평 중앙 */
+	display: none;
+	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+	z-index: 20010; /* 다른 요소 위에 표시 */
+	border:2px solid black;
+	background-color:white;
+}
+
+.checkSheetStatusModal .j_container{
+	display:flex;
+}
+
+.checkSheetStatusModal .j_row1{
+	display:flex;
+	margin-top:1px;
+}
+
+
+.checkSheetReportModal {
+	position: fixed; /* 화면에 고정 */
+	width:850px;
+	height:800px;
+	top: 50%; /* 수직 중앙 */
+	left: 50%; /* 수평 중앙 */
+	display: none;
+	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+	z-index: 20010; /* 다른 요소 위에 표시 */
+	border:2px solid black;
+	background-color:white;
+}
+
+.checkSheetReportModal .j_container{
+	display:flex;
+}
+
+.checkSheetReportModal .j_row1{
+	display:flex;
+	margin-top:1px;
 }
 
     </style>
@@ -251,24 +327,20 @@ select[readonly] {
     <div class="button-container">
         <button class="select-button">
             <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
-           
+            검색
         </button>
-<!--         
-        <button class="insert-button" id="jAddBtn">
-            <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
-          	단취등록
-        </button>
- -->
         <button class="insert-button" onclick="workTfModalOpen()">
             <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
+            신규
         </button>
         <button class="delete" id="workDeleteBtn">
             <img src="/tkheat/css/image/delete-icon.png" alt="delete" class="button-image">
+            삭제
         </button>
         
-        <button class="printer-button" id="jPrintBtn">
+        <button class="printer-button" id="printBtn">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
-			 공정이동표            
+			 체크시트            
         </button>
     </div>
 </div>
@@ -312,28 +384,39 @@ select[readonly] {
 		<div class="j_container">				
 			<div class="j_row1">
 				<div class="j_div">
-					<label for="fac_code" class="iRowLabel">설비</label>
-					<select name="fac_code" class="iRowInput" style="height:27px;"></select>						
+					<label for="fac_code" class="iRowLabel" style="height:30px;">설비</label>
+					<select name="fac_code" class="iRowInput" style="height:30px; width:140px !important;"></select>						
 				</div>
 				
 				<div class="j_div">
-					<label for="user_code" class="iRowLabel margin_left">작업자</label>
-					<select name="user_code" class="iRowInput margin_left" style="height:27px;"></select>						
+					<label for="user_code" class="iRowLabel margin_left" style="height:30px;">작업자</label>
+					<select name="user_code" class="iRowInput margin_left" style="height:30px;"></select>						
 				</div>
 				
 				<div class="j_div">
-					<label for="wstd_t32" class="iRowLabel margin_left" style="width:240px;">작업시작</label>
+					<label for="wstd_t32" class="iRowLabel margin_left" style="width:240px; height:30px;">작업시작</label>
 					<input type="text" name="ilbo_strt" class="iRowInput margin_left datetimepicker_datetime" style="width:240px !important; height:25px;"/>
-					<button class="iRowBtn margin_left" type="button" onclick="sdateTimeSetBtn('tfStart');"
+				</div>
+				
+				<div class="j_div" style="width:80px;">
+					<label for="" class="iRowLabel margin_left" style="height:30px;"></label>
+					<button class="iRowBtn margin_left" type="button" 
+					onclick="sdateTimeSetBtn('tfStart');"
 					style="display:inline-block;">시작</button>
 				</div>
-				
+
 				<div class="j_div">
-					<label for="wstd_t32" class="iRowLabel margin_left" style="width:240px;">작업종료</label>
+					<label for="wstd_t32" class="iRowLabel margin_left" style="width:240px; height:30px;">작업종료</label>
 					<input type="text" name="ilbo_end" class="iRowInput margin_left datetimepicker_datetime" style="width:240px !important; height:25px;"/>
-					<button class="iRowBtn margin_left" type="button" onclick="sdateTimeSetBtn('tfEnd');"
-					style="display:inline-block;">종료</button>						
 				</div>
+				
+				<div class="j_div" style="width:80px;">
+					<label for="" class="iRowLabel margin_left" style="height:30px;"></label>
+					<button class="iRowBtn margin_left" type="button" 
+					onclick="sdateTimeSetBtn('tfEnd');"
+					style="display:inline-block;">종료</button>
+				</div>
+
 			</div>
 		</div>		
 		<hr />
@@ -441,11 +524,11 @@ select[readonly] {
 		<div class="j_container">
 			<form id="workTfBcfForm" name="workTfBcfForm" autocomplete="off" style="width:100%;">
 				<div class="j_row1">
-					<label class="daylabel">입고일 :</label>
-					<input type="text" id="tf_bcf_sdate" class="iRowInput_180 datetimepicker_date" 
+					<label class="daylabel iRowLabel">입고일 :</label>
+					<input type="text" id="tf_bcf_sdate" class="iRowInput datetimepicker_date" 
 					style="width:100px;">
 					~
-					<input type="text" id="tf_bcf_edate" class="iRowInput_180 datetimepicker_date" 
+					<input type="text" id="tf_bcf_edate" class="iRowInput datetimepicker_date" 
 					style="width:100px;">				
 	
 					<label for="" class="iRowLabel margin_left">거래처</label>
@@ -475,6 +558,45 @@ select[readonly] {
     <div class="j_container" style="justify-content:end;">
     	<div class="j_row1">
 			<button class="iRowBtn margin_left" type="button" onclick="workTfBcfModalClose();">닫기</button>
+		</div>
+    </div>
+</div>
+
+<!-- 열처리 체크시트 출력중 모달 -->
+<div class="checkSheetStatusModal">
+	<div class="detail">
+		<div class="header">
+			<span style="display:inline-block; width:180px;">열처리 체크시트</span>
+		</div>
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<span style="display:inline-block; width:350px;">열처리 체크시트 파일 생성중입니다....</span>
+					<br />
+					<span style="display:inline-block; width:350px;">생성완료시 팝업창이 닫힙니다.</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<div class="j_container" style="justify-content:end;">
+    	<div class="j_row1">
+			<button class="checkSheetStatusClose iRowBtn margin_left" type="button" onclick="checkSheetStatusCloseBtn();">닫기</button>
+		</div>
+    </div>	
+</div>
+
+	
+<!-- 열처리체크시트 표현 모달 -->
+<div class="checkSheetReportModal">
+	<div class="j_container">
+		<iframe src="" frameborder="0" width="800" height="700" id="checkSheetReport">
+		</iframe>	
+	</div>
+    <div class="j_container" style="justify-content:end;">
+    	<div class="j_row1">
+			<button class="checkSheetReportClose iRowBtn margin_left" type="button" onclick="checkSheetReportCloseBtn();">닫기</button>
 		</div>
     </div>
 </div>
@@ -509,6 +631,41 @@ select[readonly] {
 
 	//이벤트
 	
+	//열처리 체크시트 출력
+	$("#printBtn").on("click",function(e){
+		var selectedData = workDataTable.getSelectedData();
+		
+		if(selectedData.length <= 0){
+			alert("체크시트를 출력할 작업LOT를 선택해주십시오!");
+			return false;
+		}
+		
+		checkSheetStatusModal.style.display = "block";
+
+		var sendObj = {
+				"checkSheetData": selectedData
+			}
+
+		//선택한 객체 전송
+		$.ajax({
+			url:"/tkheat/workilbo/checkSheetPrint",
+			type:"post",
+			dataType:"json",
+			contentType: false,
+			processData: false,			
+			data:JSON.stringify(sendObj),
+			success:function(result){
+   				var fileUrl = "/tkPrint/workilboCheckSheet/"+result.fileName;
+                $("#checkSheetReport").attr("src",fileUrl);
+                checkSheetReportModal.style.display = "block";
+				
+                checkSheetStatusCloseBtn();
+//				getChulgoData();
+			}
+		});
+		
+	});
+
 	//바코드 스캔
 	var barcodeTimer;
 	$("#tf_barcode").on("input", function(){
@@ -859,48 +1016,154 @@ select[readonly] {
 		workDataTable = new Tabulator("#workTabu", {
 		    height:"700px",
 		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
+		    selectable:1,	//로우 선택설정
 		    tooltips:true,
 		    selectableRangeMode:"click",
-		    reactiveData:true,
+		    reactiveData:false,
 		    headerHozAlign:"center",
 		    placeholder:"조회된 데이터가 없습니다.",
 		    paginationSize:20,
 		    headerSort:false,
-		    ajaxResponse:function(url, params, response){
-				$("#workTabu .tabulator-col.tabulator-sortable").css("height","30px");
-		        return response; //return the response data to tabulator
+		    rowSelectionChanged:function(data, rows){
+		        // 현재 화면에 보이는 모든 행 다시 그림
+		        this.getRows().forEach(function(r){
+		            r.reformat();
+		        });
 		    },
-		    columns:[
-		        {title:"적재코드", field:"danch_barcode", sorter:"string", width:80,
+		    rowClick: function(e, row){		    	
+		        // 이미 선택된 행이면 아무것도 안 함
+		        if(!row.isSelected()){
+		            row.select();   // 다른 행 누르면 기존 자동 해제
+		        }
+		        
+		        if(e.detail === 2){
+					var rowData = row.getData();
+
+					//일보구분에 따라 각각 표기
+					
+					var ilbo_code = rowData.ilbo_code;
+					var ilbo_gubn = rowData.ilbo_gubn;
+					var ilbo_lot = rowData.ilbo_lot;
+					var ilbo_pc = rowData.ilbo_pc;
+					
+					$.ajax({
+						url:"/tkheat/workilbo/tf/dataUpdateList",
+						type:"post",
+						dataType:"json",
+						data:{
+							"ilbo_code":ilbo_code,
+							"ilbo_gubn":ilbo_gubn,
+							"ilbo_lot":ilbo_lot,
+							"ilbo_pc":ilbo_pc
+						},
+						success:function(result){
+							//열처리작업 수정
+							workTfModalOpen();
+							
+							workTfDataTable.setData(result.data);
+							var stdDatas = result.data;
+							
+							var ilbo_su = 0;
+							var ilbo_jung = 0;
+							var ilbo_lot = "";
+							
+							var stdVal1 = 0;
+							var stdVal2 = 0;
+							
+							for(let keys in stdDatas){
+								var stdData = stdDatas[keys];
+								
+								stdVal1 = stdDatas[keys].prod_si1;
+								stdVal2 = stdDatas[keys].prod_si2;
+								
+								for(let key in stdData){
+									
+									if(key == "ilbo_su"){
+										ilbo_su += stdData[key];
+									}
+									
+									if(key == "ilbo_jung"){
+										ilbo_jung += stdData[key];
+									}
+									
+									if(key == "ilbo_lot"){
+										ilbo_lot = stdData[key];
+									}
+									
+									if(key == "ilbo_pg1_si" || key == "ilbo_pg2_si" || 
+									   key == "ilbo_pg3_si" || key == "ilbo_pg4_si" ||
+									   key == "ilbo_pg5_si" ||
+									   key == "ilbo_pg1_sr" || key == "ilbo_pg2_sr" ||
+									   key == "ilbo_pg3_sr" || key == "ilbo_pg4_sr" ||
+									   key == "ilbo_pg5_sr"){
+										tfHardInputCalc(key,stdData[key],stdVal1,stdVal2);
+									}								
+									
+									$("#workTfForm input[name='"+key+"']").val(stdData[key]);
+									$("#workTfForm select[name='"+key+"']").val(stdData[key]);
+								}
+							}
+							
+							$("#workTfForm input[name='tf_total_cnt']").val(ilbo_su);
+							$("#workTfForm input[name='tf_total_weight']").val(ilbo_jung.toFixed(2));
+							tfHardInputSiOKNG();
+							tfHardInputSrOKNG();
+						}
+					});				
+
+		        }
+		    },
+	    	columns:[
+		        {
+		            title: "",
+		            field: "indicator",
+		            width: 20,
+		            hozAlign: "center",
+		            headerSort: false,
+		            formatter: function(cell){
+		                return cell.getRow().isSelected()
+//		                    ? "<span style='font-size:16px;'>✔</span>"
+		                    ? "<span style='font-size:11pt;'>▶</span>"
+		                    : "";
+		            }
+		        },
+		        {title:"적재코드", field:"danch_barcode", sorter:"string", width:100,
 		        	hozAlign:"center"},
-		        {title:"작업일", field:"ilbo_strt_date", sorter:"string", width:80,
-			        hozAlign:"center"},
-		        {title:"설비", field:"fac_name", sorter:"string", width:80,
+		        {title:"작업일", field:"ilbo_strt_date", sorter:"string", width:60,
+			        hozAlign:"center",
+			        formatter:function(cell){
+			        	var value = cell.getValue();
+			        	if(!value) return "";
+			        	return value.substring(5,10);
+			        }
+		        },
+		        {title:"설비", field:"fac_no", sorter:"string", width:80,
 			        hozAlign:"center"},	
-		        {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:100,
+		        {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:120,
 		        	hozAlign:"center"},
 		        {title:"시작", field:"ilbo_strt_time", sorter:"string", width:60,
 		        	hozAlign:"center"},
 		        {title:"종료", field:"ilbo_end_time", sorter:"string", width:60,
 		        	hozAlign:"center"},
-		        {title:"입고일", field:"ord_input_view", sorter:"string", width:80,
+		        {title:"입고일", field:"ord_input_view", sorter:"string", width:100,
 			        hozAlign:"center"},	
 		        {title:"수주번호", field:"ord_code", sorter:"string", width:80,
-			        hozAlign:"center"},	
-		        {title:"거래처", field:"corp_name", sorter:"string", width:120,
-			        hozAlign:"center"},	
-		        {title:"품명", field:"prod_name", sorter:"string", width:180,
-			        hozAlign:"center"},	
-		        {title:"품번", field:"prod_no", sorter:"string", width:120,
-			        hozAlign:"center"},
+			        hozAlign:"center", visible:false},	
+		        {title:"거래처", field:"corp_name", sorter:"string", width:140,
+			        hozAlign:"left"},	
+		        {title:"품명", field:"prod_name", sorter:"string", width:240,
+			        hozAlign:"left"},	
+		        {title:"품번", field:"prod_no", sorter:"string", width:140,
+			        hozAlign:"left"},
 		        {title:"규격", field:"prod_gyu", sorter:"string", width:100,
-			        hozAlign:"center"},
-		        {title:"재질", field:"prod_jai", sorter:"string", width:160,
-			        hozAlign:"center"},
+			        hozAlign:"left"},
+		        {title:"재질", field:"prod_jai", sorter:"string", width:100,
+			        hozAlign:"left"},
 		        {title:"수량", field:"ilbo_su", sorter:"string", width:60,
-		        	hozAlign:"center"},
-		        {title:"중량", field:"ilbo_jung", sorter:"string", width:60,
+		        	hozAlign:"right"},
+		        {title:"중량", field:"ilbo_jung", sorter:"string", width:80,
+		        	hozAlign:"right"},
+		        {title:"비고", field:"ilbo_bigo", sorter:"string", width:100,
 		        	hozAlign:"center"},
 		        {title:"소입경도", field:"prod_si", sorter:"string", width:120,
 			        hozAlign:"center", visible:false},
@@ -924,94 +1187,6 @@ select[readonly] {
 			    }else{
 			    	row.getElement().style.backgroundColor = "#FFFFFF";	
 			    }
-			},
-			rowClick:function(e, row){
-
-				$("#workTabu .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#workTabu div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
-			},
-			rowDblClick:function(e, row){
-				var rowData = row.getData();
-
-				//일보구분에 따라 각각 표기
-				
-				var ilbo_code = rowData.ilbo_code;
-				var ilbo_gubn = rowData.ilbo_gubn;
-				var ilbo_lot = rowData.ilbo_lot;
-				var ilbo_pc = rowData.ilbo_pc;
-				
-				$.ajax({
-					url:"/tkheat/workilbo/tf/dataUpdateList",
-					type:"post",
-					dataType:"json",
-					data:{
-						"ilbo_code":ilbo_code,
-						"ilbo_gubn":ilbo_gubn,
-						"ilbo_lot":ilbo_lot,
-						"ilbo_pc":ilbo_pc
-					},
-					success:function(result){
-						//열처리작업 수정
-						workTfModalOpen();
-						
-						workTfDataTable.setData(result.data);
-						var stdDatas = result.data;
-						
-						var ilbo_su = 0;
-						var ilbo_jung = 0;
-						var ilbo_lot = "";
-						
-						var stdVal1 = 0;
-						var stdVal2 = 0;
-						
-						for(let keys in stdDatas){
-							var stdData = stdDatas[keys];
-							
-							stdVal1 = stdDatas[keys].prod_si1;
-							stdVal2 = stdDatas[keys].prod_si2;
-							
-							for(let key in stdData){
-								
-								if(key == "ilbo_su"){
-									ilbo_su += stdData[key];
-								}
-								
-								if(key == "ilbo_jung"){
-									ilbo_jung += stdData[key];
-								}
-								
-								if(key == "ilbo_lot"){
-									ilbo_lot = stdData[key];
-								}
-								
-								if(key == "ilbo_pg1_si" || key == "ilbo_pg2_si" || 
-								   key == "ilbo_pg3_si" || key == "ilbo_pg4_si" ||
-								   key == "ilbo_pg5_si" ||
-								   key == "ilbo_pg1_sr" || key == "ilbo_pg2_sr" ||
-								   key == "ilbo_pg3_sr" || key == "ilbo_pg4_sr" ||
-								   key == "ilbo_pg5_sr"){
-									tfHardInputCalc(key,stdData[key],stdVal1,stdVal2);
-								}								
-								
-								$("#workTfForm input[name='"+key+"']").val(stdData[key]);
-								$("#workTfForm select[name='"+key+"']").val(stdData[key]);
-							}
-						}
-						
-						$("#workTfForm input[name='tf_total_cnt']").val(ilbo_su);
-						$("#workTfForm input[name='tf_total_weight']").val(ilbo_jung.toFixed(2));
-						tfHardInputSiOKNG();
-						tfHardInputSrOKNG();
-					}
-				});				
 			}
 		});		
 	}
@@ -1024,19 +1199,40 @@ select[readonly] {
 			index:"id",
 		    height:"140px",
 		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
+		    selectable:1,	//로우 선택설정
 		    tooltips:true,
 		    selectableRangeMode:"click",
-		    reactiveData:true,
+		    reactiveData:false,
 		    headerHozAlign:"center",
 		    placeholder:"조회된 데이터가 없습니다.",
 		    paginationSize:20,
 		    headerSort:false,
-		    ajaxResponse:function(url, params, response){
-				$("#workTfTabu .tabulator-col.tabulator-sortable").css("height","30px");
-		        return response; //return the response data to tabulator
+		    rowSelectionChanged:function(data, rows){
+		        // 현재 화면에 보이는 모든 행 다시 그림
+		        this.getRows().forEach(function(r){
+		            r.reformat();
+		        });
+		    },
+		    rowClick: function(e, row){		    	
+		        // 이미 선택된 행이면 아무것도 안 함
+		        if(!row.isSelected()){
+		            row.select();   // 다른 행 누르면 기존 자동 해제
+		        }
 		    },
 		    columns:[
+		        {
+		            title: "",
+		            field: "indicator",
+		            width: 20,
+		            hozAlign: "center",
+		            headerSort: false,
+		            formatter: function(cell){
+		                return cell.getRow().isSelected()
+//		                    ? "<span style='font-size:16px;'>✔</span>"
+		                    ? "<span style='font-size:11pt;'>▶</span>"
+		                    : "";
+		            }
+		        },
 		        {title:"차수", field:"ilbo_cm",
 		        	// 데이터가 로딩될 때 실행됨
 		            mutator: function(value, data, type, mutatorParams, cell) {
@@ -1058,24 +1254,34 @@ select[readonly] {
 		            formatterParams: {"1":"1차", "2":"2차", "3":"3차", "4":"4차", "5":"5차"},		        	
 		        	width:60,
 			        hozAlign:"center"},	
-		        {title:"바코드", field:"ord_code", sorter:"string", width:120,
+		        {title:"바코드", field:"ord_code", sorter:"string", width:100,
 			        hozAlign:"center"},	
-		        {title:"입고일", field:"ord_input_view", sorter:"string", width:120,
-			        hozAlign:"center"},	
+		        {title:"입고일", field:"ord_input_view", sorter:"string", width:80,
+			        hozAlign:"center",
+			        formatter:function(cell){
+			        	var value = cell.getValue();
+			        	if(!value) return "";
+			        	return value.substring(5,10);
+			        }
+			    },	
+		        {title:"거래처", field:"corp_name", sorter:"string", width:140,
+		        	hozAlign:"left"},
+		        {title:"품명", field:"prod_name", sorter:"string", width:240,
+			        hozAlign:"left"},	
+		        {title:"품번", field:"prod_no", sorter:"string", width:110,
+			        hozAlign:"left"},
+		        {title:"규격", field:"prod_gyu", sorter:"string", width:100,
+			        hozAlign:"left"},
+		        {title:"재질", field:"prod_jai", sorter:"string", width:100,
+			        hozAlign:"left"},
 		        {title:"수량", field:"ilbo_su", sorter:"string", width:80,
-		        	hozAlign:"center"},		        
+		        	hozAlign:"right"},		        
 		        {title:"중량", field:"ilbo_jung", sorter:"string", width:80,
-		        	hozAlign:"center"},
-		        {title:"거래처", field:"corp_name", sorter:"string", width:120,
-		        	hozAlign:"center"},
-		        {title:"품명", field:"prod_name", sorter:"string", width:280,
-			        hozAlign:"center"},	
-		        {title:"품번", field:"prod_no", sorter:"string", width:160,
-			        hozAlign:"center"},
+		        	hozAlign:"right"},
+			    {title:"생산Lot", field:"ilbo_lot", width:140},
 		        {title:"소입경도", field:"prod_si", sorter:"string", width:120,
-			        hozAlign:"center"},
-			    {title:"경화깊이", field:"prod_gd", width:120},
-			    {title:"생산Lot", field:"ilbo_lot", width:120},
+			        hozAlign:"center", visible:false},
+			    {title:"경화깊이", field:"prod_gd", width:120, visible:false},
 			    {title:"제품코드", field:"prod_code", visible:false},
 			    {title:"작업코드", field:"ilbo_pc", visible:false},
 			    {title:"입고단중", field:"ord_danj", visible:false},
@@ -1087,19 +1293,6 @@ select[readonly] {
 			    
 			    row.getElement().style.fontWeight = "700";
 				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
-
-				$("#workTfTabu .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#workTfTabu div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
 			}
 		});		
 		
@@ -1143,41 +1336,75 @@ select[readonly] {
 			index:"id",
 		    height:"580px",
 		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
+		    selectable:1,	//로우 선택설정
 		    tooltips:true,
 		    selectableRangeMode:"click",
-		    reactiveData:true,
+		    reactiveData:false,
 		    headerHozAlign:"center",
 		    placeholder:"조회된 데이터가 없습니다.",
 		    paginationSize:20,
 		    headerSort:false,
-		    ajaxResponse:function(url, params, response){
-				$("#workTfBcfTabu .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
+		    rowSelectionChanged:function(data, rows){
+		        // 현재 화면에 보이는 모든 행 다시 그림
+		        this.getRows().forEach(function(r){
+		            r.reformat();
+		        });
 		    },
-		    columns:[		    	
-		        {title:"적재코드", field:"danch_barcode", sorter:"string", width:80,
+		    rowClick: function(e, row){
+		        // 이미 선택된 행이면 아무것도 안 함
+		        if(!row.isSelected()){
+		            row.select();   // 다른 행 누르면 기존 자동 해제
+		        }
+		        
+		        if(e.detail === 2){
+					var rData = row.getData();
+					workTfBcfSelectData = rData;
+					workTfBcfSelectDataReg();
+		        }
+		        
+		    },
+		    columns:[
+		        {
+		            title: "",
+		            field: "indicator",
+		            width: 20,
+		            hozAlign: "center",
+		            headerSort: false,
+		            formatter: function(cell){
+		                return cell.getRow().isSelected()
+//		                    ? "<span style='font-size:16px;'>✔</span>"
+		                    ? "<span style='font-size:11pt;'>▶</span>"
+		                    : "";
+		            }
+		        },
+		        {title:"적재코드", field:"danch_barcode", sorter:"string", width:100,
 			        hozAlign:"center"},	
-		        {title:"수주번호", field:"ord_code", sorter:"string", width:80,
+		        {title:"수주번호", field:"ord_code", sorter:"string", width:100,
 			        hozAlign:"center"},	
 		        {title:"수주일", field:"ord_input_view", sorter:"string", width:80,
-			        hozAlign:"center"},	
-		        {title:"거래처", field:"corp_name", sorter:"string", width:100,
-		        	hozAlign:"center"},		        
-		        {title:"품명", field:"prod_name", sorter:"string", width:160,
-		        	hozAlign:"center"},
-		        {title:"품번", field:"prod_no", sorter:"string", width:120,
-		        	hozAlign:"center"},
-		        {title:"규격", field:"prod_gyu", sorter:"string", width:120,
-		        	hozAlign:"center"},
-		        {title:"재질", field:"prod_jai", sorter:"string", width:160,
-		        	hozAlign:"center"},
-		        {title:"공정", field:"tech_te", sorter:"string", width:60,
+			        hozAlign:"center",
+			        formatter:function(cell){
+			        	var value = cell.getValue();
+			        	if(!value) return "";
+			        	return value.substring(5,10);
+			        }
+			    },	
+		        {title:"거래처", field:"corp_name", sorter:"string", width:140,
+		        	hozAlign:"left"},		        
+		        {title:"품명", field:"prod_name", sorter:"string", width:240,
+		        	hozAlign:"left"},
+		        {title:"품번", field:"prod_no", sorter:"string", width:140,
+		        	hozAlign:"left"},
+		        {title:"규격", field:"prod_gyu", sorter:"string", width:100,
+		        	hozAlign:"left"},
+		        {title:"재질", field:"prod_jai", sorter:"string", width:100,
+		        	hozAlign:"left"},
+		        {title:"공정", field:"tech_te", sorter:"string", width:80,
 		        	hozAlign:"center"},
 		        {title:"수량", field:"ilbo_su", sorter:"string", width:60,
-			        hozAlign:"center"},	
-		        {title:"중량", field:"ilbo_jung", sorter:"string", width:60,
-			        hozAlign:"center"},	
+			        hozAlign:"right"},	
+		        {title:"중량", field:"ilbo_jung", sorter:"string", width:80,
+			        hozAlign:"right"},	
 			    {title:"일보코드", field:"ilbo_code", visible:false},
 			    {title:"제품코드", field:"prod_code", visible:false},
 			    {title:"단취기준수량", field:"wstd_t43", width:80, visible:false},
@@ -1211,27 +1438,11 @@ select[readonly] {
 			    	row.getElement().style.backgroundColor = "#FFFFFF";	
 			    }
 			},
-			rowClick:function(e, row){
-
-				$("#workTfBcfTabu .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#workTfBcfTabu div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
-			},
 			rowDblClick:function(e, row){
 				
 				var rData = row.getData();
 				workTfBcfSelectData = rData;
 				workTfBcfSelectDataReg();
-
-//테스트
-//				workDanDataTable.addData(workTfBcfSelectData);
 						
 			}
 		});		
@@ -1407,11 +1618,21 @@ select[readonly] {
 			}			
 		});			
 	}
+
+	function checkSheetStatusCloseBtn(){
+		checkSheetStatusModal.style.display = 'none'; // 모달 숨김
+	}
+
+	function checkSheetReportCloseBtn(){
+		checkSheetReportModal.style.display = 'none'; // 모달 숨김
+	}
 	
 	
 	//모달기능
 	const workTfModal = document.querySelector('.workTfModal');
 	const workTfBcfModal = document.querySelector('.workTfBcfModal');
+	const checkSheetStatusModal = document.querySelector('.checkSheetStatusModal');
+	const checkSheetReportModal = document.querySelector('.checkSheetReportModal');
 	
 	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
 	

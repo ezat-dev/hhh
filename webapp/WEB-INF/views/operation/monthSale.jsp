@@ -264,16 +264,21 @@
 	        headerFilterPlaceholder: "",
 		    ajaxResponse:function(url, params, response){
 				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
+				 console.log("📊 서버 응답:", response);
+		            
+		            const data = response.data ? response.data : response;
+		            console.log("📊 데이터 개수:", data.length);
+		            
+		            return data;
 		    },
 		    columns:[
 		    	{title:"NO", field:"idx", sorter:"int", width:80, hozAlign:"center"},
-		        {title:"마감월", field:"och_ma", sorter:"string", width:120, hozAlign:"center"},	
-		        {title:"출고일", field:"och_date", sorter:"string", width:120, hozAlign:"center"},     
-		        {title:"거래처", field:"corp_name", sorter:"string", width:140, hozAlign:"center", headerFilter:"input"}, 
-		        {title:"품명", field:"prod_name", sorter:"string", width:160, hozAlign:"center", headerFilter:"input"}, 
-		        {title:"품번", field:"prod_no", sorter:"string", width:160, hozAlign:"center", headerFilter:"input"},		        
-		        {title:"LOT NO", field:"och_lot", sorter:"string", width:100, hozAlign:"center"},
+		        {title:"마감월", field:"och_ma", sorter:"string", width:120, hozAlign:"center", headerSort:false},	
+		        {title:"출고일", field:"och_date", sorter:"string", width:120, hozAlign:"center", headerSort:false},     
+		        {title:"거래처", field:"corp_name", sorter:"string", width:140, hozAlign:"center", headerFilter:"input", headerSort:false}, 
+		        {title:"품명", field:"prod_name", sorter:"string", width:160, hozAlign:"center", headerFilter:"input", headerSort:false}, 
+		        {title:"품번", field:"prod_no", sorter:"string", width:160, hozAlign:"center", headerFilter:"input", headerSort:false},		        
+		        {title:"LOT NO", field:"och_lot", sorter:"string", width:100, hozAlign:"center", headerSort:false},
 		        
 		        {title:"수량", field:"och_su", sorter:"int", width:110, hozAlign:"center",
 		            formatter: "money", 

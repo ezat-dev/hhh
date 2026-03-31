@@ -11,208 +11,111 @@
     <%@include file="../include/pluginpage.jsp" %>
     
 <style>
-/* ========== 기존 스타일 유지 ========== */
-.main {
-    width: 98%;
+/* ========== 기본 스타일 ========== */
+.main { width: 98%; }
+.container { display: flex; justify-content: space-between; }
+/* 헤더 컬럼 높이 고정 */
+.tabulator .tabulator-col {
+    height: 55px !important;
 }
 
-.container {
+/* 헤더 필터 input 위치 고정 */
+.tabulator .tabulator-col .tabulator-col-content {
+    height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
 }
-
 .box1 {
-    display: flex;
-    justify-content: right;
-    align-items: center;
-    width: 1500px;
-    margin-left: -350px;
-    gap: 10px;
+    display: flex; justify-content: right; align-items: center;
+    width: 1500px; margin-left: -350px; gap: 10px;
 }
-
-.box1 label {
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-}
-
+.box1 label { font-size: 14px; font-weight: 600; color: white; }
 .box1 input[type="text"] {
-    width: 100px;
-    padding: 5px 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #f9f9f9;
-    color: #333;
-    outline: none;
-    transition: border 0.3s ease;
+    width: 100px; padding: 5px 10px; font-size: 14px;
+    border: 1px solid #ccc; border-radius: 6px;
+    background-color: #f9f9f9; color: #333;
+    outline: none; transition: border 0.3s ease;
 }
-
-.box1 input[type="text"]:focus {
-    border: 1px solid #007bff;
-    background-color: #fff;
-}
-
-.row_select {
-    background-color: #9ABCEA !important;
-}
+.box1 input[type="text"]:focus { border: 1px solid #007bff; background-color: #fff; }
+.row_select { background-color: #9ABCEA !important; }
 
 /* ========== 모달 오버레이 ========== */
 .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    display: none; position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 999;
 }
-
-.modal-overlay.active {
-    display: block;
-}
+.modal-overlay.active { display: block; }
 
 /* ========== 모달 컨테이너 ========== */
 .user-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
+    display: none; position: fixed;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 800px;
-    max-width: 95vw;
-    max-height: 90vh;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    overflow: hidden;
+    width: 800px; max-width: 95vw;
+    max-height: 95vh;              /* ★ 90 → 95vh */
+    background: white; border-radius: 8px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+    z-index: 1000; overflow: hidden;
 }
-
-.user-modal.active {
-    display: flex;
-    flex-direction: column;
-}
+.user-modal.active { display: flex; flex-direction: column; }
 
 /* ========== 모달 헤더 ========== */
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 25px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 16px;             /* ★ 15px 25px → 8px 16px */
     background: linear-gradient(135deg, #2c3e50, #34495e);
-    color: white;
-    cursor: move;
-    flex-shrink: 0;
+    color: white; cursor: move; flex-shrink: 0;
 }
-
-.modal-header h2 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 700;
-}
-
+.modal-header h2 { margin: 0; font-size: 15px; font-weight: 700; }
 .modal-close-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 28px;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    transition: all 0.3s;
+    background: none; border: none; color: white;
+    font-size: 22px; cursor: pointer;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; transition: all 0.3s;
 }
-
-.modal-close-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(90deg);
-}
+.modal-close-btn:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg); }
 
 /* ========== 모달 본문 ========== */
 .modal-body {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    flex: 1; overflow-y: auto; overflow-x: hidden;
     background: #f5f7fa;
-    padding: 15px;
+    padding: 8px 10px;             /* ★ 15px → 8px 10px */
 }
-
-.modal-body::-webkit-scrollbar {
-    width: 8px;
-}
-
-.modal-body::-webkit-scrollbar-track {
-    background: #e0e0e0;
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-    background: #999;
-    border-radius: 4px;
-}
-
-.modal-body::-webkit-scrollbar-thumb:hover {
-    background: #666;
-}
+.modal-body::-webkit-scrollbar { width: 5px; }
+.modal-body::-webkit-scrollbar-track { background: #e0e0e0; }
+.modal-body::-webkit-scrollbar-thumb { background: #999; border-radius: 4px; }
+.modal-body::-webkit-scrollbar-thumb:hover { background: #666; }
 
 /* ========== 섹션 ========== */
 .field-section {
-    background: white;
-    border-radius: 8px;
-    padding: 12px 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 12px;
+    background: white; border-radius: 6px;
+    padding: 8px 12px;             /* ★ 12px 15px → 8px 12px */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 6px;            /* ★ 12px → 6px */
 }
-
+.field-section:last-child { margin-bottom: 0; }
 .section-title {
-    margin: 0 0 10px 0;
-    font-size: 14px;
-    font-weight: 700;
-    color: #2c3e50;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #e9ecef;
+    margin: 0 0 6px 0;             /* ★ 10px → 6px */
+    font-size: 12px; font-weight: 700; color: #2c3e50;
+    padding-bottom: 4px;           /* ★ 8px → 4px */
+    border-bottom: 1px solid #e9ecef;
 }
 
 /* ========== 필드 행/열 ========== */
 .field-row {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 8px;
+    display: grid; grid-template-columns: repeat(2,1fr);
+    gap: 8px; margin-bottom: 6px;  /* ★ 10px→8px, 8px→6px */
 }
-
-.field-row:last-child {
-    margin-bottom: 0;
+.field-row:last-child { margin-bottom: 0; }
+.field-col { display: flex; flex-direction: column; gap: 2px; } /* ★ 4px → 2px */
+.field-col-full { grid-column: 1/-1; display: flex; flex-direction: column; gap: 2px; }
+.field-col label, .field-col-full label {
+    font-size: 11px; font-weight: 600; color: #495057; /* ★ 12px → 11px */
 }
-
-.field-col {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.field-col-full {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.field-col label,
-.field-col-full label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #495057;
-}
-
-.req {
-    color: #dc3545;
-    margin-left: 2px;
-}
+.req { color: #dc3545; margin-left: 2px; }
 
 /* ========== 입력 필드 ========== */
 .field-col input[type="text"],
@@ -221,91 +124,45 @@
 .field-col-full input[type="text"],
 .field-col-full textarea {
     width: 100%;
-    padding: 6px 10px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    font-size: 13px;
-    box-sizing: border-box;
-    transition: all 0.3s;
+    padding: 4px 8px;              /* ★ 6px 10px → 4px 8px */
+    border: 1px solid #ced4da; border-radius: 4px;
+    font-size: 12px;               /* ★ 13px → 12px */
+    box-sizing: border-box; transition: all 0.2s;
+    height: 28px;                  /* ★ 고정 높이 */
 }
-
 .field-col input:focus,
 .field-col-full input:focus,
 .field-col-full textarea:focus {
-    outline: none;
-    border-color: #4dabf7;
-    box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.1);
+    outline: none; border-color: #4dabf7;
+    box-shadow: 0 0 0 2px rgba(77,171,247,0.1);
 }
-
 textarea {
     resize: vertical;
-    min-height: 50px;
-    font-family: inherit;
-    line-height: 1.4;
+    height: 44px;                  /* ★ min-height 50px → 44px 고정 */
+    min-height: unset;
+    font-family: inherit; line-height: 1.4;
 }
 
 /* ========== 모달 푸터 ========== */
 .modal-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
-    background: white;
-    border-top: 1px solid #dee2e6;
-    flex-shrink: 0;
+    display: flex; justify-content: center; align-items: center;
+    gap: 8px; padding: 8px 16px;   /* ★ 12px 20px → 8px 16px */
+    background: white; border-top: 1px solid #dee2e6; flex-shrink: 0;
 }
-
 .modal-footer button {
-    min-width: 100px;
-    height: 38px;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
+    min-width: 85px; height: 32px; /* ★ 100px 38px → 85px 32px */
+    border: none; border-radius: 4px;
+    font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s;
 }
-
-.btn-save {
-    background: linear-gradient(135deg, #51cf66, #37b24d);
-    color: white;
-}
-
-.btn-save:hover {
-    background: linear-gradient(135deg, #40c057, #2f9e44);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(64, 192, 87, 0.3);
-}
-
-.btn-delete {
-    background: linear-gradient(135deg, #ff6b6b, #fa5252);
-    color: white;
-}
-
-.btn-delete:hover {
-    background: linear-gradient(135deg, #f03e3e, #e03131);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(240, 62, 62, 0.3);
-}
-
-.btn-cancel {
-    background: linear-gradient(135deg, #868e96, #495057);
-    color: white;
-}
-
-.btn-cancel:hover {
-    background: linear-gradient(135deg, #6c757d, #343a40);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
-}
+.btn-save    { background: linear-gradient(135deg,#51cf66,#37b24d); color: white; }
+.btn-save:hover { background: linear-gradient(135deg,#40c057,#2f9e44); transform: translateY(-1px); }
+.btn-delete  { background: linear-gradient(135deg,#ff6b6b,#fa5252); color: white; }
+.btn-delete:hover { background: linear-gradient(135deg,#f03e3e,#e03131); transform: translateY(-1px); }
+.btn-cancel  { background: linear-gradient(135deg,#868e96,#495057); color: white; }
+.btn-cancel:hover { background: linear-gradient(135deg,#6c757d,#343a40); transform: translateY(-1px); }
 
 /* ========== 반응형 ========== */
-@media (max-width: 900px) {
-    .field-row {
-        grid-template-columns: 1fr;
-    }
-}
+@media (max-width: 900px) { .field-row { grid-template-columns: 1fr; } }
 </style>
 </head>
 
@@ -347,7 +204,7 @@ textarea {
 </main>
 
 <!-- 모달 폼 -->
-<form method="post" class="userForm" id="userInsertForm" name="userInsertForm">
+<form autocomplete="off" method="post" class="userForm" id="userInsertForm" name="userInsertForm">
     <input type="hidden" id="user_code" name="user_code" />
     
     <div class="modal-overlay"></div>
@@ -478,7 +335,7 @@ function getAllUserList(){
     // ✅ 딜레이 후 테이블 생성
     setTimeout(function() {
         userTable = new Tabulator("#tab1", {
-            height:"760px",
+            height:"730px",
             layout:"fitColumns",
             selectable:true,
             tooltips:true,
@@ -504,11 +361,11 @@ function getAllUserList(){
             },
             columns:[
                 {title:"NO", field:"idx", sorter:"int", width:80, hozAlign:"center"},
-                {title:"사원번호", field:"user_no", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
-                {title:"부서", field:"user_buso", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
-                {title:"직책", field:"user_jick", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
-                {title:"성명", field:"user_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
-                {title:"입사일", field:"user_jdate", sorter:"string", width:150, hozAlign:"center"},
+                {title:"사원번호", field:"user_no", sorter:"string", width:120, hozAlign:"center", headerFilter:"input", headerSort:false},
+                {title:"부서", field:"user_buso", sorter:"string", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
+                {title:"직책", field:"user_jick", sorter:"string", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
+                {title:"성명", field:"user_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
+                {title:"입사일", field:"user_jdate", sorter:"string", width:150, hozAlign:"center", headerSort:false},
                 {title:"퇴사", field:"user_ret", sorter:"string", width:80, hozAlign:"center", visible:false},
             ],
             rowFormatter:function(row){

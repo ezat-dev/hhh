@@ -415,16 +415,13 @@
 
 // ✅ 메뉴 클릭 시 활성 상태 유지 함수
 function setActiveMenu(menuUrl) {
-    // 모든 메뉴에서 active 클래스 제거
     $('.collapse__sublink').removeClass('active');
     
-    // 현재 클릭한 메뉴에 active 클래스 추가
     $('.collapse__sublink').each(function() {
         const clickAttr = $(this).attr('onclick');
         if(clickAttr && clickAttr.includes(menuUrl)) {
             $(this).addClass('active');
             
-            // ✅ 부모 collapse 메뉴를 열린 상태로 유지
             const $parentCollapse = $(this).closest('.collapse__menu');
             const $parentLink = $parentCollapse.prev('.nav__link.collapse');
             
@@ -435,9 +432,7 @@ function setActiveMenu(menuUrl) {
 }
 
 $(document).on('click', '.menuDivTab', function () {
-    // 기존 active 클래스 제거
     $('.menuDivTab').removeClass('active');
-    // 현재 클릭된 탭에 active 클래스 추가
     $(this).addClass('active');
 });
 
@@ -510,7 +505,6 @@ function loginUserMenuSetting(){
                                 
                                 $("#"+_groupID).append(_menu);
                                 if(idx == 0){
-
                                     const savedUrl = localStorage.getItem("currentPageUrl");
                                     const savedName = localStorage.getItem("currentPageName");
 
@@ -526,13 +520,33 @@ function loginUserMenuSetting(){
                         }
                     }
                 }                    
-            }                
+            }
+
+            
+            checkParentMenuVisibility();
+        }
+    });
+}
+
+
+function checkParentMenuVisibility() {
+    const menuIds = ["aMenu","bMenu","cMenu","dMenu","eMenu","fMenu","gMenu","hMenu","iMenu"];
+
+    menuIds.forEach(function(menuId) {
+        const $menu = $("#" + menuId);
+        const childCount = $menu.find("li").length;
+
+        if(childCount === 0) {
+            
+            $menu.closest(".nav__link.collapse").hide();
+        } else {
+            
+            $menu.closest(".nav__link.collapse").show();
         }
     });
 }
 
 function iframeSrc(url, menuGroupName){
-
     $("#pageFrame").attr("src",url);
     $(".headerP").text(menuGroupName);
 
@@ -542,17 +556,15 @@ function iframeSrc(url, menuGroupName){
     setActiveMenu(url);
 }
 
-// 메뉴 클릭 시 헤더 업데이트
 function updateHeader(menuGroupName) {
 }
 
 function updateHeaderAndNavigate(event, url, menuGroupName) {
     event.preventDefault();
-    event.stopPropagation();  // ✅ 이벤트 전파 방지
+    event.stopPropagation();
     
     iframeSrc(url,menuGroupName);
     
-    // 각 사용자별 메뉴 저장
     var loginCode = "${loginUser.user_code}";
     var menuUrl = url;
     var menuName = menuGroupName;
@@ -610,13 +622,11 @@ function menuList(){
     });
 }
 
-// ✅ DOMContentLoaded - 메뉴 클릭 이벤트 개선
 document.addEventListener('DOMContentLoaded', function () {
     const collapseItems = document.querySelectorAll('.nav__link.collapse');
 
     collapseItems.forEach(item => {
         item.addEventListener('click', function (e) {
-            // ✅ 하위 메뉴 클릭 시에는 토글하지 않음
             if (e.target.closest('.collapse__menu')) {
                 return;
             }
@@ -626,13 +636,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const collapseMenu = this.querySelector('.collapse__menu');
             const icon = this.querySelector('.collapse__link');
 
-            // toggle 상태만 제어
             collapseMenu.classList.toggle('showCollapse');
             icon.classList.toggle('rotate');
         });
     });
 
-    // ✅ 하위 메뉴 클릭 시 이벤트 전파 방지 (메뉴 닫히지 않도록)
     document.querySelectorAll('.collapse__menu a').forEach(link => {
         link.addEventListener('click', function (e) {
             e.stopPropagation();
@@ -641,7 +649,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function removeMenu(url) {
-    event.stopPropagation();  // ✅ X 버튼 클릭 시 탭 활성화 방지
+    event.stopPropagation();
     
     var loginCode = "${loginUser.user_code}";       
    
@@ -659,11 +667,9 @@ function removeMenu(url) {
     });
 }    
 
-// DOMContentLoaded 이벤트로 DOM이 준비된 후 스크립트 실행
 document.addEventListener('DOMContentLoaded', function() {
     const linkColor = document.querySelectorAll('.nav__link');
 
-    // 메뉴 클릭 시 활성화
     function colorLink() {
         linkColor.forEach(l => l.classList.remove('active'));
         this.classList.add('active');
@@ -683,6 +689,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 $(".logout-button").on("click",function(){
+	localStorage.removeItem("currentPageUrl");
+    localStorage.removeItem("currentPageName");
     $.ajax({
         url:"/tkheat/user/logout",
         type:"get",

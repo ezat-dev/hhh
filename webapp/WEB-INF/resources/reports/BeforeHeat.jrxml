@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<!-- Created with Jaspersoft Studio version 6.21.3.final using JasperReports Library version 6.21.3-4a3078d20785ebe464f18037d738d12fc98c13cf  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="beforeHeat" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="0" uuid="06efea20-9e58-477b-9652-71640e34de90">
 	<property name="ireport.zoom" value="1.7715610000000022"/>
 	<property name="ireport.x" value="0"/>
@@ -84,9 +84,12 @@
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="398" splitType="Stretch">
+		<band height="380" splitType="Prevent">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="0" y="0" width="555" height="51" uuid="5eba9491-81a3-4187-8ddd-5998b6ea97e9"/>
+				<reportElement x="0" y="0" width="555" height="50" uuid="5eba9491-81a3-4187-8ddd-5998b6ea97e9">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -98,20 +101,8 @@
 				</textElement>
 				<text><![CDATA[]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="-452" y="362" width="44" height="35" uuid="7ed49a3e-8ce5-4956-b4b2-d5e47b1be1e2"/>
-				<box>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="굴림" size="12" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
-				</textElement>
-			</textField>
 			<staticText>
-				<reportElement x="66" y="270" width="132" height="20" uuid="2028024e-3020-4608-84cc-b103ff472bf2"/>
+				<reportElement x="66" y="250" width="132" height="20" uuid="2028024e-3020-4608-84cc-b103ff472bf2"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -124,7 +115,7 @@
 				<text><![CDATA[경  화  깊  이]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="220" width="66" height="20" uuid="034af255-a2cd-4d7d-ab9d-683412fada02"/>
+				<reportElement x="0" y="205" width="66" height="20" uuid="034af255-a2cd-4d7d-ab9d-683412fada02"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -137,7 +128,7 @@
 				<text><![CDATA[수량(EA)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="480" y="270" width="75" height="20" uuid="2e05d2e7-728f-4493-90c2-8e54f5d492b6"/>
+				<reportElement x="480" y="250" width="75" height="20" uuid="2e05d2e7-728f-4493-90c2-8e54f5d492b6"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -150,7 +141,7 @@
 				<text><![CDATA[후처리]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="258" y="270" width="66" height="20" uuid="9bae6ec3-814e-4213-b135-8cc2be1585dd"/>
+				<reportElement x="258" y="250" width="66" height="20" uuid="9bae6ec3-814e-4213-b135-8cc2be1585dd"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -163,7 +154,7 @@
 				<text><![CDATA[심부경도]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="190" width="66" height="30" uuid="a0efe4b8-19e5-4a29-903f-30a84d1286d3"/>
+				<reportElement x="0" y="180" width="66" height="25" uuid="a0efe4b8-19e5-4a29-903f-30a84d1286d3"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -176,7 +167,9 @@
 				<text><![CDATA[열처리종류]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="366" width="154" height="27" uuid="266171ef-76c7-4e56-9bf9-c2941393e0b2"/>
+				<reportElement x="0" y="340" width="154" height="15" uuid="266171ef-76c7-4e56-9bf9-c2941393e0b2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -190,7 +183,7 @@
 				<text><![CDATA[TKP-812-03(REV. 1)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="52" width="66" height="31" uuid="3d837cde-3986-4999-93fe-491c156e504a"/>
+				<reportElement x="0" y="50" width="66" height="25" uuid="3d837cde-3986-4999-93fe-491c156e504a"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -200,10 +193,12 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" size="12" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<text><![CDATA[업   체]]></text>
+				<text><![CDATA[업    체]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="87" y="340" width="67" height="26" uuid="1d30c433-351a-4a15-bd4a-f278ed9012a6"/>
+				<reportElement x="87" y="315" width="67" height="25" uuid="1d30c433-351a-4a15-bd4a-f278ed9012a6">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -216,7 +211,7 @@
 				<textFieldExpression><![CDATA[$F{prod_danch}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="106" y="220" width="70" height="20" uuid="b15c4281-752d-4475-9909-9d86dcb8dbe5"/>
+				<reportElement x="106" y="205" width="70" height="20" uuid="b15c4281-752d-4475-9909-9d86dcb8dbe5"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -229,7 +224,7 @@
 				<text><![CDATA[총중량(KG)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="480" y="320" width="75" height="20" uuid="327889b0-26ba-466c-bb93-fa7e42625cb2"/>
+				<reportElement x="480" y="295" width="75" height="20" uuid="327889b0-26ba-466c-bb93-fa7e42625cb2"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -242,7 +237,9 @@
 				<text><![CDATA[영업담당]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="394" y="290" width="86" height="30" uuid="604550a7-57be-4064-a1bd-cb4f8c2ab430"/>
+				<reportElement x="394" y="270" width="86" height="25" uuid="604550a7-57be-4064-a1bd-cb4f8c2ab430">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -255,7 +252,7 @@
 				<textFieldExpression><![CDATA[$F{itst_wp}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="200" y="33" width="147" height="17" uuid="35a17cfe-d505-40b8-9374-53287a9e0c6c">
+				<reportElement x="200" y="32" width="147" height="17" uuid="35a17cfe-d505-40b8-9374-53287a9e0c6c">
 					<property name="local_mesure_unitheight" value="pixel"/>
 				</reportElement>
 				<box>
@@ -268,7 +265,7 @@
 				<textFieldExpression><![CDATA[$F{ord_code}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="378" y="220" width="102" height="20" uuid="80b80d15-3927-4dfc-811e-4fe6c0fe2352"/>
+				<reportElement x="378" y="205" width="102" height="20" uuid="80b80d15-3927-4dfc-811e-4fe6c0fe2352"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -281,7 +278,9 @@
 				<text><![CDATA[방탄여부]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="43" y="340" width="44" height="26" uuid="92f212f9-a427-438d-80e9-3de4fd609aaa"/>
+				<reportElement x="43" y="315" width="44" height="25" uuid="92f212f9-a427-438d-80e9-3de4fd609aaa">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -294,7 +293,9 @@
 				<textFieldExpression><![CDATA[$F{prod_pad}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="258" y="290" width="66" height="30" uuid="28e8a4d5-0a28-4d40-9ec7-a4cc141031a7"/>
+				<reportElement x="258" y="270" width="66" height="25" uuid="28e8a4d5-0a28-4d40-9ec7-a4cc141031a7">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -307,7 +308,9 @@
 				<textFieldExpression><![CDATA[$F{prod_sg}+" "+$F{prod_sg1}+"~"+$F{prod_sg2}]]></textFieldExpression>
 			</textField>
 			<textField pattern=" #,##0" isBlankWhenNull="true">
-				<reportElement x="378" y="240" width="102" height="30" uuid="d7fe8781-ab39-46c8-b7be-e60492579b8c"/>
+				<reportElement x="378" y="225" width="102" height="25" uuid="d7fe8781-ab39-46c8-b7be-e60492579b8c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -320,7 +323,9 @@
 				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="0" y="340" width="43" height="26" uuid="a8cafb81-d08a-467f-b9db-abd8492e7ed2"/>
+				<reportElement x="0" y="315" width="43" height="25" uuid="a8cafb81-d08a-467f-b9db-abd8492e7ed2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -333,7 +338,7 @@
 				<textFieldExpression><![CDATA[$F{prod_plt}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="66" y="190" width="110" height="30" uuid="329896c2-6e6a-4c0b-ba7b-1471a8f64a2e"/>
+				<reportElement x="66" y="180" width="110" height="25" uuid="329896c2-6e6a-4c0b-ba7b-1471a8f64a2e"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -346,7 +351,9 @@
 				<textFieldExpression><![CDATA[$F{tech_te}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="225" y="320" width="99" height="46" uuid="94a47659-2761-42ec-962c-c979a228a312"/>
+				<reportElement x="225" y="295" width="99" height="45" uuid="94a47659-2761-42ec-962c-c979a228a312">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -359,21 +366,7 @@
 				<textFieldExpression><![CDATA[$F{ord_bigo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="165" width="66" height="25" uuid="dd707d5c-8066-4bed-a324-fc9604d3db95"/>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
-				</textElement>
-				<text><![CDATA[입고LOT/
-타각No]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="140" width="66" height="25" uuid="5e673e75-ad5a-4aa1-b02a-1dd6840265c5"/>
+				<reportElement x="0" y="150" width="66" height="30" uuid="dd707d5c-8066-4bed-a324-fc9604d3db95"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -383,10 +376,26 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" size="12" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<text><![CDATA[규격]]></text>
+				<text><![CDATA[입고LOT/
+타각No]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="480" y="220" width="75" height="20" uuid="1d6b4e64-15ad-444c-80f9-e683a34cff6c"/>
+				<reportElement x="0" y="125" width="66" height="25" uuid="5e673e75-ad5a-4aa1-b02a-1dd6840265c5">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="12" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[규    격]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="480" y="205" width="75" height="20" uuid="1d6b4e64-15ad-444c-80f9-e683a34cff6c"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -399,7 +408,9 @@
 				<text><![CDATA[업종분류]]></text>
 			</staticText>
 			<textField pattern="###0.000" isBlankWhenNull="true">
-				<reportElement x="176" y="240" width="94" height="30" uuid="92c37cc4-645f-45a8-8ab1-22afea038e94"/>
+				<reportElement x="176" y="225" width="94" height="25" uuid="92c37cc4-645f-45a8-8ab1-22afea038e94">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -412,7 +423,7 @@
 				<textFieldExpression><![CDATA[$F{ord_danj}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="83" width="66" height="32" uuid="b61f45cc-070a-43f6-a0b1-28f706d10bab"/>
+				<reportElement x="0" y="75" width="66" height="25" uuid="b61f45cc-070a-43f6-a0b1-28f706d10bab"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -425,7 +436,9 @@
 				<text><![CDATA[품    명]]></text>
 			</staticText>
 			<textField pattern="yyyy-MM-dd" isBlankWhenNull="true">
-				<reportElement x="411" y="25" width="144" height="26" uuid="ad3ef3e3-638e-4a3d-957f-ab78527e55ce"/>
+				<reportElement x="411" y="25" width="144" height="25" uuid="ad3ef3e3-638e-4a3d-957f-ab78527e55ce">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -438,7 +451,7 @@
 				<textFieldExpression><![CDATA[$F{ord_nap}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="270" width="66" height="20" uuid="7496312c-0e28-41a3-9f92-472e065670f2"/>
+				<reportElement x="0" y="250" width="66" height="20" uuid="7496312c-0e28-41a3-9f92-472e065670f2"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -451,7 +464,7 @@
 				<text><![CDATA[표면경도]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="87" y="320" width="67" height="20" uuid="803b4f0e-6683-495a-9ace-d478df6a24a4"/>
+				<reportElement x="87" y="295" width="67" height="20" uuid="803b4f0e-6683-495a-9ace-d478df6a24a4"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -477,7 +490,9 @@
 				<textFieldExpression><![CDATA[$F{ord_date}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="350" y="25" width="61" height="26" uuid="8d5ca6ee-2bd1-4f61-a0fa-8a82ba96f423"/>
+				<reportElement x="350" y="25" width="61" height="25" uuid="8d5ca6ee-2bd1-4f61-a0fa-8a82ba96f423">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -490,7 +505,9 @@
 				<text><![CDATA[납기일자]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="0" y="290" width="66" height="30" uuid="e0a99b32-6203-4f4e-bddc-ae270e7cbd29"/>
+				<reportElement x="0" y="270" width="66" height="25" uuid="e0a99b32-6203-4f4e-bddc-ae270e7cbd29">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -503,7 +520,7 @@
 				<textFieldExpression><![CDATA[$F{prod_pg}+" "+$F{prod_pg1}+"~"+$F{prod_pg2}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="154" y="320" width="44" height="20" uuid="49229feb-5e28-4322-a4f6-d0ba988578b9"/>
+				<reportElement x="154" y="295" width="44" height="20" uuid="49229feb-5e28-4322-a4f6-d0ba988578b9"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -530,7 +547,9 @@
 				<text><![CDATA[열처리 수주서]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="66" y="165" width="285" height="25" uuid="a9a2e18d-750c-4a46-a479-0c18158fd82b"/>
+				<reportElement x="66" y="150" width="285" height="30" uuid="a9a2e18d-750c-4a46-a479-0c18158fd82b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -556,7 +575,9 @@
 				<text><![CDATA[수주일자]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="66" y="140" width="285" height="25" uuid="4f947aa3-4910-4727-a6f2-9440f978be31"/>
+				<reportElement x="66" y="125" width="285" height="25" uuid="4f947aa3-4910-4727-a6f2-9440f978be31">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -569,7 +590,7 @@
 				<textFieldExpression><![CDATA[$F{prod_gyu}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="206" y="190" width="145" height="30" uuid="74ece9d7-c412-4e34-aff9-f18e94dceb87"/>
+				<reportElement x="206" y="180" width="145" height="25" uuid="74ece9d7-c412-4e34-aff9-f18e94dceb87"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -582,7 +603,9 @@
 				<textFieldExpression><![CDATA[$F{prod_jai}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="106" y="240" width="70" height="30" uuid="333ff4b5-cc8a-430d-b81c-a60823ffe73c"/>
+				<reportElement x="106" y="225" width="70" height="25" uuid="333ff4b5-cc8a-430d-b81c-a60823ffe73c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -595,7 +618,7 @@
 				<textFieldExpression><![CDATA[$F{ord_jung}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="43" y="320" width="44" height="20" uuid="75fdd77c-7ca8-4cdb-ab46-c8d3978faa47"/>
+				<reportElement x="43" y="295" width="44" height="20" uuid="75fdd77c-7ca8-4cdb-ab46-c8d3978faa47"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -607,8 +630,10 @@
 				</textElement>
 				<text><![CDATA[시편]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-				<reportElement x="66" y="290" width="132" height="30" uuid="1596e9dd-c6dd-4175-8421-da44b8e450f4"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="66" y="270" width="132" height="25" uuid="1596e9dd-c6dd-4175-8421-da44b8e450f4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -623,7 +648,7 @@
 +($F{prod_gd5}.equals("")?"":"~") +$F{prod_gd5}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="270" y="220" width="108" height="20" uuid="bee047fe-259f-4fe8-92a1-ccca83e22cba"/>
+				<reportElement x="270" y="205" width="108" height="20" uuid="bee047fe-259f-4fe8-92a1-ccca83e22cba"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -636,7 +661,9 @@
 				<text><![CDATA[가공여부]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="198" y="320" width="27" height="46" uuid="2fa9a930-52e0-4e6a-963c-69e0a0548459"/>
+				<reportElement x="198" y="295" width="27" height="45" uuid="2fa9a930-52e0-4e6a-963c-69e0a0548459">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -651,7 +678,9 @@
 고]]></text>
 			</staticText>
 			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="0" y="240" width="66" height="30" uuid="e1845fa8-50e6-4928-875f-1cf5f4cb024e"/>
+				<reportElement x="0" y="225" width="66" height="25" uuid="e1845fa8-50e6-4928-875f-1cf5f4cb024e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -664,7 +693,9 @@
 				<textFieldExpression><![CDATA[$F{ord_su}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="480" y="290" width="75" height="30" uuid="9be2a8bd-d3e2-41db-8fcc-35eaeaf96dae"/>
+				<reportElement x="480" y="270" width="75" height="25" uuid="9be2a8bd-d3e2-41db-8fcc-35eaeaf96dae">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -677,14 +708,14 @@
 				<textFieldExpression><![CDATA[$F{prod_vnyl}]]></textFieldExpression>
 			</textField>
 			<image hAlign="Center" vAlign="Middle" onErrorType="Blank">
-				<reportElement x="352" y="52" width="203" height="168" uuid="3e0ad067-b514-474d-a3b7-1f6e6bad2d43"/>
+				<reportElement x="352" y="52" width="203" height="153" uuid="3e0ad067-b514-474d-a3b7-1f6e6bad2d43"/>
 				<box>
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<imageExpression><![CDATA[$F{prod_img}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="394" y="270" width="86" height="20" uuid="3667ce9b-854d-48ad-84ad-fc52ae50ffb2"/>
+				<reportElement x="394" y="250" width="86" height="20" uuid="3667ce9b-854d-48ad-84ad-fc52ae50ffb2"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -697,7 +728,9 @@
 				<text><![CDATA[수입검사]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="115" width="66" height="25" uuid="99860583-8f56-4e12-b497-beb7bcdc6e5d"/>
+				<reportElement x="0" y="100" width="66" height="25" uuid="99860583-8f56-4e12-b497-beb7bcdc6e5d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -710,7 +743,9 @@
 				<text><![CDATA[품    번]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="480" y="240" width="75" height="30" uuid="2fa45319-1740-4b65-b02c-d5da611c1fda"/>
+				<reportElement x="480" y="225" width="75" height="25" uuid="2fa45319-1740-4b65-b02c-d5da611c1fda">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -723,7 +758,7 @@
 				<textFieldExpression><![CDATA[$F{prod_upjong}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="324" y="270" width="70" height="20" uuid="e76b790f-1be5-48aa-bbbd-5255bee19dcd"/>
+				<reportElement x="324" y="250" width="70" height="20" uuid="e76b790f-1be5-48aa-bbbd-5255bee19dcd"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -737,7 +772,9 @@
 두께]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="154" y="340" width="44" height="26" uuid="16d5ec68-e937-49b6-a931-650ee1e0e139"/>
+				<reportElement x="154" y="315" width="44" height="25" uuid="16d5ec68-e937-49b6-a931-650ee1e0e139">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -750,7 +787,7 @@
 				<textFieldExpression><![CDATA[$F{prod_bangch}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="66" y="52" width="285" height="31" uuid="27cd57e1-0694-44a5-a106-068d53567ce3"/>
+				<reportElement x="66" y="50" width="285" height="25" uuid="27cd57e1-0694-44a5-a106-068d53567ce3"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -763,7 +800,7 @@
 				<textFieldExpression><![CDATA[$F{corp_name}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="66" y="83" width="285" height="32" uuid="7e89eac4-825f-4692-87ec-c4b19a2a590f"/>
+				<reportElement x="66" y="75" width="285" height="25" uuid="7e89eac4-825f-4692-87ec-c4b19a2a590f"/>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -776,7 +813,9 @@
 				<textFieldExpression><![CDATA[$F{prod_name}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="324" y="290" width="70" height="30" uuid="af47f15e-ffc8-4caf-bb6a-35f68e00c912"/>
+				<reportElement x="324" y="270" width="70" height="25" uuid="af47f15e-ffc8-4caf-bb6a-35f68e00c912">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -789,7 +828,9 @@
 				<textFieldExpression><![CDATA[$F{prod_whadeep}+" "+$F{prod_e1}+"~"+$F{prod_e2}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="66" y="115" width="285" height="25" uuid="a98ae670-ed18-429b-91da-0e0c08d9aa39"/>
+				<reportElement x="66" y="100" width="285" height="25" uuid="a98ae670-ed18-429b-91da-0e0c08d9aa39">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -802,7 +843,9 @@
 				<textFieldExpression><![CDATA[$F{prod_no}]]></textFieldExpression>
 			</textField>
 			<textField pattern=" #,##0" isBlankWhenNull="true">
-				<reportElement x="270" y="240" width="108" height="30" uuid="dcfd8376-cd5a-40c7-b128-0df90455a7af"/>
+				<reportElement x="270" y="225" width="108" height="25" uuid="dcfd8376-cd5a-40c7-b128-0df90455a7af">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -815,7 +858,7 @@
 				<textFieldExpression><![CDATA[""]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="176" y="190" width="30" height="30" uuid="9cd44ec8-eb46-4d89-ba17-7cd20f179ec2"/>
+				<reportElement x="176" y="180" width="30" height="25" uuid="9cd44ec8-eb46-4d89-ba17-7cd20f179ec2"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -828,7 +871,7 @@
 				<text><![CDATA[재질]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="320" width="43" height="20" uuid="23e73dc0-117e-429a-9932-8a2f520d61c6"/>
+				<reportElement x="0" y="295" width="43" height="20" uuid="23e73dc0-117e-429a-9932-8a2f520d61c6"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -841,7 +884,9 @@
 				<text><![CDATA[성적서]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="480" y="340" width="75" height="26" uuid="32d0b042-7727-43f4-82a5-47f07970d4b1"/>
+				<reportElement x="480" y="315" width="75" height="25" uuid="32d0b042-7727-43f4-82a5-47f07970d4b1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -854,7 +899,7 @@
 				<textFieldExpression><![CDATA[$F{ord_name}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="176" y="220" width="94" height="20" uuid="59f111b3-9372-43d3-bd9a-c6500db88d2d"/>
+				<reportElement x="176" y="205" width="94" height="20" uuid="59f111b3-9372-43d3-bd9a-c6500db88d2d"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -867,7 +912,9 @@
 				<text><![CDATA[단중(KG/EA)]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="324" y="320" width="70" height="46" uuid="08e908b9-b7e6-4119-8dd0-486c274b0adf"/>
+				<reportElement x="324" y="295" width="70" height="45" uuid="08e908b9-b7e6-4119-8dd0-486c274b0adf">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.0"/>
@@ -880,7 +927,9 @@
 				<textFieldExpression><![CDATA[$F{prod_note}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="198" y="290" width="60" height="30" uuid="f5436198-ed08-477f-bdd7-79bfad52f30d"/>
+				<reportElement x="198" y="270" width="60" height="25" uuid="f5436198-ed08-477f-bdd7-79bfad52f30d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -893,7 +942,7 @@
 				<textFieldExpression><![CDATA[$F{prod_polish}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="198" y="270" width="60" height="20" uuid="9aa115fa-6577-447e-a9fb-20407bcb6952"/>
+				<reportElement x="198" y="250" width="60" height="20" uuid="9aa115fa-6577-447e-a9fb-20407bcb6952"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -906,7 +955,9 @@
 				<text><![CDATA[연마여유(mm)]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement style="style1" x="394" y="320" width="86" height="46" uuid="fd99210b-3c5a-4454-92fd-b8cc24be4e31"/>
+				<reportElement style="style1" x="394" y="295" width="86" height="45" uuid="fd99210b-3c5a-4454-92fd-b8cc24be4e31">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
 					<leftPen lineWidth="0.5"/>
@@ -914,12 +965,14 @@
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="굴림" size="18" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+					<font fontName="굴림" size="16" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ord_sunip}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="66" y="240" width="40" height="30" uuid="25b669a6-e7b1-4092-a318-35ab83687f26"/>
+				<reportElement x="66" y="225" width="40" height="25" uuid="25b669a6-e7b1-4092-a318-35ab83687f26">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -932,7 +985,7 @@
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="66" y="220" width="40" height="20" uuid="92211445-b231-4705-b66a-2e376d324592"/>
+				<reportElement x="66" y="205" width="40" height="20" uuid="92211445-b231-4705-b66a-2e376d324592"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="0.5"/>
@@ -948,6 +1001,7 @@
 				<reportElement x="210" y="3" width="137" height="30" uuid="7ad0a0db-34d5-4ab2-a7c4-fe968659674b">
 					<property name="com.jaspersoft.studio.unit.barWidth" value="px"/>
 					<property name="com.jaspersoft.studio.unit.barHeight" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code128A" drawText="false" checksumRequired="false" barHeight="70">
 					<jr:codeExpression><![CDATA[$F{ord_code}]]></jr:codeExpression>

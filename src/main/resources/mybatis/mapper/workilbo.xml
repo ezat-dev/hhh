@@ -289,6 +289,7 @@
 				#{ord_code}
 			</foreach>
 		</if>
+		ORDER BY A.ord_code
 	</select>
 
 	<select id="getWorkIlboCodeSearch" resultType="int">
@@ -361,70 +362,10 @@
 		CONCAT(PROD_GD3,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd,
 		CONVERT(VARCHAR(16),ILBO_STRT,120) AS ilbo_strt,
 		CONVERT(VARCHAR(16),ILBO_END,120) AS ilbo_end,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_si1 IS NULL OR REPLACE(prod_si1,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_si1 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_si1 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_si1_msg,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_si2 IS NULL OR REPLACE(prod_si2,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_si2 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_si2 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_si2_msg,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_sr1 IS NULL OR REPLACE(prod_sr1,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_sr1 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_sr1 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_sr1_msg,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_sr2 IS NULL OR REPLACE(prod_sr2,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_sr2 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_sr2 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_sr2_msg,
+	    dbo.func_prod_spec_msg(prod_si1) AS prod_si1_msg,
+	    dbo.func_prod_spec_msg(prod_si2) AS prod_si2_msg,
+	    dbo.func_prod_spec_msg(prod_sr1) AS prod_sr1_msg,
+	    dbo.func_prod_spec_msg(prod_sr2) AS prod_sr2_msg,
 		CONCAT(prod_si,' ', prod_si1,' ~ ',prod_si2) AS prod_si,
 		CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr
 		FROM WORKILBO
@@ -587,70 +528,10 @@
 		CONVERT(VARCHAR(16),ILBO_STRT,120) AS ilbo_strt,
 		CONVERT(VARCHAR(16),ILBO_END,120) AS ilbo_end,
 		FORMAT(ilbo_jung,'N2') AS ilbo_jung,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_si1 IS NULL OR REPLACE(prod_si1,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_si1 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_si1 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_si1_msg,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_si2 IS NULL OR REPLACE(prod_si2,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_si2 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_si2 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_si2_msg,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_sr1 IS NULL OR REPLACE(prod_sr1,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_sr1 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_sr1 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_sr1_msg,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_sr2 IS NULL OR REPLACE(prod_sr2,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_sr2 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_sr2 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_sr2_msg,
+	    dbo.func_prod_spec_msg(prod_si1) AS prod_si1_msg,
+	    dbo.func_prod_spec_msg(prod_si2) AS prod_si2_msg,
+	    dbo.func_prod_spec_msg(prod_sr1) AS prod_sr1_msg,
+	    dbo.func_prod_spec_msg(prod_sr2) AS prod_sr2_msg,
 		CONCAT(prod_si,' ', prod_si1,' ~ ',prod_si2) AS prod_si,
 		CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr
 		FROM WORKILBO
@@ -758,70 +639,10 @@
 		CONCAT(PROD_GD3,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd,
 		CONVERT(VARCHAR(16),ILBO_STRT,120) AS ilbo_strt,
 		CONVERT(VARCHAR(16),ILBO_END,120) AS ilbo_end,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_si1 IS NULL OR REPLACE(prod_si1,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_si1 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_si1 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_si1_msg,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_si2 IS NULL OR REPLACE(prod_si2,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_si2 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_si2 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_si2_msg,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_sr1 IS NULL OR REPLACE(prod_sr1,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_sr1 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_sr1 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_sr1_msg,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_sr2 IS NULL OR REPLACE(prod_sr2,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_sr2 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_sr2 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_sr2_msg,
+	    dbo.func_prod_spec_msg(prod_si1) AS prod_si1_msg,
+	    dbo.func_prod_spec_msg(prod_si2) AS prod_si2_msg,
+	    dbo.func_prod_spec_msg(prod_sr1) AS prod_sr1_msg,
+	    dbo.func_prod_spec_msg(prod_sr2) AS prod_sr2_msg,
 		CONCAT(prod_si,' ', prod_si1,' ~ ',prod_si2) AS prod_si,
 		CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr
 		FROM WORKILBO
@@ -982,70 +803,10 @@
 			CONVERT(VARCHAR(16),ILBO_STRT,120) AS ilbo_strt,
 			CONVERT(VARCHAR(16),ILBO_END,120) AS ilbo_end,
 			FORMAT(ilbo_jung,'N2') AS ilbo_jung,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_si1 IS NULL OR REPLACE(prod_si1,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_si1 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_si1 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_si1_msg,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_si2 IS NULL OR REPLACE(prod_si2,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_si2 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_si2 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_si2_msg,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_sr1 IS NULL OR REPLACE(prod_sr1,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_sr1 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_sr1 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_sr1_msg,
-	    CASE 
-	        -- 1. 빈값 처리
-	        WHEN prod_sr2 IS NULL OR REPLACE(prod_sr2,' ','') = '' 
-	            THEN '수정필요(공백)'
-	        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-	        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-	        WHEN prod_sr2 NOT LIKE '%[^0-9.]%' 
-	            THEN '정상(순수숫자)'
-	        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-	        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-	        WHEN prod_sr2 LIKE '%[0-9]%' 
-	            THEN '수정필요(형식불량)'
-	        -- 4. 숫자 자체가 없는 경우
-	        -- 예: '기준없음', '미정'
-	        ELSE '수정필요(숫자없음)'
-	    END AS prod_sr2_msg,
+	    dbo.func_prod_spec_msg(prod_si1) AS prod_si1_msg,
+	    dbo.func_prod_spec_msg(prod_si2) AS prod_si2_msg,
+	    dbo.func_prod_spec_msg(prod_sr1) AS prod_sr1_msg,
+	    dbo.func_prod_spec_msg(prod_sr2) AS prod_sr2_msg,
 		CONCAT(prod_si,' ', prod_si1,' ~ ',prod_si2) AS prod_si,
 		CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr
 		FROM WORKILBO
@@ -1117,70 +878,10 @@
 			CONVERT(VARCHAR(16),ILBO_STRT,120) AS ilbo_strt,
 			CONVERT(VARCHAR(16),ILBO_END,120) AS ilbo_end,
 			FORMAT(ilbo_jung,'N2') AS ilbo_jung,
-		    CASE 
-		        -- 1. 빈값 처리
-		        WHEN prod_si1 IS NULL OR REPLACE(prod_si1,' ','') = '' 
-		            THEN '수정필요(공백)'
-		        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-		        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-		        WHEN prod_si1 NOT LIKE '%[^0-9.]%' 
-		            THEN '정상(순수숫자)'
-		        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-		        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-		        WHEN prod_si1 LIKE '%[0-9]%' 
-		            THEN '수정필요(형식불량)'
-		        -- 4. 숫자 자체가 없는 경우
-		        -- 예: '기준없음', '미정'
-		        ELSE '수정필요(숫자없음)'
-		    END AS prod_si1_msg,
-		    CASE 
-		        -- 1. 빈값 처리
-		        WHEN prod_si2 IS NULL OR REPLACE(prod_si2,' ','') = '' 
-		            THEN '수정필요(공백)'
-		        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-		        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-		        WHEN prod_si2 NOT LIKE '%[^0-9.]%' 
-		            THEN '정상(순수숫자)'
-		        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-		        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-		        WHEN prod_si2 LIKE '%[0-9]%' 
-		            THEN '수정필요(형식불량)'
-		        -- 4. 숫자 자체가 없는 경우
-		        -- 예: '기준없음', '미정'
-		        ELSE '수정필요(숫자없음)'
-		    END AS prod_si2_msg,
-		    CASE 
-		        -- 1. 빈값 처리
-		        WHEN prod_sr1 IS NULL OR REPLACE(prod_sr1,' ','') = '' 
-		            THEN '수정필요(공백)'
-		        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-		        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-		        WHEN prod_sr1 NOT LIKE '%[^0-9.]%' 
-		            THEN '정상(순수숫자)'
-		        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-		        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-		        WHEN prod_sr1 LIKE '%[0-9]%' 
-		            THEN '수정필요(형식불량)'
-		        -- 4. 숫자 자체가 없는 경우
-		        -- 예: '기준없음', '미정'
-		        ELSE '수정필요(숫자없음)'
-		    END AS prod_sr1_msg,
-		    CASE 
-		        -- 1. 빈값 처리
-		        WHEN prod_sr2 IS NULL OR REPLACE(prod_sr2,' ','') = '' 
-		            THEN '수정필요(공백)'
-		        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-		        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-		        WHEN prod_sr2 NOT LIKE '%[^0-9.]%' 
-		            THEN '정상(순수숫자)'
-		        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-		        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-		        WHEN prod_sr2 LIKE '%[0-9]%' 
-		            THEN '수정필요(형식불량)'
-		        -- 4. 숫자 자체가 없는 경우
-		        -- 예: '기준없음', '미정'
-		        ELSE '수정필요(숫자없음)'
-		    END AS prod_sr2_msg
+	    dbo.func_prod_spec_msg(prod_si1) AS prod_si1_msg,
+	    dbo.func_prod_spec_msg(prod_si2) AS prod_si2_msg,
+	    dbo.func_prod_spec_msg(prod_sr1) AS prod_sr1_msg,
+	    dbo.func_prod_spec_msg(prod_sr2) AS prod_sr2_msg
 		FROM WORKILBO
 		INNER JOIN
 		    ORDERT
@@ -1363,70 +1064,10 @@
 			CONVERT(VARCHAR(16),ILBO_STRT,120) AS ilbo_strt,
 			CONVERT(VARCHAR(16),ILBO_END,120) AS ilbo_end,
 			FORMAT(ilbo_jung,'N2') AS ilbo_jung,
-		    CASE 
-		        -- 1. 빈값 처리
-		        WHEN prod_si1 IS NULL OR REPLACE(prod_si1,' ','') = '' 
-		            THEN '수정필요(공백)'
-		        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-		        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-		        WHEN prod_si1 NOT LIKE '%[^0-9.]%' 
-		            THEN '정상(순수숫자)'
-		        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-		        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-		        WHEN prod_si1 LIKE '%[0-9]%' 
-		            THEN '수정필요(형식불량)'
-		        -- 4. 숫자 자체가 없는 경우
-		        -- 예: '기준없음', '미정'
-		        ELSE '수정필요(숫자없음)'
-		    END AS prod_si1_msg,
-		    CASE 
-		        -- 1. 빈값 처리
-		        WHEN prod_si2 IS NULL OR REPLACE(prod_si2,' ','') = '' 
-		            THEN '수정필요(공백)'
-		        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-		        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-		        WHEN prod_si2 NOT LIKE '%[^0-9.]%' 
-		            THEN '정상(순수숫자)'
-		        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-		        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-		        WHEN prod_si2 LIKE '%[0-9]%' 
-		            THEN '수정필요(형식불량)'
-		        -- 4. 숫자 자체가 없는 경우
-		        -- 예: '기준없음', '미정'
-		        ELSE '수정필요(숫자없음)'
-		    END AS prod_si2_msg,
-		    CASE 
-		        -- 1. 빈값 처리
-		        WHEN prod_sr1 IS NULL OR REPLACE(prod_sr1,' ','') = '' 
-		            THEN '수정필요(공백)'
-		        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-		        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-		        WHEN prod_sr1 NOT LIKE '%[^0-9.]%' 
-		            THEN '정상(순수숫자)'
-		        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-		        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-		        WHEN prod_sr1 LIKE '%[0-9]%' 
-		            THEN '수정필요(형식불량)'
-		        -- 4. 숫자 자체가 없는 경우
-		        -- 예: '기준없음', '미정'
-		        ELSE '수정필요(숫자없음)'
-		    END AS prod_sr1_msg,
-		    CASE 
-		        -- 1. 빈값 처리
-		        WHEN prod_sr2 IS NULL OR REPLACE(prod_sr2,' ','') = '' 
-		            THEN '수정필요(공백)'
-		        -- 2. 순수 숫자 (0~9 이외의 문자가 단 하나도 없을 때)
-		        -- '50'은 통과, '50 ', ' 50', '50이상', '이상50'은 모두 아래로 내려감
-		        WHEN prod_sr2 NOT LIKE '%[^0-9.]%' 
-		            THEN '정상(순수숫자)'
-		        -- 3. 혼합형 (숫자가 포함되어 있지만 다른 기호/한글이 섞인 모든 경우)
-		        -- 예: '50이상', '이상 50', '> 50', '50.0' 등
-		        WHEN prod_sr2 LIKE '%[0-9]%' 
-		            THEN '수정필요(형식불량)'
-		        -- 4. 숫자 자체가 없는 경우
-		        -- 예: '기준없음', '미정'
-		        ELSE '수정필요(숫자없음)'
-		    END AS prod_sr2_msg
+	    dbo.func_prod_spec_msg(prod_si1) AS prod_si1_msg,
+	    dbo.func_prod_spec_msg(prod_si2) AS prod_si2_msg,
+	    dbo.func_prod_spec_msg(prod_sr1) AS prod_sr1_msg,
+	    dbo.func_prod_spec_msg(prod_sr2) AS prod_sr2_msg
 		FROM WORKILBO
 		INNER JOIN
 		    ORDERT
@@ -1494,6 +1135,90 @@
 		AND WORKILBO.ILBO_NO = WORKILBO_SOIP.ILBO_NO_SOIP
 		WHERE 1=1
 		AND ILBO_PC = #{ilbo_pc}
+	</select>
+
+<!-- 열처리 체크시트 기준정보 -->
+	<select id="workIlboCheckSeetPrintStd" parameterType="workJisiTk" resultType="workJisiTk">
+		SELECT
+		ilbo_lot
+		, MAX(ilbo_pc) AS ilbo_pc
+		, CONCAT('J',FORMAT(MAX(ilbo_pc),'000000000')) AS danch_barcode
+		, ISNULL(MAX(CASE WHEN workilbo.ilbo_gubn = 'A' THEN facility.fac_name END),'') AS fac_name_bcf
+		, ISNULL(MAX(CASE WHEN workilbo.ilbo_gubn = 'R' THEN facility.fac_name END),'') AS fac_name_tf
+		, ISNULL(MAX(ilbo_g43),'') AS ilbo_g43 --예열(온도)
+		, ISNULL(MAX(ilbo_g42),'') AS ilbo_g42 --예열(시간)
+		, ISNULL(MAX(ilbo_g23),'') AS ilbo_g23 --침탄(온도)
+		, ISNULL(MAX(ilbo_g24),'') AS ilbo_g24 --침탄(시간)
+		, ISNULL(MAX(ilbo_g25),'') AS ilbo_g25 --침탄(CP)
+		, ISNULL(MAX(ilbo_pg6),'') AS ilbo_pg6 --확산(온도)
+		, ISNULL(MAX(ilbo_g26),'') AS ilbo_g26 --확산(시간)
+		, ISNULL(MAX(ilbo_g27),'') AS ilbo_g27 --확산(CP)
+		, ISNULL(MAX(ilbo_g31),'') AS ilbo_g31 --강온(온도)
+		, ISNULL(MAX(ilbo_g32),'') AS ilbo_g32 --강온(시간)
+		, ISNULL(MAX(ilbo_g33),'') AS ilbo_g33 --강온(CP)
+		, ISNULL(MAX(ilbo_g34),'') AS ilbo_g34 --냉각(온도)
+		, ISNULL(MAX(ilbo_g11),'') AS ilbo_g11 --템퍼링(온도)
+		, ISNULL(MAX(ilbo_g12),'') AS ilbo_g12 --템퍼링(시간)
+		, ISNULL(MAX(CASE WHEN workilbo.ilbo_gubn = 'A' THEN CONVERT(CHAR(16),workilbo.ilbo_strt,120) END),'') AS ilbo_strt_bcf
+		, ISNULL(MAX(CASE WHEN workilbo.ilbo_gubn = 'R' THEN CONVERT(CHAR(16),workilbo.ilbo_strt,120) END),'') AS ilbo_strt_tf
+		, ISNULL(MAX(CASE WHEN workilbo.ilbo_gubn = 'A' THEN CONVERT(CHAR(16),workilbo.ilbo_end,120) END),'') AS ilbo_end_bcf
+		, ISNULL(MAX(CASE WHEN workilbo.ilbo_gubn = 'R' THEN CONVERT(CHAR(16),workilbo.ilbo_end,120) END),'') AS ilbo_end_tf
+		, SUM(CASE WHEN workilbo.ilbo_gubn = 'A' THEN workilbo.ilbo_su END) AS ilbo_su_sum
+		, SUM(CASE WHEN workilbo.ilbo_gubn = 'A' THEN workilbo.ilbo_jung END) AS ilbo_jung_sum
+		, MAX(CASE WHEN workilbo.ilbo_gubn = 'A' THEN usert.user_name END) AS user_name
+		FROM workilbo
+		INNER JOIN
+			ordert
+		ON workilbo.ord_code = ordert.ord_code
+		INNER JOIN
+			product
+		ON ordert.prod_code = product.prod_code
+		INNER JOIN
+			techin
+		ON product.tech_no = techin.TECH_NO
+		INNER JOIN
+			facility
+		ON workilbo.fac_code = facility.fac_code
+		INNER JOIN
+			usert
+		ON workilbo.user_code = usert.user_code
+		WHERE ilbo_lot = #{ilbo_lot}
+		GROUP BY ilbo_lot
+	</select>
+
+	<select id="workIlboCheckSeetPrintOrdcodeList" parameterType="workJisiTk" resultType="workJisiTk">
+		SELECT 
+		ordert.ord_code
+		,corp.corp_name
+		,product.prod_name
+		,product.prod_no
+		,product.prod_jai
+		,CONCAT(PROD_PG,' ',PROD_PG1,' ~ ', PROD_PG2) AS prod_pg
+		,CONCAT(PROD_GD1,' ',PROD_GD2,' ~ ',PROD_GD3) AS prod_gd
+		,CONCAT(PROD_whadeep,' ',PROD_e1,' ~ ', PROD_e2) AS prod_cq
+		,ilbo_su
+		,ilbo_jung
+		,tech_te
+		FROM workilbo
+		INNER JOIN
+			ordert
+		ON workilbo.ord_code = ordert.ord_code
+		INNER JOIN
+			product
+		ON ordert.prod_code = product.prod_code
+		INNER JOIN
+			techin
+		ON product.tech_no = techin.TECH_NO
+		INNER JOIN
+			facility
+		ON workilbo.fac_code = facility.fac_code
+		INNER JOIN
+			corp
+		ON product.corp_code = corp.corp_code
+		WHERE 1=1
+		AND ilbo_lot = #{ilbo_lot}
+		AND ilbo_gubn = 'A'
+		ORDER BY ordert.ord_code
 	</select>
 
 

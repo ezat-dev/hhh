@@ -49,6 +49,18 @@
 .box1 input {
 	margin-right: 10px; /* 요소 사이 간격 */
 }  
+/* 헤더 컬럼 높이 고정 */
+.tabulator .tabulator-col {
+    height: 55px !important;
+}
+
+/* 헤더 필터 input 위치 고정 */
+.tabulator .tabulator-col .tabulator-col-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
     
     </style>
     
@@ -111,7 +123,7 @@
 	function getProdSiljukList() {
 
     userTable = new Tabulator("#tab1", {
-        height: "750px",
+        height: "720px",
         layout: "fitColumns",
         selectable: true,
         tooltips: true,
@@ -135,13 +147,18 @@
         headerFilterPlaceholder: "",
         ajaxResponse: function (url, params, response) {
             $("#tab1 .tabulator-col.tabulator-sortable").css("height", "55px");
-            return response;
+ 			console.log("📊 서버 응답:", response);
+            
+            const data = response.data ? response.data : response;
+            console.log("📊 데이터 개수:", data.length);
+            
+            return data;
         },
         columns: [
             { title: "NO", field: "idx", sorter: "int", width: 80, hozAlign: "center" },
-            { title: "거래처명", field: "corp_name", sorter: "string", width: 170, hozAlign: "center", headerFilter: "input" },
-            { title: "품명", field: "prod_name", sorter: "string", width: 270, hozAlign: "center", headerFilter: "input" },
-            { title: "품번", field: "prod_no", sorter: "string", width: 240, hozAlign: "center", headerFilter: "input" },
+            { title: "거래처명", field: "corp_name", sorter: "string", width: 170, hozAlign: "center", headerFilter: "input" , headerSort:false},
+            { title: "품명", field: "prod_name", sorter: "string", width: 270, hozAlign: "center", headerFilter: "input" , headerSort:false},
+            { title: "품번", field: "prod_no", sorter: "string", width: 240, hozAlign: "center", headerFilter: "input" , headerSort:false},
             {
                 title: "수량",
                 field: "ilbo_su",

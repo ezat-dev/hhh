@@ -52,4 +52,8 @@ public interface WorkIlboDao {
 
 	List<WorkJisiTk> workIlboTfBcfListDataSetting(WorkJisiTk w);
 
+	WorkJisiTk workIlboCheckSeetPrintStd(WorkJisiTk w);
+
+	List<WorkJisiTk> workIlboCheckSeetPrintOrdcodeList(WorkJisiTk w);
+
 }

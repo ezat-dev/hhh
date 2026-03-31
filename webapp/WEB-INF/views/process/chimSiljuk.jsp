@@ -142,7 +142,7 @@ function getChimSiljukList(){
     $('#tab1').empty();
     
     chimSiljukTable = new Tabulator("#tab1", {
-        height:"750px",
+        height:"730px",
         layout:"fitColumns",
         selectable:true,
         tooltips:true,

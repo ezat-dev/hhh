@@ -7,14 +7,10 @@
 
 	<!-- 전체 거래처 목록 조회 -->
 	<select id="getCorpList" parameterType="corp" resultType="corp">
-		SELECT *
-		FROM CORP
-		WHERE 1=1
-		<!-- <if test="corp_name != null and corp_name != ''"> AND corp_name LIKE 
-			CONCAT('%', #{corp_name}, '%') </if> <if test="corp_plc != null and corp_plc 
-			!= ''"> AND corp_plc = #{corp_plc} </if> <if test="corp_gubn != null and 
-			corp_gubn != ''"> AND corp_gubn = #{corp_gubn} </if> <if test="corp_mast 
-			!= null and corp_mast != ''"> AND corp_mast = #{corp_mast} </if> -->
+	    SELECT *
+	    FROM CORP
+	    WHERE 1=1
+	    ORDER BY CORP_CODE ASC
 	</select>
 	
 	<!-- 거래처 더블클릭 조회 -->

@@ -24,7 +24,18 @@
 	max-height: 900px;
 	overflow-x: hidden !important;  
 }
-        
+/* 헤더 컬럼 높이 고정 */
+.tabulator .tabulator-col {
+    height: 55px !important;
+}
+
+/* 헤더 필터 input 위치 고정 */
+.tabulator .tabulator-col .tabulator-col-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}        
 .tabulator .tabulator-cell {
 	white-space: normal !important;
 	word-break: break-word; 
@@ -126,7 +137,7 @@
 	//함수
 	function getCuChulgoStatusList(){
 	userTable = new Tabulator("#tab1", {
-	    height: "750px",
+	    height: "720px",
 	    layout: "fitColumns",
 	    selectable: true,
 	    tooltips: true,
@@ -150,12 +161,17 @@
         headerFilterPlaceholder: "",
 	    ajaxResponse: function(url, params, response){
 			$("#tab1 .tabulator-col.tabulator-sortable").css("height", "55px");
-	        return response;
+			 console.log("📊 서버 응답:", response);
+	            
+	            const data = response.data ? response.data : response;
+	            console.log("📊 데이터 개수:", data.length);
+	            
+	            return data;
 	    },
 	    columns: [
 	    	{ title: "NO", field: "idx", sorter: "int", width: 80, hozAlign: "center" },
-	        { title: "출고일", field: "och_date", sorter: "string", width: 240, hozAlign: "center", headerFilter: "input" },
-			{ title: "거래처명", field: "corp_name", sorter: "string", width: 240, hozAlign: "center", headerFilter: "input" },
+	        { title: "출고일", field: "och_date", sorter: "string", width: 240, hozAlign: "center", headerFilter: "input", headerSort:false },
+			{ title: "거래처명", field: "corp_name", sorter: "string", width: 240, hozAlign: "center", headerFilter: "input" , headerSort:false},
 			{
 				title: "매출금액",
 				field: "och_mon",

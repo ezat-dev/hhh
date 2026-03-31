@@ -151,169 +151,102 @@
 	
 	
 	<select id="getProductList" parameterType="product" resultType="product">
-		SET ANSI_WARNINGS OFF
-
-		SET ARITHIGNORE ON
-
-		SET ARITHABORT OFF
-		;with selectProdList as (
-			SELECT top(1000)
-				PROD_CNO,
-				PROD_GUBN, PROD_E1, PROD_E2, PROD_NOTE, PROD_MODEL, PROD_DANCH, PROD_PLT, PROD_BOX,
-				PROD_SNP, PROD_BANGCH, PROD_VNYL, PROD_PAD, PROD_REALJAI, TECH_PATTERN, TECH_SEQ, PROD_CD, PROD_KIJONG, PROD_E3,
-				PROD_E4, PROD_PGS, PROD_PGS1, PROD_PGS2, PROD_E5, PROD_DO, PROD_RA, PROD_UPJONG, PROD_APPEAR, PROD_TRANSFORM,
-				PROD_REFNO, PROD_PWSNO, PROD_WHADEEP, PROD_FILE, PROD_FAC1, PROD_FAC2, PROD_FAC3, PROD_FAC4, PROD_FAC5, 
-				CASE WHEN product_file_name IS NULL OR product_file_name = '' THEN 'no_image.png' ELSE product_file_name END AS product_file_name,
-				CASE WHEN apperance_file_name IS NULL OR apperance_file_name = '' THEN 'no_image.png' ELSE apperance_file_name END AS apperance_file_name,
-				CASE WHEN heat_file_name IS NULL OR heat_file_name = '' THEN 'no_image.png' ELSE heat_file_name END AS heat_file_name,
-				PROD_FAC6, PROD_FAC7, PROD_FAC8, PROD_GJ, PROD_BH, PROD_CHISU1N, PROD_CHISU2N, PROD_CHISU3N, PROD_CHISU4N,
-				PROD_CHISU5N, PROD_CHISU1S, PROD_CHISU2S, PROD_CHISU3S, PROD_CHISU4S, PROD_CHISU5S, PROD_POLISH, PROD_SI,
-				PROD_SI1, PROD_SI2, PROD_SR, PROD_SR1, PROD_SR2, PROD_BOXSU, CORP_NAME2, CORP_NO,
-				CORP_TEL, CORP_FAX, CORP_BOSS, CORP_MAST, CORP_UPTE, CORP_UPJO, CORP_ADD, CORP_PLC, CORP_BIGO, CORP_JAN,
-				CORP_STRT, CORP_GYUL1, CORP_GYUL2, CORP_GUBN, CORP_BMAN, CORP_HP, CORP_CNO, CORP_PWD, CORP_MAIL, CORP_BUSINESS,
-				PRODUCT.TECH_NO, TECH_ROOT, TECH_HT, CORP.CORP_CODE,
-
-				PROD_CODE,
-				CONVERT(CHAR(10), PROD_DATE, 23) as PROD_DATE,
-				CORP_NAME,
-				PROD_NAME,
-				PROD_NO,
-				PROD_GYU,
-				PROD_JAI,
-				TECH_TE,
-				PROD_DANJ,
-				PROD_DANW,
-				PROD_DANG,
-
-				CASE
-					when PROD_DANW = 'EA' then ( PROD_DANG )
-					when PROD_DANW = 'KG' then ( convert(double precision, PROD_DANG) * convert(double precision, PROD_DANJ) )
-					end AS PROD_DANG_EA,
-				CASE
-					when PROD_DANW = 'EA' then ( convert(double precision, PROD_DANG) / convert(double precision, PROD_DANJ) )
-					when PROD_DANW = 'KG' then ( PROD_DANG )
-					end AS PROD_DANG_KG,
-				CASE
-					when (PROD_PG1 is not null and PROD_PG1 != '') or (PROD_PG2 is not null and PROD_PG2 != '') /*둘중 하나라도 값이 존재*/
-						then
-							(
-								case
-									when (PROD_PG1 is null or PROD_PG1 = '') and (PROD_PG2 is not null or PROD_PG2 != '') /*PG1 값x, PG2 값o*/
-										then concat(PROD_PG, ' ', PROD_PG2, ' 이하')
-									when (PROD_PG1 is not null or PROD_PG1 != '') and (PROD_PG2 is null or PROD_PG2 = '') /*PG1 값o, PG2 값x*/
-										then concat(PROD_PG, ' ', PROD_PG1, ' 이상')
-									else concat(PROD_PG, ' ', PROD_PG1, ' ~ ', PROD_PG2)
-									end
-							)
-					else ''
-					end as PG_SPEC, /*둘다값이 없음*/
-				PROD_PG,
-				PROD_PG1,
-				PROD_PG2,
-				CASE
-					when (PROD_GD2 is not null and PROD_GD2 != '') or
-						((PROD_GD3 is not null and PROD_GD3 != '') and
-						((PROD_GD4 is not null and PROD_GD4 != '') or (PROD_GD5 is not null and PROD_GD5 != '')))
-						then
-							(
-								CASE
-									when (PROD_GD4 is null or PROD_GD4 = '')
-										then ( concat(PROD_GD1, ' ', PROD_GD2, ' 기준 ', PROD_GD3, ' ', PROD_GD5, ' 이하') )
-									when ((PROD_GD5 is null or PROD_GD5 = ''))
-										then ( concat(PROD_GD1, ' ', PROD_GD2, ' 기준 ', PROD_GD3, ' ', PROD_GD4, ' 이상') )
-									else concat(PROD_GD1, ' ', PROD_GD2, ' 기준 ', PROD_GD3, ' ', PROD_GD4, ' ~ ', PROD_GD5)
-									end
-							)
-					else ''
-					end as GD_SPEC,
-				PROD_GD1,
-				PROD_GD2,
-				PROD_GD3,
-				PROD_GD4,
-				PROD_GD5,
-				CASE
-					when ( PROD_SG1 is not null and PROD_SG1 != '' ) or ( PROD_SG2 is not null and PROD_SG2 != '' ) /*둘중 하나라도 값이 존재*/
-						then
-							(
-								case
-									when ( PROD_SG1 is null or PROD_SG1 = '' ) and ( PROD_SG2 is not null or PROD_SG2 != '' ) /*SG1 값x, SG2 값o*/
-										then concat(PROD_SG, ' ', PROD_SG2, ' 이하')
-									when ( PROD_SG1 is not null or PROD_SG1 != '' ) and ( PROD_SG2 is null or PROD_SG2 = '' ) /*SG1 값o, SG2 값x*/
-										then concat(PROD_SG, ' ', PROD_SG1, ' 이상')
-									else concat(PROD_SG, ' ', PROD_SG1, ' ~ ', PROD_SG2)
-									end
-							)
-					else ''
-					end as SG_SPEC, /*둘다값이 없음*/
-				PROD_SG,
-				PROD_SG1,
-				PROD_SG2
-				FROM PRODUCT
-					INNER JOIN CORP		ON PRODUCT.CORP_CODE = CORP.CORP_CODE
-					INNER JOIN TECHIN	ON PRODUCT.TECH_NO = TECHIN.TECH_NO
-				WHERE 1=1
-				and PROD_CODE NOT IN (
-						SELECT TOP 100 PROD_CODE
-						FROM PRODUCT
-							INNER JOIN CORP 	 ON PRODUCT.CORP_CODE = CORP.CORP_CODE
-							INNER JOIN TECHIN ON PRODUCT.TECH_NO = TECHIN.TECH_NO
-							<if test="corp_name != '' and corp_name != null">
-							AND CORP.CORP_NAME 		LIKE + '%' + #{corp_name} + '%'
-							</if>
-							<if test="prod_name != '' and prod_name != null">
-								AND PRODUCT.PROD_NAME 	LIKE + '%' + #{prod_name} + '%'
-							</if>
-							<if test="prod_no != '' and prod_no != null">
-								AND PRODUCT.PROD_NO 	LIKE + '%' + #{prod_no} + '%'
-							</if>
-							<if test="prod_gyu != '' and prod_gyu != null">
-								AND PRODUCT.PROD_GYU 	LIKE + '%' + #{prod_gyu} + '%'
-							</if>
-							<if test="prod_jai != '' and prod_jai != null">
-								AND PRODUCT.PROD_JAI 	LIKE + '%' + #{prod_jai} + '%'
-							</if>
-							<!-- <if test="CORP_BUSINESS != '' and CORP_BUSINESS != null">
-								AND CORP.CORP_BUSINESS	LIKE + '%' + #{CORP_BUSINESS} + '%'
-							</if> -->
-							<if test="tech_no != '' and tech_no != null">
-								AND TECHIN.TECH_no		LIKE + '%' + #{tech_no} + '%'
-							</if>
-						ORDER BY PROD_CODE ASC
-					)
-					<if test="corp_name!='' and corp_name != null">
-						AND CORP.CORP_NAME 		LIKE + '%' + #{corp_name} + '%'
-					</if>
-					<if test="prod_name!='' and prod_name != null">
-						AND PRODUCT.PROD_NAME 	LIKE + '%' + #{prod_name} + '%'
-					</if>
-					<if test="prod_no!='' and prod_no != null">
-						AND PRODUCT.PROD_NO 	LIKE + '%' + #{prod_no} + '%'
-					</if>
-					<if test="prod_gyu!='' and prod_gyu != null">
-						AND PRODUCT.PROD_GYU 	LIKE + '%' + #{prod_gyu} + '%'
-					</if>
-					<if test="prod_jai!='' and prod_jai != null">
-						AND PRODUCT.PROD_JAI 	LIKE + '%' + #{prod_jai} + '%'
-					</if>
-					<!-- <if test="CORP_BUSINESS!='' and CORP_BUSINESS != null">
-						AND CORP.CORP_BUSINESS	LIKE + '%' + #{CORP_BUSINESS} + '%'
-					</if> -->
-					<if test="tech_te!='' and tech_te != null">
-						AND TECHIN.TECH_TE		LIKE + '%' + #{tech_te} + '%'
-					</if>
-				ORDER BY PROD_CODE DESC
-		)
-		select * from selectProdList
-		where 1=1
-			<if test="prod_pg!='' and prod_pg != null">
-				and PROD_PG 		like + '%' + #{prod_pg} + '%'
-			</if>
-			<if test="prod_gd3!='' and prod_gd3 != null">
-				and PROD_GD3 		like + '%' + #{prod_gd3} + '%'
-			</if>
-			<if test="prod_sg!='' and prod_sg != null">
-				and PROD_SG 		like + '%' + #{prod_sg} + '%'
-			</if>
+	    SELECT
+	        PROD_CODE,
+	        CONVERT(CHAR(10), PROD_DATE, 23) AS PROD_DATE,
+	        CORP.CORP_NAME,
+	        CORP.CORP_CODE,
+	        PROD_NAME,
+	        PROD_NO,
+	        PROD_GYU,
+	        PROD_JAI,
+	        TECH_TE,
+	        PROD_DANJ,
+	        PROD_DANW,
+	        PROD_DANG,
+	        PROD_PG,
+	        PROD_PG1,
+	        PROD_PG2,
+	        PROD_GD1,
+	        PROD_GD2,
+	        PROD_GD3,
+	        PROD_GD4,
+	        PROD_GD5,
+	        PROD_SG,
+	        PROD_SG1,
+	        PROD_SG2,
+	        PROD_CNO,
+	        PROD_MODEL,
+	        PROD_DANCH,
+	        PROD_PLT,
+	        PROD_BOX,
+	        PROD_SNP,
+	        PROD_BANGCH,
+	        PROD_VNYL,
+	        PROD_PAD,
+	        PROD_UPJONG,
+	        PROD_REALJAI,
+	        TECH_SEQ,
+	        TECH_PATTERN,
+	        PROD_FILE,
+	        PROD_FAC1, PROD_FAC2, PROD_FAC3,
+	        PROD_FAC4, PROD_FAC5, PROD_FAC6,
+	        PROD_FAC7, PROD_FAC8,
+	        PROD_CHISU1N, PROD_CHISU2N, PROD_CHISU3N,
+	        PROD_CHISU4N, PROD_CHISU5N,
+	        PROD_CHISU1S, PROD_CHISU2S, PROD_CHISU3S,
+	        PROD_CHISU4S, PROD_CHISU5S,
+	        PROD_POLISH,
+	        PROD_BOXSU,
+	        PROD_SI, PROD_SI1, PROD_SI2,
+	        PROD_SR, PROD_SR1, PROD_SR2,
+	        PROD_GJ,
+	        PROD_BH,
+	        PROD_WHADEEP,
+	        PROD_E1, PROD_E2,
+	        PROD_NOTE,
+	        CASE WHEN product_file_name IS NULL OR product_file_name = ''
+	             THEN 'no_image.png'
+	             ELSE product_file_name END AS product_file_name,
+	        CASE WHEN apperance_file_name IS NULL OR apperance_file_name = ''
+	             THEN 'no_image.png'
+	             ELSE apperance_file_name END AS apperance_file_name,
+	        CASE WHEN heat_file_name IS NULL OR heat_file_name = ''
+	             THEN 'no_image.png'
+	             ELSE heat_file_name END AS heat_file_name,
+	        drawing_file_name
+	    FROM PRODUCT
+	    INNER JOIN CORP    ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+	    INNER JOIN TECHIN  ON PRODUCT.TECH_NO   = TECHIN.TECH_NO
+	    WHERE 1=1
+	    <if test="corp_name != null and corp_name != ''">
+	        AND CORP.CORP_NAME  LIKE '%' + #{corp_name} + '%'
+	    </if>
+	    <if test="prod_name != null and prod_name != ''">
+	        AND PRODUCT.PROD_NAME LIKE '%' + #{prod_name} + '%'
+	    </if>
+	    <if test="prod_no != null and prod_no != ''">
+	        AND PRODUCT.PROD_NO LIKE '%' + #{prod_no} + '%'
+	    </if>
+	    <if test="prod_gyu != null and prod_gyu != ''">
+	        AND PRODUCT.PROD_GYU LIKE '%' + #{prod_gyu} + '%'
+	    </if>
+	    <if test="prod_jai != null and prod_jai != ''">
+	        AND PRODUCT.PROD_JAI LIKE '%' + #{prod_jai} + '%'
+	    </if>
+	    <if test="tech_te != null and tech_te != ''">
+	        AND TECHIN.TECH_TE LIKE '%' + #{tech_te} + '%'
+	    </if>
+	    <if test="prod_pg != null and prod_pg != ''">
+	        AND PRODUCT.PROD_PG LIKE '%' + #{prod_pg} + '%'
+	    </if>
+	    <if test="prod_gd3 != null and prod_gd3 != ''">
+	        AND PRODUCT.PROD_GD3 LIKE '%' + #{prod_gd3} + '%'
+	    </if>
+	    <if test="prod_sg != null and prod_sg != ''">
+	        AND PRODUCT.PROD_SG LIKE '%' + #{prod_sg} + '%'
+	    </if>
+	    ORDER BY PROD_CODE DESC
 	</select>
 	
 	

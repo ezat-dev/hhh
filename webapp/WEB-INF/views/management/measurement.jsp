@@ -10,184 +10,106 @@
     <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %>     
     <style>
-    
 /* ========== 기존 스타일 유지 ========== */
-.container {
+.container { display: flex; justify-content: space-between; }
+/* 헤더 컬럼 높이 고정 */
+.tabulator .tabulator-col {
+    height: 55px !important;
+}
+
+/* 헤더 필터 input 위치 고정 */
+.tabulator .tabulator-col .tabulator-col-content {
+    height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
 }
-
 /* ========== 모달 오버레이 ========== */
 .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    display: none; position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 999;
 }
-
-.modal-overlay.active {
-    display: block;
-}
+.modal-overlay.active { display: block; }
 
 /* ========== 측정기기 모달 컨테이너 ========== */
 .measurement-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
+    display: none; position: fixed;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 1400px;
-    max-width: 95vw;
-    max-height: 90vh;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    overflow: hidden;
+    width: 900px; max-width: 95vw;
+    max-height: 95vh;              /* ★ 90 → 95vh */
+    background: white; border-radius: 8px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+    z-index: 1000; overflow: hidden;
 }
-
-.measurement-modal.active {
-    display: flex;
-    flex-direction: column;
-}
+.measurement-modal.active { display: flex; flex-direction: column; }
 
 /* ========== 모달 헤더 ========== */
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 25px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 16px;             /* ★ 15px 25px → 8px 16px */
     background: linear-gradient(135deg, #2c3e50, #34495e);
-    color: white;
-    cursor: move;
-    flex-shrink: 0;
+    color: white; cursor: move; flex-shrink: 0;
 }
-
-.modal-header h2 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 700;
-}
-
+.modal-header h2 { margin: 0; font-size: 15px; font-weight: 700; }
 .modal-close-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 28px;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    transition: all 0.3s;
+    background: none; border: none; color: white;
+    font-size: 22px; cursor: pointer;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; transition: all 0.3s;
 }
-
-.modal-close-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(90deg);
-}
+.modal-close-btn:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg); }
 
 /* ========== 모달 본문 ========== */
 .modal-body {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    flex: 1; overflow-y: auto; overflow-x: hidden;
     background: #f5f7fa;
-    padding: 15px;
+    padding: 8px 10px;             /* ★ 15px → 8px 10px */
 }
-
-.modal-body::-webkit-scrollbar {
-    width: 8px;
-}
-
-.modal-body::-webkit-scrollbar-track {
-    background: #e0e0e0;
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-    background: #999;
-    border-radius: 4px;
-}
-
-.modal-body::-webkit-scrollbar-thumb:hover {
-    background: #666;
-}
+.modal-body::-webkit-scrollbar { width: 5px; }
+.modal-body::-webkit-scrollbar-track { background: #e0e0e0; }
+.modal-body::-webkit-scrollbar-thumb { background: #999; border-radius: 4px; }
+.modal-body::-webkit-scrollbar-thumb:hover { background: #666; }
 
 /* ========== 컨텐츠 래퍼 ========== */
 .modal-content-wrapper {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 15px;
-    height: 100%;
+    display: grid; grid-template-columns: 2fr 1fr;
+    gap: 8px; height: 100%;        /* ★ 15px → 8px */
 }
 
 /* ========== 왼쪽/오른쪽 영역 ========== */
-.modal-left,
-.modal-right {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.modal-left, .modal-right {
+    display: flex; flex-direction: column;
+    gap: 5px;                      /* ★ 10px → 5px */
 }
 
 /* ========== 섹션 ========== */
 .field-section {
-    background: white;
-    border-radius: 8px;
-    padding: 12px 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background: white; border-radius: 6px;
+    padding: 6px 10px;             /* ★ 12px 15px → 6px 10px */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
-
 .section-title {
-    margin: 0 0 10px 0;
-    font-size: 14px;
-    font-weight: 700;
-    color: #2c3e50;
-    padding-bottom: 6px;
-    border-bottom: 2px solid #e9ecef;
+    margin: 0 0 5px 0;             /* ★ 10px → 5px */
+    font-size: 11px; font-weight: 700; color: #2c3e50;
+    padding-bottom: 4px;           /* ★ 6px → 4px */
+    border-bottom: 1px solid #e9ecef;
 }
 
 /* ========== 필드 행/열 ========== */
 .field-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 8px;
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 6px; margin-bottom: 5px;  /* ★ 10px→6px, 8px→5px */
 }
-
-.field-row:last-child {
-    margin-bottom: 0;
+.field-row:last-child { margin-bottom: 0; }
+.field-col { display: flex; flex-direction: column; gap: 2px; } /* ★ 4px → 2px */
+.field-col-full { grid-column: 1/-1; display: flex; flex-direction: column; gap: 2px; }
+.field-col label, .field-col-full label {
+    font-size: 10px; font-weight: 600; color: #495057; /* ★ 12px → 10px */
 }
-
-.field-col {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.field-col-full {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.field-col label,
-.field-col-full label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #495057;
-}
-
-.req {
-    color: #dc3545;
-    margin-left: 2px;
-}
+.req { color: #dc3545; margin-left: 2px; }
 
 /* ========== 입력 필드 ========== */
 .field-col input[type="text"],
@@ -196,211 +118,91 @@
 .field-col-full input[type="text"],
 .field-col-full textarea {
     width: 100%;
-    padding: 6px 10px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    font-size: 12px;
-    box-sizing: border-box;
-    transition: all 0.3s;
+    padding: 3px 7px;              /* ★ 6px 10px → 3px 7px */
+    border: 1px solid #ced4da; border-radius: 3px;
+    font-size: 11px;               /* ★ 12px → 11px */
+    box-sizing: border-box; transition: all 0.2s;
+    height: 26px;                  /* ★ 고정 높이 */
 }
-
-.field-col input:focus,
-.field-col select:focus,
-.field-col-full input:focus,
-.field-col-full textarea:focus {
-    outline: none;
-    border-color: #4dabf7;
-    box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.1);
+.field-col input:focus, .field-col select:focus,
+.field-col-full input:focus, .field-col-full textarea:focus {
+    outline: none; border-color: #4dabf7;
+    box-shadow: 0 0 0 2px rgba(77,171,247,0.1);
 }
-
-.field-col input[readonly],
-.field-col-full input[readonly] {
-    background: #f1f3f5;
-    cursor: not-allowed;
+.field-col input[readonly], .field-col-full input[readonly] {
+    background: #f1f3f5; cursor: not-allowed;
 }
-
 .field-col select {
-    cursor: pointer;
-    appearance: none;
+    cursor: pointer; appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    padding-right: 26px;
+    background-repeat: no-repeat; background-position: right 6px center; padding-right: 20px;
 }
-
 textarea {
-    resize: vertical;
-    min-height: 60px;
-    font-family: inherit;
+    resize: vertical; height: 44px; /* ★ min-height 60px → 44px 고정 */
+    min-height: unset; font-family: inherit;
 }
 
 /* ========== 이미지 업로드 ========== */
-.img-upload-area {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
+.img-upload-area { display: flex; flex-direction: column; gap: 4px; }
 .img-upload-area input[type="file"] {
-    padding: 6px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    font-size: 11px;
-    cursor: pointer;
+    padding: 3px; border: 1px solid #ced4da; border-radius: 3px;
+    font-size: 10px; cursor: pointer;
 }
-
 .img-upload-area input[type="file"]::-webkit-file-upload-button {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 3px;
-    background: #4dabf7;
-    color: white;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-right: 8px;
+    padding: 3px 8px; border: none; border-radius: 3px;
+    background: #4dabf7; color: white;
+    font-size: 10px; font-weight: 600; cursor: pointer; margin-right: 5px;
 }
 
 .img-preview {
-    width: 100%;
-    height: 250px;
-    border: 2px dashed #ced4da;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f8f9fa;
-    overflow: hidden;
-    transition: all 0.3s;
+    width: 100%; height: 180px;    /* ★ 250px → 180px */
+    border: 2px dashed #ced4da; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    background: #f8f9fa; overflow: hidden; transition: all 0.3s;
 }
-
-.img-preview-large {
-    height: 300px;
-}
-
-.img-preview:hover {
-    border-color: #4dabf7;
-    background: #e7f5ff;
-}
-
-.img-preview img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
+.img-preview-large { height: 220px; } /* ★ 300px → 220px */
+.img-preview:hover { border-color: #4dabf7; background: #e7f5ff; }
+.img-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
 .btn-img-delete {
-    padding: 6px 12px;
-    border: 1px solid #ff6b6b;
-    border-radius: 4px;
-    background: white;
-    color: #ff6b6b;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
+    padding: 3px 8px; border: 1px solid #ff6b6b; border-radius: 3px;
+    background: white; color: #ff6b6b;
+    font-size: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s;
 }
-
-.btn-img-delete:hover {
-    background: #ff6b6b;
-    color: white;
-}
+.btn-img-delete:hover { background: #ff6b6b; color: white; }
 
 /* ========== 파일 업로드 ========== */
-.file-upload-area {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
+.file-upload-area { display: flex; flex-direction: column; gap: 4px; }
 .file-upload-area input[type="file"] {
-    padding: 6px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    font-size: 11px;
-    cursor: pointer;
+    padding: 3px; border: 1px solid #ced4da; border-radius: 3px;
+    font-size: 10px; cursor: pointer;
 }
 
 /* ========== 모달 푸터 ========== */
 .modal-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
-    background: white;
-    border-top: 1px solid #dee2e6;
-    flex-shrink: 0;
+    display: flex; justify-content: center; align-items: center;
+    gap: 8px; padding: 7px 16px;   /* ★ 12px 20px → 7px 16px */
+    background: white; border-top: 1px solid #dee2e6; flex-shrink: 0;
 }
-
 .modal-footer button {
-    min-width: 100px;
-    height: 36px;
-    border: none;
-    border-radius: 5px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
+    min-width: 80px; height: 30px; /* ★ 100px 36px → 80px 30px */
+    border: none; border-radius: 4px;
+    font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s;
 }
-
-.btn-save {
-    background: linear-gradient(135deg, #51cf66, #37b24d);
-    color: white;
-}
-
-.btn-save:hover {
-    background: linear-gradient(135deg, #40c057, #2f9e44);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(64, 192, 87, 0.3);
-}
-
-.btn-delete {
-    background: linear-gradient(135deg, #ff6b6b, #fa5252);
-    color: white;
-}
-
-.btn-delete:hover {
-    background: linear-gradient(135deg, #f03e3e, #e03131);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(240, 62, 62, 0.3);
-}
-
-.btn-cancel {
-    background: linear-gradient(135deg, #868e96, #495057);
-    color: white;
-}
-
-.btn-cancel:hover {
-    background: linear-gradient(135deg, #6c757d, #343a40);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
-}
+.btn-save    { background: linear-gradient(135deg,#51cf66,#37b24d); color: white; }
+.btn-save:hover { background: linear-gradient(135deg,#40c057,#2f9e44); transform: translateY(-1px); }
+.btn-delete  { background: linear-gradient(135deg,#ff6b6b,#fa5252); color: white; }
+.btn-delete:hover { background: linear-gradient(135deg,#f03e3e,#e03131); transform: translateY(-1px); }
+.btn-cancel  { background: linear-gradient(135deg,#868e96,#495057); color: white; }
+.btn-cancel:hover { background: linear-gradient(135deg,#6c757d,#343a40); transform: translateY(-1px); }
 
 /* ========== 반응형 ========== */
-@media (max-width: 1600px) {
-    .measurement-modal {
-        width: 95vw;
-    }
-}
-
+@media (max-width: 1000px) { .measurement-modal { width: 95vw; } }
 @media (max-width: 1200px) {
-    .modal-content-wrapper {
-        grid-template-columns: 1.5fr 1fr;
-    }
-    
-    .field-row {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .modal-content-wrapper { grid-template-columns: 1.5fr 1fr; }
+    .field-row { grid-template-columns: repeat(2,1fr); }
 }
-
-@media (max-width: 900px) {
-    .modal-content-wrapper {
-        grid-template-columns: 1fr;
-    }
-}
-    
-    
+@media (max-width: 900px) { .modal-content-wrapper { grid-template-columns: 1fr; } }
     </style>
     
     
@@ -435,7 +237,7 @@ textarea {
 	</main>
 	
 	
-<form method="post" class="corrForm" id="measurementForm" name="measurementForm" enctype="multipart/form-data">
+<form autocomplete="off" method="post" class="corrForm" id="measurementForm" name="measurementForm" enctype="multipart/form-data">
     <input type="hidden" id="ter_code" name="ter_code" value="-1">
     <input type="hidden" id="type" name="type" value="tester">
     
@@ -748,7 +550,7 @@ function getMeasureList(){
     $('#tab1').empty();
     
     measureTable = new Tabulator("#tab1", {
-        height:"750px",
+        height:"730px",
         layout:"fitColumns",
         selectable:true,
         tooltips:true,
@@ -773,16 +575,16 @@ function getMeasureList(){
 
         columns:[
             {title:"NO", field:"idx", sorter:"int", width:60, hozAlign:"center"},
-            {title:"상태", field:"ter_use", sorter:"string", width:90, hozAlign:"center", headerFilter:"input"},
-            {title:"측정기기명", field:"ter_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
-            {title:"측정기기번호", field:"ter_code", sorter:"string", width:100, hozAlign:"center", headerFilter:"input"},
-            {title:"최근검교정날짜", field:"ter_end_gum", sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
-            {title:"차기검교정날짜", field:"ter_next_gum", sorter:"int", width:150, hozAlign:"center", headerFilter:"input"},
-            {title:"검교정주기", field:"ter_gum", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
-            {title:"모델명", field:"ter_model", sorter:"int", width:120, hozAlign:"center", headerFilter:"input"},
-            {title:"구입회사", field:"ter_buy", sorter:"int", width:150, hozAlign:"center", headerFilter:"input"},
-            {title:"구입일", field:"ter_bdate", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
-            {title:"구입금액", field:"ter_bmon", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"상태", field:"ter_use", sorter:"string", width:90, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"측정기기명", field:"ter_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"측정기기번호", field:"ter_code", sorter:"string", width:100, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"최근검교정날짜", field:"ter_end_gum", sorter:"string", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"차기검교정날짜", field:"ter_next_gum", sorter:"int", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"검교정주기", field:"ter_gum", sorter:"int", width:100, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"모델명", field:"ter_model", sorter:"int", width:120, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"구입회사", field:"ter_buy", sorter:"int", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"구입일", field:"ter_bdate", sorter:"int", width:100, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"구입금액", field:"ter_bmon", sorter:"int", width:100, hozAlign:"center", headerFilter:"input", headerSort:false},
         ],
 
         rowFormatter:function(row){

@@ -73,7 +73,18 @@
         .row_select {
             background-color: #9ABCEA !important;
         }
+		/* 헤더 컬럼 높이 고정 */
+.tabulator .tabulator-col {
+    height: 55px !important;
+}
 
+/* 헤더 필터 input 위치 고정 */
+.tabulator .tabulator-col .tabulator-col-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
     </style>
 </head>
 <body>
@@ -133,7 +144,7 @@ function getPIpgoStatusList(){
     $('#tab1').empty();
     
     tab1 = new Tabulator("#tab1", {
-        height:"750px",
+        height:"720px",
         layout:"fitColumns",
         ajaxConfig:"POST",
         ajaxURL:"/tkheat/operation/pIpgoStatus/getPIpgoStatusList",
@@ -160,10 +171,10 @@ function getPIpgoStatusList(){
         
         columns:[
             {title:"NO", field:"idx", width:80, hozAlign:"center"},
-            {title:"입고일", field:"ord_date", width:120, hozAlign:"center", headerFilter:"input"},
-            {title:"거래처명", field:"corp_name", width:150, hozAlign:"center", headerFilter:"input"},
-            {title:"품명", field:"prod_name", width:200, hozAlign:"center", headerFilter:"input"},
-            {title:"품번", field:"prod_no", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"입고일", field:"ord_date", width:120, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"거래처명", field:"corp_name", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"품명", field:"prod_name", width:200, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"품번", field:"prod_no", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
             {title:"수량", field:"ord_su", hozAlign:"center", 
                 formatter:"money", formatterParams:{thousand:",", precision:0},
                 bottomCalc:"sum", bottomCalcFormatter:"money", bottomCalcFormatterParams:{thousand:",", precision:0}},

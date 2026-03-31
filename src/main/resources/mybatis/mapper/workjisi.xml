@@ -66,19 +66,40 @@
 		TECHIN.TECH_NO
 		WHERE CONVERT(CHAR(19),ORDERT.ORD_DATE,120) BETWEEN
 		CONCAT(#{sdate},' 00:00:00') AND CONCAT(#{edate},' 23:59:59')
-		<!-- <if test="corp_name != null"> AND CORP.CORP_NAME LIKE '%'+ #{corp_name} 
-			+'%' </if> <if test="prod_name != null"> AND PRODUCT.PROD_NAME LIKE '%'+ 
-			#{prod_name} +'%' </if> <if test="prod_no != null"> AND PRODUCT.PROD_NO LIKE 
-			'%'+ #{prod_no} +'%' </if> <if test="prod_gyu != null"> AND PRODUCT.PROD_GYU 
-			LIKE '%'+ #{prod_gyu} +'%' </if> <if test="ord_code != null"> AND ORDERT.ORD_CODE 
-			LIKE '%'+ #{ord_code} +'%' </if> <if test="prod_jai != null"> AND PRODUCT.PROD_JAI 
-			LIKE '%'+ #{prod_jai} +'%' </if> <if test="ord_name != null"> AND ORDERT.ORD_NAME 
-			LIKE '%'+ #{ord_name} +'%' </if> <if test="ord_lot != null"> AND ORDERT.ORD_LOT 
-			LIKE '%'+ #{ord_lot} +'%' </if> <if test="tech_te != null"> AND TECHIN.TECH_TE 
-			LIKE '%'+ #{tech_te} +'%' </if> <if test="ORD_PRN != ''"> AND ORDERT.ORD_PRN 
-			like '%'+#{ORD_PRN}+'%' </if> <if test="prod_gubn != null"> AND PRODUCT.PROD_GUBN 
-			LIKE + '%' + CASE #{prod_gubn} WHEN '양산' THEN '양산' WHEN '개발' THEN '개발' ELSE 
-			'' END + '%' </if> -->
+		<if test="corp_name != null and corp_name != ''">
+			AND CORP.CORP_NAME LIKE '%'+ #{corp_name}+'%'
+		</if> 
+		<if test="prod_name != null and prod_name != ''">
+			AND PRODUCT.PROD_NAME LIKE '%'+#{prod_name} +'%'
+		</if> 
+		<if test="prod_no != null and prod_no != ''">
+			AND PRODUCT.PROD_NO LIKE '%'+ #{prod_no} +'%'
+		</if>
+		<if test="prod_gyu != null and prod_gyu != ''">
+			AND PRODUCT.PROD_GYU LIKE '%'+ #{prod_gyu} +'%'
+		</if>
+		<if test="ord_code != null and ord_code != 0">
+			AND ORDERT.ORD_CODE LIKE '%'+ #{ord_code} +'%'
+		</if>
+		<if test="prod_jai != null and prod_jai != ''">
+			AND PRODUCT.PROD_JAI LIKE '%'+ #{prod_jai} +'%'
+		</if>
+		<if test="ord_name != null and ord_name != ''">
+			AND ORDERT.ORD_NAME LIKE '%'+ #{ord_name} +'%'
+		</if>
+		<if test="ord_lot != null and ord_lot != ''">
+			AND ORDERT.ORD_LOT LIKE '%'+ #{ord_lot} +'%'
+		</if>
+		<if test="tech_te != null and tech_te != ''">
+			AND TECHIN.TECH_TE LIKE '%'+ #{tech_te} +'%'
+		</if>
+		<if test="ord_prn != null and ord_prn != ''">
+			AND ORDERT.ORD_PRN like '%'+#{ord_prn}+'%'
+		</if>
+		<if test="prod_gubn != null and prod_gubn != ''">
+			AND PRODUCT.PROD_GUBN LIKE + '%' + CASE #{prod_gubn} WHEN '양산' THEN '양산' WHEN '개발' THEN '개발' ELSE 
+			'' END + '%'
+		</if>
 	</select>
 
 	<!-- 입고등록 리스트 -->
@@ -96,15 +117,30 @@
 		PRODUCT.PROD_GD3, PRODUCT.PROD_BOXSU FROM PRODUCT INNER JOIN CORP ON
 		PRODUCT.CORP_CODE = CORP.CORP_CODE LEFT OUTER JOIN TECHIN ON
 		PRODUCT.TECH_NO = TECHIN.TECH_NO
-		<!-- <where> <if test="corpName != ''"> CORP.CORP_NAME LIKE '%' + #{corpName} 
-			+ '%' </if> <if test="prodName != ''"> AND PRODUCT.PROD_NAME LIKE '%' + #{prodName} 
-			+ '%' </if> <if test="prodNo != ''"> AND PRODUCT.PROD_NO LIKE '%' + #{prodNo} 
-			+ '%' </if> <if test="prodGyu != ''"> AND PRODUCT.PROD_GYU LIKE '%' + #{prodGyu} 
-			+ '%' </if> <if test="prodJai != ''"> AND PRODUCT.PROD_JAI LIKE '%' + #{prodJai} 
-			+ '%' </if> <if test="techTe != ''"> AND TECHIN.TECH_TE LIKE '%' + #{techTe} 
-			+ '%' </if> <if test="prodGubn != ''"> AND PRODUCT.PROD_GUBN LIKE + '%' + 
-			CASE #{prodGubn} WHEN '양산' THEN '양산' WHEN '개발' THEN '개발' ELSE '' END + '%' 
-			</if> </where> -->
+		<where>
+			<if test="corp_name != ''">
+				CORP.CORP_NAME LIKE '%' + #{corp_name}+ '%'
+			</if>
+			<if test="prod_name != ''">
+				AND PRODUCT.PROD_NAME LIKE '%' + #{prod_name}+ '%'
+			</if> 
+			<if test="prod_no != ''">
+				AND PRODUCT.PROD_NO LIKE '%' + #{prod_no}+ '%'
+			</if> 
+			<if test="prod_gyu != ''">
+				AND PRODUCT.PROD_GYU LIKE '%' + #{prod_gyu}+ '%'
+			</if>
+			<if test="prod_jai != ''">
+				AND PRODUCT.PROD_JAI LIKE '%' + #{prod_jai}+ '%'
+			</if>
+			<if test="tech_te != ''">
+				AND TECHIN.TECH_TE LIKE '%' + #{tech_te}+ '%'
+			</if>
+			<if test="prod_gubn != ''">
+				AND PRODUCT.PROD_GUBN LIKE + '%' + 
+					CASE #{prod_gubn} WHEN '양산' THEN '양산' WHEN '개발' THEN '개발' ELSE '' END + '%' 
+			</if> 
+		</where>
 	</select>
 
 	<insert id="setIpgoAdd" parameterType="workjisi" keyProperty="ord_code1">
@@ -163,7 +199,8 @@
 	<select id="ipgoListPrintBeforeHeat" parameterType="workjisi" resultType="workjisi">
 	    SELECT 
 	    	LEFT(CONVERT(varchar, ORDERT.ORD_DATE, 120), 10) AS ord_date,
-	    	ORDERT.ord_code, ord_nap, corp_name, prod_name, prod_no, prod_gyu, ord_lot,
+	    	LEFT(CONVERT(varchar, ORDERT.ord_nap, 120), 10) AS ord_nap,
+	    	ORDERT.ord_code,  corp_name, prod_name, prod_no, prod_gyu, ord_lot,
 	        tech_te, prod_jai, ord_su, (ord_su * ord_danj) AS ord_jung, ord_amnt, ord_danj, prod_upjong, prod_pg, prod_gd1, prod_gd3,
 	        prod_gd2, prod_polish, prod_sg, prod_whadeep, itst_wp, prod_vnyl, prod_plt, prod_pad, prod_danch,
 	        prod_bangch, ord_bigo, prod_note, ord_sunip, ord_name, ord_boxsu,
@@ -174,11 +211,17 @@
         INNER JOIN CORP AS 	 CORP 	 ON PRODUCT.CORP_CODE = CORP.CORP_CODE
         INNER JOIN TECHIN AS	 TECHIN  ON PRODUCT.TECH_NO = TECHIN.TECH_NO
         LEFT OUTER JOIN IPTEST AS IPTEST ON ORDERT.ORD_CODE = IPTEST.ORD_CODE
-        WHERE ORDERT.ord_code = #{ord_code}
+        WHERE ORDERT.ord_code IN
+		<foreach collection="ord_code_array" item="ord_code" open="(" separator="," close=")">
+			#{ord_code}
+		</foreach>
         
         
         UPDATE ORDERT SET ord_prn = ord_prn+1
-        WHERE ord_code = #{ord_code} 
+        WHERE ord_code IN
+		<foreach collection="ord_code_array" item="ord_code" open="(" separator="," close=")">
+			#{ord_code}
+		</foreach>
 	</select>
 
 	<!-- 입고리스트 수정 -->
@@ -982,7 +1025,7 @@ SELECT
 		CASE WHEN ORD_DANW = 'KG'
 		THEN ORD_DANG * ( ORD_AMNT - ISNULL(OCH_AMNT_SUM,0) )
 		ELSE ORD_DANG * ( ORD_SU - ISNULL(OCH_SU_SUM,0))
-		END as och_mon
+		END as och_mon, ISNULL(och_bigo,'') AS och_bigo
 		FROM ORDERT	-- 여기서 부터 WHERE 종료 부분까지는 공통
 		INNER JOIN PRODUCT ON PRODUCT.PROD_CODE = ORDERT.PROD_CODE
 		INNER JOIN CORP ON CORP.CORP_CODE = PRODUCT.CORP_CODE
@@ -991,7 +1034,8 @@ SELECT
 		SELECT  MAX(ORD_CODE) AS ORD_CODE,
 			COUNT (ORD_CODE) AS COUNT,
 			SUM(OCH_SU) AS OCH_SU_SUM,
-			SUM(OCH_AMNT) AS OCH_AMNT_SUM
+			SUM(OCH_AMNT) AS OCH_AMNT_SUM,
+			MAX(och_bigo) AS och_bigo
 		FROM OCHULGO
 		GROUP BY ORD_CODE
 		) OCHULGO_SUM ON OCHULGO_SUM.ORD_CODE = ORDERT.ORD_CODE
@@ -1059,6 +1103,154 @@ SELECT
 		 WHERE OCH_NO = #{och_no}	
 	</update>
 	
+	<select id="getChulgoReportNormal" parameterType="workjisi" resultType="workjisi">
+		SELECT CONVERT(CHAR(10),OCH_DATE,23) AS och_date,
+			CORP.CORP_CODE, och_code, CORP.CORP_NAME, och_no, PRODUCT.prod_code
+		FROM OCHULGO
+			INNER JOIN ORDERT ON ORDERT.ORD_CODE = OCHULGO.ORD_CODE
+			INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+			INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+			INNER JOIN TECHIN ON PRODUCT.TECH_NO = TECHIN.TECH_NO
+		WHERE OCH_CODE IN
+			<foreach collection="och_code_list" item="och_code" index="och_code" open="(" separator="," close=")">
+				#{och_code}
+			</foreach>
+		ORDER BY och_date
+	</select>
+	
+	<update id="setChulgoReportCountUpdate" parameterType="workjisi">
+		UPDATE ochulgo
+		SET och_prn = och_prn+1
+		WHERE OCH_NO IN
+		<foreach collection="och_no_list" item="och_no" index="och_no" open="(" separator="," close=")">
+			#{och_no}
+		</foreach>		
+	</update>
+	
+	<select id="getChulgoReportMainNormal" parameterType="workjisi" resultType="workjisi">
+		SELECT CONVERT(CHAR(10),OCH_DATE,23) AS och_date,
+			SUM(OCH_SU) AS och_su_sum,
+			SUM(OCH_MON) AS och_mon_sum,
+			CORP.CORP_CODE, CORP_NO, CORP_NAME, CORP_BOSS, CORP_ADD, CORP_UPTE, CORP_UPJO, CORP.CORP_CODE, CORP_MAST, CORP_TEL, CORP_FAX, CORP_CNO,
+			'http://127.0.0.1:8082/tkPrint/chulgoNormalPdf/ingam.jpg' AS ingam_img
+		FROM OCHULGO
+			INNER JOIN ORDERT ON ORDERT.ORD_CODE = OCHULGO.ORD_CODE
+			INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+			INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+			INNER JOIN TECHIN ON PRODUCT.TECH_NO = TECHIN.TECH_NO
+		WHERE OCH_CODE IN
+			<foreach collection="och_code_list" item="och_code" index="och_code" open="(" separator="," close=")">
+				#{och_code}
+			</foreach>
+		GROUP BY OCH_DATE, CORP_NO, CORP_NAME, CORP_BOSS, CORP_ADD, CORP_UPTE, CORP_UPJO, CORP.CORP_CODE, CORP_MAST, CORP_TEL, CORP_FAX, CORP_CNO
+		ORDER BY OCH_DATE, CORP.CORP_CODE
+	</select>
+
+	
+	<select id="getChulgoReportSubNormal" parameterType="workjisi" resultType="workjisi">
+		SELECT	
+			PROD_NAME, PROD_NO, TECH_TE, PROD_DANW, OCH_SU AS och_su_report, 
+			OCH_DANG AS och_dang_report, OCH_MON AS och_mon_report,
+			PROD_GYU, OCH_LOT, ORD_LOT, OCH_AMNT
+		FROM OCHULGO
+		INNER JOIN ORDERT ON ORDERT.ORD_CODE = OCHULGO.ORD_CODE
+		INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+		INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+		INNER JOIN TECHIN ON PRODUCT.TECH_NO = TECHIN.TECH_NO
+		WHERE OCH_CODE IN
+		<foreach collection="och_code_list" item="och_code" index="och_code" open="(" separator="," close=")">
+			#{och_code}
+		</foreach>
+		ORDER BY OCH_DATE, CORP.CORP_CODE
+<!-- 		AND corp.corp_code = #{corp_code} -->	
+	</select>
+	
+	<select id="getChulgoReportMainProd" parameterType="workjisi" resultType="workjisi">
+		SELECT CONVERT(CHAR(10),OCH_DATE,23) AS och_date,
+			SUM(OCH_SU) AS och_su_sum,
+			SUM(OCH_MON) AS och_mon_sum,
+			CORP.CORP_CODE, CORP_NO, CORP_NAME, CORP_BOSS, CORP_ADD, CORP_UPTE, CORP_UPJO, CORP.CORP_CODE, CORP_MAST, CORP_TEL, CORP_FAX, CORP_CNO,
+			'http://127.0.0.1:8082/tkPrint/chulgoProdPdf/ingam.jpg' AS ingam_img
+		FROM OCHULGO
+			INNER JOIN ORDERT ON ORDERT.ORD_CODE = OCHULGO.ORD_CODE
+			INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+			INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+			INNER JOIN TECHIN ON PRODUCT.TECH_NO = TECHIN.TECH_NO
+		WHERE OCH_CODE IN
+			<foreach collection="och_code_list" item="och_code" index="och_code" open="(" separator="," close=")">
+				#{och_code}
+			</foreach>
+		GROUP BY OCH_DATE, CORP_NO, CORP_NAME, CORP_BOSS, CORP_ADD, CORP_UPTE, CORP_UPJO, CORP.CORP_CODE, CORP_MAST, CORP_TEL, CORP_FAX, CORP_CNO
+		ORDER BY OCH_DATE, CORP.CORP_CODE
+
+	</select>
+	
+	<select id="getChulgoReportSubProd" parameterType="workjisi" resultType="workjisi">
+		SELECT  dbo.PRODUCT.PROD_NAME, dbo.PRODUCT.PROD_NO, dbo.TECHIN.TECH_TE, dbo.PRODUCT.PROD_DANW, 
+				SUM(dbo.OCHULGO.OCH_SU) AS OCH_SU_REPORT, dbo.OCHULGO.OCH_DANG AS och_dang_report,
+				SUM(FLOOR(dbo.OCHULGO.OCH_MON)) AS OCH_MON_REPORT, 
+				dbo.PRODUCT.PROD_GYU, SUM(dbo.OCHULGO.OCH_AMNT) AS OCH_AMNT_REPORT, dbo.OCHULGO.OCH_DATE,
+				dbo.PRODUCT.PROD_JAI,OCH_BIGO
+		FROM    dbo.OCHULGO INNER JOIN
+		        dbo.ORDERT ON dbo.ORDERT.ORD_CODE = dbo.OCHULGO.ORD_CODE INNER JOIN
+		        dbo.PRODUCT ON dbo.ORDERT.PROD_CODE = dbo.PRODUCT.PROD_CODE INNER JOIN
+		        dbo.TECHIN ON dbo.PRODUCT.TECH_NO = dbo.TECHIN.TECH_NO
+		WHERE och_code IN		
+		      <foreach collection="och_code_list" item="och_code" index="och_code" open="(" separator="," close=")">
+				#{och_code}
+			  </foreach>
+		GROUP BY dbo.PRODUCT.PROD_NAME, dbo.PRODUCT.PROD_NO, dbo.TECHIN.TECH_TE, dbo.PRODUCT.PROD_DANW, 
+				 dbo.OCHULGO.OCH_DANG, dbo.PRODUCT.PROD_GYU,OCH_BIGO,
+                 dbo.OCHULGO.OCH_DATE, dbo.PRODUCT.PROD_JAI
+	</select>
+	
+	<!-- 출고삭제 -->
+	<delete id="setChulgoDelete" parameterType="workjisi">
+		DELETE FROM OCHULGO
+		WHERE OCH_NO = #{och_no}
+	</delete>
+
+	<!--출고 삭제 시 삭제 기록 INSERT-->
+	<insert id="setChulgoDeleteLog" parameterType="workjisi">
+		declare @OCH_NO int
+	    set @OCH_NO =  #{och_no};
+		
+		WITH OCHULGOS AS (SELECT ORD_DATE, CORP_NAME, PROD_NAME, PROD_NO, PROD_GYU, ORD_SU, OCH_SU , OCH_DATE , OCH_AMNT
+							FROM OCHULGO
+								INNER JOIN ORDERT ON ORDERT.ORD_CODE = OCHULGO.ORD_CODE
+								INNER JOIN PRODUCT ON PRODUCT.PROD_CODE = ORDERT.PROD_CODE
+								INNER JOIN CORP ON CORP.CORP_CODE = PRODUCT.CORP_CODE
+				            WHERE  OCH_NO = #{och_no}
+				      )	
+	
+		INSERT DEL_LOG(
+				DEL_DATE,
+				SESSION_NAME,
+				ORD_DATE,
+				OCH_DATE,
+				DEL_KIND,
+				CORP_NAME,
+				PROD_NAME,
+				PROD_NO,
+				PROD_GYU,
+				DEL_SU,
+				DEL_AMNT
+			) 
+			VALUES(
+			CONVERT(CHAR(10), GETDATE(), 23),
+			#{user_name},
+			(SELECT ORD_DATE FROM OCHULGOS),
+			(SELECT OCH_DATE FROM OCHULGOS),
+			'출고',
+			(SELECT CORP_NAME FROM OCHULGOS),			
+			(SELECT PROD_NAME FROM OCHULGOS),			
+			(SELECT PROD_NO FROM OCHULGOS),			
+			(SELECT PROD_GYU FROM OCHULGOS),			
+			(SELECT OCH_SU FROM OCHULGOS),
+			(SELECT OCH_AMNT FROM OCHULGOS)
+			)
+	</insert>
+
 	<!-- 모니터링 -->
 	<select id="barcodeDataCheck" parameterType="workJisi" resultType="workJisi">
 		SELECT *

@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,8 +50,6 @@ public class WorkJisiController {
 	@Autowired
 	private WorkJisiService workJisiService;
 
-
-	//입고관리
 	public String ifNullStringReturn(Object obj) {
 		
 		String rtnValue = "";
@@ -196,97 +195,101 @@ public class WorkJisiController {
 		}
 
 	//입고관리 출력
-	@RequestMapping(value = "/product/ipgo/ipgoListPrint", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> ipgoListPrint(
-			@RequestParam(value="ord_code_array") int[] ordCodeArray,
-			@RequestParam int ord_print_gb,
-			HttpServletRequest request){
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-		
-		//ord_print_gb : [1] - 열처리수주서, [2] - 열후TAG, [3] - 입고현황표
-		WorkJisi ipgo = new WorkJisi();
-		List<Ipgo> ipgoList = null;
+		@RequestMapping(value = "/product/ipgo/ipgoListPrint", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> ipgoListPrint(
+				@RequestParam(value="ord_code_array") int[] ordCodeArray,
+				@RequestParam int ord_print_gb,
+				HttpServletRequest request){
+			Map<String, Object> rtnMap = new HashMap<String, Object>();
+			
+			//ord_print_gb : [1] - 열처리수주서, [2] - 열후TAG, [3] - 입고현황표
+			WorkJisi ipgo = new WorkJisi();
+			List<Ipgo> ipgoList = null;
 
-        String fileName = ""; //파일명
-        String fileNameGb = ""; //열처리수주서, 열후TAG, 입고현황표 구분
-		
-		String abPath = ""; //파일경로
-		
-		switch(ord_print_gb) {
-			case 1: fileNameGb = "열처리수주서/"; break;
-			case 2: fileNameGb = "열후TAG/"; break;
-			case 3: fileNameGb = "입고현황표/"; break;
-		}
-		
-		String mergePath = "D:/태경출력파일/"+fileNameGb;
-		String mergePathFileName = "";
-		
-		//PDF파일병합 추가
-		PDFMergerUtility merge = new PDFMergerUtility();
-		
-		
-		
-		if(ordCodeArray.length > 0) {
-			for(int ord_code : ordCodeArray) {
-				ipgo.setOrd_code(ord_code);
-//				System.out.println("ord_print_gb : "+ord_print_gb);
-				
-				if(ord_print_gb == 1) {
-					ipgoList = workJisiService.ipgoListPrintBeforeHeat(ipgo);
-					abPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/BeforeHeat.jrxml");
-					fileName = fileNameGb+ord_code;
-				}else if(ord_print_gb == 2) {
-					ipgoList = workJisiService.ipgoListPrintAfterHeat(ipgo);
-					abPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/AfterHeat.jrxml");
-					fileName = fileNameGb+ord_code;
-				}else if(ord_print_gb == 3) {
-					ipgoList = workJisiService.ipgoListPrintManager(ipgo);
-					abPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/repIbgoManager.jrxml");
-					fileName = fileNameGb+ord_code;
-				}
-				
-				mergePathFileName = ord_code+"_"+ordCodeArray.length;
-				
-				try {
-					JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(ipgoList);
-					
-					JasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
-					JasperCompileManager compileManager = JasperCompileManager.getInstance(jasperReportsContext);
-					JasperReport report = JasperCompileManager.compileReport(abPath);
-					
-					Map<String, Object> reportMap = new HashMap<String, Object>();
-					reportMap.put("ipgo_list", ipgoList);
-					
-					
-					JasperFillManager fillManager = JasperFillManager.getInstance(jasperReportsContext);
-					
-					JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);		
-					
-					JasperExportManager exportManager = JasperExportManager.getInstance(jasperReportsContext); 
-					JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/"+fileName+".pdf");			
-					
-
-					merge.addSource("D:/태경출력파일/"+fileName+".pdf");
-					
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
-				
-				
-			}			
-			merge.setDestinationFileName(mergePath+mergePathFileName+".pdf");
-			try {
-				merge.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
-				rtnMap.put("heatData",mergePathFileName+".pdf");
-			} catch (IOException e) {
-				e.printStackTrace();
+	        String fileName = ""; //파일명
+	        String printFileName = "";
+	        String fileNameGb = ""; //열처리수주서, 열후TAG, 입고현황표 구분
+			
+			String abPath = ""; //파일경로
+			
+			switch(ord_print_gb) {
+				case 1: fileNameGb = "열처리수주서/"; break;
+				case 2: fileNameGb = "열후TAG/"; break;
+				case 3: fileNameGb = "입고현황표/"; break;
 			}
 			
+			String mergePath = "D:/태경출력파일/"+fileNameGb;
+			String mergePathFileName = "";
+			
+			//PDF파일병합 추가
+			PDFMergerUtility merge = new PDFMergerUtility();
+			
+			
+			
+			if(ordCodeArray.length > 0) {
+//				for(int ord_code : ordCodeArray) {
+//					ipgo.setOrd_code(ord_code);
+					ipgo.setOrd_code_array(ordCodeArray);
+//					System.out.println("ord_print_gb : "+ord_print_gb);
+					
+					if(ord_print_gb == 1) {
+						ipgoList = workJisiService.ipgoListPrintBeforeHeat(ipgo);
+						abPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/BeforeHeat.jrxml");
+						fileName = fileNameGb+ordCodeArray[0]+"_"+ordCodeArray.length;
+					}else if(ord_print_gb == 2) {
+						ipgoList = workJisiService.ipgoListPrintAfterHeat(ipgo);
+						abPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/AfterHeat.jrxml");
+						fileName = fileNameGb+ordCodeArray[0]+"_"+ordCodeArray.length;
+					}else if(ord_print_gb == 3) {
+						ipgoList = workJisiService.ipgoListPrintManager(ipgo);
+						abPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/repIbgoManager.jrxml");
+						fileName = fileNameGb+ordCodeArray[0]+"_"+ordCodeArray.length;
+					}
+					
+					printFileName = ordCodeArray[0]+"_"+ordCodeArray.length;
+//					mergePathFileName = ord_code+"_"+ordCodeArray.length;
+					
+					try {
+						JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(ipgoList);
+						
+						JasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
+						JasperCompileManager compileManager = JasperCompileManager.getInstance(jasperReportsContext);
+						JasperReport report = JasperCompileManager.compileReport(abPath);
+						
+						Map<String, Object> reportMap = new HashMap<String, Object>();
+						reportMap.put("ipgo_list", ipgoList);
+						
+						
+						JasperFillManager fillManager = JasperFillManager.getInstance(jasperReportsContext);
+						
+						JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);
+						
+						JasperExportManager exportManager = JasperExportManager.getInstance(jasperReportsContext); 
+						JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/"+fileName+".pdf");			
+						
+
+//						merge.addSource("D:/태경출력파일/"+fileName+".pdf");
+						
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+					rtnMap.put("heatData",printFileName+".pdf");
+					
+//				}
+	/*				
+				merge.setDestinationFileName(mergePath+mergePathFileName+".pdf");
+				try {
+					merge.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	*/
+			}
+			
+			return rtnMap;
 		}
-		
-		return rtnMap;
-	}
 	
 	//입고리스트 데이터수정
     @RequestMapping(value= "/product/ipgo/getIpgoList/update", method=RequestMethod.POST)
@@ -1079,7 +1082,6 @@ public class WorkJisiController {
 		return rtnMap; 
 	}
 	
-	
 	//출고 - 등록
 	@RequestMapping(value = "/product/chulgo/chulgoAdd", method = RequestMethod.POST) 
 	@ResponseBody 
@@ -1097,6 +1099,7 @@ public class WorkJisiController {
 
 			int result = 0;
 			
+			
 			for(int i=0; i<workData.size(); i++) {
 
 				JSONObject jObj = (JSONObject)workData.get(i);
@@ -1107,6 +1110,7 @@ public class WorkJisiController {
 				chulgo.setCorp_name(jObj.get("corp_name").toString());
 				chulgo.setJaego_amnt(Float.parseFloat(jObj.get("jaego_amnt").toString()));
 				chulgo.setJaego_su(Integer.parseInt(jObj.get("jaego_su").toString()));
+				chulgo.setOch_su(Float.parseFloat(jObj.get("och_su").toString()));
 				chulgo.setOch_amnt(Float.parseFloat(jObj.get("och_amnt").toString()));
 				chulgo.setOch_bigo(jObj.get("och_bigo").toString());
 				chulgo.setOch_ma(jObj.get("och_ma").toString());
@@ -1161,6 +1165,293 @@ public class WorkJisiController {
 		
 		rtnMap.put("data","succ");
 		
+		return rtnMap;
+	}
+
+	//출고 - 삭제
+	@RequestMapping(value = "/product/chulgo/chulgoDelete", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> setChulgoDelete(@RequestBody String str,
+			HttpServletRequest request){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		JSONParser jParser = new JSONParser();
+		
+		UtilClass util = new UtilClass();
+		
+		Users users = util.getSessionUser(request);
+
+		try {
+			JSONObject workObj = (JSONObject)jParser.parse(str);
+
+			String userName = users.getUser_name();
+
+			JSONArray workData = (JSONArray)workObj.get("chulgoData");
+
+			int result = 0;
+			
+			
+			for(int i=0; i<workData.size(); i++) {
+
+				JSONObject jObj = (JSONObject)workData.get(i);
+
+				WorkJisi chulgo = new WorkJisi();
+				
+				chulgo.setUser_name(userName);
+				chulgo.setOch_no(Integer.parseInt(jObj.get("och_no").toString()));
+			
+				workJisiService.setChulgoDelete(chulgo);
+			}
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		rtnMap.put("data","succ");
+
+		return rtnMap;
+	}
+
+	
+	//출고 - 거래명세서-일반 출력
+	@RequestMapping(value = "/product/chulgo/chulgoReport", method = RequestMethod.POST) 
+	@ResponseBody 
+	public Map<String, Object> getChulgoReportNormal(@RequestBody String str,
+			HttpServletRequest request){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		String reportPath = "";
+		String subReportPath = "";
+		
+		JSONParser jParser = new JSONParser();
+		List<Integer> och_code_list = null;
+		List<Integer> och_no_list = null;
+		String fileName = "";		//파일명
+		String fileNameGb = "";		//거래명세서별 구분값
+		
+		
+		String openPath = "";			//파일경로
+		String mergePath = "";
+		String mergePathFileName = "";		
+		//PDF파일병합 추가
+		PDFMergerUtility merge = new PDFMergerUtility();
+		
+		try {
+			JSONObject workObj = (JSONObject)jParser.parse(str);
+			
+			/* chulgo_print_gb
+			 [1] : 거래명세서 - 일반
+			 [2] : 거래명세서 - A4
+			 [3] : 거래명세서 - 일반_2
+			 [4] : 거래명세서 - A4_2
+			 [5] : 거래명세서 - 제품별
+			 */
+			int chulgo_print_gb = Integer.parseInt(workObj.get("chulgo_print_gb").toString());
+
+			switch(chulgo_print_gb) {
+				case 1: 
+					fileNameGb = "거래명세서-일반/";
+					mergePath = "D:/태경출력파일/"+fileNameGb;
+					openPath = "/tkPrint/chulgoNormalPdf/";
+					reportPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/TradePortfolio.jrxml");
+					subReportPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/TradePortfolioSub.jrxml");
+				break;
+				case 2: fileNameGb = "거래명세서-A4/"; break;
+				case 3: fileNameGb = "거래명세서-일반_2/"; break;
+				case 4: fileNameGb = "거래명세서-A4_2/"; break;
+				case 5: 
+					fileNameGb = "거래명세서-제품별/"; 
+					mergePath = "D:/태경출력파일/"+fileNameGb;
+					openPath = "/tkPrint/chulgoProdPdf/";
+					reportPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/TradePortfolioChulgo_prod.jrxml");
+					subReportPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/TradePortfolioChulgo_prod_Sub.jrxml");
+				break;
+			}
+			
+			mergePath = "D:/태경출력파일/"+fileNameGb;
+			
+			JSONArray workData = (JSONArray)workObj.get("chulgoData");
+			
+			och_code_list = new ArrayList<Integer>();
+			och_no_list = new ArrayList<Integer>();
+			//선택한 행의 수만큼 반복
+			for(int i=0; i<workData.size(); i++) {
+				JSONObject rowObj = (JSONObject)workData.get(i);
+				och_code_list.add(Integer.parseInt(rowObj.get("och_code").toString()));
+				och_no_list.add(Integer.parseInt(rowObj.get("och_no").toString()));
+			}
+			
+			WorkJisi w = new WorkJisi();
+			w.setOch_code_list(och_code_list);
+			w.setOch_no_list(och_no_list);
+			//och_code_list로 출고등록된 거래처 조회
+			
+			//거래명세서 발행할 거래처 리스트(출고일 기준)
+			List<WorkJisi> chulgoReportList = workJisiService.getChulgoReportNormal(w);
+			
+			Map<String, List<Integer>> ochMap = new HashMap<String, List<Integer>>();
+			List<Integer> ochList = new ArrayList<Integer>();
+			
+
+				if(chulgo_print_gb == 1) {
+					/*거래명세서 - 일반*/
+					
+					//출고일+거래처코드별 출고코드 리스트 저장
+					//출고일, 거래처코드, 출고코드
+					String och_date = "";
+					int corp_code = 0;
+					int och_code = 0;
+					
+					for(int i=0; i<chulgoReportList.size(); i++) {
+						
+						//출고일이나 거래처코드 둘중 하나라도 다르다면
+						if(!och_date.equals(chulgoReportList.get(i).getOch_date())
+								|| corp_code != chulgoReportList.get(i).getCorp_code()) {
+							
+							ochList = new ArrayList<Integer>();
+						}
+						
+						corp_code = chulgoReportList.get(i).getCorp_code();
+						och_date = chulgoReportList.get(i).getOch_date();
+						och_code = chulgoReportList.get(i).getOch_code();
+						
+						ochList.add(och_code);
+						ochMap.put(och_date+";"+corp_code,ochList);
+					}
+					
+					//체크한 항목들을 거래처코드+출고일 기준으로 매핑
+					int printIdx = 1;
+					for(Entry<String, List<Integer>> och : ochMap.entrySet()) {
+		
+						//출고일;거래처코드
+						String[] keyArr = och.getKey().split(";");
+						
+						WorkJisi cw = new WorkJisi();
+						cw.setOch_date(keyArr[0]);
+						cw.setCorp_code(Integer.parseInt(keyArr[1]));
+						cw.setOch_code_list(och.getValue());
+						
+						//상단 리스트
+						List<WorkJisi> chulgoReportMainList = workJisiService.getChulgoReportMainNormal(cw);
+						//하단 리스트				
+						List<WorkJisi> chulgoReportSubList = workJisiService.getChulgoReportSubNormal(cw);
+						
+						fileName = fileNameGb+"_"+keyArr[0].replace("-","")+"_"+chulgoReportMainList.get(0).getCorp_name()+printIdx;
+						mergePathFileName = keyArr[0].replace("-","")+"_"+chulgoReportMainList.get(0).getCorp_name();
+						
+						JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(chulgoReportMainList);
+						JRBeanCollectionDataSource subDataSource = new JRBeanCollectionDataSource(chulgoReportSubList);
+						JRBeanCollectionDataSource subDataSource2 = new JRBeanCollectionDataSource(chulgoReportSubList);
+						
+						JasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
+						JasperCompileManager compileManager = JasperCompileManager.getInstance(jasperReportsContext);
+						JasperReport report = JasperCompileManager.compileReport(reportPath);
+						JasperReport subReport = JasperCompileManager.compileReport(subReportPath);
+						
+						Map<String, Object> reportMap = new HashMap<String, Object>();
+						reportMap.put("report_list", chulgoReportList);
+						reportMap.put("SUBREPORT_DATASOURCE", subDataSource);
+						reportMap.put("SUBREPORT", subReport);
+						reportMap.put("SUBREPORT_DATASOURCE2", subDataSource2);
+						reportMap.put("SUBREPORT2", subReport);
+						
+						
+						JasperFillManager fillManager = JasperFillManager.getInstance(jasperReportsContext);
+						
+						JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);		
+						
+						JasperExportManager exportManager = JasperExportManager.getInstance(jasperReportsContext); 
+						JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/"+fileName+".pdf");
+						printIdx++;
+						merge.addSource("D:/태경출력파일/"+fileName+".pdf");
+					}
+				}else if(chulgo_print_gb == 5) {
+					/*거래명세서 - 제품별*/
+					/*거래명세서 - 일반*/
+					
+					//출고일+거래처코드별 출고코드 리스트 저장
+					//출고일, 거래처코드, 출고코드
+					String och_date = "";
+					int prod_code = 0;
+					int och_code = 0;
+					
+					for(int i=0; i<chulgoReportList.size(); i++) {
+						
+						//출고일이나 거래처코드 둘중 하나라도 다르다면
+						if(!och_date.equals(chulgoReportList.get(i).getOch_date())) {
+							
+							ochList = new ArrayList<Integer>();
+						}
+						
+						prod_code = chulgoReportList.get(i).getProd_code();
+						och_date = chulgoReportList.get(i).getOch_date();
+						och_code = chulgoReportList.get(i).getOch_code();
+						
+						ochList.add(och_code);
+						ochMap.put(och_date,ochList);
+					}
+					
+					//체크한 항목들을 거래처코드+출고일 기준으로 매핑
+					int printIdx = 1;
+					for(Entry<String, List<Integer>> och : ochMap.entrySet()) {
+//						System.out.println(och.getKey());
+//						System.out.println(och.getValue());
+						//출고일;거래처코드
+						String keyArr = och.getKey();
+						
+						WorkJisi cw = new WorkJisi();
+						cw.setOch_date(keyArr);
+						cw.setOch_code_list(och.getValue());
+						
+						//상단 리스트
+						List<WorkJisi> chulgoReportMainList = workJisiService.getChulgoReportMainProd(cw);
+						//하단 리스트				
+						List<WorkJisi> chulgoReportSubList = workJisiService.getChulgoReportSubProd(cw);
+						
+						fileName = fileNameGb+"_"+keyArr.replace("-","")+"_"+printIdx;
+						mergePathFileName = keyArr.replace("-","")+"_";
+						
+						JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(chulgoReportMainList);
+						JRBeanCollectionDataSource subDataSource = new JRBeanCollectionDataSource(chulgoReportSubList);
+						JRBeanCollectionDataSource subDataSource2 = new JRBeanCollectionDataSource(chulgoReportSubList);
+						
+						JasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
+						JasperCompileManager compileManager = JasperCompileManager.getInstance(jasperReportsContext);
+						JasperReport report = JasperCompileManager.compileReport(reportPath);
+						JasperReport subReport = JasperCompileManager.compileReport(subReportPath);
+						
+						Map<String, Object> reportMap = new HashMap<String, Object>();
+						reportMap.put("report_list", chulgoReportList);
+						reportMap.put("SUBREPORT_DATASOURCE", subDataSource);
+						reportMap.put("SUBREPORT", subReport);
+						reportMap.put("SUBREPORT_DATASOURCE2", subDataSource2);
+						reportMap.put("SUBREPORT2", subReport);
+						
+						
+						JasperFillManager fillManager = JasperFillManager.getInstance(jasperReportsContext);
+						
+						JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);		
+						
+						JasperExportManager exportManager = JasperExportManager.getInstance(jasperReportsContext); 
+						JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/"+fileName+".pdf");
+						printIdx++;
+						merge.addSource("D:/태경출력파일/"+fileName+".pdf");
+				}
+			}
+				
+	
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		merge.setDestinationFileName(mergePath+mergePathFileName+".pdf");
+		try {
+			merge.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
+			rtnMap.put("fileName",openPath+mergePathFileName+".pdf");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		return rtnMap;
 	}
 

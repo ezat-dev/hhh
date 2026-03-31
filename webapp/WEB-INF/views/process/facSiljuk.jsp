@@ -229,7 +229,7 @@ function getFacSiljukList() {
     }
     
     userTable = new Tabulator("#tab1", {
-        height: "750px",  
+        height: "730px",  
         layout: "fitColumns",
         selectable: true,
         tooltips: true,
@@ -304,18 +304,19 @@ function getFacSiljukList() {
         },
 
         columns: [
-            {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:100, hozAlign:"center"},
-            {title:"작업코드", field:"ilbo_code", sorter:"string", width:90, hozAlign:"center"},     
-            {title:"설비명", field:"fac_name", sorter:"string", width:110, hozAlign:"center"},
-            {title:"거래처", field:"corp_name", sorter:"string", width:120, hozAlign:"center"}, 
-            {title:"품명", field:"prod_name", sorter:"string", width:180, hozAlign:"center"},
-            {title:"품번", field:"prod_no", sorter:"string", width:120, hozAlign:"center"},
+            {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:100, hozAlign:"center", headerSort:false},
+            {title:"작업코드", field:"ilbo_code", sorter:"string", width:90, hozAlign:"center", headerSort:false},     
+            {title:"설비명", field:"fac_name", sorter:"string", width:110, hozAlign:"center", headerSort:false},
+            {title:"거래처", field:"corp_name", sorter:"string", width:120, hozAlign:"center", headerSort:false}, 
+            {title:"품명", field:"prod_name", sorter:"string", width:180, hozAlign:"center", headerSort:false},
+            {title:"품번", field:"prod_no", sorter:"string", width:120, hozAlign:"center", headerSort:false},
             {
                 title:"시작", 
                 field:"ilbo_strt", 
                 sorter:"string", 
                 width:100, 
                 hozAlign:"center",
+                headerSort:false,
                 formatter: function(cell) {
                     const value = cell.getValue();
                     if (!value) return '-';
@@ -328,6 +329,7 @@ function getFacSiljukList() {
                 sorter:"string", 
                 width:100, 
                 hozAlign:"center",
+                headerSort:false,
                 formatter: function(cell) {
                     const value = cell.getValue();
                     if (!value) return '';
@@ -335,27 +337,29 @@ function getFacSiljukList() {
                     return value.replace(/\.\d{3}$/, '');
                 }
             },
-                    {title:"소요시간(분)", field:"time", sorter:"string", width:120, hozAlign:"center"},
-                    {title:"작업수량", field:"ilbo_su", sorter:"string", width:150, hozAlign:"center"},
+                    {title:"소요시간(분)", field:"time", sorter:"string", width:120, hozAlign:"center", headerSort:false},
+                    {title:"작업수량", field:"ilbo_su", sorter:"string", width:150, hozAlign:"center", headerSort:false},
                     {
                         title:"중량", 
                         field:"ilbo_jung", 
                         sorter:"string", 
                         width:100, 
                         hozAlign:"center",
+                        headerSort:false,
                         formatter: function(cell) {
                             const value = cell.getValue();
                             if (!value || isNaN(value)) return value;
                             return Math.round(parseFloat(value)).toLocaleString('ko-KR');
                         }
                     },
-                    {title:"단위", field:"ord_danw", sorter:"string", width:70, hozAlign:"center"},
+                    {title:"단위", field:"ord_danw", sorter:"string", width:70, hozAlign:"center", headerSort:false},
                     {
                         title:"단가", 
                         field:"ord_dang", 
                         sorter:"string", 
                         width:150, 
                         hozAlign:"center",
+                        headerSort:false,
                         formatter: function(cell) {
                             const value = cell.getValue();
                             if (!value || isNaN(value)) return value;
@@ -368,6 +372,7 @@ function getFacSiljukList() {
                         sorter:"string", 
                         width:100, 
                         hozAlign:"center",
+                        headerSort:false,
                         formatter: function(cell) {
                             const value = cell.getValue();
                             if (!value || isNaN(value)) return value;

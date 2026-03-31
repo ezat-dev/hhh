@@ -144,7 +144,7 @@
 	function getCleanSiljukList(){
 		
 		userTable = new Tabulator("#tab1", {
-		    height:"750px",
+		    height:"730px",
 		    layout:"fitColumns",
 		    selectable:true,	//로우 선택설정
 		    tooltips:true,
@@ -169,43 +169,48 @@
 	        headerFilterPlaceholder: "",
 		    ajaxResponse:function(url, params, response){
 				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-				return response.data ? response.data : [];
+				console.log("📊 서버 응답:", response);
+	            
+	            const data = response.data ? response.data : response;
+	            console.log("📊 데이터 개수:", data.length);
+	            
+	            return data;
 		    },
 		    columns:[
 		        {title:"NO", field:"idx", sorter:"int", width:80,
-		        	hozAlign:"center"},
+		        	hozAlign:"center", headerSort:false},
 		        {title:"작업일", field:"ilbo_strt", sorter:"string", width:120,
-			        hozAlign:"center", headerFilter:"input"},	
+			        hozAlign:"center", headerFilter:"input", headerSort:false},	
 			    {title:"준비코드", field:"ilbo_code", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"},     
+				    hozAlign:"center", headerFilter:"input", headerSort:false},     
 				{title:"수주NO", field:"ord_code", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"}, 
+				    hozAlign:"center", headerFilter:"input", headerSort:false}, 
 				{title:"설비", field:"fac_name", sorter:"string", width:150,
-				    hozAlign:"center", headerFilter:"input"}, 
+				    hozAlign:"center", headerFilter:"input", headerSort:false}, 
 		        {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:120,
-		        	hozAlign:"center", headerFilter:"input"},		        
+		        	hozAlign:"center", headerFilter:"input", headerSort:false},		        
 		        {title:"시작", field:"ilbo_strt", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
+		        	hozAlign:"center", headerFilter:"input", headerSort:false},
 		        {title:"완료", field:"ilbo_end", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
+		        	hozAlign:"center", headerFilter:"input", headerSort:false},
 		        {title:"입고LOT", field:"ord_lot", sorter:"string", width:100,
-			        hozAlign:"center", headerFilter:"input"},	
+			        hozAlign:"center", headerFilter:"input", headerSort:false},	
 		        {title:"거래처", field:"corp_name", sorter:"int", width:100,
-		        	hozAlign:"center", headerFilter:"input"},  	
+		        	hozAlign:"center", headerFilter:"input", headerSort:false},  	
 		        {title:"픔명", field:"prod_name", sorter:"string", width:100,
-			        hozAlign:"center", headerFilter:"input"},	
+			        hozAlign:"center", headerFilter:"input", headerSort:false},	
 			    {title:"품번", field:"prod_no", sorter:"string", width:100,
-				    hozAlign:"center", headerFilter:"input"},	
+				    hozAlign:"center", headerFilter:"input", headerSort:false},	
 				{title:"규격", field:"prod_gyu", sorter:"string", width:100,
-				    hozAlign:"center", headerFilter:"input"},
+				    hozAlign:"center", headerFilter:"input", headerSort:false},
 				{title:"재질", field:"prod_jai", sorter:"string", width:100,
-					hozAlign:"center", headerFilter:"input"},
+					hozAlign:"center", headerFilter:"input", headerSort:false},
 			    {title:"작업량", field:"ilbo_su", sorter:"string", width:100,
-					hozAlign:"center", headerFilter:"input"},
+					hozAlign:"center", headerFilter:"input", headerSort:false},
  			    {title:"작업자", field:"user_name", sorter:"string", width:100,
-					hozAlign:"center", headerFilter:"input"},
+					hozAlign:"center", headerFilter:"input", headerSort:false},
 				{title:"담당자", field:"ord_name", sorter:"string", width:100,
-					hozAlign:"center", headerFilter:"input"},		
+					hozAlign:"center", headerFilter:"input", headerSort:false},		
 				    
 		    ],
 		    rowFormatter:function(row){

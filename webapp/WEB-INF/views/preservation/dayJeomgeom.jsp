@@ -376,10 +376,11 @@
 	//함수
 	function getDayJeomgeomList(){
 	userTable = new Tabulator("#tab1", {
-	    height:"750px",
+	    height:"730px",
 	    layout:"fitColumns",
 	    selectable:true,
 	    tooltips:true,
+	    headerSort:false,
 	    selectableRangeMode:"click",
 	    reactiveData:true,
 	    headerHozAlign:"center",

@@ -11,252 +11,146 @@
 <%@include file="../include/pluginpage.jsp" %>     
     
     <style>
-    
-	/* ========== 기존 스타일 유지 ========== */
-.main {
-    width: 98%;
+    /* ========== 기본 스타일 ========== */
+.main { width: 98%; }
+.container { display: flex; justify-content: space-between; }
+.box1 {
+    display: flex; justify-content: right; align-items: center;
+    width: 1500px; margin-left: -940px; gap: 10px;
+}
+/* 헤더 컬럼 높이 고정 */
+.tabulator .tabulator-col {
+    height: 55px !important;
 }
 
-.container {
+/* 헤더 필터 input 위치 고정 */
+.tabulator .tabulator-col .tabulator-col-content {
+    height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
 }
-
-.box1 {
-    display: flex;
-    justify-content: right;
-    align-items: center;
-    width: 1500px;
-    margin-left: -940px;
-    gap: 10px;
-}
-
 /* ========== 모달 오버레이 ========== */
 .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    display: none; position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 999;
 }
+.modal-overlay.active { display: block; }
 
-.modal-overlay.active {
-    display: block;
-}
-
-/* ========== 제품/도면 모달용 기존 스타일 유지 ========== */
+/* ========== 제품/도면 모달용 ========== */
 #productListModal.modal-overlay,
 #drawingFileModal.modal-overlay {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1100;
+    display: flex; align-items: center; justify-content: center; z-index: 1100;
 }
-
 #productListModal .modal-content,
 #drawingFileModal .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 1000px;
-    position: relative;
-    z-index: 1101;
+    background: white; padding: 15px; border-radius: 8px;
+    width: 90%; max-width: 1000px; position: relative; z-index: 1101;
 }
-
 #productListModal .modal-header,
 #drawingFileModal .modal-header {
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-    font-size: 18px;
-    margin-bottom: 10px;
+    display: flex; justify-content: space-between;
+    font-weight: bold; font-size: 16px; margin-bottom: 8px;
 }
-
 #productListModal .modal-close,
-#drawingFileModal .modal-close {
-    cursor: pointer;
-    font-size: 24px;
-}
+#drawingFileModal .modal-close { cursor: pointer; font-size: 22px; }
 
 /* ========== 침탄로 모달 컨테이너 ========== */
 .chim-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
+    display: none; position: fixed;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 1700px;
-    max-width: 95vw;
-    max-height: 90vh;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    overflow: hidden;
+    width: 1200px; max-width: 95vw;
+    max-height: 95vh;              /* ★ 90 → 95vh */
+    background: white; border-radius: 8px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+    z-index: 1000; overflow: hidden;
 }
-
-.chim-modal.active {
-    display: flex;
-    flex-direction: column;
-}
+.chim-modal.active { display: flex; flex-direction: column; }
 
 /* ========== 모달 헤더 ========== */
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 25px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 16px;             /* ★ 15px 25px → 8px 16px */
     background: linear-gradient(135deg, #2c3e50, #34495e);
-    color: white;
-    cursor: move;
-    flex-shrink: 0;
+    color: white; cursor: move; flex-shrink: 0;
 }
-
-.modal-header h2 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 700;
-}
-
+.modal-header h2 { margin: 0; font-size: 15px; font-weight: 700; }
 .modal-close-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 28px;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    transition: all 0.3s;
+    background: none; border: none; color: white;
+    font-size: 22px; cursor: pointer;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; transition: all 0.3s;
 }
-
-.modal-close-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(90deg);
-}
+.modal-close-btn:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg); }
 
 /* ========== 모달 본문 ========== */
 .modal-body {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    flex: 1; overflow-y: auto; overflow-x: hidden;
     background: #f5f7fa;
-    padding: 15px;
+    padding: 6px 8px;              /* ★ 15px → 6px 8px */
 }
-
-.modal-body::-webkit-scrollbar {
-    width: 8px;
-}
-
-.modal-body::-webkit-scrollbar-track {
-    background: #e0e0e0;
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-    background: #999;
-    border-radius: 4px;
-}
-
-.modal-body::-webkit-scrollbar-thumb:hover {
-    background: #666;
-}
+.modal-body::-webkit-scrollbar { width: 5px; }
+.modal-body::-webkit-scrollbar-track { background: #e0e0e0; }
+.modal-body::-webkit-scrollbar-thumb { background: #999; border-radius: 4px; }
+.modal-body::-webkit-scrollbar-thumb:hover { background: #666; }
 
 /* ========== 컨텐츠 래퍼 ========== */
 .modal-content-wrapper {
-    display: grid;
-    grid-template-columns: 2.2fr 1fr;
-    gap: 15px;
-    height: 100%;
+    display: grid; grid-template-columns: 2.2fr 1fr;
+    gap: 8px; height: 100%;        /* ★ 15px → 8px */
 }
 
 /* ========== 왼쪽/오른쪽 영역 ========== */
-.modal-left,
-.modal-right {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.modal-left, .modal-right {
+    display: flex; flex-direction: column;
+    gap: 5px;                      /* ★ 10px → 5px */
 }
 
 /* ========== 섹션 ========== */
-.field-section {
-    background: white;
-    border-radius: 8px;
-    padding: 10px 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+.field-row-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+    margin-bottom: 4px;
 }
+.field-row-4:last-child { margin-bottom: 0; }
 
+.field-section {
+    background: white; border-radius: 5px;
+    padding: 5px 10px;             /* ★ 10px 15px → 5px 10px */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
 .section-title {
-    margin: 0 0 8px 0;
-    font-size: 14px;
-    font-weight: 700;
-    color: #2c3e50;
-    padding-bottom: 6px;
-    border-bottom: 2px solid #e9ecef;
+    margin: 0 0 4px 0;             /* ★ 8px → 4px */
+    font-size: 11px; font-weight: 700; color: #2c3e50;
+    padding-bottom: 3px;           /* ★ 6px → 3px */
+    border-bottom: 1px solid #e9ecef;
 }
 
 /* ========== 제품 이미지 미리보기 ========== */
 .product-image-preview {
-    width: 100%;
-    height: 80px;
-    border: 2px dashed #ced4da;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f8f9fa;
-    margin-bottom: 10px;
-    overflow: hidden;
+    width: 100%; height: 60px;     /* ★ 80px → 60px */
+    border: 2px dashed #ced4da; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    background: #f8f9fa; margin-bottom: 5px; overflow: hidden;
 }
-
-.product-image-preview img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
+.product-image-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
 /* ========== 필드 행/열 ========== */
 .field-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 6px;
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 5px; margin-bottom: 4px;  /* ★ 8px→5px, 6px→4px */
 }
-
-.field-row:last-child {
-    margin-bottom: 0;
+.field-row:last-child { margin-bottom: 0; }
+.field-col { display: flex; flex-direction: column; gap: 2px; }
+.field-col-full { grid-column: 1/-1; display: flex; flex-direction: column; gap: 2px; }
+.field-col label, .field-col-full label {
+    font-size: 10px; font-weight: 600; color: #495057;
 }
-
-.field-col {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.field-col-full {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.field-col label,
-.field-col-full label {
-    font-size: 11px;
-    font-weight: 600;
-    color: #495057;
-}
-
-.req {
-    color: #dc3545;
-    margin-left: 2px;
-}
+.req { color: #dc3545; margin-left: 2px; }
 
 /* ========== 입력 필드 ========== */
 .field-col input[type="text"],
@@ -264,355 +158,143 @@
 .field-col-full input[type="text"],
 .field-col-full textarea {
     width: 100%;
-    padding: 5px 8px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    font-size: 12px;
-    box-sizing: border-box;
-    transition: all 0.3s;
+    padding: 3px 6px;              /* ★ 5px 8px → 3px 6px */
+    border: 1px solid #ced4da; border-radius: 3px;
+    font-size: 11px; box-sizing: border-box; transition: all 0.2s;
+    height: 24px;                  /* ★ 고정 높이 */
 }
-
-.field-col input:focus,
-.field-col select:focus,
-.field-col-full input:focus,
-.field-col-full textarea:focus {
-    outline: none;
-    border-color: #4dabf7;
-    box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.1);
+.field-col input:focus, .field-col select:focus,
+.field-col-full input:focus, .field-col-full textarea:focus {
+    outline: none; border-color: #4dabf7;
+    box-shadow: 0 0 0 2px rgba(77,171,247,0.1);
 }
-
-.field-col input[readonly],
-.field-col-full input[readonly] {
-    background: #f1f3f5;
-    cursor: not-allowed;
+.field-col input[readonly], .field-col-full input[readonly] {
+    background: #f1f3f5; cursor: not-allowed;
 }
-
 .field-col select {
-    cursor: pointer;
-    appearance: none;
+    cursor: pointer; appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 8px center;
-    padding-right: 26px;
+    background-repeat: no-repeat; background-position: right 6px center; padding-right: 20px;
 }
 
 /* ========== 검색 버튼 포함 입력 ========== */
-.input-with-btn {
-    display: flex;
-    gap: 4px;
-}
-
-.input-with-btn input {
-    flex: 1;
-}
-
+.input-with-btn { display: flex; gap: 3px; }
+.input-with-btn input { flex: 1; }
 .btn-search {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    background: #4dabf7;
-    color: white;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
+    padding: 2px 8px; border: none; border-radius: 3px;
+    background: #4dabf7; color: white;
+    font-size: 10px; font-weight: 600; cursor: pointer; white-space: nowrap;
 }
-
-.btn-search:hover {
-    background: #339af0;
-}
+.btn-search:hover { background: #339af0; }
 
 /* ========== 공정 테이블 ========== */
-.process-table-wrapper {
-    overflow-x: auto;
-    margin-bottom: 10px;
+.process-table-wrapper { overflow-x: auto; margin-bottom: 5px; }
+.process-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.process-table th, .process-table td {
+    border: 1px solid #dee2e6; padding: 3px 4px; text-align: center;
 }
-
-.process-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 11px;
-}
-
-.process-table th,
-.process-table td {
-    border: 1px solid #dee2e6;
-    padding: 4px 6px;
-    text-align: center;
-}
-
-.process-table thead th {
-    background: #f1f3f5;
-    font-weight: 700;
-    color: #495057;
-}
-
+.process-table thead th { background: #f1f3f5; font-weight: 700; color: #495057; }
 .process-table tbody th {
-    background: #f8f9fa;
-    font-weight: 600;
-    text-align: left;
-    padding-left: 8px;
+    background: #f8f9fa; font-weight: 600;
+    text-align: left; padding-left: 6px;
 }
-
 .process-table input {
-    width: 100%;
-    padding: 3px 5px;
-    border: 1px solid #ced4da;
-    border-radius: 3px;
-    font-size: 11px;
-    box-sizing: border-box;
+    width: 100%; padding: 2px 4px;
+    border: 1px solid #ced4da; border-radius: 2px;
+    font-size: 10px; box-sizing: border-box;
 }
-
-.process-table input:focus {
-    outline: none;
-    border-color: #4dabf7;
-}
+.process-table input:focus { outline: none; border-color: #4dabf7; }
 
 /* ========== 개정이력 테이블 ========== */
-.revision-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 11px;
+.revision-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.revision-table th, .revision-table td {
+    border: 1px solid #dee2e6; padding: 3px 5px; text-align: center;
 }
-
-.revision-table th,
-.revision-table td {
-    border: 1px solid #dee2e6;
-    padding: 5px 8px;
-    text-align: center;
-}
-
-.revision-table thead th {
-    background: #f1f3f5;
-    font-weight: 700;
-    color: #495057;
-}
-
-.revision-table td:first-child {
-    font-weight: 600;
-}
-
+.revision-table thead th { background: #f1f3f5; font-weight: 700; color: #495057; }
+.revision-table td:first-child { font-weight: 600; }
 .revision-table input {
-    width: 100%;
-    padding: 4px 6px;
-    border: 1px solid #ced4da;
-    border-radius: 3px;
-    font-size: 11px;
-    box-sizing: border-box;
+    width: 100%; padding: 2px 4px;
+    border: 1px solid #ced4da; border-radius: 2px;
+    font-size: 10px; box-sizing: border-box;
 }
 
 /* ========== 이미지 업로드 ========== */
-.img-upload-area {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
+.img-upload-area { display: flex; flex-direction: column; gap: 4px; }
 .img-upload-area input[type="file"] {
-    padding: 5px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    font-size: 11px;
-    cursor: pointer;
+    padding: 3px; border: 1px solid #ced4da; border-radius: 3px;
+    font-size: 10px; cursor: pointer;
 }
-
 .img-upload-area input[type="file"]::-webkit-file-upload-button {
-    padding: 4px 8px;
-    border: none;
-    border-radius: 3px;
-    background: #4dabf7;
-    color: white;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-right: 6px;
+    padding: 2px 6px; border: none; border-radius: 3px;
+    background: #4dabf7; color: white;
+    font-size: 10px; font-weight: 600; cursor: pointer; margin-right: 4px;
 }
 
 .img-preview {
-    width: 100%;
-    height: 120px;
-    border: 2px dashed #ced4da;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f8f9fa;
-    overflow: hidden;
-    transition: all 0.3s;
+    width: 100%; height: 90px;     /* ★ 120px → 90px */
+    border: 2px dashed #ced4da; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    background: #f8f9fa; overflow: hidden; transition: all 0.3s;
 }
-
-.img-preview-small {
-    height: 100px;
-}
-
-.img-preview:hover {
-    border-color: #4dabf7;
-    background: #e7f5ff;
-}
-
-.img-preview img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
+.img-preview-small { height: 70px; } /* ★ 100px → 70px */
+.img-preview:hover { border-color: #4dabf7; background: #e7f5ff; }
+.img-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
 /* ========== 파일 업로드 ========== */
-.file-upload-area {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
+.file-upload-area { display: flex; flex-direction: column; gap: 4px; }
 .file-upload-area input[type="file"] {
-    padding: 5px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    font-size: 11px;
-    cursor: pointer;
+    padding: 3px; border: 1px solid #ced4da; border-radius: 3px;
+    font-size: 10px; cursor: pointer;
 }
-
 .file-upload-area a {
-    display: inline-block;
-    padding: 4px 8px;
-    font-size: 11px;
-    color: #4dabf7;
-    text-decoration: none;
-    word-break: break-all;
+    display: inline-block; padding: 3px 6px; font-size: 10px;
+    color: #4dabf7; text-decoration: none; word-break: break-all;
 }
 
 /* ========== 단취방법 계산 테이블 ========== */
-.calc-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 11px;
-}
-
-.calc-table td {
-    border: 1px solid #dee2e6;
-    padding: 4px 6px;
-}
-
+.calc-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.calc-table td { border: 1px solid #dee2e6; padding: 3px 5px; }
 .calc-label {
-    background: #f8f9fa;
-    font-weight: 600;
-    text-align: left;
-    padding-left: 8px !important;
-    width: 100px;
+    background: #f8f9fa; font-weight: 600;
+    text-align: left; padding-left: 6px !important; width: 90px;
 }
-
 .calc-section-title {
-    background: #e9ecef;
-    font-weight: 700;
-    text-align: center;
-    padding: 6px !important;
+    background: #e9ecef; font-weight: 700;
+    text-align: center; padding: 4px !important;
 }
-
 .calc-table input {
-    width: 100%;
-    padding: 4px 6px;
-    border: 1px solid #ced4da;
-    border-radius: 3px;
-    font-size: 11px;
-    box-sizing: border-box;
-    text-align: right;
+    width: 100%; padding: 2px 4px;
+    border: 1px solid #ced4da; border-radius: 2px;
+    font-size: 10px; box-sizing: border-box; text-align: right;
 }
-
-.calc-table input[readonly] {
-    background: #f1f3f5;
-    cursor: not-allowed;
-}
+.calc-table input[readonly] { background: #f1f3f5; cursor: not-allowed; }
 
 /* ========== 모달 푸터 ========== */
 .modal-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    background: white;
-    border-top: 1px solid #dee2e6;
-    flex-shrink: 0;
+    display: flex; justify-content: center; align-items: center;
+    gap: 6px; padding: 7px 16px;   /* ★ 12px 20px → 7px 16px */
+    background: white; border-top: 1px solid #dee2e6; flex-shrink: 0;
 }
-
 .modal-footer button {
-    min-width: 100px;
-    height: 36px;
-    border: none;
-    border-radius: 5px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
+    min-width: 80px; height: 30px; /* ★ 100px 36px → 80px 30px */
+    border: none; border-radius: 4px;
+    font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s;
 }
-
-.btn-save {
-    background: linear-gradient(135deg, #51cf66, #37b24d);
-    color: white;
-}
-
-.btn-save:hover {
-    background: linear-gradient(135deg, #40c057, #2f9e44);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(64, 192, 87, 0.3);
-}
-
-.btn-saveas {
-    background: linear-gradient(135deg, #4dabf7, #339af0);
-    color: white;
-}
-
-.btn-saveas:hover {
-    background: linear-gradient(135deg, #339af0, #1c7ed6);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(77, 171, 247, 0.3);
-}
-
-.btn-delete {
-    background: linear-gradient(135deg, #ff6b6b, #fa5252);
-    color: white;
-}
-
-.btn-delete:hover {
-    background: linear-gradient(135deg, #f03e3e, #e03131);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(240, 62, 62, 0.3);
-}
-
-.btn-cancel {
-    background: linear-gradient(135deg, #868e96, #495057);
-    color: white;
-}
-
-.btn-cancel:hover {
-    background: linear-gradient(135deg, #6c757d, #343a40);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
-}
+.btn-save    { background: linear-gradient(135deg,#51cf66,#37b24d); color: white; }
+.btn-save:hover { background: linear-gradient(135deg,#40c057,#2f9e44); transform: translateY(-1px); }
+.btn-saveas  { background: linear-gradient(135deg,#4dabf7,#339af0); color: white; }
+.btn-saveas:hover { background: linear-gradient(135deg,#339af0,#1c7ed6); transform: translateY(-1px); }
+.btn-delete  { background: linear-gradient(135deg,#ff6b6b,#fa5252); color: white; }
+.btn-delete:hover { background: linear-gradient(135deg,#f03e3e,#e03131); transform: translateY(-1px); }
+.btn-cancel  { background: linear-gradient(135deg,#868e96,#495057); color: white; }
+.btn-cancel:hover { background: linear-gradient(135deg,#6c757d,#343a40); transform: translateY(-1px); }
 
 /* ========== 반응형 ========== */
-@media (max-width: 1800px) {
-    .chim-modal {
-        width: 95vw;
-    }
-}
+@media (max-width: 1300px) { .chim-modal { width: 95vw; } }  /* ★ 1800 → 1300 */
+@media (max-width: 1400px) { .modal-content-wrapper { grid-template-columns: 1.8fr 1fr; } }
+@media (max-width: 1200px) { .field-row { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 900px)  { .modal-content-wrapper { grid-template-columns: 1fr; } }
 
-@media (max-width: 1400px) {
-    .modal-content-wrapper {
-        grid-template-columns: 1.8fr 1fr;
-    }
-}
-
-@media (max-width: 1200px) {
-    .field-row {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 900px) {
-    .modal-content-wrapper {
-        grid-template-columns: 1fr;
-    }
-}
     </style>
     
     
@@ -663,7 +345,7 @@
 
 
 
-<form method="post" class="corrForm" id="chimStandardForm" name="chimStandardForm" enctype="multipart/form-data">
+<form autocomplete="off" method="post" class="corrForm" id="chimStandardForm" name="chimStandardForm" enctype="multipart/form-data">
     <input type="hidden" name="type" value="standard" />
     
     <div class="modal-overlay"></div>
@@ -760,79 +442,73 @@
                     </div>
                     
                     <!-- 요구규격 -->
-                    <div class="field-section">
-                        <h3 class="section-title">요구규격</h3>
-                        <div class="field-row">
-                            <div class="field-col">
-                                <label>표면경도</label>
-                                <input type="text" id="prod_pg" name="prod_pg" readonly>
-                            </div>
-                            <div class="field-col">
-                                <label>심부경도</label>
-                                <input type="text" id="prod_sg" name="prod_sg" readonly>
-                            </div>
-                            <div class="field-col">
-                                <label>금속조직</label>
-                                <input type="text" id="prod_e1" name="prod_e1" readonly>
-                            </div>
-                        </div>
-                        <div class="field-row">
-                            <div class="field-col">
-                                <label>변형량</label>
-                                <input type="text" id="prod_e3" name="prod_e3" readonly>
-                            </div>
-                            <div class="field-col">
-                                <label>경화깊이</label>
-                                <input type="text" id="prod_gd1" name="prod_gd1" readonly>
-                            </div>
-                            <div class="field-col">
-                                <label>기준</label>
-                                <input type="text" id="prod_gd2" name="prod_gd2" readonly>
-                            </div>
-                        </div>
-                        <div class="field-row">
-                            <div class="field-col">
-                                <label>경화깊이 범위</label>
-                                <input type="text" id="prod_gd5" name="prod_gd5" readonly placeholder="~">
-                            </div>
-                            <div class="field-col"></div>
-                            <div class="field-col"></div>
-                        </div>
-                        <input type="hidden" id="prod_pg3" name="prod_pg3">
-                        <input type="hidden" id="prod_sg3" name="prod_sg3">
-                        <input type="hidden" id="prod_e5" name="prod_e5">
-                        <input type="hidden" id="prod_ra" name="prod_ra">
-                        <input type="hidden" id="prod_pgs" name="prod_pgs">
-                    </div>
+					<div class="field-section">
+					    <h3 class="section-title">요구규격</h3>
+					    <!-- 첫번째줄 3칸 -->
+					    <div class="field-row">
+					        <div class="field-col">
+					            <label>표면경도</label>
+					            <input type="text" id="prod_pg" name="prod_pg" readonly>
+					        </div>
+					        <div class="field-col">
+					            <label>심부경도</label>
+					            <input type="text" id="prod_sg" name="prod_sg" readonly>
+					        </div>
+					        <div class="field-col">
+					            <label>금속조직</label>
+					            <input type="text" id="prod_e1" name="prod_e1" readonly>
+					        </div>
+					    </div>
+					    <!-- 두번째줄 4칸 -->
+					    <div class="field-row-4">
+					        <div class="field-col">
+					            <label>변형량</label>
+					            <input type="text" id="prod_e3" name="prod_e3" readonly>
+					        </div>
+					        <div class="field-col">
+					            <label>경화깊이</label>
+					            <input type="text" id="prod_gd1" name="prod_gd1" readonly>
+					        </div>
+					        <div class="field-col">
+					            <label>기준</label>
+					            <input type="text" id="prod_gd2" name="prod_gd2" readonly>
+					        </div>
+					        <div class="field-col">
+					            <label>경화깊이 범위</label>
+					            <input type="text" id="prod_gd5" name="prod_gd5" readonly placeholder="~">
+					        </div>
+					    </div>
+					    <input type="hidden" id="prod_pg3" name="prod_pg3">
+					    <input type="hidden" id="prod_sg3" name="prod_sg3">
+					    <input type="hidden" id="prod_e5" name="prod_e5">
+					    <input type="hidden" id="prod_ra" name="prod_ra">
+					    <input type="hidden" id="prod_pgs" name="prod_pgs">
+					</div>
                     
                     <!-- 전세척 -->
-                    <div class="field-section">
-                        <h3 class="section-title">전세척</h3>
-                        <div class="field-row">
-                            <div class="field-col">
-                                <label>설비</label>
-                                <select id="fac_code1" name="fac_code1">
-                                    <option value="15">진공세정기 2호기</option>
-                                </select>
-                            </div>
-                            <div class="field-col">
-                                <label>온도</label>
-                                <input type="text" id="wstd_n01" name="wstd_n01">
-                            </div>
-                            <div class="field-col">
-                                <label>시간</label>
-                                <input type="text" id="wstd_n02" name="wstd_n02">
-                            </div>
-                        </div>
-                        <div class="field-row">
-                            <div class="field-col">
-                                <label>농도</label>
-                                <input type="text" id="wstd_t66" name="wstd_t66">
-                            </div>
-                            <div class="field-col"></div>
-                            <div class="field-col"></div>
-                        </div>
-                    </div>
+					<div class="field-section">
+					    <h3 class="section-title">전세척</h3>
+					    <div class="field-row-4">
+					        <div class="field-col">
+					            <label>설비</label>
+					            <select id="fac_code1" name="fac_code1">
+					                <option value="15">진공세정기 2호기</option>
+					            </select>
+					        </div>
+					        <div class="field-col">
+					            <label>온도</label>
+					            <input type="text" id="wstd_n01" name="wstd_n01">
+					        </div>
+					        <div class="field-col">
+					            <label>시간</label>
+					            <input type="text" id="wstd_n02" name="wstd_n02">
+					        </div>
+					        <div class="field-col">
+					            <label>농도</label>
+					            <input type="text" id="wstd_t66" name="wstd_t66">
+					        </div>
+					    </div>
+					</div>
                     
                     <!-- 공정 (테이블) -->
                     <div class="field-section">
@@ -1006,33 +682,29 @@
                     </div>
                     
                     <!-- 후세척 -->
-                    <div class="field-section">
-                        <h3 class="section-title">후세척</h3>
-                        <div class="field-row">
-                            <div class="field-col">
-                                <label>설비</label>
-                                <select id="facCode2" name="fac_code2">
-                                    <option value="15">진공세정기 2호기</option>
-                                </select>
-                            </div>
-                            <div class="field-col">
-                                <label>온도</label>
-                                <input type="text" id="wstd_n03" name="wstd_n03">
-                            </div>
-                            <div class="field-col">
-                                <label>시간</label>
-                                <input type="text" id="wstd_n04" name="wstd_n04">
-                            </div>
-                        </div>
-                        <div class="field-row">
-                            <div class="field-col">
-                                <label>농도</label>
-                                <input type="text" id="wstd_t67" name="wstd_t67">
-                            </div>
-                            <div class="field-col"></div>
-                            <div class="field-col"></div>
-                        </div>
-                    </div>
+					<div class="field-section">
+					    <h3 class="section-title">후세척</h3>
+					    <div class="field-row-4">
+					        <div class="field-col">
+					            <label>설비</label>
+					            <select id="facCode2" name="fac_code2">
+					                <option value="15">진공세정기 2호기</option>
+					            </select>
+					        </div>
+					        <div class="field-col">
+					            <label>온도</label>
+					            <input type="text" id="wstd_n03" name="wstd_n03">
+					        </div>
+					        <div class="field-col">
+					            <label>시간</label>
+					            <input type="text" id="wstd_n04" name="wstd_n04">
+					        </div>
+					        <div class="field-col">
+					            <label>농도</label>
+					            <input type="text" id="wstd_t67" name="wstd_t67">
+					        </div>
+					    </div>
+					</div>
                     
                     <!-- 템퍼링 -->
                     <div class="field-section">
@@ -1463,7 +1135,7 @@ function getChimStandardList(){
     $('#tab1').empty();
     
     chimTable = new Tabulator("#tab1", {
-        height:"750px",
+        height:"730px",
         layout:"fitColumns",
         selectable:true,
         tooltips:true,
@@ -1493,13 +1165,13 @@ function getChimStandardList(){
 
         columns:[
             {title:"NO", field:"idx", sorter:"int", width:80, hozAlign:"center"},
-            {title:"고객명", field:"corp_name", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
-            {title:"품명", field:"prod_name", sorter:"string", width:220, hozAlign:"center", headerFilter:"input"},
-            {title:"도번/품번", field:"prod_no", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
-            {title:"재질", field:"prod_jai", sorter:"int", width:200, hozAlign:"center", headerFilter:"input"},
-            {title:"단가", field:"prod_dang", sorter:"int", width:200, hozAlign:"center", headerFilter:"input"},
-            {title:"설비", field:"fac_name", sorter:"string", width:120, hozAlign:"center", headerFilter:"input"},
-            {title:"공정", field:"tech_te", sorter:"int", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"고객명", field:"corp_name", sorter:"string", width:160, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"품명", field:"prod_name", sorter:"string", width:240, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"도번/품번", field:"prod_no", sorter:"string", width:220, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"재질", field:"prod_jai", sorter:"int", width:240, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"단가", field:"prod_dang", sorter:"int", width:200, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"설비", field:"fac_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"공정", field:"tech_te", sorter:"int", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
             {title:"", field:"wstd_code", visible:false},
         ],
 

@@ -93,6 +93,16 @@ body {
     transform: translateY(-2px);
 }
 
+.btn-all-select {
+    background: linear-gradient(135deg, #ff6b6b, #fa5252);
+    color: white;
+}
+
+.btn-all-select:hover {
+    background: linear-gradient(135deg, #f03e3e, #e03131);
+    transform: translateY(-2px);
+}
+
 .btn-save {
     background: linear-gradient(135deg, #51cf66, #37b24d);
     color: white;
@@ -112,6 +122,16 @@ body {
     background: linear-gradient(135deg, #f03e3e, #e03131);
     transform: translateY(-2px);
 }
+.btn-work {
+    background: linear-gradient(135deg, #ff6b6b, #fa5252);
+    color: white;
+}
+
+.btn-work:hover {
+    background: linear-gradient(135deg, #f03e3e, #e03131);
+    transform: translateY(-2px);
+}
+
 
 /* ========== 컨텐츠 영역 (좌우 레이아웃) ========== */
 .content-wrapper {
@@ -261,6 +281,8 @@ body {
         <div class="top-buttons">
             <button type="button" class="btn-all-none">전체 없음</button>
             <button type="button" class="btn-all-grant">최고 권한</button>
+            <button type="button" class="btn-all-select">전체 조회</button>
+            <button type="button" class="btn-work">작업 지시</button>
             <button type="button" class="btn-save">저장</button>
             <button type="button" class="btn-reset">초기화</button>
         </div>
@@ -789,7 +811,7 @@ body {
                             <option value="D">삭제</option>
                         </select>
                     </div>
-                    <div class="permission-control">
+                    <!-- <div class="permission-control">
                         <label>전세척</label>
                         <select id="i02" name="i02">
                             <option value="N">없음</option>
@@ -798,7 +820,7 @@ body {
                             <option value="U">수정</option>
                             <option value="D">삭제</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="permission-control">
                         <label>열처리</label>
                         <select id="i03" name="i03">
@@ -809,7 +831,7 @@ body {
                             <option value="D">삭제</option>
                         </select>
                     </div>
-                    <div class="permission-control">
+                    <!-- <div class="permission-control">
                         <label>후세정</label>
                         <select id="i04" name="i04">
                             <option value="N">없음</option>
@@ -828,7 +850,7 @@ body {
                             <option value="U">수정</option>
                             <option value="D">삭제</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="permission-control">
                         <label>템퍼링</label>
                         <select id="i06" name="i06">
@@ -849,7 +871,7 @@ body {
                             <option value="D">삭제</option>
                         </select>
                     </div>
-                    <div class="permission-control">
+                    <!-- <div class="permission-control">
                         <label>방청</label>
                         <select id="i08" name="i08">
                             <option value="N">없음</option>
@@ -868,7 +890,7 @@ body {
                             <option value="U">수정</option>
                             <option value="D">삭제</option>
                         </select>
-                    </div>
+                    </div> -->
                 </div>
 
             </form>
@@ -1004,6 +1026,40 @@ $('.btn-all-none').click(function() {
     $('#permissionForm select').val('N');
 });
 
+//전체 조회
+$('.btn-all-select').click(function() {
+    if(!selectedUserCode) {
+        alert("사용자를 선택하세요.");
+        return;
+    }
+    $('#permissionForm select').val('R');
+});
+
+
+// 작업지시 외국인전용버튼
+$('.btn-work').click(function() {
+    if(!selectedUserCode) {
+        alert("사용자를 선택하세요.");
+        return;
+    }
+
+   
+    $('#permissionForm select').val('N');
+
+    
+    $('#i01, #i03, #i06, #i07').each(function() {
+        const options = $(this).find('option').map(function() {
+            return $(this).val();
+        }).get();
+
+        if(options.includes('D'))      $(this).val('D');
+        else if(options.includes('U')) $(this).val('U');
+        else if(options.includes('I')) $(this).val('I');
+        else if(options.includes('R')) $(this).val('R');
+    });
+
+    
+});
 // 최고 권한
 $('.btn-all-grant').click(function() {
     if(!selectedUserCode) {
