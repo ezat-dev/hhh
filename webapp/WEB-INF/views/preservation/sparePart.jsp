@@ -480,7 +480,7 @@
     <!-- ========== SparePart 메인 모달 ========== -->
     <div class="modal-overlay"></div>
     
-    <form method="post" id="sparePartForm" name="sparePartForm" enctype="multipart/form-data">
+    <form autocomplete="off" method="post" id="sparePartForm" name="sparePartForm" enctype="multipart/form-data">
         <div class="spare-modal">
             <div class="spare-box">
                 <!-- 헤더 -->

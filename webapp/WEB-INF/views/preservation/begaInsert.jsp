@@ -10,216 +10,103 @@
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
 /* ========== 기본 스타일 ========== */
-.main {
-    width: 98%;
-}
-
-.container {
-    display: flex;
-    justify-content: space-between;
-}
-
-.tabulator {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden !important;
-}
-
-.tabulator .tabulator-cell {
-    white-space: normal !important;
-    word-break: break-word;
-    text-align: center;
-}
-
-.row_select {
-    background-color: #9ABCEA !important;
-}
-
+.main { width: 98%; }
+.container { display: flex; justify-content: space-between; }
+.tabulator { width: 100%; max-width: 100%; overflow-x: hidden !important; }
+.tabulator .tabulator-cell { white-space: normal !important; word-break: break-word; text-align: center; }
+.row_select { background-color: #9ABCEA !important; }
 .box1 {
-    display: flex;
-    justify-content: right;
-    align-items: center;
-    width: 1500px;
-    margin-left: -1030px;
-    gap: 10px;
+    display: flex; justify-content: right; align-items: center;
+    width: 1500px; margin-left: -1030px; gap: 10px;
 }
-
-.box1 select {
-    width: 5%;
-}
-
+.box1 select { width: 5%; }
 .box1 input[type="date"] {
-    width: 150px;
-    padding: 5px 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #f9f9f9;
-    color: #333;
-    outline: none;
-    transition: border 0.3s ease;
+    width: 150px; padding: 5px 10px; font-size: 16px;
+    border: 1px solid #ccc; border-radius: 6px;
+    background-color: #f9f9f9; color: #333;
+    outline: none; transition: border 0.3s ease;
 }
-
-.box1 input[type="date"]:focus {
-    border: 1px solid #007bff;
-    background-color: #fff;
-}
-
-.box1 label,
-.box1 input {
-    margin-right: 10px;
-}
+.box1 input[type="date"]:focus { border: 1px solid #007bff; background-color: #fff; }
+.box1 label, .box1 input { margin-right: 10px; }
 
 /* ========== 모달 오버레이 ========== */
 .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    display: none; position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 999;
 }
-
-.modal-overlay.active {
-    display: block;
-}
+.modal-overlay.active { display: block; }
 
 /* ========== 비가동 모달 컨테이너 ========== */
 .bega-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
+    display: none; position: fixed;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
 }
-
-.bega-modal.active {
-    display: block;
-}
+.bega-modal.active { display: block; }
 
 .bega-insert-box {
-    width: 900px;
-    max-width: 95vw;
-    max-height: 90vh;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    width: 900px; max-width: 95vw;
+    max-height: 95vh;              /* ★ 90 → 95vh */
+    background: white; border-radius: 8px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+    overflow: hidden; display: flex; flex-direction: column;
 }
 
 /* ========== 모달 헤더 ========== */
 .bega-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 25px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 16px;             /* ★ 15px 25px → 8px 16px */
     background: linear-gradient(135deg, #2c3e50, #34495e);
-    color: white;
-    font-size: 20px;
-    font-weight: 700;
-    cursor: move;
+    color: white; font-size: 15px; font-weight: 700; cursor: move;
+    flex-shrink: 0;
 }
-
 .header-close-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 28px;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    transition: all 0.3s;
+    background: none; border: none; color: white;
+    font-size: 22px; cursor: pointer;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; transition: all 0.3s;
 }
-
-.header-close-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(90deg);
-}
+.header-close-btn:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg); }
 
 /* ========== 모달 본문 ========== */
 .bega-modal-body {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    flex: 1; overflow-y: auto; overflow-x: hidden;
     background: #f5f7fa;
-    padding: 20px;
-    max-height: 700px;
+    padding: 8px 10px;             /* ★ 20px → 8px 10px */
+    max-height: calc(95vh - 90px);
 }
-
-.bega-modal-body::-webkit-scrollbar {
-    width: 8px;
-}
-
-.bega-modal-body::-webkit-scrollbar-track {
-    background: #e0e0e0;
-}
-
-.bega-modal-body::-webkit-scrollbar-thumb {
-    background: #999;
-    border-radius: 4px;
-}
+.bega-modal-body::-webkit-scrollbar { width: 5px; }
+.bega-modal-body::-webkit-scrollbar-track { background: #e0e0e0; }
+.bega-modal-body::-webkit-scrollbar-thumb { background: #999; border-radius: 4px; }
 
 /* ========== 섹션 ========== */
 .bega-section {
-    background: white;
-    border-radius: 8px;
-    padding: 15px 20px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background: white; border-radius: 6px;
+    padding: 6px 10px;             /* ★ 15px 20px → 6px 10px */
+    margin-bottom: 5px;            /* ★ 15px → 5px */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
-
-.bega-section:last-child {
-    margin-bottom: 0;
-}
-
+.bega-section:last-child { margin-bottom: 0; }
 .bega-section-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #2c3e50;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #e9ecef;
+    font-size: 11px; font-weight: 700; color: #2c3e50;
+    margin-bottom: 5px;            /* ★ 12px → 5px */
+    padding-bottom: 4px;           /* ★ 8px → 4px */
+    border-bottom: 1px solid #e9ecef;
 }
 
 /* ========== 기본 행/열 레이아웃 ========== */
 .bega-row {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 10px;
+    display: grid; grid-template-columns: repeat(2,1fr);
+    gap: 6px; margin-bottom: 5px;  /* ★ 12px→6px, 10px→5px */
 }
-
-.bega-row:last-child {
-    margin-bottom: 0;
-}
-
-.bega-col {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.bega-col-full {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.bega-col label,
-.bega-col-full label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #495057;
+.bega-row:last-child { margin-bottom: 0; }
+.bega-col { display: flex; flex-direction: column; gap: 2px; }
+.bega-col-full { grid-column: 1/-1; display: flex; flex-direction: column; gap: 2px; }
+.bega-col label, .bega-col-full label {
+    font-size: 10px; font-weight: 600; color: #495057;
 }
 
 /* ========== 입력 필드 ========== */
@@ -227,250 +114,118 @@
 .bega-col input[type="date"],
 .bega-col-full input[type="text"],
 .bega-col-full textarea {
-    padding: 8px 12px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    font-size: 13px;
-    box-sizing: border-box;
-    transition: all 0.3s;
-}
-
-.bega-col input[type="text"],
-.bega-col input[type="date"],
-.bega-col-full input[type="text"],
-.bega-col-full textarea {
     width: 100%;
+    padding: 3px 7px;              /* ★ 8px 12px → 3px 7px */
+    border: 1px solid #ced4da; border-radius: 4px;
+    font-size: 11px;               /* ★ 13px → 11px */
+    box-sizing: border-box; transition: all 0.2s;
+    height: 26px;                  /* ★ 고정 높이 */
 }
-
 .bega-col input:focus,
 .bega-col-full input:focus,
 .bega-col-full textarea:focus {
-    outline: none;
-    border-color: #4dabf7;
-    box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.1);
+    outline: none; border-color: #4dabf7;
+    box-shadow: 0 0 0 2px rgba(77,171,247,0.1);
 }
-
-.bega-col input[readonly],
-.bega-col-full input[readonly] {
-    background: #f1f3f5;
-    cursor: not-allowed;
+.bega-col input[readonly], .bega-col-full input[readonly] {
+    background: #f1f3f5; cursor: not-allowed;
 }
-
 textarea {
-    resize: vertical;
-    min-height: 60px;
-    font-family: inherit;
+    resize: vertical; height: 44px;
+    min-height: unset; font-family: inherit;
 }
 
 /* ========== 검색 버튼이 있는 입력 ========== */
-.input-with-button {
-    display: flex;
-    gap: 8px;
-}
-
-.input-with-button input {
-    flex: 1;
-}
-
+.input-with-button { display: flex; gap: 5px; }
+.input-with-button input { flex: 1; }
 .btn-search {
-    padding: 8px 16px;
-    border: 1px solid #4dabf7;
-    border-radius: 5px;
-    background: #4dabf7;
-    color: white;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    white-space: nowrap;
+    padding: 3px 10px; border: 1px solid #4dabf7; border-radius: 4px;
+    background: #4dabf7; color: white;
+    font-size: 11px; font-weight: 600; cursor: pointer;
+    white-space: nowrap; transition: all 0.2s;
 }
-
-.btn-search:hover {
-    background: #339af0;
-    transform: translateY(-1px);
-}
+.btn-search:hover { background: #339af0; }
 
 /* ========== 설비중지시간 그리드 ========== */
 .stop-time-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    display: grid; grid-template-columns: repeat(2,1fr);
+    gap: 6px;                      /* ★ 10px → 6px */
 }
-
 .stop-time-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: flex; align-items: center; gap: 5px; /* ★ 8px → 5px */
 }
-
 .stop-time-item label {
-    min-width: 120px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #495057;
+    min-width: 100px;              /* ★ 120px → 100px */
+    font-size: 10px; font-weight: 600; color: #495057;
 }
-
 .stop-time-item input {
     flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    font-size: 13px;
-    box-sizing: border-box;
-    transition: all 0.3s;
+    padding: 3px 7px;              /* ★ 8px 12px → 3px 7px */
+    border: 1px solid #ced4da; border-radius: 4px;
+    font-size: 11px; box-sizing: border-box; transition: all 0.2s;
+    height: 26px;
 }
-
 .stop-time-item input:focus {
-    outline: none;
-    border-color: #4dabf7;
-    box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.1);
+    outline: none; border-color: #4dabf7;
+    box-shadow: 0 0 0 2px rgba(77,171,247,0.1);
 }
-
 .stop-time-item.total {
-    grid-column: 1 / -1;
-    background: #f8f9fa;
-    padding: 8px;
-    border-radius: 5px;
+    grid-column: 1/-1; background: #f8f9fa;
+    padding: 5px; border-radius: 4px; /* ★ 8px → 5px */
 }
-
-.stop-time-item.total label {
-    font-weight: 700;
-    color: #2c3e50;
-}
-
-.stop-time-item.total input {
-    background: white;
-    font-weight: 700;
-    color: #2c3e50;
-}
+.stop-time-item.total label { font-weight: 700; color: #2c3e50; }
+.stop-time-item.total input { background: white; font-weight: 700; color: #2c3e50; }
 
 /* ========== 모달 푸터 ========== */
 .bega-modal-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    padding: 15px 20px;
-    background: white;
-    border-top: 1px solid #dee2e6;
+    display: flex; justify-content: center; align-items: center;
+    gap: 8px; padding: 7px 16px;   /* ★ 15px 20px → 7px 16px */
+    background: white; border-top: 1px solid #dee2e6;
+    flex-shrink: 0;
 }
-
 .bega-modal-footer button {
-    min-width: 100px;
-    height: 38px;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
+    min-width: 80px; height: 30px; /* ★ 100px 38px → 80px 30px */
+    border: none; border-radius: 4px;
+    font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s;
 }
-
-.save {
-    background: linear-gradient(135deg, #51cf66, #37b24d);
-    color: white;
-}
-
-.save:hover {
-    background: linear-gradient(135deg, #40c057, #2f9e44);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(64, 192, 87, 0.3);
-}
-
-.btn-delete {
-    background: linear-gradient(135deg, #ff6b6b, #fa5252);
-    color: white;
-}
-
-.btn-delete:hover {
-    background: linear-gradient(135deg, #f03e3e, #e03131);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(240, 62, 62, 0.3);
-}
-
-.close {
-    background: linear-gradient(135deg, #868e96, #495057);
-    color: white;
-}
-
-.close:hover {
-    background: linear-gradient(135deg, #6c757d, #343a40);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
-}
+.save    { background: linear-gradient(135deg,#51cf66,#37b24d); color: white; }
+.save:hover { background: linear-gradient(135deg,#40c057,#2f9e44); transform: translateY(-1px); }
+.btn-delete { background: linear-gradient(135deg,#ff6b6b,#fa5252); color: white; }
+.btn-delete:hover { background: linear-gradient(135deg,#f03e3e,#e03131); transform: translateY(-1px); }
+.close   { background: linear-gradient(135deg,#868e96,#495057); color: white; }
+.close:hover { background: linear-gradient(135deg,#6c757d,#343a40); transform: translateY(-1px); }
 
 /* ========== 설비검색 모달 ========== */
 .fac-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: none; align-items: center; justify-content: center; z-index: 10000;
 }
-
 .fac-modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 1000px;
-    max-height: 90vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    background: white; padding: 15px; border-radius: 8px;
+    width: 90%; max-width: 1000px;
+    max-height: 90vh; overflow: hidden;
+    display: flex; flex-direction: column;
 }
-
 .fac-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: bold;
-    font-size: 18px;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-weight: bold; font-size: 16px;
+    margin-bottom: 10px; padding-bottom: 8px;
     border-bottom: 2px solid #e9ecef;
 }
-
-.fac-modal-title {
-    color: #2c3e50;
-}
-
+.fac-modal-title { color: #2c3e50; }
 .modal-close {
-    cursor: pointer;
-    font-size: 28px;
-    color: #495057;
-    line-height: 1;
-    transition: all 0.3s;
+    cursor: pointer; font-size: 24px; color: #495057;
+    line-height: 1; transition: all 0.3s;
 }
-
-.modal-close:hover {
-    color: #212529;
-    transform: rotate(90deg);
-}
-
-#facListTabulator {
-    flex: 1;
-    overflow: auto;
-}
+.modal-close:hover { color: #212529; transform: rotate(90deg); }
+#facListTabulator { flex: 1; overflow: auto; }
 
 /* ========== 반응형 ========== */
 @media (max-width: 1000px) {
-    .bega-insert-box {
-        width: 95vw;
-    }
-    
-    .bega-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .stop-time-grid {
-        grid-template-columns: 1fr;
-    }
+    .bega-insert-box { width: 95vw; }
+    .bega-row { grid-template-columns: 1fr; }
+    .stop-time-grid { grid-template-columns: 1fr; }
 }
 </style>
     
@@ -511,7 +266,7 @@ textarea {
 	</main>
 	    
 	    
- <form method="post" id="begaInsertForm" name="begaInsertForm">
+ <form autocomplete="off" method="post" id="begaInsertForm" name="begaInsertForm">
     <div class="modal-overlay"></div>
     
     <div class="bega-modal">

@@ -292,6 +292,58 @@
 	text-overflow: ellipsis;
 }
 
+
+.processOrderStatusModal {
+	position: fixed; /* 화면에 고정 */
+	width:350px;
+	height:150px;	
+	top: 50%; /* 수직 중앙 */
+	left: 40%; /* 수평 중앙 */
+	display: none;
+	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+	z-index: 20010; /* 다른 요소 위에 표시 */
+	border:2px solid black;
+	background-color:white;
+}
+
+.processOrderStatusModal .j_container{
+	display:flex;
+}
+
+.processOrderStatusModal .j_row1{
+	display:flex;
+	margin-top:1px;
+}
+
+
+.processOrderReportModal {
+	position: fixed; /* 화면에 고정 */
+	width:850px;
+	height:800px;
+	top: 50%; /* 수직 중앙 */
+	left: 50%; /* 수평 중앙 */
+	display: none;
+	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+	z-index: 20010; /* 다른 요소 위에 표시 */
+	border:2px solid black;
+	background-color:white;
+}
+
+.processOrderReportModal .j_container{
+	display:flex;
+}
+
+.processOrderReportModal .j_row1{
+	display:flex;
+	margin-top:1px;
+}
+
+.tabulator-row.tabulator-selected .indicator-cell::before {
+    content: "▶";
+    font-size: 11pt;
+}
+
+
     </style>
     <body>
     
@@ -338,11 +390,12 @@
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
 			 공정이동표            
         </button>
-        
+<!--  
         <button class="printer-button" id="checkPrintBtn">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
 			 체크시트            
         </button>
+-->
     </div>
 </div>
 <main class="main">
@@ -617,7 +670,48 @@
 </form>
 
 <a style="display:none;" id="downLoadLink" href="#" download="#"></a>
+
+<!-- 열처리 체크시트 출력중 모달 -->
+<div class="processOrderStatusModal">
+	<div class="detail">
+		<div class="header">
+			<span style="display:inline-block; width:180px;">단취 공정이동표</span>
+		</div>
+		<div class="j_container">
+			<div class="j_row1">
+				<div class="j_h_div">
+					<span style="display:inline-block; width:350px;">단취 공정이동표 파일 생성중입니다....</span>
+					<br />
+					<span style="display:inline-block; width:350px;">생성완료시 팝업창이 닫힙니다.</span>
+				</div>
+			</div>
+		</div>
+	</div>
 	
+	
+	<div class="j_container" style="justify-content:end;">
+    	<div class="j_row1">
+			<button class="processOrderStatusClose iRowBtn margin_left" type="button" onclick="processOrderStatusCloseBtn();">닫기</button>
+		</div>
+    </div>	
+</div>
+
+	
+<!-- 단취 공정이동표 표현 모달 -->
+<div class="processOrderReportModal">
+	<div class="j_container">
+		<iframe src="" frameborder="0" width="800" height="700" id="processOrderReport">
+		</iframe>	
+	</div>
+    <div class="j_container" style="justify-content:end;">
+    	<div class="j_row1">
+			<button class="processOrderReportClose iRowBtn margin_left" type="button" onclick="processOrderReportCloseBtn();">닫기</button>
+		</div>
+    </div>
+</div>
+
+
+
 <script>
 	//전역변수
     var cutumTable;	
@@ -640,6 +734,40 @@
 	});
 
 	//이벤트	
+	$("#processPrintBtn").on("click",function(){
+		var selectedData = workDataTable.getSelectedData();
+		
+		if(selectedData.length <= 0){
+			alert("공정이동표를 출력할 단취항목을 선택해주십시오!");
+			return false;
+		}
+		
+		processOrderStatusModal.style.display = "block";
+
+		var sendObj = {
+				"processOrderData": selectedData
+			}
+
+		//선택한 객체 전송
+		$.ajax({
+			url:"/tkheat/workilbo/processOrderPrint",
+			type:"post",
+			dataType:"json",
+			contentType: false,
+			processData: false,			
+			data:JSON.stringify(sendObj),
+			success:function(result){
+   				var fileUrl = "/tkPrint/workilboProcessOrder/"+result.fileName;
+                $("#processOrderReport").attr("src",fileUrl);
+                processOrderReportModal.style.display = "block";
+				
+                processOrderStatusCloseBtn();
+//				getChulgoData();
+			}
+		});
+
+	});
+	
 	$(".dan_ipgo_input").on("keydown", function(e){
 		if(e.keyCode == 13){
 			getWorkDanIpgoDataList();
@@ -990,9 +1118,8 @@
 		    paginationSize:20,
 		    headerSort:false,
 		    rowSelectionChanged:function(data, rows){
-		        // 현재 화면에 보이는 모든 행 다시 그림
-		        this.getRows().forEach(function(r){
-		            r.reformat();
+		        rows.forEach(row => {
+		            row.getCell("indicator").render();
 		        });
 		    },
 		    ajaxResponse:function(url, params, response){
@@ -1013,10 +1140,7 @@
 		            hozAlign: "center",
 		            headerSort: false,
 		            formatter: function(cell){
-		                return cell.getRow().isSelected()
-//		                    ? "<span style='font-size:16px;'>✔</span>"
-		                    ? "<span style='font-size:11pt;'>▶</span>"
-		                    : "";
+		                return "";
 		            }
 		        },
 		    	//행 삭제
@@ -1070,10 +1194,15 @@
 			    {title:"제품단중", field:"prod_danj", visible:false},
 		    ],
 		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+		        var el = row.getElement();
+
+		        el.style.fontWeight = "700";
+
+		        if(row.isSelected()){
+		            el.style.backgroundColor = "#e0f3ff";
+		        }else{
+		            el.style.backgroundColor = "#FFFFFF";
+		        }
 			}
 		});		
 		
@@ -1389,12 +1518,21 @@
 			}
 		});
 	}
-		
+
+	function processOrderStatusCloseBtn(){
+		processOrderStatusModal.style.display = 'none'; // 모달 숨김
+	}
+
+	function processOrderReportCloseBtn(){
+		processOrderReportModal.style.display = 'none'; // 모달 숨김
+	}
+
 	//모달기능
 	const workDanModal = document.querySelector('.workDanModal');
 	const workDanIpgoModal = document.querySelector('.workDanIpgoModal');
 	const workDanSunipModal = document.querySelector('.workDanSunipModal');
-	
+	const processOrderStatusModal = document.querySelector('.processOrderStatusModal');
+	const processOrderReportModal = document.querySelector('.processOrderReportModal');	
 	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
 	
 	header.addEventListener('mousedown', function(e) {

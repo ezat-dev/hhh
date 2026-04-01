@@ -40,7 +40,7 @@ public class WorkJisiTk {
 	private float ord_amnt;			//중량
 	private String ord_danw;		//단위
 	private float ord_dang;			//단가
-	private float ord_mon;			//금액
+	private String ord_mon;			//금액
 	private String ord_bigo;		//비고
 	private String ord_prn;
 	private String ord_nd1;
@@ -158,7 +158,7 @@ public class WorkJisiTk {
 	private String aaa;
 	
 	private String cost_ea;
-	private float cost_kg;
+	private String cost_kg;
 	private String prod_upjong;
 	private String jisi_h_cost;
 	private String prod_polish;
@@ -406,6 +406,15 @@ public class WorkJisiTk {
 	
 	private String fac_name_bcf;
 	private String fac_name_tf;
+	
+	private String ilbo_cost;
+	private float ilbo_amnt;
+	private String ilbo_su_diff;
+	private String ilbo_jung_diff;
+	private String ilbo_cost_diff;
+	
+	private String ilbo_su_report;
+	private String ilbo_cost_report;
 
 	
 	public String getSdate() {
@@ -540,10 +549,10 @@ public class WorkJisiTk {
 	public void setOrd_dang(float ord_dang) {
 		this.ord_dang = ord_dang;
 	}
-	public float getOrd_mon() {
+	public String getOrd_mon() {
 		return ord_mon;
 	}
-	public void setOrd_mon(float ord_mon) {
+	public void setOrd_mon(String ord_mon) {
 		this.ord_mon = ord_mon;
 	}
 	public String getOrd_bigo() {
@@ -1038,10 +1047,10 @@ public class WorkJisiTk {
 	public void setCost_ea(String cost_ea) {
 		this.cost_ea = cost_ea;
 	}
-	public float getCost_kg() {
+	public String getCost_kg() {
 		return cost_kg;
 	}
-	public void setCost_kg(float cost_kg) {
+	public void setCost_kg(String cost_kg) {
 		this.cost_kg = cost_kg;
 	}
 	public String getProd_upjong() {
@@ -2435,5 +2444,47 @@ public class WorkJisiTk {
 	}
 	public void setProd_cq(String prod_cq) {
 		this.prod_cq = prod_cq;
+	}
+	public String getIlbo_cost() {
+		return ilbo_cost;
+	}
+	public void setIlbo_cost(String ilbo_cost) {
+		this.ilbo_cost = ilbo_cost;
+	}
+	public float getIlbo_amnt() {
+		return ilbo_amnt;
+	}
+	public void setIlbo_amnt(float ilbo_amnt) {
+		this.ilbo_amnt = ilbo_amnt;
+	}
+	public String getIlbo_su_diff() {
+		return ilbo_su_diff;
+	}
+	public void setIlbo_su_diff(String ilbo_su_diff) {
+		this.ilbo_su_diff = ilbo_su_diff;
+	}
+	public String getIlbo_jung_diff() {
+		return ilbo_jung_diff;
+	}
+	public void setIlbo_jung_diff(String ilbo_jung_diff) {
+		this.ilbo_jung_diff = ilbo_jung_diff;
+	}
+	public String getIlbo_cost_diff() {
+		return ilbo_cost_diff;
+	}
+	public void setIlbo_cost_diff(String ilbo_cost_diff) {
+		this.ilbo_cost_diff = ilbo_cost_diff;
+	}
+	public String getIlbo_su_report() {
+		return ilbo_su_report;
+	}
+	public void setIlbo_su_report(String ilbo_su_report) {
+		this.ilbo_su_report = ilbo_su_report;
+	}
+	public String getIlbo_cost_report() {
+		return ilbo_cost_report;
+	}
+	public void setIlbo_cost_report(String ilbo_cost_report) {
+		this.ilbo_cost_report = ilbo_cost_report;
 	}
 }

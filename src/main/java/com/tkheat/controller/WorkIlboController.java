@@ -1,5 +1,6 @@
 package com.tkheat.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -1336,7 +1339,93 @@ public class WorkIlboController {
 	}
 
 
-	//단취 공정이동식별표
+
+	//단취 공정이동식별표(수주번호별로 생성 후 병합하기)
+	@RequestMapping(value = "workilbo/processOrderPrint", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> workIlboProcessOrderPrint(
+			@RequestBody String selectedDataJson,
+			HttpServletRequest request
+			){
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		JSONParser selectParser = new JSONParser();
+		
+		JSONObject selectViewObj = new JSONObject();
+		JSONArray selectViewArray = new JSONArray();
+		WorkJisiTk w = new WorkJisiTk();
+				
+		try {
+			//선택 데이터
+			selectViewObj = (JSONObject)selectParser.parse(selectedDataJson);
+			selectViewArray = (JSONArray)selectViewObj.get("processOrderData");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		List<Integer> ilboCodeList = new ArrayList<Integer>();
+		
+		//선택한 행의 수만큼 반복
+		for(int i=0; i<selectViewArray.size(); i++) {
+			JSONObject rowObj = (JSONObject)selectViewArray.get(i);
+			ilboCodeList.add(Integer.parseInt(rowObj.get("ilbo_code").toString()));
+		}
+		
+		w.setIlboCodeList(ilboCodeList);
+		
+		//일보코드별 수주번호 리스트
+		List<WorkJisiTk> wData = workIlboService.workIlboProcessOrderPrintOrdcodeList(w);
+		
+		String abPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/processorder.jrxml");
+		
+		if(!wData.isEmpty()) {
+			String fileName = "";
+			String mergeFileName = "";
+			//PDF파일병합 추가
+			PDFMergerUtility merge = new PDFMergerUtility();
+			
+			for(WorkJisiTk wRow : wData) {
+				fileName = wRow.getIlbo_code()+"_"+wRow.getOrd_code();
+				mergeFileName = wRow.getIlbo_code()+"";
+				try {
+					JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(wData);
+					
+					JasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
+					JasperCompileManager compileManager = JasperCompileManager.getInstance(jasperReportsContext);
+					JasperReport report = JasperCompileManager.compileReport(abPath);
+					
+					Map<String, Object> reportMap = new HashMap<String, Object>();
+					reportMap.put("workJisiTk", wRow);
+					
+					
+					JasperFillManager fillManager = JasperFillManager.getInstance(jasperReportsContext);
+					
+					JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);
+					
+					JasperExportManager exportManager = JasperExportManager.getInstance(jasperReportsContext); 
+					JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/공정이동표/"+fileName+".pdf");			
+				
+					merge.addSource("D:/태경출력파일/공정이동표/"+fileName+".pdf");
+					
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+
+				merge.setDestinationFileName("D:/태경출력파일/공정이동표/"+mergeFileName+".pdf");
+				try {
+					merge.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			rtnMap.put("fileName",mergeFileName+".pdf");
+		}
+		
+		return rtnMap;	
+	}
+
 	
 	//열처리,템퍼링 체크시트
 	@RequestMapping(value = "workilbo/checkSheetPrint", method = RequestMethod.POST)

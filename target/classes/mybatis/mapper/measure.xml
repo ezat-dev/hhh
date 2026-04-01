@@ -56,82 +56,87 @@
 	</select>
 	
 	
+		<!-- 측정기기고장이력 상세 조회 -->
 	<select id="gigiGojangtDetail" parameterType="measure" resultType="measure">
-		SET LOCK_TIMEOUT 10000;
-        SELECT   TESTER_ERR_LIST.*,
-                 ISNULL(SUBSTRING(CONVERT(NVARCHAR, TESTER_ERR_LIST.TERR_STRT, 121),12, 2),'00') AS TERR_STRT_H,
-                 ISNULL(SUBSTRING(CONVERT(NVARCHAR, TESTER_ERR_LIST.TERR_STRT, 121),15, 2),'00') AS TERR_STRT_M,
-                 ISNULL(SUBSTRING(CONVERT(NVARCHAR, TESTER_ERR_LIST.TERR_STRT, 121),18, 2),'00') AS TERR_STRT_S,
-                 ISNULL(SUBSTRING(CONVERT(NVARCHAR, TESTER_ERR_LIST.TERR_END, 121),12, 2),'00') AS TERR_END_H,
-                 ISNULL(SUBSTRING(CONVERT(NVARCHAR, TESTER_ERR_LIST.TERR_END, 121),15, 2),'00') AS TERR_END_M,
-                 ISNULL(SUBSTRING(CONVERT(NVARCHAR, TESTER_ERR_LIST.TERR_END, 121),18, 2),'00') AS TERR_END_S
-        FROM      TESTER_ERR_LIST WITH(NOLOCK)
-                      INNER JOIN TESTER WITH(NOLOCK) ON TESTER_ERR_LIST.TER_CODE = TESTER.TER_CODE
-        WHERE TESTER_ERR_LIST.TERR_CODE = #{terr_code}
-	
+	    SELECT
+	        TESTER_ERR_LIST.*,
+	        ISNULL(SUBSTRING(CONVERT(NVARCHAR, TESTER_ERR_LIST.TERR_STRT, 121),12,2),'00') AS TERR_STRT_H,
+	        ISNULL(SUBSTRING(CONVERT(NVARCHAR, TESTER_ERR_LIST.TERR_STRT, 121),15,2),'00') AS TERR_STRT_MM,
+	        ISNULL(SUBSTRING(CONVERT(NVARCHAR, TESTER_ERR_LIST.TERR_STRT, 121),18,2),'00') AS TERR_STRT_SS,
+	        ISNULL(SUBSTRING(CONVERT(NVARCHAR, TESTER_ERR_LIST.TERR_END,  121),12,2),'00') AS TERR_END_H,
+	        ISNULL(SUBSTRING(CONVERT(NVARCHAR, TESTER_ERR_LIST.TERR_END,  121),15,2),'00') AS TERR_END_MM,
+	        ISNULL(SUBSTRING(CONVERT(NVARCHAR, TESTER_ERR_LIST.TERR_END,  121),18,2),'00') AS TERR_END_SS
+	    FROM TESTER_ERR_LIST WITH(NOLOCK)
+	    INNER JOIN TESTER WITH(NOLOCK) ON TESTER_ERR_LIST.TER_CODE = TESTER.TER_CODE
+	    WHERE TESTER_ERR_LIST.TERR_CODE = #{terr_code}
 	</select>
-
+	
+	<!-- 측정기기고장이력 INSERT -->
 	<insert id="gigiGojangInsert" parameterType="measure">
-		INSERT INTO TESTER_ERR_LIST (
-        terr_name,
-        terr_chkman,
-        terr_reward,
-        terr_strt,
-        terr_end,
-        terr_time,
-        terr_content,
-        terr_man,
-        terr_cost,
-        terr_suri,
-        terr_bigo,
-        terr_condi,
-        terr_date,
-        ter_code,
-        terr_bphoto,
-        terr_aphoto
-    ) VALUES (
-    	<!-- (SELECT ISNULL(MAX(TERR_CODE), 0) + 1 FROM TESTER_ERR_LIST), -->
-        #{terr_name},
-        #{terr_chkman},
-        #{terr_reward},
-        #{terr_strt},
-        #{terr_end},
-        #{terr_time},
-        #{terr_content},
-        #{terr_man},
-        #{terr_cost},
-        #{terr_suri},
-        #{terr_bigo},
-        #{terr_condi},
-        #{terr_date},
-        #{ter_code},
-        #{terr_bphoto},
-        #{terr_aphoto}
-    )
+	    INSERT INTO TESTER_ERR_LIST (
+	        terr_name,
+	        terr_chkman,
+	        terr_reward,
+	        terr_strt,
+	        terr_end,
+	        terr_time,
+	        terr_content,
+	        terr_man,
+	        terr_cost,
+	        terr_suri,
+	        terr_bigo,
+	        terr_condi,
+	        terr_date,
+	        ter_code,
+	        terr_bphoto,
+	        terr_aphoto
+	    ) VALUES (
+	        (SELECT TER_NAME FROM TESTER WHERE TER_CODE = #{ter_code}),
+	        #{terr_chkman},
+	        #{terr_reward},
+	        #{terr_strt},
+	        #{terr_end},
+	        #{terr_time},
+	        #{terr_content},
+	        #{terr_man},
+	        #{terr_cost},
+	        #{terr_suri},
+	        #{terr_bigo},
+	        #{terr_condi},
+	        #{terr_date},
+	        #{ter_code},
+	        #{terr_bphoto},
+	        #{terr_aphoto}
+	    )
 	</insert>
 	
-	
+	<!-- 측정기기고장이력 UPDATE -->
 	<update id="gigiGojangUdate" parameterType="measure">
-    	SET LOCK_TIMEOUT 10000;
-        UPDATE TESTER_ERR_LIST
-        SET  TERR_NAME = #{terr_name}
-          ,TERR_CHKMAN = #{terr_chkman}
-          ,TERR_REWARD = #{terr_reward}
-          ,TERR_STRT = #{terr_strt}
-          ,TERR_END = #{terr_end}
-          ,TERR_TIME = #{terr_time}
-          ,TERR_CONTENT = #{terr_content}
-          ,TERR_MAN = #{terr_man}
-          ,TERR_COST = #{terr_cost}
-          ,TERR_SURI = #{terr_suri}
-          ,TERR_BIGO = #{terr_bigo}
-          ,TERR_CONDI = #{terr_condi}
-          ,TERR_DATE = #{terr_date}
-          ,TER_CODE = #{ter_code}
-          ,TERR_BPHOTO = #{terr_bphoto}
-          ,TERR_APHOTO = #{terr_aphoto}
-        WHERE TERR_CODE = #{terr_code}
-    </update>
+	    UPDATE TESTER_ERR_LIST
+	    SET
+	        TERR_NAME    = (SELECT TER_NAME FROM TESTER WHERE TER_CODE = #{ter_code}),
+	        TERR_CHKMAN  = #{terr_chkman},
+	        TERR_REWARD  = #{terr_reward},
+	        TERR_STRT    = #{terr_strt},
+	        TERR_END     = #{terr_end},
+	        TERR_TIME    = #{terr_time},
+	        TERR_CONTENT = #{terr_content},
+	        TERR_MAN     = #{terr_man},
+	        TERR_COST    = #{terr_cost},
+	        TERR_SURI    = #{terr_suri},
+	        TERR_BIGO    = #{terr_bigo},
+	        TERR_CONDI   = #{terr_condi},
+	        TERR_DATE    = #{terr_date},
+	        TER_CODE     = #{ter_code},
+	        <if test="terr_bphoto != null and terr_bphoto != ''">
+	            TERR_BPHOTO = #{terr_bphoto},
+	        </if>
+	        <if test="terr_aphoto != null and terr_aphoto != ''">
+	            TERR_APHOTO = #{terr_aphoto},
+	        </if>
+	        TERR_ADATE   = GETDATE()
+	    WHERE TERR_CODE = #{terr_code}
+	</update>
 	
 	<delete id="gigiGojangDelete" parameterType="int">
         SET LOCK_TIMEOUT 10000;

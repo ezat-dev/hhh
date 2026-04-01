@@ -6,820 +6,663 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>측정기기고장이력</title>
-    <link rel="stylesheet" href="/tkheat/css/management/productInsert.css">
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
-<%@include file="../include/pluginpage.jsp" %> 
-    <style>
-    
-.main{
-	width:98%;
+<%@include file="../include/pluginpage.jsp" %>
+<style>
+.main { width: 98%; }
+.container { display: flex; justify-content: space-between; }
+.tabulator { width: 100%; max-width: 100%; overflow-x: hidden !important; }
+.tabulator .tabulator-cell { white-space: normal !important; word-break: break-word; text-align: center; }
+.row_select { background-color: #9ABCEA !important; }
+
+.box1 {
+    display: flex; justify-content: right; align-items: center;
+    width: 1500px; margin-left: -1050px; gap: 10px;
 }
-.container {
-	display: flex;
-	justify-content: space-between;
+.box1 select { width: 5%; }
+.box1 input[type="date"] {
+    width: 150px; padding: 5px 10px; font-size: 16px;
+    border: 1px solid #ccc; border-radius: 6px;
+    background-color: #f9f9f9; color: #333;
+    outline: none; transition: border 0.3s ease;
 }
+.box1 input[type="date"]:focus { border: 1px solid #007bff; background-color: #fff; }
+.box1 label, .box1 input { margin-right: 10px; }
+
+/* ========== 모달 오버레이 ========== */
+.modal-overlay {
+    display: none; position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 999;
+}
+
+/* ========== 고장이력 모달 컨테이너 ========== */
 .gojangModal {
-    position: fixed; /* 화면에 고정 */
-    top: 50%; /* 수직 중앙 */
-    left: 50%; /* 수평 중앙 */
-    display : none;
-    transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-    z-index: 1000; /* 다른 요소 위에 표시 */
+    display: none; position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
 }
+.gojangModal.show { display: block; }
+
+.gojang-insert-box {
+    width: 860px; max-width: 95vw;
+    max-height: 95vh;
+    background: white; border-radius: 8px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+    overflow: hidden; display: flex; flex-direction: column;
+}
+
+/* ========== 모달 헤더 ========== */
 .header {
-    display: flex; /* 플렉스 박스 사용 */
-    justify-content: center; /* 중앙 정렬 */
-    align-items: center; /* 수직 중앙 정렬 */
-    background-color: #33363d; /* 배경색 */
-    height: 50px; /* 높이 */
-    color: white; /* 글자색 */
-    font-size: 20px; /* 글자 크기 */
-    text-align: center; /* 텍스트 정렬 */
-    position: relative;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    color: white; font-size: 15px; font-weight: 700; cursor: move;
+    flex-shrink: 0;
 }
 .header-close {
-	position: absolute;
-	right: 15px;
-	top: 10px;
-	cursor: pointer;
-	font-size: 20px;
-	color: white;
+    cursor: pointer; font-size: 22px; color: white;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; transition: all 0.3s;
 }
-#editPop {
-    background: #ffffff;
-    border: 1px solid #000000;
-    width: 800px; /* 가로 길이 고정 */
-    height: 670px; /* 세로 길이 고정 */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-    margin: 20px auto; /* 중앙 정렬 */
-    padding: 20px;
-    border-radius: 5px; /* 모서리 둥글게 */
-    overflow-y: auto; /* 세로 스크롤 추가 */
-    position: relative;
-    margin-top: 0;
+.header-close:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg); }
+
+/* ========== 모달 본문 ========== */
+.gojang-modal-body {
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+    background: #f5f7fa;
+    padding: 8px 10px;
+    max-height: calc(95vh - 90px);
+}
+.gojang-modal-body::-webkit-scrollbar { width: 5px; }
+.gojang-modal-body::-webkit-scrollbar-track { background: #e0e0e0; }
+.gojang-modal-body::-webkit-scrollbar-thumb { background: #999; border-radius: 4px; }
+
+/* ========== 섹션 ========== */
+.gojang-section {
+    background: white; border-radius: 6px;
+    padding: 6px 10px; margin-bottom: 5px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.gojang-section:last-child { margin-bottom: 0; }
+.gojang-section-title {
+    font-size: 11px; font-weight: 700; color: #2c3e50;
+    margin-bottom: 5px; padding-bottom: 4px;
+    border-bottom: 1px solid #e9ecef;
 }
 
-.insideTable {
-    width: 100%; /* 테이블 너비 100% */
-    border-collapse: collapse; /* 테두리 겹침 제거 */
+/* ========== 행/열 레이아웃 ========== */
+.gojang-row {
+    display: grid; grid-template-columns: repeat(2,1fr);
+    gap: 6px; margin-bottom: 5px;
+}
+.gojang-row:last-child { margin-bottom: 0; }
+.gojang-row-4 {
+    display: grid; grid-template-columns: repeat(4,1fr);
+    gap: 6px; margin-bottom: 5px;
+}
+.gojang-col { display: flex; flex-direction: column; gap: 2px; }
+.gojang-col-full { grid-column: 1/-1; display: flex; flex-direction: column; gap: 2px; }
+.gojang-col label, .gojang-col-full label {
+    font-size: 10px; font-weight: 600; color: #495057;
 }
 
-.insideTable th,
-.insideTable td {
-    padding: 8px; /* 셀 패딩 */
-    border: 1px solid #ccc; /* 셀 경계선 */
-    vertical-align: middle; /* 수직 정렬 */
+/* ========== 입력 필드 ========== */
+.gojang-col input[type="text"],
+.gojang-col input[type="date"],
+.gojang-col select,
+.gojang-col-full input[type="text"],
+.gojang-col-full textarea {
+    width: 100%; padding: 3px 7px;
+    border: 1px solid #ced4da; border-radius: 4px;
+    font-size: 11px; box-sizing: border-box; transition: all 0.2s;
+    height: 26px;
+}
+.gojang-col input:focus, .gojang-col select:focus,
+.gojang-col-full input:focus, .gojang-col-full textarea:focus {
+    outline: none; border-color: #4dabf7;
+    box-shadow: 0 0 0 2px rgba(77,171,247,0.1);
+}
+.gojang-col input[disabled] { background: #f1f3f5; cursor: not-allowed; }
+.gojang-col select {
+    cursor: pointer; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center; padding-right: 26px;
+}
+.gojang-col-full textarea {
+    height: 44px; min-height: unset; resize: vertical; font-family: inherit;
 }
 
-.insideTable th {
-    background: #f0f0f0; /* 헤더 배경색 */
-}
+/* ========== 시간 입력 inline ========== */
+.time-inline { display: flex; align-items: center; gap: 3px; }
+.time-inline input[type="date"] { width: 120px !important; flex-shrink: 0; }
+.time-inline input[type="text"] { width: 38px !important; text-align: center; }
+.time-inline span { font-size: 11px; color: #495057; }
 
-.basic, .rp-input, .form-control {
-    width: calc(100% - 12px); /* 너비 조정 */
-    padding: 5px; /* 내부 여백 */
-    border: 1px solid #949494; /* 경계선 색상 */
-    border-radius: 3px; /* 둥근 모서리 */
+/* ========== 이미지 업로드 ========== */
+.img-upload-row {
+    display: grid; grid-template-columns: repeat(2,1fr);
+    gap: 8px;
 }
+.img-upload-col { display: flex; flex-direction: column; gap: 4px; }
+.img-upload-col label { font-size: 10px; font-weight: 600; color: #495057; }
+.img-upload-col input[type="file"] {
+    padding: 3px; border: 1px solid #ced4da; border-radius: 3px;
+    font-size: 10px; cursor: pointer;
+}
+.img-preview {
+    width: 100%; height: 120px;
+    border: 2px dashed #ced4da; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    background: #f8f9fa; overflow: hidden;
+}
+.img-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-.basic[readonly] {
-    background-color: #f9f9f9; /* 읽기 전용 필드 색상 */
+/* ========== 모달 푸터 ========== */
+.gojang-modal-footer {
+    display: flex; justify-content: center; align-items: center;
+    gap: 8px; padding: 7px 16px;
+    background: white; border-top: 1px solid #dee2e6;
+    flex-shrink: 0;
 }
+.gojang-modal-footer button {
+    min-width: 80px; height: 30px;
+    border: none; border-radius: 4px;
+    font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s;
+}
+.save    { background: linear-gradient(135deg,#51cf66,#37b24d); color: white; }
+.save:hover { background: linear-gradient(135deg,#40c057,#2f9e44); transform: translateY(-1px); }
+.btn-delete { background: linear-gradient(135deg,#ff6b6b,#fa5252); color: white; }
+.btn-delete:hover { background: linear-gradient(135deg,#f03e3e,#e03131); transform: translateY(-1px); }
+.close   { background: linear-gradient(135deg,#868e96,#495057); color: white; }
+.close:hover { background: linear-gradient(135deg,#6c757d,#343a40); transform: translateY(-1px); }
 
-textarea {
-    width: 100%; /* 너비 100% */
-    padding: 5px; /* 내부 여백 */
-    border: 1px solid #949494; /* 경계선 색상 */
-    border-radius: 3px; /* 둥근 모서리 */
-}
-
-.findImage {
-    display: flex; /* 플렉스 박스 사용 */
-    align-items: center; /* 수직 정렬 */
-}
-
-.findImage input[type="file"] {
-    margin-right: 10px; /* 오른쪽 여백 */
-}
-
-.img-rounded {
-    border-radius: 5px; /* 둥근 모서리 */
-}
-
-.imgArea {
-    width: 100%; /* 이미지 영역 너비 */
-    height: 100px; /* 이미지 영역 높이 */
-    border: 1px solid #ddd; /* 경계선 */
-    margin-bottom: 10px; /* 하단 여백 */
-}
-
-.imgArea img {
-    width: 100%; /* 이미지 너비 */
-    height: 100%; /* 이미지 높이 */
-    object-fit: cover; /* 이미지 비율 유지 */
-}
-.box1 {
-	display: flex;
-	justify-content: right;
-	align-items: center;
-	width: 1500px;
-	margin-left: -1050px;
-}
-
-.box1 select{
-	width: 5%
-}  
-.box1 input[type="date"] {
-	width: 150px;
-	padding: 5px 10px;
-	font-size: 16px;
-	border: 1px solid #ccc;
-	border-radius: 6px;
-	background-color: #f9f9f9;
-	color: #333;
-	outline: none;
-	transition: border 0.3s ease;
-}
-
-.box1 input[type="date"]:focus {
-	border: 1px solid #007bff;
-	background-color: #fff;
-}  
-.box1 label,
-.box1 input {
-	margin-right: 10px; /* 요소 사이 간격 */
-}  
-.btnSaveClose {
-	display: flex;
-	justify-content: center; /* 가운데 정렬 */
-	gap: 20px; /* 버튼 사이 여백 */
-	margin-top: 30px; /* 모달 내용과의 간격 */
-	margin-bottom: 20px; /* 모달 하단과 버튼 사이 간격  */
-}
-.btnSaveClose button {
-	width: 100px;
-	height: 35px;
-	background-color: #FFD700; /* 기본 배경 - 노란색 */
-	color: black;
-	border: 2px solid #FFC107; /* 노란 테두리 */
-	border-radius: 5px;
-	font-weight: bold;
-	text-align: center;
-	cursor: pointer;
-	line-height: 35px;
-	margin: 0 10px;
-	margin-top: 10px;
-	transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-/* 저장 버튼 호버 시 */
-.btnSaveClose .save:hover {
-	background-color: #FFC107;
-	transform: scale(1.05);
-}
-
-/* 닫기 버튼 - 회색 톤 */
-.btnSaveClose .close {
-	background-color: #A9A9A9;
-	color: black;
-	border: 2px solid #808080;
-}
-
-/* 닫기 버튼 호버 시 */
-.btnSaveClose .close:hover {
-	background-color: #808080;
-	transform: scale(1.05);
-}
-th{
-	font-size : 14px;
-}
-    /* 화면 전체를 덮는 오버레이 */
+/* ========== PDF 미리보기 모달 ========== */
 .modal-overlay {
-    /* ✨ 필수: 화면에 고정 */
-    position: fixed; 
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
-    z-index: 9999; /* gojangModal(z-index: 1000)보다 높게 설정 */
-    display: none;
-    /* 추가: flex로 중앙 정렬 준비 */
-    display: flex; 
-    justify-content: center;
-    align-items: center;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex; align-items: center; justify-content: center; z-index: 9999;
 }
-
-/* 모달 내용 컨테이너 */
 .modal-content {
-    background: #ffffff;
-    border: 1px solid #000000;
-    width: 50%;
-    max-width: 100%; 
-    height: 90%; 
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-    border-radius: 5px;
-    /* 모달 자체의 위치 조정 불필요 (부모 .modal-overlay의 flex 덕분) */
-    position: relative; 
-    overflow: hidden; /* 내부 스크롤을 위해 overflow 처리 */
+    background: white; border-radius: 8px;
+    width: 80%; max-width: 1200px; height: 90%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
 }
-    </style>
-    
-    
-    <body>
-    
-    <div class="tab">
+</style>
+</head>
+<body>
+
+<div class="tab">
     <div class="box1">
-       <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>        
-	   <label class="daylabel">기간 : </label>
-	   <input type="date" class="sdate" id="sdate" style="font-size: 16px;" autocomplete="off"> ~ 
-	   <input type="date" class="edate" id="edate" style="font-size: 16px;" autocomplete="off">			
-	</div>
+        <p class="tabP" style="font-size:20px; margin-left:40px; color:white; font-weight:800;"></p>
+        <label class="daylabel">기간 : </label>
+        <input type="date" id="sdate" style="font-size:16px;" autocomplete="off"> ~
+        <input type="date" id="edate" style="font-size:16px;" autocomplete="off">
+    </div>
     <div class="button-container">
         <button class="select-button" onclick="getGigiGojangList();">
-            <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
-           조회
+            <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">조회
         </button>
         <button class="insert-button">
-            <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
-         입력 
+            <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">입력
         </button>
         <button class="excel-button">
-            <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
-        엑셀    
+            <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">엑셀
         </button>
-        <!-- <button class="printer-button">
-            <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
-            
-        </button> -->
     </div>
 </div>
-    <main class="main">
-		<div class="container">
-			<div id="tab1" class="tabulator"></div>
-		</div>
-	</main>
-	
 
-<form method="post" id="gigiGojangForm" name="gigiGojangForm">		
-	<div class="gojangModal">
-	<div class="header">측정기기고장이력
-		<span class="header-close">&times;</span>
-	</div> 
-        <div id="editPop">
-    
-            <!-- Article List -->
-    
-            <div class="detail">
-                <table cellspacing="0" cellpadding="0" width="100%">
-                    <tbody><tr>
-                        <td>
-                            <table cellspacing="0" cellpadding="0" width="100%" class="insideTable">
-    						
-                                <colgroup span="4">
-                                    <col width="10%">
-                                    <col width="40%">
-                                    <col width="10%">
-                                    <col width="40%">
-                                </colgroup>
-                                <tbody><tr>
-                                    <th class="left">측정기기</th>
-                                    <td>
-                                        <select id="ter_code" name="ter_code" class="form-control rp-input" style="width:90%;">
-                                            
-                                                <option value="1">로크웰경도기</option>
-                                            
-                                                <option value="2">비커스경도기</option>
-                                            
-                                        </select>
-                                        <input type="hidden" id="terr_code" name="terr_code" value="">
-                                    </td>
-                                    <th class="left">수리시작시간</th>
-                                    <td>
-                                        <input type="date" class="form-control rp-input js-datepicker js-date-now hasDatepicker" id="terr_strt" name="terr_strt" value="" placeholder="0000-00-00" style="width:30%;">
-    
-                                        
-                                            
-                                            
-                                                <input type="text" class="form-control rp-input" id="terr_strt_h" name="terr_strt_h" placeholder="00" value="0" style="width:10%; text-align: center;">시
-                                                <input type="text" class="form-control rp-input" id="terr_strt_mm" name="terr_strt_mm" placeholder="00" value="0" style="width:10%; text-align: center;">분
-                                                <input type="text" class="form-control rp-input" id="terr_strt_ss" name="terr_strt_ss" placeholder="00" value="0" style="width:10%; text-align: center;">초
-                                            
-                                            
-                                        </td>
-                                </tr>
-                                <tr>
-                                    <th class="left">확인자</th>
-                                    <td>
-                                        <select id="terr_chkman" name="terr_chkman" class="basic rp-input" style="width:90%;">
-                                            
-                                                <option value="0">admin</option>
-                                            
-                                                <option value="2">정중환</option>
-                                            
-                                                <option value="5">조병수</option>
-                                            
-                                                <option value="12">이은영</option>
-                                            
-                                                <option value="7">이용희</option>
-                                            
-                                                <option value="26">산지와</option>
-                                            
-                                                <option value="31">이주영</option>
-                                            
-                                                <option value="32">가얀</option>
-                                            
-                                                <option value="36">두사르</option>
-                                            
-                                                <option value="41">패툼</option>
-                                            
-                                                <option value="42">응웬티하</option>
-                                            
-                                                <option value="44">최균홍</option>
-                                            
-                                                <option value="45">정희주</option>
-                                            
-                                                <option value="37">피얀타</option>
-                                            
-                                                <option value="4">김성우</option>
-                                            
-                                                <option value="9">외국인전용ID</option>
-                                            
-                                                <option value="46">장무강</option>
-                                            
-                                                <option value="40">김영수</option>
-                                            
-                                        </select>
-                                    </td>
-                                    <th class="left">수리종료시간</th>
-                                    <td>
-    
-                                        <input type="date" class="form-control rp-input js-datepicker js-date-now hasDatepicker" id="TERR_END" name="terr_end" value="" placeholder="0000-00-00" style="width:30%;">
-                                        
-                                            
-                                            
-                                                <input type="text" class="form-control rp-input" id="terr_end_h" name="terr_end_h" placeholder="00" value="0" style="width:10%; text-align: center;">시
-                                                <input type="text" class="form-control rp-input" id="terr_end_mm" name="terr_end_mm" placeholder="00" value="0" style="width:10%; text-align: center;">분
-                                                <input type="text" class="form-control rp-input" id="terr_end_ss" name="terr_end_ss" placeholder="00" value="0" style="width:10%; text-align: center;">초
-    
-                                    </td>
-                                </tr>
-    
-                                <tr>
-                                    <th class="left">고장일시</th>
-                                    <td>
-                                        <input type="date"  id="terr_date" name="terr_date" value="" placeholder="0000-00-00" style="width:90%;">
-                                    </td>
-                                    <th class="left">수리시간</th>
-                                    <td>
-                                        <input type="text" class="form-control rp-input" id="terr_time" name="terr_time" value="" style="width:90%;" disabled="">
-                                        
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="left">상태</th>
-                                    <td>
-                                        <select id="terr_condi" name="terr_condi" class="basic rp-input" style="width:90%;">
-                                            <option>가동</option>
-                                            <option>비가동</option>
-                                        </select>
-                                    </td>
-                                    <th class="left">수리자</th>
-                                    <td>
-                                        <input type="text" class="form-control rp-input" id="terr_man" name="terr_man" value="" style="width:90%;">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="left">소요비용</th>
-                                    <td>
-                                        <input type="text" class="basic rp-input" onchange="getNumber(this);" onkeyup="getNumber(this);" id="terr_cost" name="terr_cost" value="" style="text-align:right; width:90%;">
-                                    </td>
-                                    <th class="left">수리</th>
-                                    <td>
-                                        <select id="terr_suri" name="terr_suri" class="basic rp-input" style="width:90%;">
-                                            <option>수리</option>
-                                            <option>완료</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="left">고장현상</th>
-                                    <td>
-                                        <textarea type="text" class="basic rp-input" rows="2" id="terr_reward" name="terr_reward" style="width:90%;"></textarea>
-                                    </td>
-                                    <th class="left">수리내용</th>
-                                    <td>
-                                        <textarea type="text" class="basic rp-input" rows="2" id="terr_content" name="terr_content" style="width:90%;"></textarea>
-                                    </td>
-                                </tr><tr>
-                                    <th class="left">비고</th>
-                                    <td colspan="4">
-                                        <textarea type="text" class="basic rp-input" rows="5" id="terr_bigo" name="terr_bigo" style="width:90%; height: 100px;"></textarea>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="left">수리전사진</th>
-                                    <td>
-                                                <input id="terr_bphoto" name="terr_bphoto_url" type="file" class="rp-input" onchange="rpReadImageURL(this); $(this).parent().find('img').removeClass('rp-file-del');" style="float:left;width: 220px;">
-                                                <button onclick="imageDelete(this)" style="float:left">X</button><br><br>
-                                                <img id="terr_bphoto_before" name="terr_bphoto_before" height="220" width="100%" align="center"  style="display: none;">
-                                            
-                                    </td>
-                                    <th class="left">수리후사진</th>
-                                    <td>
-                                                <input id="terr_aphoto" name="terr_aphoto_url" type="file" class="rp-input" onchange="rpReadImageURL(this); $(this).parent().find('img').removeClass('rp-file-del');" style="float:left;width: 220px;">
-                                                <button onclick="imageDelete(this)" style="float:left">X</button><br><br>
-                                                <img id="terr_aphoto_after" name="terr_aphoto_after" height="220" width="100%" align="center"  style="display: none;">
-                                            
-                                    </td>
-                                </tr>
-    
-                            </tbody></table>
-                        </td>
-                    </tr>
-                </tbody></table>
-                <div class="btnSaveClose">
-					 <button class="save" type="button" onclick="save();">저장</button>
-					 <button class="close" type="button" onclick="window.close();">닫기</button>
-    	  		</div>
+<main class="main">
+    <div class="container">
+        <div id="tab1" class="tabulator"></div>
+    </div>
+</main>
+
+<!-- 이미지 확대 오버레이 -->
+<div id="imgZoomOverlay" style="display:none;">
+    <img id="imgZoomTarget" src="">
+</div>
+
+<form autocomplete="off" method="post" id="gigiGojangForm" name="gigiGojangForm" enctype="multipart/form-data">
+    <div class="gojangModal">
+        <div class="gojang-insert-box">
+            <!-- 헤더 -->
+            <div class="header">
+                <span>측정기기고장이력</span>
+                <span class="header-close">&times;</span>
+            </div>
+
+            <!-- 본문 -->
+            <div class="gojang-modal-body">
+
+                <!-- 기본정보 -->
+                <div class="gojang-section">
+                    <h3 class="gojang-section-title">기본정보</h3>
+                    <div class="gojang-row">
+                        <div class="gojang-col">
+                            <label>측정기기</label>
+                            <select id="ter_code" name="ter_code">
+                                <option value="1">로크웰경도기</option>
+                                <option value="2">비커스경도기</option>
+                            </select>
+                            <input type="hidden" id="terr_code" name="terr_code">
+                        </div>
+                        <div class="gojang-col">
+                            <label>확인자</label>
+                            <select id="terr_chkman" name="terr_chkman">
+                                <option value="0">admin</option>
+                                <option value="2">정중환</option>
+                                <option value="5">조병수</option>
+                                <option value="12">이은영</option>
+                                <option value="7">이용희</option>
+                                <option value="26">산지와</option>
+                                <option value="31">이주영</option>
+                                <option value="32">가얀</option>
+                                <option value="36">두사르</option>
+                                <option value="41">패툼</option>
+                                <option value="42">응웬티하</option>
+                                <option value="44">최균홍</option>
+                                <option value="45">정희주</option>
+                                <option value="37">피얀타</option>
+                                <option value="4">김성우</option>
+                                <option value="9">외국인전용ID</option>
+                                <option value="46">장무강</option>
+                                <option value="40">김영수</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="gojang-row">
+                        <div class="gojang-col">
+                            <label>고장일시</label>
+                            <input type="date" id="terr_date" name="terr_date">
+                        </div>
+                        <div class="gojang-col">
+                            <label>상태</label>
+                            <select id="terr_condi" name="terr_condi">
+                                <option>가동</option>
+                                <option>비가동</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="gojang-row">
+                        <div class="gojang-col">
+                            <label>소요비용</label>
+                            <input type="text" id="terr_cost" name="terr_cost"
+                                onchange="getNumber(this);" onkeyup="getNumber(this);" style="text-align:right;">
+                        </div>
+                        <div class="gojang-col">
+                            <label>수리</label>
+                            <select id="terr_suri" name="terr_suri">
+                                <option>수리</option>
+                                <option>완료</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 수리시간 -->
+                <div class="gojang-section">
+                    <h3 class="gojang-section-title">수리시간</h3>
+                    <div class="gojang-row">
+                        <div class="gojang-col">
+                            <label>수리시작시간</label>
+                            <div class="time-inline">
+                                <input type="date" id="terr_strt" name="terr_strt">
+                                <input type="text" id="terr_strt_h"  name="terr_strt_h"  value="0" placeholder="00">
+                                <span>시</span>
+                                <input type="text" id="terr_strt_mm" name="terr_strt_mm" value="0" placeholder="00">
+                                <span>분</span>
+                                <input type="text" id="terr_strt_ss" name="terr_strt_ss" value="0" placeholder="00">
+                                <span>초</span>
+                            </div>
+                        </div>
+                        <div class="gojang-col">
+                            <label>수리종료시간</label>
+                            <div class="time-inline">
+                                <input type="date" id="TERR_END" name="terr_end">
+                                <input type="text" id="terr_end_h"  name="terr_end_h"  value="0" placeholder="00">
+                                <span>시</span>
+                                <input type="text" id="terr_end_mm" name="terr_end_mm" value="0" placeholder="00">
+                                <span>분</span>
+                                <input type="text" id="terr_end_ss" name="terr_end_ss" value="0" placeholder="00">
+                                <span>초</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gojang-row">
+                        <div class="gojang-col">
+                            <label>수리시간</label>
+                            <input type="text" id="terr_time" name="terr_time" disabled>
+                        </div>
+                        <div class="gojang-col">
+                            <label>수리자</label>
+                            <input type="text" id="terr_man" name="terr_man">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 내용 -->
+                <div class="gojang-section">
+                    <h3 class="gojang-section-title">내용</h3>
+                    <div class="gojang-row">
+                        <div class="gojang-col">
+                            <label>고장현상</label>
+                            <textarea id="terr_reward" name="terr_reward"></textarea>
+                        </div>
+                        <div class="gojang-col">
+                            <label>수리내용</label>
+                            <textarea id="terr_content" name="terr_content"></textarea>
+                        </div>
+                    </div>
+                    <div class="gojang-row">
+                        <div class="gojang-col-full">
+                            <label>비고</label>
+                            <textarea id="terr_bigo" name="terr_bigo" style="height:50px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 사진 -->
+                <div class="gojang-section">
+                    <h3 class="gojang-section-title">사진</h3>
+                    <div class="img-upload-row">
+                        <div class="img-upload-col">
+                            <label>수리전사진</label>
+                            <input type="file" id="terr_bphoto" name="terr_bphoto_url" accept="image/*"
+                                onchange="previewGojangImage(this, 'terr_bphoto_before');">
+                            <div class="img-preview">
+                                <img id="terr_bphoto_before" src="/tkheat/css/image/no_image.png" alt="수리전사진">
+                            </div>
+                        </div>
+                        <div class="img-upload-col">
+                            <label>수리후사진</label>
+                            <input type="file" id="terr_aphoto" name="terr_aphoto_url" accept="image/*"
+                                onchange="previewGojangImage(this, 'terr_aphoto_after');">
+                            <div class="img-preview">
+                                <img id="terr_aphoto_after" src="/tkheat/css/image/no_image.png" alt="수리후사진">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /gojang-modal-body -->
+
+            <!-- 푸터 -->
+            <div class="gojang-modal-footer">
+                <button type="button" class="btn-delete" style="display:none;" onclick="deleteGigiGojang();">삭제</button>
+                <button type="button" class="save" onclick="save();">저장</button>
+                <button type="button" class="close">닫기</button>
             </div>
         </div>
-   </div>
-</form>   
-
-   	  <!-- 미리보기 모달창 -->  
-<div id="drawingFileModal" class="modal-overlay" style="display: none;">
-    <div class="modal-content" style="height: 90%;">
-        <div class="modal-header">
-            <span class="modal-title">도면 파일: <span id="drawingFileName"></span></span> 
-            <span class="modal-close" onclick="closeDrawingModal()">&times;</span>
-        </div>
-        <div class="modal-body" style="height: calc(100% - 60px);">
-            <iframe id="pdfViewer" src="" frameborder="0" width="100%" height="100%"></iframe>
-        </div>
     </div>
-</div>
-   
-   
-       
+</form>
+
 <script>
-	//전역변수
-	let now_page_code = "e08";
-    var cutumTable;	
-    var isEditMode = false; //수정,최초저장 구분값
-    
-	//로드
-	$(function(){
-		if (typeof userInfoList === 'function') {
-	        userInfoList(now_page_code);
-	    }
-		var tdate = todayDate();
-		var ydate = yesterDate();
-		
-		$("#sdate").val(ydate);
-		$("#edate").val(tdate);
-		getGigiGojangList();
-	});
+let now_page_code = "e08";
+var userTable;
+var isEditMode = false;
+var selectedRowData = null;
 
-	//이벤트
-	//함수
-	function getGigiGojangList(){
-		
-		userTable = new Tabulator("#tab1", {
-		    height:"730px",
-		    layout:"fitColumns",
-		    selectable:true,	//로우 선택설정
-		    tooltips:true,
-		    headerSort:false,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/preservation/gigiGojang/getGigiGojangList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	"sdate": $("#sdate").val(),
-                "edate": $("#edate").val(),
-			    },
-		    placeholder:"조회된 데이터가 없습니다.",
-		    paginationSize:20,
-		    headerFilterPlaceholder: "",
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-		        return response; //return the response data to tabulator
-		    },
-		    columns:[
-		        {title:"측정기기", field:"terr_name", sorter:"string", width:120,
-			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"고장일시", field:"terr_date", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"},     
-				{title:"고장현상", field:"terr_reward", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"}, 
-				{title:"수리시작시간", field:"terr_strt", sorter:"string", width:150,
-				    hozAlign:"center", headerFilter:"input"}, 
-		        {title:"수리종료시간", field:"terr_end", sorter:"string", width:120,
-		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"수리시간", field:"terr_time", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"수리내용", field:"terr_content", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"수리자", field:"terr_man", sorter:"string", width:100,
-			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"소요비용", field:"terr_cost", sorter:"string", width:100,
-		        	hozAlign:"center", headerFilter:"input"},
-					{title:"수리 전 사진", field:"terr_bphoto", width:100,
-						hozAlign:"center", formatter:"image",
-					    cssClass:"rp-img-popup",
-				      	formatterParams:{
-					      	height:"30px", width:"30px",
-					      	urlPrefix:"/tkPrint/사진/측정기기고장이력/"
-					      	}, 
-					    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
-					    },
-						{title:"수리 전 사진", field:"terr_aphoto", width:100,
-							hozAlign:"center", formatter:"image",
-						    cssClass:"rp-img-popup",
-					      	formatterParams:{
-						      	height:"30px", width:"30px",
-						      	urlPrefix:"/tkPrint/사진/측정기기고장이력/"
-						      	}, 
-						    cellMouseEnter:function(e, cell){ productImage(cell.getValue());} 
-						    },
-		        {title:"기기코드", field:"terr_code", sorter:"string", width:100,
-			        hozAlign:"center", headerFilter:"input", visible:false},
-			    {title:"기기코드", field:"ter_code", sorter:"string", width:100,
-				    hozAlign:"center", headerFilter:"input", visible:false},
-				{title:"소요비용", field:"terr_chkman", sorter:"string", width:100,
-			        hozAlign:"center", headerFilter:"input", visible:false},
-			    {title:"소요비용", field:"terr_suri", sorter:"string", width:100,
-				    hozAlign:"center", headerFilter:"input", visible:false}, 
-			    {title:"소요비용", field:"terr_bigo", sorter:"string", width:100,
-				    hozAlign:"center", headerFilter:"input", visible:false},
-				{title:"소요비용", field:"terr_condi", sorter:"string", width:100,
-					hozAlign:"center", headerFilter:"input", visible:false},		        	    		
-				    
-		    ],
-		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
-			},
-			rowClick:function(e, row){
+$(function(){
+    if (typeof userInfoList === 'function') {
+        userInfoList(now_page_code);
+    }
+    var tdate = todayDate();
+    var ydate = yesterDate();
+    $("#sdate").val(ydate);
+    $("#edate").val(tdate);
+    getGigiGojangList();
+});
+//========== 숫자 포맷 ==========
+function getNumber(el) {
+    var val = el.value.replace(/[^0-9]/g, '');
+    el.value = val.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+// ========== 리스트 조회 ==========
+function getGigiGojangList(){
+    if (userTable) { userTable.destroy(); userTable = null; }
+    $('#tab1').empty();
 
-				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
-					}
-				});
+    userTable = new Tabulator("#tab1", {
+        height:"730px", layout:"fitColumns", selectable:true,
+        tooltips:true, headerSort:false,
+        selectableRangeMode:"click", reactiveData:true,
+        headerHozAlign:"center", ajaxConfig:"POST", ajaxLoader:false,
+        ajaxURL:"/tkheat/preservation/gigiGojang/getGigiGojangList",
+        ajaxParams:{ "sdate": $("#sdate").val(), "edate": $("#edate").val() },
+        placeholder:"조회된 데이터가 없습니다.",
+        paginationSize:20, headerFilterPlaceholder:"",
+        ajaxResponse:function(url, params, response){
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
+            return response.data ? response.data : response;  // ★ 수정
+        },
+        columns:[
+            {title:"측정기기",    field:"terr_name",    width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"고장일시",    field:"terr_date",    width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"고장현상",    field:"terr_reward",  width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"수리시작시간", field:"terr_strt",    width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"수리종료시간", field:"terr_end",     width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"수리시간",    field:"terr_time",    width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"수리내용",    field:"terr_content", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"수리자",     field:"terr_man",     width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"소요비용",    field:"terr_cost",    width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"수리전사진",  field:"terr_bphoto",  width:80,  hozAlign:"center", formatter:"image",
+                formatterParams:{ height:"30px", width:"30px", urlPrefix:"/tkPrint/사진/측정기기고장이력/" },
+                cellMouseEnter:function(e, cell){ productImage(cell.getValue()); }
+            },
+            {title:"수리후사진",  field:"terr_aphoto",  width:80,  hozAlign:"center", formatter:"image",
+                formatterParams:{ height:"30px", width:"30px", urlPrefix:"/tkPrint/사진/측정기기고장이력/" },
+                cellMouseEnter:function(e, cell){ productImage(cell.getValue()); }
+            },
+            {title:"", field:"terr_code", visible:false},
+            {title:"", field:"ter_code",  visible:false},
+        ],
+        rowFormatter:function(row){
+            row.getElement().style.fontWeight = "700";
+            row.getElement().style.backgroundColor = "#FFFFFF";
+        },
+        rowClick:function(e, row){
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").removeClass('row_select');
+            row.getElement().classList.add("row_select");
+        },
+        rowDblClick:function(e, row){
+            if (window.disableRowDblClick) { alert("수정 권한이 없습니다."); return false; }
+            var data = row.getData();
+            selectedRowData = data;
+            isEditMode = true;
+            gigiGojangtDetail(data.terr_code);
 
-				var rowData = row.getData();
-				
-			},
-			rowDblClick:function(e, row){
-
-				if (window.disableRowDblClick) {
-	                alert("수정 권한이 없습니다.");
-	                return false;
-	            }
-
-				var data = row.getData();
-				selectedRowData = data;
-				isEditMode = true;
-				console.log(selectedRowData.terr_code)
-				$('#gigiGojangForm')[0].reset();
-
-				/* Object.keys(data).forEach(function (key) {
-			        const field = $('#begaInsertForm [name="' + key + '"]');
-
-			        if (field.length) {
-			            field.val(data[key]);
-			        }
-				}); */
-				gigiGojangtDetail(data.terr_code);
-				 $('.delete').show();
-
-				 const permission = userPermissions?.[now_page_code];
-		            if (permission === 'D') {
-		                $('.btn-delete').show();
-		            } else {
-		                $('.btn-delete').hide();
-		            }
-		            
-			},
-		});		
-	}
-
-	function gigiGojangtDetail(terr_code){
-		$.ajax({
-			url:"/tkheat/preservation/gigiGojang/gigiGojangtDetail",
-			type:"post",
-			dataType:"json",
-			data:{
-				"terr_code":terr_code
-			},
-			success:function(result){
-//				console.log(result);
-				var allData = result.data;
-				
-				for(let key in allData){
-//					console.log(allData, key);	
-					$("input[name='"+key+"']").val(allData[key]);
-				}
-
-				$('.gojangModal').show().addClass('show');
-			}
-		});
-	}
-
-
-	//측정기기고장이력 저장
-    function save() {
-
-    	const permission = userPermissions?.[now_page_code];
-        
-        // 저장함수
-        if (!isEditMode) {
-            if (!['I', 'U', 'D'].includes(permission)) {
-                alert("등록 권한이 없습니다.");
-                console.log("등록 권한 없음 - 현재 권한:", permission);
-                return false;
+            const permission = userPermissions?.[now_page_code];
+            if (permission === 'D') {
+                $('.btn-delete').show();
+            } else {
+                $('.btn-delete').hide();
             }
-            console.log("등록 권한 확인 완료");
-        } 
-        // 수정함수
-        else {
-            if (!['U', 'D'].includes(permission)) {
-                alert("수정 권한이 없습니다.");
-                console.log("수정 권한 없음 - 현재 권한:", permission);
-                return false;
+        },
+    });
+}
+
+// ========== 상세 조회 ==========
+function gigiGojangtDetail(terr_code){
+    $.ajax({
+        url:"/tkheat/preservation/gigiGojang/gigiGojangtDetail",
+        type:"post", dataType:"json",
+        data:{ "terr_code": terr_code },
+        success:function(result){
+            var d = result.data;
+            $('#gigiGojangForm')[0].reset();
+
+            // input, select, textarea 전체 바인딩
+            for(let key in d){
+                const val = (d[key] === null || d[key] === undefined) ? '' : d[key];
+                $("[name='"+key+"']").val(val);
             }
-            console.log("수정 권한 확인 완료");
+
+            // 사진 처리
+            $('#terr_bphoto_before').attr('src', '/tkheat/css/image/no_image.png');
+            $('#terr_aphoto_after').attr('src', '/tkheat/css/image/no_image.png');
+
+            if (d.terr_bphoto && d.terr_bphoto !== '') {
+                $('#terr_bphoto_before').attr('src', '/tkPrint/사진/측정기기고장이력/' + d.terr_bphoto);
+            }
+            if (d.terr_aphoto && d.terr_aphoto !== '') {
+                $('#terr_aphoto_after').attr('src', '/tkPrint/사진/측정기기고장이력/' + d.terr_aphoto);
+            }
+
+            $('.gojangModal').show();
+        },
+        error: function(xhr, status, error){
+            console.error("상세 조회 오류:", error);
+            alert("데이터를 불러오는 중 오류가 발생했습니다.");
         }
-        
-	    var formData = new FormData($("#gigiGojangForm")[0]);
+    });
+}
 
-	    let confirmMsg = "";
+// ========== 저장 ==========
+function save(){
+    const permission = userPermissions?.[now_page_code];
 
-	    if (isEditMode && selectedRowData && selectedRowData.terr_code) {
-	        formData.append("mode", "update");
-	        formData.append("terr_code", selectedRowData.terr_code);
-	        confirmMsg = "수정하시겠습니까?";
-	    } else {
-	        formData.append("mode", "insert");
-	        confirmMsg = "저장하시겠습니까?";
-	    }
+    if (!isEditMode) {
+        if (!['I', 'U', 'D'].includes(permission)) {
+            alert("등록 권한이 없습니다."); return false;
+        }
+    } else {
+        if (!['U', 'D'].includes(permission)) {
+            alert("수정 권한이 없습니다."); return false;
+        }
+    }
 
-	    if (!confirm(confirmMsg)) {
-	        return;
-	    }
+    var formData = new FormData($("#gigiGojangForm")[0]);
+    let confirmMsg = "";
 
-	    $.ajax({
-	        url: "/tkheat/preservation/gigiGojang/gigiGojangSave",
-	        type: "POST",
-	        data: formData,
-	        contentType: false,
-	        processData: false,
-	        dataType: "json",
-	        success: function(result) {
-	            alert("저장 되었습니다.");
-	            $(".gojangModal").hide();
-	            getGigiGojangList();
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("저장 오류:", error);
-	        }
-	    });
-	}
+    if (isEditMode && selectedRowData && selectedRowData.terr_code) {
+        formData.append("mode", "update");
+        formData.append("terr_code", selectedRowData.terr_code);
+        confirmMsg = "수정하시겠습니까?";
+    } else {
+        formData.append("mode", "insert");
+        confirmMsg = "저장하시겠습니까?";
+    }
 
+    if (!confirm(confirmMsg)) return;
 
-	function deleteGigiGojang() {
+    $.ajax({
+        url: "/tkheat/preservation/gigiGojang/gigiGojangSave",
+        type: "POST", data: formData,
+        contentType: false, processData: false, dataType: "json",
+        success: function(result){
+            alert("저장 되었습니다.");
+            $('.gojangModal').hide();
+            isEditMode = false; selectedRowData = null;
+            getGigiGojangList();
+        },
+        error: function(xhr, status, error){
+            console.error("저장 오류:", error);
+            alert("저장 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-		const permission = userPermissions?.[now_page_code];
-	    
-	    if (permission !== 'D') {
-	        alert("삭제 권한이 없습니다.");
-	        console.log("삭제 권한 없음 - 현재 권한:", permission);
-	        return false;
-	    }
-	    console.log("삭제 권한 확인 완료")
-	    
-	    if (!selectedRowData || !selectedRowData.terr_code) {
-	        alert("삭제할 대상을 선택하세요.");
-	        return;
-	    }
+// ========== 삭제 ==========
+function deleteGigiGojang(){
+    const permission = userPermissions?.[now_page_code];
+    if (permission !== 'D') { alert("삭제 권한이 없습니다."); return false; }
+    if (!selectedRowData || !selectedRowData.terr_code) { alert("삭제할 대상을 선택하세요."); return; }
+    if (!confirm("삭제하시겠습니까?")) return;
 
-	    if (!confirm("삭제하시겠습니까?")) {
-	        return;
-	    }
+    $.ajax({
+        url: "/tkheat/preservation/gigiGojang/deleteGigiGojang",
+        type: "POST", data: { terr_code: selectedRowData.terr_code }, dataType: "json",
+        success: function(result){
+            if (result.status === "success") {
+                alert("삭제되었습니다.");
+                $('.gojangModal').hide();
+                isEditMode = false; selectedRowData = null;
+                getGigiGojangList();
+            } else {
+                alert("삭제 중 오류가 발생했습니다: " + result.message);
+            }
+        },
+        error: function(xhr, status, error){
+            console.error("삭제 오류:", error);
+            alert("삭제 요청 중 오류가 발생했습니다.");
+        }
+    });
+}
 
-	    $.ajax({
-	        url: "/tkheat/preservation/gigiGojang/deleteGigiGojang",
-	        type: "POST",
-	        data: {
-	        	terr_code: selectedRowData.terr_code
-	        },
-	        dataType: "json",
-	        success: function(result) {
-	            if (result.status === "success") {
-	                alert("삭제되었습니다.");
-	                $(".gojangModal").hide();
-	                getGigiGojangList();
-	            } else {
-	                alert("삭제 중 오류가 발생했습니다: " + result.message);
-	            }
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("삭제 오류:", error);
-	            alert("삭제 요청 중 오류가 발생했습니다.");
-	        }
-	    });
-	}
-	
+// ========== 이미지 미리보기 ==========
+function previewGojangImage(input, targetId) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) { $('#' + targetId).attr('src', e.target.result); };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
-    </script>
-    
-    
-     <script>
-		
- 	// 드래그 기능 추가
-	const modal = document.querySelector('.gojangModal');
-	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
+// ========== 모달 드래그 ==========
+const gojangModalEl = document.querySelector('.gojangModal');
+const gojangHeader  = document.querySelector('.gojangModal .header');
 
-	header.addEventListener('mousedown', function(e) {
-		// transform 제거를 위한 초기 위치 설정
-		const rect = modal.getBoundingClientRect();
-		modal.style.left = rect.left + 'px';
-		modal.style.top = rect.top + 'px';
-		modal.style.transform = 'none'; // 중앙 정렬 해제
+gojangHeader.addEventListener('mousedown', function(e) {
+    if (e.target.classList.contains('header-close')) return;
+    const rect = gojangModalEl.getBoundingClientRect();
+    gojangModalEl.style.left = rect.left + 'px';
+    gojangModalEl.style.top  = rect.top  + 'px';
+    gojangModalEl.style.transform = 'none';
 
-		let offsetX = e.clientX - rect.left;
-		let offsetY = e.clientY - rect.top;
+    let offsetX = e.clientX - rect.left;
+    let offsetY = e.clientY - rect.top;
 
-		function moveModal(e) {
-			modal.style.left = (e.clientX - offsetX) + 'px';
-			modal.style.top = (e.clientY - offsetY) + 'px';
-		}
+    function moveModal(e) {
+        gojangModalEl.style.left = (e.clientX - offsetX) + 'px';
+        gojangModalEl.style.top  = (e.clientY - offsetY) + 'px';
+    }
+    function stopMove() {
+        window.removeEventListener('mousemove', moveModal);
+        window.removeEventListener('mouseup', stopMove);
+    }
+    window.addEventListener('mousemove', moveModal);
+    window.addEventListener('mouseup', stopMove);
+});
 
-		function stopMove() {
-			window.removeEventListener('mousemove', moveModal);
-			window.removeEventListener('mouseup', stopMove);
-		}
+// ========== 모달 열기/닫기 ==========
+document.querySelector('.insert-button').addEventListener('click', function() {
+    isEditMode = false;
+    selectedRowData = null;
+    $('#gigiGojangForm')[0].reset();
+    $('#terr_bphoto_before, #terr_aphoto_after').attr('src', '/tkheat/css/image/no_image.png');
+    $('.btn-delete').hide();
+    gojangModalEl.style.left = '50%';
+    gojangModalEl.style.top  = '50%';
+    gojangModalEl.style.transform = 'translate(-50%, -50%)';
+    $('.gojangModal').show();
+});
 
-		window.addEventListener('mousemove', moveModal);
-		window.addEventListener('mouseup', stopMove);
-	});
-		
+document.querySelector('.gojangModal .close').addEventListener('click', function() {
+    $('.gojangModal').hide();
+});
+document.querySelector('.header-close').addEventListener('click', function() {
+    $('.gojangModal').hide();
+});
 
-	// 모달 열기
-	const insertButton = document.querySelector('.insert-button');
-	const gojangModal = document.querySelector('.gojangModal');
-	const closeButton = document.querySelector('.close');
-	const headerCloseButton = document.querySelector('.header-close');
-	
-	insertButton.addEventListener('click', function() {
-		gojangModal.style.display = 'block'; // 모달 표시
-	});
+// ========== PDF 미리보기 ==========
+function openDrawingModal(event, fileName) {
+    event.preventDefault();
+    if (!fileName) { alert("저장된 파일이 없습니다."); return; }
+    const filePath = "/tkPrint/사진/측정기기고장이력/" + fileName;
+    $("#drawingFileName").text(fileName);
+    $("#pdfViewer").attr("src", filePath);
+    $('#drawingFileModal').css('display', 'flex');
+}
+function closeDrawingModal() {
+    $('#drawingFileModal').css('display', 'none');
+    $("#pdfViewer").attr("src", "");
+}
+</script>
 
-	closeButton.addEventListener('click', function() {
-		gojangModal.style.display = 'none'; // 모달 숨김
-	});
-
-	headerCloseButton.addEventListener('click', function() {
-		gojangModal.style.display = 'none';
-	});
-	
-	//미리보기
-	function openDrawingModal(event, fileName) {
-	    event.preventDefault(); // 링크의 기본 동작 방지
-	    const FILE_PREFIX_PATH = "/tkPrint/사진/측정기기고장이력/";
-
-	    if (!fileName) {
-	        alert("저장된 파일이 없습니다.");
-	        return;
-	    }
-	    const filePath = FILE_PREFIX_PATH + fileName;
-
-	    $("#drawingFileName").text(fileName);
-	    $("#pdfViewer").attr("src", filePath);
-	    
-	    // 모달 표시
-	    $('#drawingFileModal').show();
-	}
-	//모달 닫기
-	function closeDrawingModal() {
-	    $('#drawingFileModal').hide()
-	    $("#pdfViewer").attr("src", ""); 
-	}	
-
-
-    </script>
-
-	</body>
+</body>
 </html>

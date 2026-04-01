@@ -48,7 +48,7 @@
 
 .non-insert-box {
     width: 1100px; max-width: 95vw;
-    max-height: 95vh;              /* ★ 90 → 95vh */
+    max-height: 95vh;
     background: white; border-radius: 8px;
     box-shadow: 0 10px 50px rgba(0,0,0,0.3);
     overflow: hidden; display: flex; flex-direction: column;
@@ -57,9 +57,10 @@
 /* ========== 모달 헤더 ========== */
 .non-header {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 16px;             /* ★ 15px 25px → 8px 16px */
+    padding: 8px 16px;
     background: linear-gradient(135deg, #2c3e50, #34495e);
     color: white; font-size: 15px; font-weight: 700; cursor: move;
+    flex-shrink: 0;
 }
 .header-close-btn {
     background: none; border: none; color: white;
@@ -74,7 +75,7 @@
 .non-modal-body {
     flex: 1; overflow-y: auto; overflow-x: hidden;
     background: #f5f7fa;
-    padding: 8px 10px;             /* ★ 20px → 8px 10px */
+    padding: 8px 10px;
     max-height: calc(95vh - 90px);
 }
 .non-modal-body::-webkit-scrollbar { width: 5px; }
@@ -84,24 +85,26 @@
 /* ========== 섹션 ========== */
 .non-section {
     background: white; border-radius: 6px;
-    padding: 6px 10px;             /* ★ 15px 20px → 6px 10px */
-    margin-bottom: 5px;            /* ★ 15px → 5px */
+    padding: 6px 10px;
+    margin-bottom: 5px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 .non-section:last-child { margin-bottom: 0; }
 .non-section-title {
     font-size: 11px; font-weight: 700; color: #2c3e50;
-    margin-bottom: 5px;            /* ★ 12px → 5px */
-    padding-bottom: 4px;           /* ★ 8px → 4px */
+    margin-bottom: 5px;
+    padding-bottom: 4px;
     border-bottom: 1px solid #e9ecef;
 }
 
 /* ========== 기본 행/열 레이아웃 ========== */
 .non-row {
     display: grid; grid-template-columns: repeat(2,1fr);
-    gap: 6px; margin-bottom: 5px;  /* ★ 12px→6px, 10px→5px */
+    gap: 6px; margin-bottom: 5px;
 }
 .non-row:last-child { margin-bottom: 0; }
+.non-row-3 { grid-template-columns: repeat(3,1fr); }
+.non-row-4 { grid-template-columns: repeat(4,1fr); }
 .non-col { display: flex; flex-direction: column; gap: 2px; }
 .non-col-full { grid-column: 1/-1; display: flex; flex-direction: column; gap: 2px; }
 .non-col label, .non-col-full label {
@@ -115,14 +118,14 @@
 .non-col-full input[type="text"],
 .non-col-full textarea {
     width: 100%;
-    padding: 3px 7px;              /* ★ 8px 12px → 3px 7px */
+    padding: 3px 7px;
     border: 1px solid #ced4da; border-radius: 4px;
-    font-size: 11px;               /* ★ 13px → 11px */
+    font-size: 11px;
     box-sizing: border-box; transition: all 0.2s;
-    height: 26px;                  /* ★ 고정 높이 */
+    height: 26px;
 }
 .non-col input[type="checkbox"] {
-    width: 16px; height: 16px; cursor: pointer;
+    width: 16px; height: 16px; cursor: pointer; margin-top: 4px;
 }
 .non-col input:focus, .non-col select:focus,
 .non-col-full input:focus, .non-col-full textarea:focus {
@@ -138,7 +141,7 @@
     background-repeat: no-repeat; background-position: right 8px center; padding-right: 26px;
 }
 textarea {
-    resize: vertical; height: 44px;
+    resize: vertical; height: 36px;
     min-height: unset; font-family: inherit;
 }
 
@@ -160,7 +163,7 @@ textarea {
 /* ========== 이미지 업로드 영역 ========== */
 .image-upload-area {
     display: grid; grid-template-columns: repeat(2,1fr);
-    gap: 8px; margin-top: 6px;     /* ★ 15px → 8px 6px */
+    gap: 8px; margin-top: 6px;
 }
 .image-upload-col { display: flex; flex-direction: column; gap: 4px; }
 .image-upload-col label { font-size: 10px; font-weight: 600; color: #495057; }
@@ -169,7 +172,7 @@ textarea {
     font-size: 10px; cursor: pointer;
 }
 .img-preview {
-    width: 100%; height: 150px;    /* ★ 200px → 150px */
+    width: 100%; height: 100px;
     border: 2px dashed #ced4da; border-radius: 5px;
     display: flex; align-items: center; justify-content: center;
     background: #f8f9fa; overflow: hidden;
@@ -178,21 +181,21 @@ textarea {
 
 /* ========== 유효성점검 특별 레이아웃 ========== */
 .validity-row {
-    display: grid; grid-template-columns: 50px 1fr; /* ★ 60px → 50px */
-    gap: 6px; margin-bottom: 5px;  /* ★ 10px→6px, 10px→5px */
+    display: grid; grid-template-columns: 50px 1fr;
+    gap: 6px; margin-bottom: 5px;
     align-items: center;
 }
 .validity-row:last-child { margin-bottom: 0; }
 .validity-label { font-size: 10px; font-weight: 600; color: #495057; text-align: center; }
-.validity-fields { display: flex; gap: 5px; flex-wrap: wrap; }
+.validity-fields { display: flex; gap: 5px; flex-wrap: nowrap; }
 .validity-fields input {
     padding: 3px 6px; border: 1px solid #ced4da; border-radius: 3px;
     font-size: 11px; box-sizing: border-box; transition: all 0.2s;
     height: 24px;
 }
-.validity-fields input[type="date"] { width: 120px; } /* ★ 140px → 120px */
-.validity-fields input[type="text"] { width: 85px; }  /* ★ 100px → 85px */
-.validity-fields .long-input { flex: 1; min-width: 160px; } /* ★ 200px → 160px */
+.validity-fields input[type="date"] { width: 110px; }
+.validity-fields input[type="text"] { width: 70px; }
+.validity-fields .long-input { flex: 1; min-width: 120px; }
 .validity-fields input:focus {
     outline: none; border-color: #4dabf7;
     box-shadow: 0 0 0 2px rgba(77,171,247,0.1);
@@ -200,19 +203,20 @@ textarea {
 
 /* ========== 파일 입력 ========== */
 .file-input {
-    margin-top: 4px; padding: 3px; /* ★ 8px→4px, 6px→3px */
+    margin-top: 4px; padding: 3px;
     border: 1px solid #ced4da; border-radius: 3px;
-    font-size: 10px; cursor: pointer;
+    font-size: 10px; cursor: pointer; width: 100%;
 }
 
 /* ========== 모달 푸터 ========== */
 .non-modal-footer {
     display: flex; justify-content: center; align-items: center;
-    gap: 8px; padding: 7px 16px;   /* ★ 15px 20px → 7px 16px */
+    gap: 8px; padding: 7px 16px;
     background: white; border-top: 1px solid #dee2e6;
+    flex-shrink: 0;
 }
 .non-modal-footer button {
-    min-width: 80px; height: 30px; /* ★ 100px 38px → 80px 30px */
+    min-width: 80px; height: 30px;
     border: none; border-radius: 4px;
     font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s;
 }
@@ -230,7 +234,6 @@ textarea {
     display: none; align-items: center; justify-content: center; z-index: 9999;
 }
 #corpListModal.active { display: flex; }
-
 .modal-content {
     background: white; padding: 15px; border-radius: 8px;
     width: 90%; max-width: 1000px; position: relative;
@@ -286,14 +289,18 @@ textarea {
 .tabulator .tabulator-col .tabulator-col-content {
     height: 100%; display: flex; flex-direction: column; justify-content: space-between;
 }
+.tabulator .tabulator-header-filter input::placeholder { color: transparent; }
 
 /* ========== 반응형 ========== */
 @media (max-width: 1200px) {
     .non-insert-box { width: 95vw; }
-    .non-row { grid-template-columns: 1fr; }
+    .non-row, .non-row-3, .non-row-4 { grid-template-columns: repeat(2,1fr); }
     .image-upload-area { grid-template-columns: 1fr; }
     .validity-row { grid-template-columns: 1fr; }
     .validity-label { text-align: left; }
+}
+@media (max-width: 768px) {
+    .non-row, .non-row-3, .non-row-4 { grid-template-columns: 1fr; }
 }
     </style>
     
@@ -356,8 +363,8 @@ textarea {
                 <!-- 기본정보 섹션 -->
                 <div class="non-section">
                     <div class="non-section-title">기본정보</div>
-                    
-                    <div class="non-row">
+
+                    <div class="non-row non-row-3">
                         <div class="non-col">
                             <label>거래처</label>
                             <div class="input-with-button">
@@ -369,20 +376,13 @@ textarea {
                             <label>품명</label>
                             <input type="text" id="prod_name" name="prod_name" readonly>
                         </div>
-                    </div>
-                    
-                    <div class="non-row">
                         <div class="non-col">
                             <label>품번</label>
                             <input type="text" id="prod_no" name="prod_no" readonly>
                         </div>
-                        <div class="non-col">
-                            <label>금액</label>
-                            <input type="text" id="werr_mon" name="werr_mon">
-                        </div>
                     </div>
-                    
-                    <div class="non-row">
+
+                    <div class="non-row non-row-3">
                         <div class="non-col">
                             <label>작성일자</label>
                             <input type="date" id="werr_date" name="werr_date">
@@ -391,20 +391,17 @@ textarea {
                             <label>발생일자</label>
                             <input type="text" id="werr_wdate" name="werr_wdate" class="date js-datepicker">
                         </div>
-                    </div>
-                    
-                    <div class="non-row">
                         <div class="non-col">
                             <label>발생자</label>
                             <input type="text" id="werr_user" name="werr_user">
                         </div>
-                        <div class="non-col">
-                            <label>보고자</label>
-                            <input type="text" id="werr_rep" name="werr_rep" value="admin">
-                        </div>
                     </div>
-                    
-                    <div class="non-row">
+
+                    <div class="non-row non-row-4">
+                        <div class="non-col">
+                            <label>금액</label>
+                            <input type="text" id="werr_mon" name="werr_mon">
+                        </div>
                         <div class="non-col">
                             <label>생산수량</label>
                             <input type="text" id="werr_amnt" name="werr_amnt" value="0">
@@ -413,17 +410,12 @@ textarea {
                             <label>설비</label>
                             <input type="text" id="fac_name" name="fac_name" readonly>
                         </div>
-                    </div>
-                    
-                    <div class="non-row">
                         <div class="non-col">
                             <label>열처리LOT</label>
-                            <input type="text" id="tech_te" name="tech_te">
+                            <input type="text" id="tech_te" name="tech_te" readonly>
                         </div>
-                        <div class="non-col"></div>
                     </div>
-                    
-                    <!-- Hidden Fields -->
+
                     <input type="hidden" id="ilbo_code" name="ilbo_code" value="0">
                     <input type="hidden" id="ilbo_no" name="ilbo_no" value="0">
                     <input type="hidden" id="werr_code" name="werr_code" value="0">
@@ -432,11 +424,11 @@ textarea {
                     <input type="hidden" id="werr_yu" name="werr_yu">
                 </div>
 
-                <!-- 불량정보 섹션 -->
+                <!-- 부적합등록 섹션 -->
                 <div class="non-section">
                     <div class="non-section-title">부적합등록</div>
-                    
-                    <div class="non-row">
+
+                    <div class="non-row non-row-4">
                         <div class="non-col">
                             <label>알림</label>
                             <input type="checkbox" id="werr_alert" name="werr_alert" checked>
@@ -451,9 +443,6 @@ textarea {
                                 <option value="관리">관리</option>
                             </select>
                         </div>
-                    </div>
-                    
-                    <div class="non-row">
                         <div class="non-col">
                             <label>불량구분</label>
                             <div class="multi-select">
@@ -486,30 +475,23 @@ textarea {
                             </select>
                         </div>
                     </div>
-                    
-                    <div class="non-row">
-                        <div class="non-col-full">
+
+                    <div class="non-row non-row-3">
+                        <div class="non-col">
                             <label>불량내용</label>
-                            <textarea id="werr_gnote" name="werr_gnote" rows="3"></textarea>
+                            <textarea id="werr_gnote" name="werr_gnote"></textarea>
                         </div>
-                    </div>
-                    
-                    <div class="non-row">
-                        <div class="non-col-full">
+                        <div class="non-col">
                             <label>발생원인 및 원인분석</label>
-                            <textarea id="werr_case" name="werr_case" rows="3"></textarea>
+                            <textarea id="werr_case" name="werr_case"></textarea>
                         </div>
-                    </div>
-                    
-                    <div class="non-row">
-                        <div class="non-col-full">
+                        <div class="non-col">
                             <label>대책수립 및 대책실시</label>
-                            <textarea id="werr_jnote" name="werr_jnote" rows="4"></textarea>
+                            <textarea id="werr_jnote" name="werr_jnote"></textarea>
                             <input type="file" name="werr_fname" id="werr_fname" class="file-input">
                         </div>
                     </div>
-                    
-                    <!-- 이미지 업로드 영역 -->
+
                     <div class="image-upload-area">
                         <div class="image-upload-col">
                             <label>개선전</label>
@@ -531,8 +513,7 @@ textarea {
                 <!-- 유효성점검 섹션 -->
                 <div class="non-section">
                     <div class="non-section-title">유효성점검</div>
-                    
-                    <!-- 1차 -->
+
                     <div class="validity-row">
                         <label class="validity-label">1차</label>
                         <div class="validity-fields">
@@ -542,8 +523,7 @@ textarea {
                             <input type="text" id="werr_bigo1" name="werr_bigo1" placeholder="비고">
                         </div>
                     </div>
-                    
-                    <!-- 2차 -->
+
                     <div class="validity-row">
                         <label class="validity-label">2차</label>
                         <div class="validity-fields">
@@ -553,8 +533,7 @@ textarea {
                             <input type="text" id="werr_bigo2" name="werr_bigo2" placeholder="비고">
                         </div>
                     </div>
-                    
-                    <!-- 3차 -->
+
                     <div class="validity-row">
                         <label class="validity-label">3차</label>
                         <div class="validity-fields">
@@ -566,7 +545,7 @@ textarea {
                     </div>
                 </div>
             </div>
-            
+
             <!-- 푸터 버튼 -->
             <div class="non-modal-footer">
                 <button type="button" class="btn-delete" onclick="deleteNon();" style="display:none;">삭제</button>
@@ -592,7 +571,7 @@ textarea {
 		                <button type="button" class="btn-corp-search" onclick="openCorpListModalData();">조회</button>
 		            </div>
 		            <div class="corp-modal-title-area">
-		                <span class="corp-modal-title">제품 검색</span>
+		                <span class="corp-modal-title">부적합등록 검색</span>
 		                <span class="modal-close">&times;</span>
 		            </div>
 		        </div>
@@ -609,7 +588,7 @@ var selectedRowData = null;
 
 // ========== 페이지 로드 ==========
 $(function(){
-	if (typeof userInfoList === 'function') {
+    if (typeof userInfoList === 'function') {
         userInfoList(now_page_code);
     }
     
@@ -622,17 +601,71 @@ $(function(){
     $("#subsdate").val(beforeMonth);
     $("#subedate").val(tdate);
     getNonInsertList();
+
+    // ★ 모달 열기/닫기 이벤트 - 중복 방지를 위해 페이지 로드 시 1회만 등록
+    const insertButton = document.querySelector('.insert-button');
+    const nonModal     = document.querySelector('.non-modal');
+    const modalOverlay = document.querySelector('.modal-overlay');
+    const closeButton  = document.querySelector('.close');
+    const headerCloseBtn = document.querySelector('.header-close-btn');
+
+    insertButton.addEventListener('click', function() {
+        isEditMode = false;
+        selectedRowData = null;
+        
+        $('#nonInsertForm')[0].reset();
+        
+        $('#prev_previewId1').attr('src', '/resources/images/noimage_01.gif');
+        $('#prev_previewId2').attr('src', '/resources/images/noimage_01.gif');
+        
+        $('#ilbo_code').val('0');
+        $('#ilbo_no').val('0');
+        $('#werr_code').val('0');
+        $('#werr_amnt').val('0');
+        $('#werr_mon').val('0');
+        
+        // ★ 작성일자 오늘날짜 기본값
+        const today = new Date();
+        const todayStr = today.getFullYear() + '-' +
+            String(today.getMonth() + 1).padStart(2, '0') + '-' +
+            String(today.getDate()).padStart(2, '0');
+        $('#werr_date').val(todayStr);
+        
+        // ★ 부서 기본값 품질
+        $('#werr_buso').val('품질');
+        
+        nonModal.style.left = '50%';
+        nonModal.style.top = '50%';
+        nonModal.style.transform = 'translate(-50%, -50%)';
+        
+        modalOverlay.classList.add('active');
+        nonModal.classList.add('active');
+        
+        $('.btn-delete').hide();
+    });
+
+    closeButton.addEventListener('click', function() {
+        modalOverlay.classList.remove('active');
+        nonModal.classList.remove('active');
+    });
+
+    headerCloseBtn.addEventListener('click', function() {
+        modalOverlay.classList.remove('active');
+        nonModal.classList.remove('active');
+    });
+
+    // ★ 저장 버튼 중복 방지
+    $('.save').off('click').on('click', function() {
+        save();
+    });
 });
 
 // ========== 부적합등록 리스트 조회 ==========
 function getNonInsertList(){
-    // 기존 테이블 완전히 제거
     if (nonTable) {
         nonTable.destroy();
         nonTable = null;
     }
-    
-    // DOM 초기화
     $('#tab1').empty();
     
     nonTable = new Tabulator("#tab1", {
@@ -656,22 +689,23 @@ function getNonInsertList(){
         paginationSizeSelector:[20,50,100,500,1000],
         paginationCounter:"rows",
         headerFilterPlaceholder: "",
+        columnDefaults: { headerSort: false },  // ★ 헤더소트 통일
+
         ajaxResponse:function(url, params, response){
-            $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px"); 
-            console.log("📊 서버 응답:", response);
+            $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
             return response.data ? response.data : [];
         },
         
         columns:[
-            {title:"검사일", field:"werr_date", sorter:"string", width:120, hozAlign:"center", frozen:true},
-            {title:"거래처", field:"corp_name", sorter:"string", width:230, hozAlign:"center", headerFilter:"input", headerSort:false},
-            {title:"품명", field:"prod_name", sorter:"string", width:250, hozAlign:"center", headerFilter:"input", headerSort:false},
-            {title:"품번", field:"prod_no", sorter:"string", width:240, hozAlign:"center", headerFilter:"input", headerSort:false},
-            {title:"열처리LOT", field:"ilbo_lot", sorter:"string", width:200, hozAlign:"center", headerFilter:"input", headerSort:false},
-            {title:"유형", field:"werr_gubn", sorter:"string", width:200, hozAlign:"center", headerFilter:"input", headerSort:false},
-            {title:"수량", field:"werr_amnt", sorter:"int", width:140, hozAlign:"center", headerFilter:"input"},
-            {title:"금액", field:"werr_mon", sorter:"int", width:100, hozAlign:"center", headerFilter:"input"},
-            {title:"코드", field:"werr_code", width:200, hozAlign:"center", visible:false},
+            {title:"검사일",    field:"werr_date", sorter:"string", width:120, hozAlign:"center", frozen:true},
+            {title:"거래처",    field:"corp_name", sorter:"string", width:230, hozAlign:"center", headerFilter:"input"},
+            {title:"품명",      field:"prod_name", sorter:"string", width:250, hozAlign:"center", headerFilter:"input"},
+            {title:"품번",      field:"prod_no",   sorter:"string", width:240, hozAlign:"center", headerFilter:"input"},
+            {title:"열처리LOT", field:"ilbo_lot",  sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"유형",      field:"werr_gubn", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"수량",      field:"werr_amnt", sorter:"int",    width:140, hozAlign:"center", headerFilter:"input"},
+            {title:"금액",      field:"werr_mon",  sorter:"int",    width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"코드",      field:"werr_code", width:200,       hozAlign:"center", visible:false},
         ],
         
         rowFormatter:function(row){
@@ -685,67 +719,57 @@ function getNonInsertList(){
         },
         
         rowDblClick:function(e, row){
-
-        	if (window.disableRowDblClick) {
+            if (window.disableRowDblClick) {
                 alert("수정 권한이 없습니다.");
                 return false;
             }
             
+            const permission = userPermissions?.[now_page_code];
+            if (!['U', 'D'].includes(permission)) {
+                alert("수정 권한이 없습니다.");
+                return false;
+            }
+
             var data = row.getData();
             selectedRowData = data;
             isEditMode = true;
-            console.log("더블클릭 데이터:", selectedRowData.werr_code);
-            $('#nonInsertForm')[0].reset();
             
             nonInsertDetail(data.werr_code);
-            $('.btn-delete').show();
 
-            const permission = userPermissions?.[now_page_code];
+            // ★ 삭제버튼 한 번만 처리
             if (permission === 'D') {
                 $('.btn-delete').show();
             } else {
                 $('.btn-delete').hide();
             }
-            
         },
     });
-    
-    console.log("✅ Tabulator 생성 완료");
 }
 
 // ========== 부적합등록 상세 조회 ==========
-// ========== 상세 조회 함수 수정 ==========
 function nonInsertDetail(werr_code){
     $.ajax({
         url:"/tkheat/quality/nonInsert/nonInsertDetail",
         type:"post",
         dataType:"json",
-        data:{
-            "werr_code":werr_code
-        },
+        data:{ "werr_code": werr_code },
         success:function(result){
-            console.log("📄 상세 데이터:", result);
             var allData = result.data;
             
-            // ✅ 폼 초기화
             $('#nonInsertForm')[0].reset();
             
-            // ✅ 데이터 바인딩
             for(let key in allData){
                 const value = allData[key];
                 const $element = $("[name='"+key+"']");
                 
                 if ($element.length) {
-                    // null이나 undefined를 빈 문자열로 변환
                     const safeValue = (value === null || value === undefined) ? '' : value;
                     
                     if ($element.attr('type') === 'checkbox') {
                         $element.prop('checked', value === 'Y' || value === true);
                     } else if ($element.attr('type') === 'date') {
-                        // 날짜 포맷 처리 (YYYY-MM-DD)
                         if (safeValue && safeValue !== '') {
-                            const formattedDate = safeValue.replace(/[./]/g, '-').substring(0, 10);
-                            $element.val(formattedDate);
+                            $element.val(safeValue.replace(/[./]/g, '-').substring(0, 10));
                         }
                     } else {
                         $element.val(safeValue);
@@ -753,7 +777,6 @@ function nonInsertDetail(werr_code){
                 }
             }
             
-            // ✅ 이미지 미리보기 처리 (서버에 저장된 이미지 경로가 있다면)
             if (allData.imageFile1Path) {
                 $('#prev_previewId1').attr('src', allData.imageFile1Path);
             }
@@ -761,7 +784,6 @@ function nonInsertDetail(werr_code){
                 $('#prev_previewId2').attr('src', allData.imageFile2Path);
             }
             
-            // 모달 열기
             $('.modal-overlay').addClass('active');
             $('.non-modal').addClass('active');
         },
@@ -774,26 +796,26 @@ function nonInsertDetail(werr_code){
 
 // ========== 저장 ==========
 function save() {
+    // ★ 중복 클릭 방지
+    if ($('.save').prop('disabled')) return;
+    $('.save').prop('disabled', true);
 
-	const permission = userPermissions?.[now_page_code];
+    console.log("💾 save() 함수 시작");
+
+    const permission = userPermissions?.[now_page_code];
     
-    // 저장함수
     if (!isEditMode) {
         if (!['I', 'U', 'D'].includes(permission)) {
             alert("등록 권한이 없습니다.");
-            console.log("등록 권한 없음 - 현재 권한:", permission);
+            $('.save').prop('disabled', false);
             return false;
         }
-        console.log("등록 권한 확인 완료");
-    } 
-    // 수정함수
-    else {
+    } else {
         if (!['U', 'D'].includes(permission)) {
             alert("수정 권한이 없습니다.");
-            console.log("수정 권한 없음 - 현재 권한:", permission);
+            $('.save').prop('disabled', false);
             return false;
         }
-        console.log("수정 권한 확인 완료");
     }
     
     var formData = new FormData($("#nonInsertForm")[0]);
@@ -808,28 +830,17 @@ function save() {
         confirmMsg = "저장하시겠습니까?";
     }
     
-    // ✅ 수량/금액 빈값 처리
-    if (!$("#werr_amnt").val() || $("#werr_amnt").val() === '') {
-        formData.set("werr_amnt", "0");
-    }
-    if (!$("#werr_mon").val() || $("#werr_mon").val() === '') {
-        formData.set("werr_mon", "0");
-    }
+    if (!$("#werr_amnt").val()) formData.set("werr_amnt", "0");
+    if (!$("#werr_mon").val())  formData.set("werr_mon",  "0");
     
-    // ✅ 체크박스 처리
     formData.delete("werr_alert");
     formData.append("werr_alert", $("#werr_alert").is(":checked") ? "Y" : "N");
     
-    // ✅ 날짜 필드 빈값 체크 및 제거
     const dateFields = ['werr_date', 'werr_wdate', 'check_date_a', 'check_date_b', 'check_date_c'];
     dateFields.forEach(field => {
-        const value = $("#" + field).val();
-        if (!value || value === '') {
-            formData.delete(field);
-        }
+        if (!$("#" + field).val()) formData.delete(field);
     });
     
-    // ✅ Hidden 필드 빈값 처리
     const hiddenFields = ['ilbo_code', 'ilbo_no', 'werr_code', 'ilbo_lot', 'werr_lot', 'werr_yu'];
     hiddenFields.forEach(field => {
         const value = $("#" + field).val();
@@ -841,24 +852,14 @@ function save() {
         }
     });
     
-    // ✅ 파일 필드 빈값 제거
-    if (!$('#werr_fname')[0].files.length) {
-        formData.delete('werr_fname');
-    }
-    if (!$('input[name="imageFile1"]')[0].files.length) {
-        formData.delete('imageFile1');
-    }
-    if (!$('input[name="imageFile2"]')[0].files.length) {
-        formData.delete('imageFile2');
-    }
+    if (!$('#werr_fname')[0].files.length)              formData.delete('werr_fname');
+    if (!$('input[name="imageFile1"]')[0].files.length) formData.delete('imageFile1');
+    if (!$('input[name="imageFile2"]')[0].files.length) formData.delete('imageFile2');
     
-    // ✅ 디버깅용 로그
-    console.log("=== 전송 데이터 확인 ===");
-    for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
+    if (!confirm(confirmMsg)) {
+        $('.save').prop('disabled', false);  // ★ 취소 시 다시 활성화
+        return;
     }
-    
-    if (!confirm(confirmMsg)) return;
     
     $.ajax({
         url: "/tkheat/quality/nonInsert/nonInsertSave",
@@ -869,40 +870,26 @@ function save() {
         dataType: "json",
         success: function(result) {
             console.log("💾 저장 완료:", result);
+            $('.save').prop('disabled', false);  // ★ 완료 후 활성화
             alert("저장 되었습니다.");
             
             $('.modal-overlay').removeClass('active');
             $('.non-modal').removeClass('active');
+            $('.non-modal').css({ 'left':'50%', 'top':'50%', 'transform':'translate(-50%, -50%)' });
             
-            // 모달 위치 초기화
-            $('.non-modal').css({
-                'left': '50%',
-                'top': '50%',
-                'transform': 'translate(-50%, -50%)'
-            });
-            
-            // 폼 초기화
             $('#nonInsertForm')[0].reset();
             isEditMode = false;
             selectedRowData = null;
             
-            setTimeout(function() {
-                getNonInsertList();
-            }, 300);
+            setTimeout(function() { getNonInsertList(); }, 300);
         },
         error: function(xhr, status, error) {
             console.error("❌ 저장 오류:", xhr.status, error);
-            console.error("응답 텍스트:", xhr.responseText);
+            $('.save').prop('disabled', false);  // ★ 오류 시 활성화
             
-            // 더 자세한 에러 메시지
             let errorMsg = "저장 중 오류가 발생했습니다.";
-            if (xhr.status === 400) {
-                errorMsg += "\n\n[400 에러] 서버가 요청을 이해할 수 없습니다.";
-                errorMsg += "\n필수 입력 항목을 확인해주세요.";
-            } else if (xhr.status === 500) {
-                errorMsg += "\n\n[500 에러] 서버 내부 오류가 발생했습니다.";
-            }
-            
+            if (xhr.status === 400) errorMsg += "\n\n[400] 필수 입력 항목을 확인해주세요.";
+            else if (xhr.status === 500) errorMsg += "\n\n[500] 서버 내부 오류가 발생했습니다.";
             alert(errorMsg);
         }
     });
@@ -910,41 +897,31 @@ function save() {
 
 // ========== 삭제 ==========
 function deleteNon() {
-
-	const permission = userPermissions?.[now_page_code];
+    const permission = userPermissions?.[now_page_code];
     
     if (permission !== 'D') {
         alert("삭제 권한이 없습니다.");
-        console.log("삭제 권한 없음 - 현재 권한:", permission);
         return false;
     }
-    console.log("삭제 권한 확인 완료");
     
     if (!selectedRowData || !selectedRowData.werr_code) {
         alert("삭제할 대상을 선택하세요.");
         return;
     }
     
-    if (!confirm("삭제하시겠습니까?")) {
-        return;
-    }
+    if (!confirm("삭제하시겠습니까?")) return;
     
     $.ajax({
         url: "/tkheat/quality/nonInsert/deleteNon",
         type: "POST",
-        data: {
-            werr_code: selectedRowData.werr_code
-        },
+        data: { werr_code: selectedRowData.werr_code },
         dataType: "json",
         success: function(result) {
             if (result.status === "success") {
                 alert("삭제되었습니다.");
                 $('.modal-overlay').removeClass('active');
                 $('.non-modal').removeClass('active');
-                
-                setTimeout(function() {
-                    getNonInsertList();
-                }, 300);
+                setTimeout(function() { getNonInsertList(); }, 300);
             } else {
                 alert("삭제 중 오류가 발생했습니다: " + result.message);
             }
@@ -956,65 +933,67 @@ function deleteNon() {
     });
 }
 
-//========== 거래처 검색 모달 열기 ==========
+// ========== 거래처 검색 모달 열기 ==========
 function openCorpListModal(){
     document.getElementById('corpListModal').style.display = 'flex';
     openCorpListModalData();
 }
 
-// ========== 거래처 검색 모달 닫기 ==========
 function closeCorpListModal() {
     document.getElementById('corpListModal').style.display = 'none';
 }
 
 // ========== 거래처 검색 리스트 ==========
 function openCorpListModalData() {
-    // 기존 테이블 제거
     if (window.facListTable) {
         window.facListTable.destroy();
         window.facListTable = null;
     }
-    
     $('#corpListTabulator').empty();
     
     window.facListTable = new Tabulator("#corpListTabulator", {
         height:"450px",
         layout:"fitColumns",
         selectable:true,
+        columnDefaults: { headerSort: false },
+        headerFilterPlaceholder: "",
+        pagination:"local",
+        paginationSize:20,
+        paginationSizeSelector:[20,50,100,500,1000],
+        paginationCounter:"rows",
         ajaxURL:"/tkheat/quality/nonInsert/getNonCorpList",
         ajaxConfig:"POST",
         ajaxParams:{
-            "fac_code": $("#fac_code").val() || 0,
-            "ord_code": $("#ord_code").val() || 0,
+            "fac_code":  $("#fac_code").val()  || 0,
+            "ord_code":  $("#ord_code").val()  || 0,
             "prod_code": $("#prod_code").val() || 0,
             "ilbo_code": $("#ilbo_code").val() || 0,
-            "ilbo_no": $("#ilbo_no").val() || 0,
+            "ilbo_no":   $("#ilbo_no").val()   || 0,
             "corp_code": $("#corp_code").val() || 0,
-            "ilbo_lot": $("#subilbo_lot").val(),
-            "sdate": $("#subsdate").val(),
-            "edate": $("#subedate").val()
+            "ilbo_lot":  $("#subilbo_lot").val(),
+            "sdate":     $("#subsdate").val(),
+            "edate":     $("#subedate").val()
         },
         ajaxResponse:function(url, params, response){
-            console.log("📊 거래처 검색 응답:", response);
             return response.data;
         },
         columns:[
-            {title:"NO", field:"idx", width:80, hozAlign:"center"},
-            {title:"입고일", field:"ord_date", width:120, hozAlign:"center"},
-            {title:"생산일", field:"ilbo_date", width:120, hozAlign:"center"},
-            {title:"거래처", field:"corp_name", width:150, hozAlign:"center"},
-            {title:"품명", field:"prod_name", width:100, hozAlign:"center"},
-            {title:"품번", field:"prod_no", width:200, hozAlign:"center"},
-            {title:"공정", field:"tech_te", width:200, hozAlign:"center"},
-            {title:"설비", field:"fac_name", width:200, hozAlign:"center"},
-            {title:"수량", field:"ilbo_su", width:200, hozAlign:"center"},
-            {title:"고객LOT", field:"ord_lot", width:200, hozAlign:"center"},
-            {title:"열처리LOT", field:"ilbo_lot", width:200, hozAlign:"center"},
-            {title:"ord_code", field:"ord_code", width:200, hozAlign:"center", visible:false},
-            {title:"fac_code", field:"fac_code", width:200, hozAlign:"center", visible:false},
+            {title:"NO",       field:"idx",       width:40,  hozAlign:"center"},
+            {title:"입고일",    field:"ord_date",  width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"생산일",    field:"ilbo_date", width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"거래처",    field:"corp_name", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"품명",      field:"prod_name", width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"품번",      field:"prod_no",   width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"공정",      field:"tech_te",   width:80,  hozAlign:"center", headerFilter:"input"},
+            {title:"설비",      field:"fac_name",  width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"수량",      field:"ilbo_su",   width:60,  hozAlign:"center"},
+            {title:"고객LOT",   field:"ord_lot",   width:80,  hozAlign:"center", headerFilter:"input"},
+            {title:"열처리LOT", field:"ilbo_lot",  width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"ord_code",  field:"ord_code",  width:200, hozAlign:"center", visible:false},
+            {title:"fac_code",  field:"fac_code",  width:200, hozAlign:"center", visible:false},
             {title:"prod_code", field:"prod_code", width:200, hozAlign:"center", visible:false},
             {title:"ilbo_code", field:"ilbo_code", width:200, hozAlign:"center", visible:false},
-            {title:"ilbo_no", field:"ilbo_no", width:200, hozAlign:"center", visible:false},
+            {title:"ilbo_no",   field:"ilbo_no",   width:200, hozAlign:"center", visible:false},
             {title:"corp_code", field:"corp_code", width:200, hozAlign:"center", visible:false},
         ],
         rowClick:function(e, row){
@@ -1024,22 +1003,17 @@ function openCorpListModalData() {
         rowDblClick:function(e, row){
             let data = row.getData();
             
-            console.log("선택된 데이터:", data);
-            
-            // 데이터 채우기
             document.getElementById('werr_wdate').value = data.ilbo_date || '';
-            document.getElementById('corp_name').value = data.corp_name || '';
-            document.getElementById('prod_name').value = data.prod_name || '';
-            document.getElementById('prod_no').value = data.prod_no || '';
-            document.getElementById('fac_name').value = data.fac_name || '';
-            document.getElementById('ilbo_lot').value = data.ilbo_lot || '';
-            document.getElementById('tech_te').value = data.tech_te || '';
+            document.getElementById('corp_name').value  = data.corp_name || '';
+            document.getElementById('prod_name').value  = data.prod_name || '';
+            document.getElementById('prod_no').value    = data.prod_no   || '';
+            document.getElementById('fac_name').value   = data.fac_name  || '';
+            document.getElementById('ilbo_lot').value   = data.ilbo_lot  || '';
+            document.getElementById('tech_te').value    = data.tech_te   || '';
             
-            // Hidden 필드도 채우기
             $('#ilbo_code').val(data.ilbo_code || 0);
-            $('#ilbo_no').val(data.ilbo_no || 0);
+            $('#ilbo_no').val(data.ilbo_no     || 0);
             
-            // 모달 닫기
             closeCorpListModal();
         }
     });
@@ -1047,28 +1021,23 @@ function openCorpListModalData() {
 
 // ========== 모달 외부 클릭 시 닫기 ==========
 $(document).on('click', '#corpListModal', function(e) {
-    if (e.target.id === 'corpListModal') {
-        closeCorpListModal();
-    }
+    if (e.target.id === 'corpListModal') closeCorpListModal();
 });
 
-// ========== X 버튼 클릭 ==========
 $(document).on('click', '.modal-close', function() {
     closeCorpListModal();
 });
 
 // ========== 드래그 기능 ==========
-const modal = document.querySelector('.non-modal');
+const modal  = document.querySelector('.non-modal');
 const header = document.querySelector('.non-header');
 
 header.addEventListener('mousedown', function(e) {
-    if (e.target.classList.contains('header-close-btn') || e.target.closest('.header-close-btn')) {
-        return;
-    }
+    if (e.target.classList.contains('header-close-btn') || e.target.closest('.header-close-btn')) return;
     
     const rect = modal.getBoundingClientRect();
-    modal.style.left = rect.left + 'px';
-    modal.style.top = rect.top + 'px';
+    modal.style.left      = rect.left + 'px';
+    modal.style.top       = rect.top  + 'px';
     modal.style.transform = 'none';
     
     let offsetX = e.clientX - rect.left;
@@ -1076,67 +1045,14 @@ header.addEventListener('mousedown', function(e) {
     
     function moveModal(e) {
         modal.style.left = (e.clientX - offsetX) + 'px';
-        modal.style.top = (e.clientY - offsetY) + 'px';
+        modal.style.top  = (e.clientY - offsetY) + 'px';
     }
-    
     function stopMove() {
         window.removeEventListener('mousemove', moveModal);
-        window.removeEventListener('mouseup', stopMove);
+        window.removeEventListener('mouseup',   stopMove);
     }
-    
     window.addEventListener('mousemove', moveModal);
-    window.addEventListener('mouseup', stopMove);
-});
-
-// ========== 모달 열기/닫기 ==========
-const insertButton = document.querySelector('.insert-button');
-const nonModal = document.querySelector('.non-modal');
-const modalOverlay = document.querySelector('.modal-overlay');
-const closeButton = document.querySelector('.close');
-const headerCloseBtn = document.querySelector('.header-close-btn');
-
-//========== 입력 버튼 클릭 수정 ==========
-insertButton.addEventListener('click', function() {
-    isEditMode = false;
-    selectedRowData = null;
-    
-    // ✅ 폼 완전 초기화
-    $('#nonInsertForm')[0].reset();
-    
-    // ✅ 이미지 초기화
-    $('#prev_previewId1').attr('src', '/resources/images/noimage_01.gif');
-    $('#prev_previewId2').attr('src', '/resources/images/noimage_01.gif');
-    
-    // ✅ Hidden 필드 초기화
-    $('#ilbo_code').val('0');
-    $('#ilbo_no').val('0');
-    $('#werr_code').val('0');
-    $('#werr_amnt').val('0');
-    $('#werr_mon').val('0');
-    
-    // 중앙 정렬
-    nonModal.style.left = '50%';
-    nonModal.style.top = '50%';
-    nonModal.style.transform = 'translate(-50%, -50%)';
-    
-    modalOverlay.classList.add('active');
-    nonModal.classList.add('active');
-    
-    $('.btn-delete').hide();
-});
-closeButton.addEventListener('click', function() {
-    modalOverlay.classList.remove('active');
-    nonModal.classList.remove('active');
-});
-
-headerCloseBtn.addEventListener('click', function() {
-    modalOverlay.classList.remove('active');
-    nonModal.classList.remove('active');
-});
-
-// ========== 저장 버튼 ==========
-$('.save').click(function() {
-    save();
+    window.addEventListener('mouseup',   stopMove);
 });
 
 // ========== 이미지 미리보기 ==========
@@ -1151,10 +1067,9 @@ function previewImage(input, previewId) {
 }
 
 // ========== 엑셀 다운로드 ==========
-$(".excel-button").click(function () {
+$(".excel-button").off('click').on('click', function() {
     const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    const filename = "부적합등록_" + today + ".xlsx";
-    nonTable.download("xlsx", filename, { sheetName: "부적합등록" });
+    nonTable.download("xlsx", "부적합등록_" + today + ".xlsx", { sheetName: "부적합등록" });
 });
     </script>
     

@@ -216,6 +216,7 @@ public class ManagementController {
 				rowMap.put("product_file_name", productList.get(i).getProduct_file_name());
 				rowMap.put("apperance_file_name", productList.get(i).getApperance_file_name());
 				rowMap.put("heat_file_name", productList.get(i).getHeat_file_name());
+				rowMap.put("drawing_file_name", productList.get(i).getDrawing_file_name());
 				rowMap.put("prod_fac1", productList.get(i).getProd_fac1());
 				rowMap.put("prod_fac2", productList.get(i).getProd_fac2());
 				rowMap.put("prod_fac3", productList.get(i).getProd_fac3());

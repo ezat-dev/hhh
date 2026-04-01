@@ -140,4 +140,9 @@ public class WorkIlboDaoImpl implements WorkIlboDao{
 	public List<WorkJisiTk> workIlboCheckSeetPrintOrdcodeList(WorkJisiTk w) {
 		return sqlSession.selectList("workilbo.workIlboCheckSeetPrintOrdcodeList",w);
 	}
+
+	@Override
+	public List<WorkJisiTk> workIlboProcessOrderPrintOrdcodeList(WorkJisiTk w) {
+		return sqlSession.selectList("workilbo.workIlboProcessOrderPrintOrdcodeList",w);
+	}
 }

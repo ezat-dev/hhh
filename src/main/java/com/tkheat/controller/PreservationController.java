@@ -943,148 +943,142 @@ public class PreservationController {
 		return "/preservation/gigiGojang.jsp";
 	}
 	
-	//측정기기고장이력 조회
-	@RequestMapping(value = "/preservation/gigiGojang/getGigiGojangList", method = RequestMethod.POST) 
-	@ResponseBody 
+	// 측정기기고장이력 조회
+	@RequestMapping(value = "/preservation/gigiGojang/getGigiGojangList", method = RequestMethod.POST)
+	@ResponseBody
 	public Map<String, Object> getGigiGojangList(
-			@RequestParam String sdate,
-			@RequestParam String edate
-			) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
+	        @RequestParam String sdate,
+	        @RequestParam String edate) {
 
-		Measure measure = new Measure();
+	    Map<String, Object> rtnMap = new HashMap<>();
+	    Measure measure = new Measure();
+	    measure.setSdate(sdate);
+	    measure.setEdate(edate);
 
-		measure.setSdate(sdate);
-		measure.setEdate(edate);
+	    List<Measure> gigiGojangList = preservationService.getGigiGojangList(measure);
+	    List<HashMap<String, Object>> rtnList = new ArrayList<>();
 
+	    for (int i = 0; i < gigiGojangList.size(); i++) {
+	        HashMap<String, Object> rowMap = new HashMap<>();
+	        rowMap.put("terr_name",    gigiGojangList.get(i).getTerr_name());
+	        rowMap.put("terr_chkman",  gigiGojangList.get(i).getTerr_chkman());
+	        rowMap.put("terr_date",    gigiGojangList.get(i).getTerr_date());
+	        rowMap.put("terr_reward",  gigiGojangList.get(i).getTerr_reward());
+	        rowMap.put("terr_strt",    gigiGojangList.get(i).getTerr_strt());
+	        rowMap.put("terr_end",     gigiGojangList.get(i).getTerr_end());
+	        rowMap.put("terr_time",    gigiGojangList.get(i).getTerr_time());
+	        rowMap.put("terr_content", gigiGojangList.get(i).getTerr_content());
+	        rowMap.put("terr_man",     gigiGojangList.get(i).getTerr_man());
+	        rowMap.put("terr_cost",    gigiGojangList.get(i).getTerr_cost());
+	        rowMap.put("terr_bigo",    gigiGojangList.get(i).getTerr_bigo());
+	        rowMap.put("terr_suri",    gigiGojangList.get(i).getTerr_suri());
+	        rowMap.put("terr_condi",   gigiGojangList.get(i).getTerr_condi());
+	        rowMap.put("terr_code",    gigiGojangList.get(i).getTerr_code());
+	        rowMap.put("ter_code",     gigiGojangList.get(i).getTer_code());
+	        rowMap.put("terr_bphoto",  gigiGojangList.get(i).getTerr_bphoto());
+	        rowMap.put("terr_aphoto",  gigiGojangList.get(i).getTerr_aphoto());
+	        rtnList.add(rowMap);
+	    }
 
-		List<Measure> gigiGojangList = preservationService.getGigiGojangList(measure);
-
-		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
-		for(int i=0; i<gigiGojangList.size(); i++) {
-			HashMap<String, Object> rowMap = new HashMap<String, Object>();
-			rowMap.put("terr_name", gigiGojangList.get(i).getTerr_name());
-			rowMap.put("terr_chkman", gigiGojangList.get(i).getTerr_chkman());
-			rowMap.put("terr_date", gigiGojangList.get(i).getTerr_date());
-			rowMap.put("terr_reward", gigiGojangList.get(i).getTerr_reward());
-			rowMap.put("terr_strt", gigiGojangList.get(i).getTerr_strt());
-			rowMap.put("terr_end", gigiGojangList.get(i).getTerr_end());
-			rowMap.put("terr_time", gigiGojangList.get(i).getTerr_time());
-			rowMap.put("terr_content", gigiGojangList.get(i).getTerr_content());
-			rowMap.put("terr_man", gigiGojangList.get(i).getTerr_man());
-			rowMap.put("terr_cost", gigiGojangList.get(i).getTerr_cost());
-			rowMap.put("terr_bigo", gigiGojangList.get(i).getTerr_bigo());
-			rowMap.put("terr_suri", gigiGojangList.get(i).getTerr_suri());
-			rowMap.put("terr_condi", gigiGojangList.get(i).getTerr_condi());
-			rowMap.put("terr_code", gigiGojangList.get(i).getTerr_code());
-			rowMap.put("ter_code", gigiGojangList.get(i).getTer_code());
-			rowMap.put("terr_strt_h", gigiGojangList.get(i).getTerr_strt_h());
-			rowMap.put("terr_strt_m", gigiGojangList.get(i).getTerr_strt_m());
-			rowMap.put("terr_strt_s", gigiGojangList.get(i).getTerr_strt_s());
-			rowMap.put("terr_end_h", gigiGojangList.get(i).getTerr_end_h());
-			rowMap.put("terr_end_m", gigiGojangList.get(i).getTerr_end_m());
-			rowMap.put("terr_end_s", gigiGojangList.get(i).getTerr_end_s());
-			rowMap.put("terr_strt_mm", gigiGojangList.get(i).getTerr_strt_mm());
-			rowMap.put("terr_strt_ss", gigiGojangList.get(i).getTerr_strt_ss());
-			rowMap.put("terr_end_mm", gigiGojangList.get(i).getTerr_end_mm());
-			rowMap.put("terr_end_ss", gigiGojangList.get(i).getTerr_end_ss());
-			rowMap.put("file_name", gigiGojangList.get(i).getFile_name());
-			rowMap.put("file_name1", gigiGojangList.get(i).getFile_name1());
-			rowMap.put("file_name2", gigiGojangList.get(i).getFile_name2());
-			rowMap.put("file_name3", gigiGojangList.get(i).getFile_name3());
-			rowMap.put("terr_aphoto", gigiGojangList.get(i).getTerr_aphoto());
-			rowMap.put("terr_bphoto", gigiGojangList.get(i).getTerr_bphoto());
-
-			rtnList.add(rowMap);
-		}
-
-		rtnMap.put("last_page",1);
-		rtnMap.put("data",rtnList);
-
-		return rtnMap; 
-	}
-	
-	//측정기기고장이력 더블클릭조회
-	@RequestMapping(value = "/preservation/gigiGojang/gigiGojangtDetail", method = RequestMethod.POST) 
-	@ResponseBody 
-	public Map<String, Object> gigiGojangtDetail(
-			@RequestParam Integer terr_code) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-
-		Measure measure = new Measure();
-		measure.setTerr_code(terr_code);
-		Measure gojangList = preservationService.gigiGojangtDetail(measure);
-
-		rtnMap.put("data",gojangList);
-
-		return rtnMap; 
+	    rtnMap.put("last_page", 1);
+	    rtnMap.put("data", rtnList);
+	    return rtnMap;
 	}
 
-	//측정기기고장이력 - insert, update
+	// 측정기기고장이력 상세 조회
+	@RequestMapping(value = "/preservation/gigiGojang/gigiGojangtDetail", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> gigiGojangtDetail(@RequestParam Integer terr_code) {
+
+	    Map<String, Object> rtnMap = new HashMap<>();
+	    Measure measure = new Measure();
+	    measure.setTerr_code(terr_code);
+
+	    Measure d = preservationService.gigiGojangtDetail(measure);
+
+	    HashMap<String, Object> rowMap = new HashMap<>();
+	    rowMap.put("terr_code",    d.getTerr_code());
+	    rowMap.put("ter_code",     d.getTer_code());
+	    rowMap.put("terr_chkman",  d.getTerr_chkman());
+	    
+	    rowMap.put("terr_condi",   d.getTerr_condi());
+	    rowMap.put("terr_cost",    d.getTerr_cost());
+	    rowMap.put("terr_reward",  d.getTerr_reward());
+	    rowMap.put("terr_bigo",    d.getTerr_bigo());
+	    rowMap.put("terr_bphoto",  d.getTerr_bphoto());
+	    rowMap.put("terr_aphoto",  d.getTerr_aphoto());
+	    
+	    rowMap.put("terr_strt_h",  d.getTerr_strt_h());
+	    rowMap.put("terr_strt_mm", d.getTerr_strt_mm());
+	    rowMap.put("terr_strt_ss", d.getTerr_strt_ss());
+	    
+	    rowMap.put("terr_end_h",   d.getTerr_end_h());
+	    rowMap.put("terr_end_mm",  d.getTerr_end_mm());
+	    rowMap.put("terr_end_ss",  d.getTerr_end_ss());
+	    rowMap.put("terr_time",    d.getTerr_time());
+	    rowMap.put("terr_man",     d.getTerr_man());
+	    rowMap.put("terr_suri",    d.getTerr_suri());
+	    rowMap.put("terr_content", d.getTerr_content());
+	    rowMap.put("terr_date", d.getTerr_date() != null && d.getTerr_date().length() >= 10 ? d.getTerr_date().substring(0,10) : "");
+	    rowMap.put("terr_strt", d.getTerr_strt() != null && d.getTerr_strt().length() >= 10 ? d.getTerr_strt().substring(0,10) : "");
+	    rowMap.put("terr_end",  d.getTerr_end()  != null && d.getTerr_end().length()  >= 10 ? d.getTerr_end().substring(0,10)  : "");
+	    rtnMap.put("data", rowMap);
+	    return rtnMap;
+	}
+
+	// 측정기기고장이력 저장/수정
 	@RequestMapping(value = "/preservation/gigiGojang/gigiGojangSave", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> gigiGojangSave(
-			@ModelAttribute Measure measure,
-			@RequestParam("mode") String mode,
-			@RequestParam(value = "terr_bphoto_url", required = false) MultipartFile[] files1,
-			@RequestParam(value = "terr_aphoto_url", required = false) MultipartFile[] files2) { 
+	        @ModelAttribute Measure measure,
+	        @RequestParam("mode") String mode,
+	        @RequestParam(value = "terr_bphoto_url", required = false) MultipartFile[] files1,
+	        @RequestParam(value = "terr_aphoto_url", required = false) MultipartFile[] files2) {
 
-		System.out.println("mode = " + mode);
-		System.out.println("terr_code = " + measure.getTerr_code());
-		Map<String, Object> result = new HashMap<>();
+	    Map<String, Object> result = new HashMap<>();
+	    try {
+	        String path = "D:/태경출력파일/사진/측정기기고장이력";
 
-		try {
-			String path = "D:/태경출력파일/사진/측정기기고장이력";
+	        String productFileName1 = saveFiles(files1, path);
+	        if (productFileName1 != null) measure.setTerr_bphoto(productFileName1);
 
-			String productFileName1 = saveFiles(files1, path);
-			if (productFileName1 != null) measure.setTerr_bphoto(productFileName1);
-			String productFileName2 = saveFiles(files2, path);
-			if (productFileName2 != null) measure.setTerr_aphoto(productFileName2);
-			
-			
-			if ("insert".equalsIgnoreCase(mode)) {
-				preservationService.gigiGojangInsert(measure);
-			} else if ("update".equalsIgnoreCase(mode)) {
-				preservationService.gigiGojangUdate(measure);  
-			} else {
-				throw new IllegalArgumentException("Invalid mode: " + mode);
-			}
+	        String productFileName2 = saveFiles(files2, path);
+	        if (productFileName2 != null) measure.setTerr_aphoto(productFileName2);
 
-			result.put("status", "success");
-			result.put("message", "OK");
+	        if ("insert".equalsIgnoreCase(mode)) {
+	            preservationService.gigiGojangInsert(measure);
+	        } else if ("update".equalsIgnoreCase(mode)) {
+	            preservationService.gigiGojangUdate(measure);
+	        } else {
+	            throw new IllegalArgumentException("Invalid mode: " + mode);
+	        }
 
-		} catch (Exception e) {
-			result.put("status", "error");
-			result.put("message", e.getMessage());
-		}
+	        result.put("status", "success");
+	        result.put("message", "OK");
 
-		System.out.println(result.get("status"));
-		System.out.println(result.get("message"));
-
-		return result;
+	    } catch (Exception e) {
+	        result.put("status", "error");
+	        result.put("message", e.getMessage());
+	    }
+	    return result;
 	}
 
-
-	//측정기기고장이력 - delete
+	// 측정기기고장이력 삭제
 	@RequestMapping(value = "/preservation/gigiGojang/deleteGigiGojang", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> deleteGigiGojang(@RequestParam("terr_code") int terr_code) {
-		Map<String, Object> result = new HashMap<>();
 
-		try {
-			preservationService.gigiGojangDelete(terr_code);
-			result.put("status", "success");
-			result.put("message", "삭제 완료");
-		} catch (Exception e) {
-			result.put("status", "error");
-			result.put("message", e.getMessage());
-		}
-
-		System.out.println(result.get("status"));
-		System.out.println(result.get("message"));
-
-		return result;
-	}	
+	    Map<String, Object> result = new HashMap<>();
+	    try {
+	        preservationService.gigiGojangDelete(terr_code);
+	        result.put("status", "success");
+	        result.put("message", "삭제 완료");
+	    } catch (Exception e) {
+	        result.put("status", "error");
+	        result.put("message", e.getMessage());
+	    }
+	    return result;
+	}
 	
 
 	//측정기기점검관리 - 화면로드

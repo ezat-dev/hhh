@@ -419,6 +419,12 @@ $('.insert-button').on('click', function() {
     // 기본값 설정
     $('#corp_jan').val('0');
     $('#corp_gyul1').prop('checked', true);
+
+    const today = new Date();
+    const todayStr = today.getFullYear() + '-' +
+        String(today.getMonth() + 1).padStart(2, '0') + '-' +
+        String(today.getDate()).padStart(2, '0');
+    $('#corp_strt').val(todayStr);
     
     // 버튼 상태
     $('.btn-delete').hide();

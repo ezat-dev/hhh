@@ -440,6 +440,11 @@ $('.insert-button').on('click', function() {
     $('#userInsertForm')[0].reset();
     $('.btn-delete').hide();
     $('.modal-overlay, .user-modal').addClass('active');
+    const today = new Date();
+    const todayStr = today.getFullYear() + '-' +
+        String(today.getMonth() + 1).padStart(2, '0') + '-' +
+        String(today.getDate()).padStart(2, '0');
+    $('#user_jdate').val(todayStr);
 });
 
 // 모달 닫기

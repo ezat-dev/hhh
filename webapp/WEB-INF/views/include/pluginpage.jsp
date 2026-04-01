@@ -365,7 +365,7 @@ function pageObject(paramKey){
 		
 		"e01":["/tkheat/preservation/sparePart","SparePart관리"],
 		"e02":["/tkheat/preservation/begaInsert","설비비가동등록"],
-		"e03":["/tkheat/preservation/begaAnaly","설비비가동율분석"],
+		"e03":["/tkheat/preservation/begaAnaly","설비가동율분석"],
 		"e04":["/tkheat/preservation/suriHistory","설비수리이력관리"],
 		"e05":["/tkheat/preservation/jeomgeomInsert","설비점검기준등록"],
 		"e06":["/tkheat/preservation/dayJeomgeom","설비별점검현황(일별)"],

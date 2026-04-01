@@ -938,6 +938,29 @@ textarea { resize: vertical; min-height: 32px; font-family: inherit; line-height
         </div>
     </div>
 </div>
+
+
+<!-- 이미지 확대 오버레이 -->
+<div id="imgZoomOverlay" style="
+    display:none; position:fixed;
+    top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.8);
+    z-index:9999;
+    align-items:center; justify-content:center;
+    cursor:pointer;
+    pointer-events:none;
+">
+    <img id="imgZoomTarget" src="" style="
+        max-width:80vw; max-height:80vh;
+        object-fit:contain;
+        border-radius:6px;
+        box-shadow:0 0 30px rgba(255,255,255,0.2);
+        pointer-events:none;
+    ">
+</div>
+
+
+
 <script>
 //========== 전역변수 ==========
 let now_page_code = "h01";  // ✅ 페이지 코드 (필수)
@@ -985,6 +1008,12 @@ $('.insert-button').on('click', function() {
     
     // 숫자 필드 기본값 설정
     $('#prod_dang, #prod_danj, #prod_boxsu, #prod_polish, #tech_pattern').val('0');
+
+    const today = new Date();
+    const todayStr = today.getFullYear() + '-' +
+        String(today.getMonth() + 1).padStart(2, '0') + '-' +
+        String(today.getDate()).padStart(2, '0');
+    $('#prod_date').val(todayStr);
     
     // 모달 중앙 정렬
     $('.product-modal').css({
@@ -1230,6 +1259,12 @@ function openCutumModal() {
         height:"450px",
         layout:"fitColumns",
         selectable:true,
+        headerSort:false,
+        headerFilterPlaceholder: "",
+        pagination:"local",
+        paginationSize:20,
+        paginationSizeSelector:[20,50,100,500,1000],
+        paginationCounter:"rows",
         ajaxURL:"/tkheat/management/cutumInsert/cutumInsertList",
         ajaxConfig:"POST",
         ajaxParams:{
@@ -1516,6 +1551,26 @@ function deleteProduct() {
         }
     });
 }
+
+//========== 이미지 확대 ==========
+$(document).on('mouseenter', '.img-preview img, .product-image-preview img', function() {
+    const src = $(this).attr('src');
+    if (!src || src.includes('no_image.png')) return;
+    $('#imgZoomTarget').attr('src', src);
+    $('#imgZoomOverlay').css('display', 'flex');
+});
+
+$(document).on('mouseleave', '.img-preview img, .product-image-preview img', function() {
+    $('#imgZoomOverlay').css('display', 'none');
+    $('#imgZoomTarget').attr('src', '');
+});
+
+// 오버레이 클릭 시 닫기
+$('#imgZoomOverlay').on('click', function() {
+    $(this).css('display', 'none');
+    $('#imgZoomTarget').attr('src', '');
+});
+
 
 // ========== 엑셀 다운로드 ==========
 $(".excel-button").click(function () {

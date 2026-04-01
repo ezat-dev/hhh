@@ -11,218 +11,104 @@
     <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
-    
 /* ========== 기본 스타일 ========== */
-.main {
-    width: 98%;
-}
-
-.container {
-    display: flex;
-    justify-content: space-between;
-}
-
-.tabulator {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden !important;
-}
-
-.tabulator .tabulator-cell {
-    white-space: normal !important;
-    word-break: break-word;
-    text-align: center;
-}
-
-.row_select {
-    background-color: #9ABCEA !important;
-}
-
+.main { width: 98%; }
+.container { display: flex; justify-content: space-between; }
+.tabulator { width: 100%; max-width: 100%; overflow-x: hidden !important; }
+.tabulator .tabulator-cell { white-space: normal !important; word-break: break-word; text-align: center; }
+.row_select { background-color: #9ABCEA !important; }
 .box1 {
-    display: flex;
-    justify-content: right;
-    align-items: center;
-    width: 1500px;
-    margin-left: -1030px;
-    gap: 10px;
+    display: flex; justify-content: right; align-items: center;
+    width: 1500px; margin-left: -1030px; gap: 10px;
 }
-
-.box1 select {
-    width: 5%;
-}
-
+.box1 select { width: 5%; }
 .box1 input[type="date"] {
-    width: 150px;
-    padding: 5px 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #f9f9f9;
-    color: #333;
-    outline: none;
-    transition: border 0.3s ease;
+    width: 150px; padding: 5px 10px; font-size: 16px;
+    border: 1px solid #ccc; border-radius: 6px;
+    background-color: #f9f9f9; color: #333;
+    outline: none; transition: border 0.3s ease;
 }
-
-.box1 input[type="date"]:focus {
-    border: 1px solid #007bff;
-    background-color: #fff;
-}
-
-.box1 label,
-.box1 input {
-    margin-right: 10px;
-}
+.box1 input[type="date"]:focus { border: 1px solid #007bff; background-color: #fff; }
+.box1 label, .box1 input { margin-right: 10px; }
 
 /* ========== 모달 오버레이 ========== */
 .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+    display: none; position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 999;
 }
-
-.modal-overlay.active {
-    display: block;
-}
+.modal-overlay.active { display: block; }
 
 /* ========== 수리이력 모달 컨테이너 ========== */
 .suri-modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
+    display: none; position: fixed;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
 }
-
-.suri-modal.active {
-    display: block;
-}
+.suri-modal.active { display: block; }
 
 .suri-insert-box {
-    width: 900px;
-    max-width: 95vw;
-    max-height: 90vh;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    width: 900px; max-width: 95vw;
+    max-height: 95vh;              /* ★ 90 → 95vh */
+    background: white; border-radius: 8px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+    overflow: hidden; display: flex; flex-direction: column;
 }
 
 /* ========== 모달 헤더 ========== */
 .suri-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 25px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 16px;             /* ★ 15px 25px → 8px 16px */
     background: linear-gradient(135deg, #2c3e50, #34495e);
-    color: white;
-    font-size: 20px;
-    font-weight: 700;
-    cursor: move;
+    color: white; font-size: 15px; font-weight: 700; cursor: move;
+    flex-shrink: 0;
 }
-
 .header-close-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 28px;
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    transition: all 0.3s;
+    background: none; border: none; color: white;
+    font-size: 22px; cursor: pointer;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; transition: all 0.3s;
 }
-
-.header-close-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(90deg);
-}
+.header-close-btn:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg); }
 
 /* ========== 모달 본문 ========== */
 .suri-modal-body {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    flex: 1; overflow-y: auto; overflow-x: hidden;
     background: #f5f7fa;
-    padding: 20px;
-    max-height: 700px;
+    padding: 8px 10px;             /* ★ 20px → 8px 10px */
+    max-height: calc(95vh - 90px);
 }
-
-.suri-modal-body::-webkit-scrollbar {
-    width: 8px;
-}
-
-.suri-modal-body::-webkit-scrollbar-track {
-    background: #e0e0e0;
-}
-
-.suri-modal-body::-webkit-scrollbar-thumb {
-    background: #999;
-    border-radius: 4px;
-}
+.suri-modal-body::-webkit-scrollbar { width: 5px; }
+.suri-modal-body::-webkit-scrollbar-track { background: #e0e0e0; }
+.suri-modal-body::-webkit-scrollbar-thumb { background: #999; border-radius: 4px; }
 
 /* ========== 섹션 ========== */
 .suri-section {
-    background: white;
-    border-radius: 8px;
-    padding: 15px 20px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background: white; border-radius: 6px;
+    padding: 6px 10px;             /* ★ 15px 20px → 6px 10px */
+    margin-bottom: 5px;            /* ★ 15px → 5px */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
-
-.suri-section:last-child {
-    margin-bottom: 0;
-}
-
+.suri-section:last-child { margin-bottom: 0; }
 .suri-section-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #2c3e50;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #e9ecef;
+    font-size: 11px; font-weight: 700; color: #2c3e50;
+    margin-bottom: 5px;            /* ★ 12px → 5px */
+    padding-bottom: 4px;           /* ★ 8px → 4px */
+    border-bottom: 1px solid #e9ecef;
 }
 
 /* ========== 기본 행/열 레이아웃 ========== */
 .suri-row {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 10px;
+    display: grid; grid-template-columns: repeat(2,1fr);
+    gap: 6px; margin-bottom: 5px;  /* ★ 12px→6px, 10px→5px */
 }
-
-.suri-row:last-child {
-    margin-bottom: 0;
-}
-
-.suri-col {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.suri-col-full {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.suri-col label,
-.suri-col-full label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #495057;
+.suri-row:last-child { margin-bottom: 0; }
+.suri-col { display: flex; flex-direction: column; gap: 2px; }
+.suri-col-full { grid-column: 1/-1; display: flex; flex-direction: column; gap: 2px; }
+.suri-col label, .suri-col-full label {
+    font-size: 10px; font-weight: 600; color: #495057;
 }
 
 /* ========== 입력 필드 ========== */
@@ -230,158 +116,71 @@
 .suri-col input[type="date"],
 .suri-col select,
 .suri-col-full textarea {
-    padding: 8px 12px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    font-size: 13px;
-    box-sizing: border-box;
-    transition: all 0.3s;
-}
-
-.suri-col input[type="text"],
-.suri-col input[type="date"],
-.suri-col select,
-.suri-col-full textarea {
     width: 100%;
+    padding: 3px 7px;              /* ★ 8px 12px → 3px 7px */
+    border: 1px solid #ced4da; border-radius: 4px;
+    font-size: 11px;               /* ★ 13px → 11px */
+    box-sizing: border-box; transition: all 0.2s;
+    height: 26px;                  /* ★ 고정 높이 */
 }
-
-.suri-col input:focus,
-.suri-col select:focus,
+.suri-col input:focus, .suri-col select:focus,
 .suri-col-full textarea:focus {
-    outline: none;
-    border-color: #4dabf7;
-    box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.1);
+    outline: none; border-color: #4dabf7;
+    box-shadow: 0 0 0 2px rgba(77,171,247,0.1);
 }
-
 .suri-col select {
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    padding-right: 32px;
+    cursor: pointer; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center; padding-right: 26px;
 }
-
 textarea {
-    resize: vertical;
-    min-height: 80px;
-    font-family: inherit;
+    resize: vertical; height: 44px;  /* ★ min-height 80px → 44px 고정 */
+    min-height: unset; font-family: inherit;
 }
 
 /* ========== 이미지 업로드 영역 ========== */
 .image-upload-area {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-top: 0;
+    display: grid; grid-template-columns: repeat(2,1fr);
+    gap: 8px; margin-top: 0;       /* ★ 15px → 8px */
 }
-
-.image-upload-col {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.image-upload-col label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #495057;
-}
-
+.image-upload-col { display: flex; flex-direction: column; gap: 4px; }
+.image-upload-col label { font-size: 10px; font-weight: 600; color: #495057; }
 .image-upload-col input[type="file"] {
-    padding: 6px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
+    padding: 3px; border: 1px solid #ced4da; border-radius: 3px;
+    font-size: 10px; cursor: pointer;
 }
-
 .img-preview {
-    width: 100%;
-    height: 200px;
-    border: 2px dashed #ced4da;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f8f9fa;
-    overflow: hidden;
+    width: 100%; height: 120px;    /* ★ 200px → 120px */
+    border: 2px dashed #ced4da; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    background: #f8f9fa; overflow: hidden;
 }
-
-.img-preview img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
+.img-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
 /* ========== 모달 푸터 ========== */
 .suri-modal-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    padding: 15px 20px;
-    background: white;
-    border-top: 1px solid #dee2e6;
+    display: flex; justify-content: center; align-items: center;
+    gap: 8px; padding: 7px 16px;   /* ★ 15px 20px → 7px 16px */
+    background: white; border-top: 1px solid #dee2e6;
+    flex-shrink: 0;
 }
-
 .suri-modal-footer button {
-    min-width: 100px;
-    height: 38px;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
+    min-width: 80px; height: 30px; /* ★ 100px 38px → 80px 30px */
+    border: none; border-radius: 4px;
+    font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s;
 }
-
-.save {
-    background: linear-gradient(135deg, #51cf66, #37b24d);
-    color: white;
-}
-
-.save:hover {
-    background: linear-gradient(135deg, #40c057, #2f9e44);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(64, 192, 87, 0.3);
-}
-
-.btn-delete {
-    background: linear-gradient(135deg, #ff6b6b, #fa5252);
-    color: white;
-}
-
-.btn-delete:hover {
-    background: linear-gradient(135deg, #f03e3e, #e03131);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(240, 62, 62, 0.3);
-}
-
-.close {
-    background: linear-gradient(135deg, #868e96, #495057);
-    color: white;
-}
-
-.close:hover {
-    background: linear-gradient(135deg, #6c757d, #343a40);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
-}
+.save    { background: linear-gradient(135deg,#51cf66,#37b24d); color: white; }
+.save:hover { background: linear-gradient(135deg,#40c057,#2f9e44); transform: translateY(-1px); }
+.btn-delete { background: linear-gradient(135deg,#ff6b6b,#fa5252); color: white; }
+.btn-delete:hover { background: linear-gradient(135deg,#f03e3e,#e03131); transform: translateY(-1px); }
+.close   { background: linear-gradient(135deg,#868e96,#495057); color: white; }
+.close:hover { background: linear-gradient(135deg,#6c757d,#343a40); transform: translateY(-1px); }
 
 /* ========== 반응형 ========== */
 @media (max-width: 1000px) {
-    .suri-insert-box {
-        width: 95vw;
-    }
-    
-    .suri-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .image-upload-area {
-        grid-template-columns: 1fr;
-    }
+    .suri-insert-box { width: 95vw; }
+    .suri-row { grid-template-columns: 1fr; }
+    .image-upload-area { grid-template-columns: 1fr; }
 }
     </style>
     
@@ -425,7 +224,7 @@ textarea {
 	    
 	    
 	    
-<form method="post" id="suriHistoryForm" name="suriHistoryForm" enctype="multipart/form-data">
+<form autocomplete="off" method="post" id="suriHistoryForm" name="suriHistoryForm" enctype="multipart/form-data">
     <div class="modal-overlay"></div>
     
     <div class="suri-modal">

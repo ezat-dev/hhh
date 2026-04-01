@@ -374,6 +374,7 @@
                                 <div class="input-with-btn">
                                     <input type="text" id="corp_name" name="corp_name" readonly>
                                     <input type="hidden" id="prod_code" name="prod_code">
+									<input type="hidden" id="prod_drawing_file_name" name="prod_drawing_file_name">
                                     <button type="button" class="btn-search" onclick="openProductListModal();">검색</button>
                                 </div>
                             </div>
@@ -1015,17 +1016,39 @@
         </div>
     </div>
 </div>  
+
+
+<!-- 이미지 확대 오버레이 -->
+<div id="imgZoomOverlay" style="
+    display:none; position:fixed;
+    top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.8);
+    z-index:9999;
+    align-items:center; justify-content:center;
+    cursor:pointer;
+    pointer-events:none;
+">
+    <img id="imgZoomTarget" src="" style="
+        max-width:80vw; max-height:80vh;
+        object-fit:contain;
+        border-radius:6px;
+        box-shadow:0 0 30px rgba(255,255,255,0.2);
+        pointer-events:none;
+    ">
+</div>
+
+
 	    
 <script>
 //========== 전역변수 ==========
-let now_page_code = "h04";  // ✅ 페이지 코드 (필수)
+let now_page_code = "h04";
 var chimTable;
+var productListTable = null;
 var isEditMode = false;
 var selectedRowData = null;
 
 // ========== 페이지 로드 ==========
 $(function(){
-    // ✅ 권한 체크 실행
     if (typeof userInfoList === 'function') {
         userInfoList(now_page_code);
     }
@@ -1036,19 +1059,11 @@ $(function(){
 $('.imgInputClass').change(function(event){
     var selectedFile = event.target.files[0];
     if (!selectedFile) return;
-    
     var reader = new FileReader();
     var img = $(this).parent().find('img')[0];
-    
-    if (!img) {
-        img = $(this).siblings('.img-preview').find('img')[0];
-    }
-    
+    if (!img) img = $(this).siblings('.img-preview').find('img')[0];
     img.title = selectedFile.name;
-
-    reader.onload = function(event) {
-        img.src = event.target.result;
-    };
+    reader.onload = function(event) { img.src = event.target.result; };
     reader.readAsDataURL(selectedFile);
 });
 
@@ -1057,24 +1072,12 @@ $('.insert-button').on('click', function() {
     isEditMode = false;
     selectedRowData = null;
     $('#chimStandardForm')[0].reset();
-    
-    // 이미지 초기화
     $('#prev_previewId1, #prev_previewId3, #prev_previewId7').attr('src', '/tkheat/css/image/no_image.png');
     $('#fileLink').attr('href', '#').text('');
-    
-    // 기본값 설정
+    $('#prod_drawing_file_name').val('');
     $('#wstd_t40').val('1');
-    
-    // 버튼 상태
     $('.btn-delete, #btnSaveAs').hide();
-    
-    // 모달 중앙 정렬
-    $('.chim-modal').css({
-        'left': '50%',
-        'top': '50%',
-        'transform': 'translate(-50%, -50%)'
-    });
-    
+    $('.chim-modal').css({ 'left':'50%', 'top':'50%', 'transform':'translate(-50%, -50%)' });
     $('.modal-overlay, .chim-modal').addClass('active');
 });
 
@@ -1088,186 +1091,136 @@ let isDragging = false;
 let startX, startY, modalLeft, modalTop;
 
 $('.chim-modal .modal-header').on('mousedown', function(e) {
-    if ($(e.target).hasClass('modal-close-btn') || $(e.target).closest('.modal-close-btn').length) {
-        return;
-    }
-    
+    if ($(e.target).hasClass('modal-close-btn') || $(e.target).closest('.modal-close-btn').length) return;
     isDragging = true;
     const modal = $('.chim-modal');
     const offset = modal.offset();
-    
-    startX = e.pageX;
-    startY = e.pageY;
-    modalLeft = offset.left;
-    modalTop = offset.top;
-    
+    startX = e.pageX; startY = e.pageY;
+    modalLeft = offset.left; modalTop = offset.top;
     modal.css('transform', 'none');
     e.preventDefault();
 });
-
 $(document).on('mousemove', function(e) {
     if (isDragging) {
-        const dx = e.pageX - startX;
-        const dy = e.pageY - startY;
-        
         $('.chim-modal').css({
-            left: (modalLeft + dx) + 'px',
-            top: (modalTop + dy) + 'px'
+            left: (modalLeft + (e.pageX - startX)) + 'px',
+            top:  (modalTop  + (e.pageY - startY)) + 'px'
         });
     }
 });
-
-$(document).on('mouseup', function() {
-    isDragging = false;
-});
+$(document).on('mouseup', function() { isDragging = false; });
 
 // ========== 침탄로 리스트 조회 ==========
 function getChimStandardList(){
-    console.log("🔄 getChimStandardList 시작");
-    
-    // 기존 테이블 완전히 제거
-    if (chimTable) {
-        chimTable.destroy();
-        chimTable = null;
-    }
-    
-    // DOM 초기화
+    if (chimTable) { chimTable.destroy(); chimTable = null; }
     $('#tab1').empty();
-    
+
     chimTable = new Tabulator("#tab1", {
-        height:"730px",
-        layout:"fitColumns",
-        selectable:true,
-        tooltips:true,
-        selectableRangeMode:"click",
-        reactiveData:true,
-        headerHozAlign:"center",
-        ajaxConfig:"POST",
-        ajaxLoader:false,
+        height:"730px", layout:"fitColumns", selectable:true,
+        tooltips:true, selectableRangeMode:"click", reactiveData:true,
+        headerHozAlign:"center", ajaxConfig:"POST", ajaxLoader:false,
         ajaxURL:"/tkheat/management/chimStandardInsert/getChimStandardList",
         ajaxParams:{},
         placeholder:"조회된 데이터가 없습니다.",
-        pagination:"local",
-        paginationSize:20,
+        pagination:"local", paginationSize:20,
         paginationSizeSelector:[20,50,100,500,1000],
-        paginationCounter:"rows",
-        headerFilterPlaceholder: "",
+        paginationCounter:"rows", headerFilterPlaceholder:"",
+        columnDefaults: { headerSort: false },
 
         ajaxResponse:function(url, params, response){
             $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-            console.log("📊 서버 응답:", response);
-            
             const data = response.data ? response.data : response;
-            console.log("📊 데이터 개수:", data.length);
-            
             return data;
         },
 
         columns:[
-            {title:"NO", field:"idx", sorter:"int", width:80, hozAlign:"center"},
-            {title:"고객명", field:"corp_name", sorter:"string", width:160, hozAlign:"center", headerFilter:"input", headerSort:false},
-            {title:"품명", field:"prod_name", sorter:"string", width:240, hozAlign:"center", headerFilter:"input", headerSort:false},
-            {title:"도번/품번", field:"prod_no", sorter:"string", width:220, hozAlign:"center", headerFilter:"input", headerSort:false},
-            {title:"재질", field:"prod_jai", sorter:"int", width:240, hozAlign:"center", headerFilter:"input", headerSort:false},
-            {title:"단가", field:"prod_dang", sorter:"int", width:200, hozAlign:"center", headerFilter:"input", headerSort:false},
-            {title:"설비", field:"fac_name", sorter:"string", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
-            {title:"공정", field:"tech_te", sorter:"int", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
-            {title:"", field:"wstd_code", visible:false},
+            {title:"NO",       field:"idx",       sorter:"int",    width:80,  hozAlign:"center"},
+            {title:"고객명",    field:"corp_name", sorter:"string", width:160, hozAlign:"center", headerFilter:"input"},
+            {title:"품명",      field:"prod_name", sorter:"string", width:240, hozAlign:"center", headerFilter:"input"},
+            {title:"도번/품번", field:"prod_no",   sorter:"string", width:220, hozAlign:"center", headerFilter:"input"},
+            {title:"재질",      field:"prod_jai",  sorter:"int",    width:240, hozAlign:"center", headerFilter:"input"},
+            {title:"단가",      field:"prod_dang", sorter:"int",    width:200, hozAlign:"center", headerFilter:"input"},
+            {title:"설비",      field:"fac_name",  sorter:"string", width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"공정",      field:"tech_te",   sorter:"int",    width:150, hozAlign:"center", headerFilter:"input"},
+            {title:"",          field:"wstd_code", visible:false},
         ],
 
         rowFormatter:function(row){
             row.getElement().style.fontWeight = "700";
             row.getElement().style.backgroundColor = "#FFFFFF";
         },
-
         rowClick:function(e, row){
             $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").removeClass('row_select');
             row.getElement().classList.add("row_select");
         },
-
-        // ✅ 더블클릭 이벤트에 권한 체크 추가
         rowDblClick:function(e, row){
-            // 수정 권한 체크
             const permission = userPermissions?.[now_page_code];
-            
             if (!['U', 'D'].includes(permission)) {
                 alert("수정 권한이 없습니다.");
-                console.log("⚠️ 더블클릭 차단 - 현재 권한:", permission);
                 return false;
             }
-            
-            console.log("✅ 더블클릭(수정) 권한 확인 완료");
-            
             var data = row.getData();
             selectedRowData = data;
             isEditMode = true;
             getChimStandardDetail(data.wstd_code);
-            
-            // ✅ 버튼 표시 제어
             if (permission === 'D') {
-                // 삭제 권한: 저장, 다른이름저장, 삭제 모두 표시
                 $("#btnSave, #btnSaveAs, .btn-delete").show();
-                console.log("✅ 모든 버튼 표시 (삭제 권한)");
             } else if (permission === 'U') {
-                // 수정 권한: 저장, 다른이름저장만 표시
                 $("#btnSave, #btnSaveAs").show();
                 $(".btn-delete").hide();
-                console.log("✅ 저장/다른이름저장 버튼만 표시 (수정 권한)");
             }
         },
     });
-    
-    console.log("✅ Tabulator 생성 완료");
 }
 
 // ========== 침탄로 상세 조회 ==========
 function getChimStandardDetail(wstd_code){
     $.ajax({
         url:"/tkheat/management/chimStandardInsert/getChimStandardDetail",
-        type:"post",
-        dataType:"json",
-        data:{
-            "wstd_code":wstd_code
-        },
+        type:"post", dataType:"json",
+        data:{ "wstd_code": wstd_code },
         success:function(result){
-            console.log("📄 상세 데이터:", result);
             const d = result.data;
-            
-            // 폼 초기화
             $('#chimStandardForm')[0].reset();
-            
-            // 기본 데이터 바인딩
+
             for(let key in d){
-                $("[name='"+key+"']").val(d[key]);
+                const val = (d[key] === null || d[key] === undefined) ? '' : d[key];
+                const $el = $("[name='" + key + "']");
+                if ($el.length) $el.val(val);
             }
 
             // 이미지 초기화
             $("#prev_previewId1, #prev_previewId3, #prev_previewId7").attr("src", "/tkheat/css/image/no_image.png");
             $("#fileLink").attr("href", "#").text("");
-            
-            // 단취사진
+
+            // 단취사진 (침탄로 직접 업로드)
             if (d.wstd_chim_file_name1) {
-                const path = "/tkPrint/사진/침탄로작업표준/" + d.wstd_chim_file_name1;
-                $("#prev_previewId1").attr("src", path);
+                $("#prev_previewId1").attr("src", "/tkPrint/사진/침탄로작업표준/" + d.wstd_chim_file_name1);
             }
-            
-            // 사진-3
+            // 사진-3 (침탄로 직접 업로드)
             if (d.wstd_chim_file_name2) {
-                const path = "/tkPrint/사진/침탄로작업표준/" + d.wstd_chim_file_name2;
-                $("#prev_previewId3, #prev_previewId7").attr("src", path);
+                $("#prev_previewId3").attr("src", "/tkPrint/사진/침탄로작업표준/" + d.wstd_chim_file_name2);
             }
 
-            // 도면파일
-            if (d.drawing_file_name) {
+            // ★ 제품 이미지 연동 (제품등록에서 가져옴)
+            if (d.prod_product_file_name && d.prod_product_file_name !== '') {
+                $("#prev_previewId7").attr("src", "/tkPrint/사진/제품등록/" + d.prod_product_file_name);
+            }
+
+            // ★ 도면 우선순위 처리
+            if (d.drawing_file_name && d.drawing_file_name !== '') {
                 const path = "/tkPrint/사진/침탄로작업표준/" + d.drawing_file_name;
                 $("#fileLink").attr("href", path).text(d.drawing_file_name);
+            } else if (d.prod_drawing_file_name && d.prod_drawing_file_name !== '') {
+                const path = "/tkPrint/사진/제품등록/" + d.prod_drawing_file_name;
+                $("#fileLink").attr("href", path).text(d.prod_drawing_file_name);
             }
 
-            // 모달 열기
             $('.modal-overlay, .chim-modal').addClass('active');
         },
         error: function(xhr, status, error) {
             console.error("❌ 상세 조회 오류:", error);
+            alert("데이터를 불러오는 중 오류가 발생했습니다.");
         }
     });
 }
@@ -1276,61 +1229,73 @@ function getChimStandardDetail(wstd_code){
 function openProductListModal() {
     document.getElementById('productListModal').style.display = 'flex';
 
-    let productListTable = new Tabulator("#productListTabulator", {
-        height:"450px",
-        layout:"fitColumns",
-        selectable:true,
+    if (productListTable) { productListTable.destroy(); productListTable = null; }
+    $('#productListTabulator').empty();
+
+    productListTable = new Tabulator("#productListTabulator", {
+        height:"450px", layout:"fitColumns", selectable:true,
+        columnDefaults: { headerSort: false },
+        headerFilterPlaceholder:"",
         ajaxURL:"/tkheat/management/productInsert/productList",
         ajaxConfig:"POST",
-        ajaxParams:{
-            "corp_name": "",
-            "prod_code": "",
-        },
-        ajaxResponse:function(url, params, response){
-            console.log("🔍 제품 검색 결과:", response);
-            return response.data;
-        },    
+        ajaxParams:{ "corp_name":"", "prod_code":"" },
+        ajaxResponse:function(url, params, response){ return response.data; },
         columns:[
-            {title:"NO", field:"idx", width:80, hozAlign:"center"},
-            {title:"거래처", field:"corp_name", width:120, hozAlign:"center"},
-            {title:"품명", field:"prod_name", width:120, hozAlign:"center",visible:false},
-            {title:"품번", field:"prod_no", width:150, hozAlign:"center"},
-            {title:"규격", field:"prod_gyu", width:100, hozAlign:"center"},
-            {title:"재질", field:"prod_jai", width:200, hozAlign:"center"},
-            {title:"공정", field:"tech_te", width:200, hozAlign:"center"},
-            {title:"표면경도", field:"prod_pg", width:200, hozAlign:"center"},
-            {title:"심부경도", field:"prod_sg", width:200, hozAlign:"center"},
-            {title:"경화깊이", field:"prod_gd2", width:200, hozAlign:"center"},
-            {title:"경화깊이1", field:"prod_gd1", width:200, hozAlign:"center"},
-            {title:"경화깊이2", field:"prod_gd3", width:200, hozAlign:"center"},
+            {title:"NO",      field:"idx",      width:40,  hozAlign:"center"},
+            {title:"거래처",   field:"corp_name",width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"품명",     field:"prod_name",width:140, hozAlign:"center", headerFilter:"input"},
+            {title:"품번",     field:"prod_no",  width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"규격",     field:"prod_gyu", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"재질",     field:"prod_jai", width:120, hozAlign:"center", headerFilter:"input"},
+            {title:"공정",     field:"tech_te",  width:60,  hozAlign:"center", headerFilter:"input"},
+            {title:"표면경도", field:"prod_pg",  width:60,  hozAlign:"center"},
+            {title:"심부경도", field:"prod_sg",  width:60,  hozAlign:"center"},
+            {title:"경화깊이", field:"prod_gd2", width:60,  hozAlign:"center"},
+            {title:"경화깊이1",field:"prod_gd1", width:60,  hozAlign:"center"},
+            {title:"경화깊이2",field:"prod_gd3", width:60,  hozAlign:"center"},
         ],
         rowDblClick:function(e, row){
             let data = row.getData();
-            
-            // 제품 정보 바인딩
-            $('#corp_name').val(data.corp_name);
-            $('#prod_code').val(data.prod_code);
-            $('#prod_danj').val(data.prod_danj);
-            $('#prod_no').val(data.prod_no);
-            $('#prod_name').val(data.prod_name);
-            $('#prod_jai').val(data.prod_jai);
-            $('#prod_dang').val(data.prod_dang);
-            $('#prod_pwsno').val(data.prod_pwsno);
-            $('#tech_te').val(data.tech_te);
-            $('#prod_do').val(data.prod_do);
-            $('#prod_refno').val(data.prod_refno);
-            $('#prod_gyu').val(data.prod_gyu);
-            $('#prod_kijong').val(data.prod_kijong);
-            $('#prod_pg').val(data.prod_pg);
-            $('#prod_sg').val(data.prod_sg);
-            $('#prod_e1').val(data.prod_e1);
-            $('#prod_e3').val(data.prod_e3);
-            $('#prod_khecd').val(data.prod_khecd);
-            $('#prod_khtcd').val(data.prod_khtcd);
-            $('#prod_gd1').val(data.prod_gd1);
-            $('#prod_gd2').val(data.prod_gd2);
-            $('#prod_gd5').val(data.prod_gd5);
-            
+
+            $('#corp_name').val(data.corp_name     || '');
+            $('#prod_code').val(data.prod_code     || '');
+            $('#prod_danj').val(data.prod_danj     || '');
+            $('#prod_no').val(data.prod_no         || '');
+            $('#prod_name').val(data.prod_name     || '');
+            $('#prod_jai').val(data.prod_jai       || '');
+            $('#prod_dang').val(data.prod_dang     || '');
+            $('#prodC_cno').val(data.prod_cno      || '');
+            $('#prod_pwsno').val(data.prod_pwsno   || '');
+            $('#tech_te').val(data.tech_te         || '');
+            $('#prod_do').val(data.prod_do         || '');
+            $('#prod_refno').val(data.prod_refno   || '');
+            $('#prod_gyu').val(data.prod_gyu       || '');
+            $('#prod_kijong').val(data.prod_kijong || '');
+            $('#prod_pg').val(data.prod_pg         || '');
+            $('#prod_sg').val(data.prod_sg         || '');
+            $('#prod_e1').val(data.prod_e1         || '');
+            $('#prod_e3').val(data.prod_e3         || '');
+            $('#prod_gd1').val(data.prod_gd1       || '');
+            $('#prod_gd2').val(data.prod_gd2       || '');
+            $('#prod_gd5').val(data.prod_gd5       || '');
+
+            // ★ 제품 이미지 연동
+            if (data.product_file_name && data.product_file_name !== 'no_image.png') {
+                $('#prev_previewId7').attr('src', '/tkPrint/사진/제품등록/' + data.product_file_name);
+            } else {
+                $('#prev_previewId7').attr('src', '/tkheat/css/image/no_image.png');
+            }
+
+            // ★ 도면 연동
+            if (data.drawing_file_name && data.drawing_file_name !== '') {
+                $('#prod_drawing_file_name').val(data.drawing_file_name);
+                const path = '/tkPrint/사진/제품등록/' + data.drawing_file_name;
+                $('#fileLink').attr('href', path).text(data.drawing_file_name);
+            } else {
+                $('#prod_drawing_file_name').val('');
+                $('#fileLink').attr('href', '#').text('');
+            }
+
             document.getElementById('productListModal').style.display = 'none';
         }
     });
@@ -1342,32 +1307,25 @@ function closeProductListModal() {
 
 // ========== 저장 ==========
 function save() {
-    console.log("💾 save() 함수 시작");
-    
-    // ✅ 권한 체크
+    if ($('.btn-save').prop('disabled')) return;
+    $('.btn-save').prop('disabled', true);
+
     const permission = userPermissions?.[now_page_code];
-    
-    // 신규 등록인 경우
     if (!isEditMode) {
         if (!['I', 'U', 'D'].includes(permission)) {
             alert("등록 권한이 없습니다.");
-            console.log("⚠️ 등록 권한 없음 - 현재 권한:", permission);
+            $('.btn-save').prop('disabled', false);
             return false;
         }
-        console.log("✅ 등록 권한 확인 완료");
-    } 
-    // 수정인 경우
-    else {
+    } else {
         if (!['U', 'D'].includes(permission)) {
             alert("수정 권한이 없습니다.");
-            console.log("⚠️ 수정 권한 없음 - 현재 권한:", permission);
+            $('.btn-save').prop('disabled', false);
             return false;
         }
-        console.log("✅ 수정 권한 확인 완료");
     }
-    
-    var formData = new FormData($("#chimStandardForm")[0]);
 
+    var formData = new FormData($("#chimStandardForm")[0]);
     let confirmMsg = "";
 
     if (isEditMode && selectedRowData && selectedRowData.wstd_code) {
@@ -1376,49 +1334,31 @@ function save() {
         confirmMsg = "수정하시겠습니까?";
     } else {
         formData.append("mode", "insert");
-        confirmMsg = "저장하시겠습니까?";
         formData.delete("wstd_code");
+        confirmMsg = "저장하시겠습니까?";
     }
 
     if (!confirm(confirmMsg)) {
+        $('.btn-save').prop('disabled', false);
         return;
     }
 
     $.ajax({
         url: "/tkheat/management/chimStandardInsert/chimStandardInsertSave",
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        dataType: "json",
+        type: "POST", data: formData,
+        contentType: false, processData: false, dataType: "json",
         success: function(result) {
-            console.log("💾 저장 완료:", result);
+            $('.btn-save').prop('disabled', false);
             alert("저장 되었습니다.");
-            
-            // 모달 닫기
             $('.modal-overlay, .chim-modal').removeClass('active');
-            
-            // 모달 위치 초기화
-            $('.chim-modal').css({
-                'left': '50%',
-                'top': '50%',
-                'transform': 'translate(-50%, -50%)'
-            });
-            
-            // 폼 초기화
+            $('.chim-modal').css({ 'left':'50%', 'top':'50%', 'transform':'translate(-50%, -50%)' });
             $('#chimStandardForm')[0].reset();
-            isEditMode = false;
-            selectedRowData = null;
-            
-            // 테이블 리로드
-            setTimeout(function() {
-                console.log("🔄 테이블 리로드 시작");
-                getChimStandardList();
-            }, 300);
+            isEditMode = false; selectedRowData = null;
+            setTimeout(function() { getChimStandardList(); }, 300);
         },
         error: function(xhr, status, error) {
+            $('.btn-save').prop('disabled', false);
             console.error("❌ 저장 오류:", error);
-            console.error("응답:", xhr.responseText);
             alert("저장 중 오류가 발생했습니다.");
         }
     });
@@ -1426,53 +1366,27 @@ function save() {
 
 // ========== 다른이름으로 저장 ==========
 function saveAs() {
-    console.log("💾 saveAs() 함수 시작");
-    
-    // ✅ 권한 체크 (등록 권한 필요)
     const permission = userPermissions?.[now_page_code];
-    
     if (!['I', 'U', 'D'].includes(permission)) {
         alert("등록 권한이 없습니다.");
-        console.log("⚠️ 다른이름으로 저장 권한 없음 - 현재 권한:", permission);
         return false;
     }
-    console.log("✅ 다른이름으로 저장 권한 확인 완료");
-    
     var formData = new FormData($("#chimStandardForm")[0]);
     formData.append("mode", "insert");
     formData.delete("wstd_code");
-    
-    if (!confirm("다른 이름으로 저장하시겠습니까?")) {
-        return;
-    }
+    if (!confirm("다른 이름으로 저장하시겠습니까?")) return;
 
     $.ajax({
         url: "/tkheat/management/chimStandardInsert/chimStandardInsertSave",
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        dataType: "json",
+        type: "POST", data: formData,
+        contentType: false, processData: false, dataType: "json",
         success: function(result) {
-            console.log("💾 다른이름 저장 완료:", result);
             alert("다른 이름으로 저장되었습니다.");
-            
             $('.modal-overlay, .chim-modal').removeClass('active');
-            
-            $('.chim-modal').css({
-                'left': '50%',
-                'top': '50%',
-                'transform': 'translate(-50%, -50%)'
-            });
-            
-            // 폼 초기화
+            $('.chim-modal').css({ 'left':'50%', 'top':'50%', 'transform':'translate(-50%, -50%)' });
             $('#chimStandardForm')[0].reset();
-            isEditMode = false;
-            selectedRowData = null;
-            
-            setTimeout(function() {
-                getChimStandardList();
-            }, 300);
+            isEditMode = false; selectedRowData = null;
+            setTimeout(function() { getChimStandardList(); }, 300);
         },
         error: function(xhr, status, error) {
             console.error("❌ 다른이름 저장 오류:", error);
@@ -1483,54 +1397,22 @@ function saveAs() {
 
 // ========== 삭제 ==========
 function deleteChim() {
-    console.log("🗑️ deleteChim() 함수 시작");
-    
-    // ✅ 권한 체크 (삭제 권한 필요)
     const permission = userPermissions?.[now_page_code];
-    
-    if (permission !== 'D') {
-        alert("삭제 권한이 없습니다.");
-        console.log("⚠️ 삭제 권한 없음 - 현재 권한:", permission);
-        return false;
-    }
-    console.log("✅ 삭제 권한 확인 완료");
-    
-    if (!selectedRowData || !selectedRowData.wstd_code) {
-        alert("삭제할 대상을 선택하세요.");
-        return;
-    }
-
-    if (!confirm("삭제하시겠습니까?")) {
-        return;
-    }
+    if (permission !== 'D') { alert("삭제 권한이 없습니다."); return false; }
+    if (!selectedRowData || !selectedRowData.wstd_code) { alert("삭제할 대상을 선택하세요."); return; }
+    if (!confirm("삭제하시겠습니까?")) return;
 
     $.ajax({
         url: "/tkheat/management/chimStandardInsert/chimStandardDelete",
-        type: "POST",
-        data: {
-            wstd_code: selectedRowData.wstd_code
-        },
-        dataType: "json",
+        type: "POST", data: { wstd_code: selectedRowData.wstd_code }, dataType: "json",
         success: function(result) {
             if (result.status === "success") {
                 alert("삭제되었습니다.");
                 $('.modal-overlay, .chim-modal').removeClass('active');
-                
-                // 모달 위치 초기화
-                $('.chim-modal').css({
-                    'left': '50%',
-                    'top': '50%',
-                    'transform': 'translate(-50%, -50%)'
-                });
-                
-                // 폼 초기화
+                $('.chim-modal').css({ 'left':'50%', 'top':'50%', 'transform':'translate(-50%, -50%)' });
                 $('#chimStandardForm')[0].reset();
-                isEditMode = false;
-                selectedRowData = null;
-                
-                setTimeout(function() {
-                    getChimStandardList();
-                }, 300);
+                isEditMode = false; selectedRowData = null;
+                setTimeout(function() { getChimStandardList(); }, 300);
             } else {
                 alert("삭제 중 오류가 발생했습니다: " + result.message);
             }
@@ -1543,100 +1425,91 @@ function deleteChim() {
 }
 
 // ========== 엑셀 다운로드 ==========
-$(".excel-button").click(function () {
+$(".excel-button").off('click').on('click', function() {
     const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    const filename = "침탄로작업표준_" + today + ".xlsx";
-    chimTable.download("xlsx", filename, { sheetName: "침탄로작업표준" });
+    chimTable.download("xlsx", "침탄로작업표준_" + today + ".xlsx", { sheetName: "침탄로작업표준" });
 });
 
 // ========== 단취방법 계산 ==========
 window.fn_Calc = function() {
-    var wstd_t32 = document.getElementById("wstd_t32");
-    var wstd_t33 = document.getElementById("wstd_t33");
-    var wstd_t41 = document.getElementById("wstd_t41");
-    var wstd_t42 = document.getElementById("wstd_t42");
-    var wstd_t44 = document.getElementById("wstd_t44");
-    var wstd_t40 = document.getElementById("wstd_t40");
-    var wstd_t43 = document.getElementById("wstd_t43");
-    var wstd_t51 = document.getElementById("wstd_t51");
-    var wstd_t52 = document.getElementById("wstd_t52");
-    var wstd_t87 = document.getElementById("wstd_t87");
+    var t32  = document.getElementById("wstd_t32");
+    var t33  = document.getElementById("wstd_t33");
+    var t41  = document.getElementById("wstd_t41");
+    var t42  = document.getElementById("wstd_t42");
+    var t44  = document.getElementById("wstd_t44");
+    var t40  = document.getElementById("wstd_t40");
+    var t43  = document.getElementById("wstd_t43");
+    var t51  = document.getElementById("wstd_t51");
+    var t52  = document.getElementById("wstd_t52");
+    var t87  = document.getElementById("wstd_t87");
+    var t40v = t40 ? Number(fn_rtnnumber(t40.value)) : 1;
 
-    var wstd_t40_val = wstd_t40 ? Number(fn_rtnnumber(wstd_t40.value)) : 1;
-
-    if (
-        wstd_t32.value !== "" && wstd_t33.value !== "" &&
-        wstd_t41.value !== "" && wstd_t42.value !== "" &&
-        wstd_t44.value !== "" && wstd_t87.value !== ""
-    ) {
-        // 단취수량 계산
-        var calc_t43 = 
-            Number(fn_rtnnumber(wstd_t32.value)) *
-            Number(fn_rtnnumber(wstd_t33.value)) *
-            Number(fn_rtnnumber(wstd_t41.value)) *
-            Number(fn_rtnnumber(wstd_t42.value)) +
-            Number(fn_rtnnumber(wstd_t87.value));
-
-        wstd_t43.value = fn_addComma(calc_t43);
-
-        // 제품무게/ch 계산
-        var calc_t51 = calc_t43 * wstd_t40_val;
-        wstd_t51.value = fn_addComma(calc_t51.toFixed(2));
-
-        // 총단중/ch 계산
-        var calc_t52 = Number(fn_rtnnumber(wstd_t44.value)) + calc_t51;
-        wstd_t52.value = fn_addComma(calc_t52.toFixed(1));
+    if (t32.value && t33.value && t41.value && t42.value && t44.value && t87.value) {
+        var c43 = Number(fn_rtnnumber(t32.value)) * Number(fn_rtnnumber(t33.value)) *
+                  Number(fn_rtnnumber(t41.value)) * Number(fn_rtnnumber(t42.value)) +
+                  Number(fn_rtnnumber(t87.value));
+        t43.value = fn_addComma(c43);
+        var c51 = c43 * t40v;
+        t51.value = fn_addComma(c51.toFixed(2));
+        t52.value = fn_addComma((Number(fn_rtnnumber(t44.value)) + c51).toFixed(1));
     } else {
-        wstd_t43.value = "";
-        wstd_t51.value = "";
-        wstd_t52.value = "";
+        t43.value = ""; t51.value = ""; t52.value = "";
     }
 };
-
 window.fn_addComma = function(n) {
     if (isNaN(n)) return 0;
-    var reg = /(^[+-]?\d+)(\d{3})/;
     n = n.toString();
-    while (reg.test(n)) {
-        n = n.replace(reg, '$1' + ',' + '$2');
-    }
+    var reg = /(^[+-]?\d+)(\d{3})/;
+    while (reg.test(n)) n = n.replace(reg, '$1,$2');
     return n;
 };
-
 window.fn_rtnnumber = function(n) {
     if (typeof n !== "string") return n;
     return n.replace(/,/g, "");
 };
 
-// ========== 이미지 미리보기 함수 ==========
+// ========== 이미지 미리보기 ==========
 function previewImage(input, previewId) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
-        reader.onload = function(e) {
-            $('#prev_' + previewId).attr('src', e.target.result);
-        };
+        reader.onload = function(e) { $('#prev_' + previewId).attr('src', e.target.result); };
         reader.readAsDataURL(input.files[0]);
     }
 }
 
+//========== 이미지 확대 ==========
+$(document).on('mouseenter', '.img-preview img, .product-image-preview img', function() {
+    const src = $(this).attr('src');
+    if (!src || src.includes('no_image.png')) return;
+    $('#imgZoomTarget').attr('src', src);
+    $('#imgZoomOverlay').css('display', 'flex');
+});
+
+$(document).on('mouseleave', '.img-preview img, .product-image-preview img', function() {
+    $('#imgZoomOverlay').css('display', 'none');
+    $('#imgZoomTarget').attr('src', '');
+});
+
+// 오버레이 클릭 시 닫기
+$('#imgZoomOverlay').on('click', function() {
+    $(this).css('display', 'none');
+    $('#imgZoomTarget').attr('src', '');
+});
+
 // ========== PDF 미리보기 ==========
 function openDrawingModal(event) {
     event.preventDefault();
-    
     const fileLink = $("#fileLink");
     const filePath = fileLink.attr("href");
     const fileName = fileLink.text();
-
     if (!filePath || filePath === "#" || fileName === "") {
         alert("저장된 도면 파일이 없습니다.");
         return;
     }
-
     $("#drawingFileName").text(fileName);
     $("#pdfViewer").attr("src", filePath);
     $('#drawingFileModal').css('display', 'flex');
 }
-
 function closeDrawingModal() {
     $('#drawingFileModal').css('display', 'none');
     $("#pdfViewer").attr("src", "");

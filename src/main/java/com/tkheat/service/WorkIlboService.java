@@ -55,4 +55,6 @@ public interface WorkIlboService {
 	WorkJisiTk workIlboCheckSeetPrintStd(WorkJisiTk w);
 
 	List<WorkJisiTk> workIlboCheckSeetPrintOrdcodeList(WorkJisiTk w);
+
+	List<WorkJisiTk> workIlboProcessOrderPrintOrdcodeList(WorkJisiTk w);
 }

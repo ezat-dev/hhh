@@ -701,10 +701,11 @@ input[type="date"] {
 	}
 	
 	
+	var isUpdating = false;
 	function getIpgoData(){
 		
 		ipgoListTable = new Tabulator("#tab1", {
-		    height:"730px",
+		    height:"750px",
 		    layout:"fitColumns",
 		    selectable:true,
 		    tooltips:true,
@@ -874,6 +875,8 @@ input[type="date"] {
 				
 			},
 			cellEdited: function(cell) {
+				if(isUpdating) return;
+				
 			    var cell_field = cell.getField(); 
 			    var cell_value = cell.getValue(); 
 			    var rowData = cell.getRow().getData(); 
@@ -889,9 +892,34 @@ input[type="date"] {
 			        	"cell_code":cell_code
 			        },
 			        success: function(result) {
-			        	getIpgoList();
+		        		
+			        	var latestData = cell.getRow().getData(); // ★ success 시점 최신값
+		        		var ord_su = latestData.ord_su;
+		        		var ord_danj = latestData.ord_danj;
+		        		
+		        		var ord_amnt = 0;
+		        		if(ord_su != 0){
+		        			ord_amnt = ord_su * ord_danj;
+		        		}
+		        		isUpdating = true;
+		        		cell.getRow().getCell("ord_amnt").setValue(ord_amnt.toFixed(2));
+		        		isUpdating = false;
+
+				        // 편집이 끝난 후 아래 행 같은 열로 이동 + 편집 시작
+				        setTimeout(function() {
+				            var nextRow = cell.getRow().getNextRow();
+				            if (nextRow) {
+				                var field = cell.getField(); // 현재 열 field명
+				                var nextCell = nextRow.getCell(field);
+				                nextCell.edit(true); // true = 즉시 편집모드 진입
+				            }
+				        }, 100); // setTimeout으로 현재 편집 완료 후 실행
+//			        	getIpgoList();
 			        }
 			    });
+			    
+
+			    
 			}
 		});		
 	}
@@ -999,6 +1027,18 @@ input[type="date"] {
 			    row.getElement().style.fontWeight = "700";
 				row.getElement().style.backgroundColor = "#FFFFFF";
 			},
+			cellEdited: function(cell) {       		
+
+		        // 편집이 끝난 후 아래 행 같은 열로 이동 + 편집 시작
+		        setTimeout(function() {
+		            var nextRow = cell.getRow().getNextRow();
+		            if (nextRow) {
+		                var field = cell.getField(); // 현재 열 field명
+		                var nextCell = nextRow.getCell(field);
+		                nextCell.edit(true); // true = 즉시 편집모드 진입
+		            }
+		        }, 100); // setTimeout으로 현재 편집 완료 후 실행
+			}
 
 		});		
 	}

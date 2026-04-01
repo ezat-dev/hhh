@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Standard {
 
 	//WORKSTD 테이블
+	
 	private int wstd_code;
 //	private int prod_code;		//vProduct 중복
 	//침탄로 작업표준등록
@@ -350,6 +351,8 @@ public class Standard {
 	private String wstd_chim_file_name1; //단취사진 이름
 	private String wstd_chim_file_name2; //사진-3
 	private String drawing_file_name;
+	private String prod_drawing_file_name;
+	private String prod_product_file_name;
 	
 	
 	public String getDrawing_file_name() {
@@ -2291,5 +2294,17 @@ public class Standard {
 	}
 	public void setFac_state(String fac_state) {
 		this.fac_state = fac_state;
+	}
+	public String getProd_drawing_file_name() {
+		return prod_drawing_file_name;
+	}
+	public void setProd_drawing_file_name(String prod_drawing_file_name) {
+		this.prod_drawing_file_name = prod_drawing_file_name;
+	}
+	public String getProd_product_file_name() {
+		return prod_product_file_name;
+	}
+	public void setProd_product_file_name(String prod_product_file_name) {
+		this.prod_product_file_name = prod_product_file_name;
 	}
 }

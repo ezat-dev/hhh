@@ -114,5 +114,9 @@ public class WorkIlboServiceImpl implements WorkIlboService{
 	public List<WorkJisiTk> workIlboCheckSeetPrintOrdcodeList(WorkJisiTk w) {
 		return workIlboDao.workIlboCheckSeetPrintOrdcodeList(w);
 	}
+	@Override
+	public List<WorkJisiTk> workIlboProcessOrderPrintOrdcodeList(WorkJisiTk w) {
+		return workIlboDao.workIlboProcessOrderPrintOrdcodeList(w);
+	}
 
 }

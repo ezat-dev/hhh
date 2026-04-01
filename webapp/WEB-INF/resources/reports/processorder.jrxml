@@ -1,0 +1,1730 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.3.final using JasperReports Library version 6.21.3-4a3078d20785ebe464f18037d738d12fc98c13cf  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="공정이동식별표" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="10" bottomMargin="10" uuid="e6aff9d0-05d6-4095-9d50-477b3be04755">
+	<parameter name="workJisiTk" class="com.tkheat.domain.WorkJisiTk"/>
+	<title>
+		<band height="775" splitType="Stretch">
+			<staticText>
+				<reportElement x="-6" y="0" width="568" height="50" uuid="86657140-5d87-4e3f-8064-89bb711f0b5b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="20" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[공정이동식별표]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="35" width="50" height="15" uuid="3582a19b-2b9e-4085-8b2b-12bdef8265ea">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[적재코드]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="460" y="35" width="100" height="15" uuid="f86c9370-ca25-4a8f-928a-393b16c23d69">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getDanch_barcode()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-6" y="50" width="70" height="20" uuid="b3f9438c-4238-4c5a-9104-4a4f5b981ead"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[업 체]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="64" y="50" width="210" height="20" uuid="50dc9fa5-8aa8-4113-b256-94b57a2becee"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getCorp_name()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="274" y="50" width="50" height="20" uuid="93e8480b-94c7-40c3-aed9-b961179e960a"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[품 번]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="324" y="50" width="238" height="20" uuid="acfa81d6-74dd-4dff-99c2-929943fb651b"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_no()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-6" y="70" width="70" height="20" uuid="253b3c66-9c6a-4222-88aa-b1d51b31c557"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[품 명]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="64" y="70" width="210" height="20" uuid="978c7b0b-8a25-4309-9d75-64156fbe3922"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_name()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="274" y="70" width="50" height="20" uuid="10b027ff-0f01-452a-bce6-4fd0e4ac4f22"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[규 격]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="324" y="70" width="238" height="20" uuid="3080f158-6efe-455b-b861-58af1b331f0c"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_gyu()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-6" y="90" width="70" height="20" uuid="017c062a-4ad1-4535-bf59-8846e6803a43"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[열처리종류]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="64" y="90" width="95" height="20" uuid="e846aaeb-3841-40f0-b145-15ae80a8e04f"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getTech_te()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="159" y="90" width="40" height="20" uuid="8968fde4-2600-42d9-a93d-514e96c599c8"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[재질]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="199" y="90" width="125" height="20" uuid="71214deb-041a-46a5-8578-e39fe9eeff6d"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_jai()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="324" y="90" width="60" height="20" uuid="ccd64ef9-27c4-47eb-8986-0f5bb72ef6a2"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[입고/타각]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="384" y="90" width="178" height="20" uuid="5ca514cb-d928-4643-a605-7b9877e34f95"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getOrd_lot() +" / "+$P{workJisiTk}.getOrd_gyu()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-6" y="110" width="70" height="15" uuid="8a995b70-d9d0-4590-b0b5-190d0b3c7ae9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[입고수량]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="64" y="110" width="70" height="15" uuid="2695bd97-f62f-4432-a9de-06345c6da20e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[단중(KG/EA)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="110" width="70" height="15" uuid="50c19a32-fea1-43c9-beda-5e4a984467ad">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[총중량(KG)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="204" y="110" width="70" height="15" uuid="4514febd-032b-4c10-86b9-22c0a75196c2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[단가(원/EA)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="110" width="109" height="15" uuid="c2219cf1-20b1-4ad9-ab6e-41fc4d7240e2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[수주금액(원)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="453" y="110" width="109" height="15" uuid="b9971ea5-c12d-4e01-95a1-64edfc2f0543">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[업종분류]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-6" y="125" width="70" height="18" uuid="0a20641a-e2d7-4c8f-abe3-db870c890692">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getOrd_su()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="64" y="125" width="70" height="18" uuid="08aeb123-f5a5-4ba5-93d9-9913dde88ec3">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_danj()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="134" y="125" width="70" height="18" uuid="f16b7bb5-cbc0-4445-bf45-3754502dde0a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getOrd_amnt()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="204" y="125" width="70" height="18" uuid="f3e00a53-570e-4152-b88d-42b26aa1f61e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getCost_ea()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="344" y="125" width="109" height="18" uuid="85dcd20e-536a-43ae-aaf7-05a86c3b16d6"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getOrd_mon()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="453" y="125" width="109" height="18" uuid="7077ee00-362d-46a8-926b-4af1497cfab4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_upjong()]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="408" y="5" width="149" height="30" uuid="eb34e582-1984-42f7-adcd-5aeefa822e11">
+					<property name="com.jaspersoft.studio.unit.barWidth" value="px"/>
+					<property name="com.jaspersoft.studio.unit.barHeight" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code39" drawText="false" checksumRequired="false" barHeight="70">
+					<jr:codeExpression><![CDATA[$P{workJisiTk}.getDanch_barcode()]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<staticText>
+				<reportElement x="-4" y="35" width="50" height="15" uuid="0fe8b88d-73dc-4b83-aea6-eea89c77769d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[수주NO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="46" y="35" width="100" height="15" uuid="64433267-8c30-485c-8405-65a9a9e1cdf2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getOrd_code()]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="0" y="6" width="149" height="29" uuid="b0626393-caf9-4c33-9803-17c4cd74fcca">
+					<property name="com.jaspersoft.studio.unit.barWidth" value="px"/>
+					<property name="com.jaspersoft.studio.unit.barHeight" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code39" drawText="false" checksumRequired="false" barHeight="70">
+					<jr:codeExpression><![CDATA[$P{workJisiTk}.getOrd_code()]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<textField>
+				<reportElement x="274" y="125" width="70" height="18" uuid="54a0c17e-21f9-4e10-9e3c-b24fb5d548da">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getCost_kg()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="274" y="110" width="70" height="15" uuid="b4b014b6-3d0d-42b0-a2a1-67484ec3195b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[단가(원/KG)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="134" y="158" width="70" height="18" uuid="24b2f9dc-6bf5-4fdb-9178-a23477e32658">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_amnt()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="204" y="158" width="70" height="18" uuid="e327b7a1-7afe-49e8-96ce-94f21c5f02f4">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_cost()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="344" y="143" width="109" height="15" uuid="b76d7af0-2648-4ad2-acfd-b0f309d0d26f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[잔량중량(kg)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="204" y="143" width="70" height="15" uuid="dd919121-de32-4482-81f6-f41348b891d0">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[적재금액]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-6" y="158" width="140" height="18" uuid="567740ed-c7a4-4596-a2f9-20c5b5c35741">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_su_report()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="453" y="158" width="109" height="18" uuid="2215282b-989f-4423-8435-c5b7c9ae6d6e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_cost_diff()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="134" y="143" width="70" height="15" uuid="7b1ec5e3-f910-4438-bb0b-007ed5f3a23c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[적재중량(kg)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-6" y="143" width="140" height="15" uuid="f81ed9a3-fce8-47d9-829f-2ececf543755">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[적재수량]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="274" y="158" width="70" height="18" uuid="2aea69b0-859a-4a35-b04b-e8fa977f5a52">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_su_diff()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="344" y="158" width="109" height="18" uuid="8b8aa9e4-878e-4da2-bc5f-f10b6d4ec26e"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_jung_diff()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="453" y="143" width="109" height="15" uuid="a158ac58-1e2b-4fe7-a872-9e9363fdb404">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[잔량금액(원)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="274" y="143" width="70" height="15" uuid="ea922a46-9903-47da-b286-47c8ccf3b19a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[잔량(EA)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="-6" y="191" width="105" height="28" uuid="528a4377-fdad-48cb-97f5-14c68009d720">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_pg()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-6" y="176" width="105" height="15" uuid="f87e407f-6dc4-4e3c-8830-c4b1843d7f4d"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[표면경도]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="99" y="176" width="105" height="15" uuid="cb75b67d-6873-420e-9863-19b6cddd7e67"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[경화깊이]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="99" y="191" width="105" height="28" uuid="362beaf4-62f0-4087-b9e8-a27875d2a76a">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_gd()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="204" y="191" width="70" height="28" uuid="26be0cb8-8259-49ac-bbc3-98e2ff6c0bb7">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_polish()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="204" y="176" width="70" height="15" uuid="3a7445e0-fcc9-4852-b341-2727e7c68929">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[연마여유(MM)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="274" y="191" width="105" height="28" uuid="f5b7444e-082b-409c-bf89-190dc323ea3a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_sg()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="274" y="176" width="105" height="15" uuid="1d7c148f-b6b0-4871-928c-b2675d2bd47d"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[심부경도]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="379" y="176" width="74" height="15" uuid="f3b08e20-45dd-4a9b-b7ca-855ab0c95ea8"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[화합물층두께]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="379" y="191" width="74" height="28" uuid="c1fef05f-b705-4732-bebe-dcf9afd782a5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_e1()+"~"+$P{workJisiTk}.getProd_e2()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="453" y="176" width="55" height="15" uuid="5f1b0555-3350-4334-8a9a-51bf21da7448">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[수입검사]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="508" y="176" width="54" height="15" uuid="75885c59-4b4c-45d1-9a90-3ee7ad9263a8">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[후처리]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="508" y="191" width="54" height="28" uuid="1386305e-f77a-4a0a-8817-60fb37e34376">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_vnyl()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-6" y="234" width="50" height="18" uuid="56281a00-40de-4c33-8f8b-30749dc78f7a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_plt()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-6" y="219" width="50" height="15" uuid="45874db4-1a3c-4aa6-ad44-68976c07a34d"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[성적서]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="44" y="234" width="50" height="18" uuid="3020dac9-0ce9-424d-8cb0-f4ab6cf05b5e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_pad()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="44" y="219" width="50" height="15" uuid="03181cf1-cad9-46f1-aecf-6d60cec75ae3"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[시편]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="94" y="234" width="50" height="18" uuid="04fdeef0-c6a9-4982-90b8-4b56aae49dc2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_danch()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="94" y="219" width="50" height="15" uuid="bc9c431f-fbd5-4d1b-a0f3-57c399d967a8"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[포장방법]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="508" y="219" width="54" height="15" uuid="fe7f0ef2-5585-4d5f-9894-0a820fa61ce9"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[영업담당]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="508" y="234" width="54" height="18" uuid="15b73139-452c-441f-9444-207b39c5c943">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getOrd_name()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="194" y="219" width="25" height="33" uuid="e34cf9b0-c227-482b-ae77-108780cf89a4"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[비고]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="219" y="219" width="141" height="33" uuid="d8a6a31d-f24a-425d-ab7e-6f46b7ba9685">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getOrd_bigo()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="144" y="219" width="50" height="15" uuid="f934d746-8a2f-486a-8e3f-7003fe6a845d"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[방청유]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="144" y="234" width="50" height="18" uuid="a8216e09-b186-4608-b014-0db8d1a7f5d7">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_bangch()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-6" y="252" width="568" height="15" uuid="5078db68-8096-4c25-ba5c-7f53c2237df4"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[(주)태경열처리]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-6" y="275" width="86" height="20" uuid="22b76bdc-8a4a-4a26-9175-b4894427c79d"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[HEAT LOT NO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="274" y="275" width="70" height="20" uuid="2dab7290-ad29-4973-8634-4ffecab8f895"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[적재수량]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="344" y="275" width="69" height="20" uuid="70dd5bcd-2a42-4e25-b25e-0892fa46ae43"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_su()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="413" y="275" width="149" height="20" uuid="f173d8e3-11c5-4aef-9e2f-b40368714569"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[제품사진]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-6" y="295" width="86" height="20" uuid="ec5893fd-e00e-4a39-ac6b-a7b54dda8e3f"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[공정명]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="295" width="86" height="20" uuid="ec62a938-d34c-4ff8-b4ad-10f93f5b0d82"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[작업유무]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="295" width="178" height="20" uuid="acc0ff73-d91c-4941-bc8d-359f86d42615"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[작업실행여부]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="295" width="69" height="20" uuid="e17bcb17-fc6a-48ce-8012-9aa4eb2a4708"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[담당자]]></text>
+			</staticText>
+			<image hAlign="Center" vAlign="Middle" onErrorType="Blank">
+				<reportElement x="413" y="295" width="149" height="120" uuid="c63ce577-1527-4918-a67e-16ac2486fec4"/>
+				<box>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<imageExpression><![CDATA[$P{workJisiTk}.getProd_img()]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="-6" y="315" width="86" height="20" uuid="95d1b0a2-b2a5-494e-a7fc-41a72b555203"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[적       재]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-6" y="335" width="86" height="20" uuid="80ae02b8-5bf5-44a9-a1a7-ae834d10334e"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[전   세   정]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-6" y="355" width="86" height="20" uuid="6a2fec17-d928-40e0-a4e1-b1f710317f14"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[방지제도포]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-6" y="375" width="86" height="20" uuid="e7f54856-faaf-43ae-94a2-b3d6a74ef7ca"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[침      탄]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-6" y="455" width="86" height="20" uuid="2c9c1a0f-a2a5-4f8b-aa77-31da2c20f132"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[검  사]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-6" y="475" width="86" height="20" uuid="660da63e-398f-4efe-933f-b3663401e2d8"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[출  하]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-6" y="435" width="86" height="20" uuid="892ad5e3-2400-464e-90b3-80eb56c88fbc"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[쇼  트]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-6" y="415" width="86" height="20" uuid="743b80e6-2639-435b-8f3e-e66f16a7b9af"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[템   퍼   링]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-6" y="395" width="86" height="20" uuid="60cee08a-f8d3-4518-9f52-5a492e151886"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[후  세  정]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="335" width="86" height="20" uuid="0a552133-3b1f-4c13-ad43-c9e6ab5fd0fd">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getFac1()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="355" width="86" height="20" uuid="abde1327-b336-423d-8fd8-ad124f030bc2">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getFac2()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="375" width="86" height="20" uuid="36988396-de2e-4812-a716-f661b1a867ea">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getFac3()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="395" width="86" height="20" uuid="7a69406a-db9d-4d7d-9602-e5f774e7fffb">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getFac5()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="435" width="86" height="20" uuid="e10d693e-0fb2-4ed6-8e76-fee1d919dcf7">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getFac7()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="415" width="86" height="20" uuid="0fcc1e52-d27c-4eb5-b961-58d3e6e5a6de">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getFac6()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="344" y="315" width="69" height="20" uuid="78af4a7f-9128-4a53-ad69-4d5cbc2434f8">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getUser_name()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="344" y="335" width="69" height="20" uuid="b31c398e-1f3d-4b3f-aab0-2d9ffa3d1098"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="355" width="69" height="20" uuid="445ca629-08c7-4176-9e7c-7c25b4747a71"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="375" width="69" height="20" uuid="c8bb5f97-d940-4cee-959d-3edcd5c96d65"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="395" width="69" height="20" uuid="da2f9607-0de9-4ca2-8796-f5b9e3d35acf"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="415" width="69" height="20" uuid="e518f047-504b-4e56-ab12-6c7e0c382e5f"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="435" width="69" height="20" uuid="43d765f2-2cfe-4daa-bedf-132338f004c0"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="455" width="69" height="20" uuid="63091f7d-14a6-4c4a-91fc-705f685d1605"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="344" y="475" width="69" height="20" uuid="6b3b2ae5-7ba0-4033-abdb-aabdfce4634e"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="413" y="415" width="149" height="20" uuid="c83a6ea7-9c87-4a1f-870b-5259da00b114"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[비 고]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="413" y="435" width="149" height="60" uuid="8943baac-b5d5-4425-946b-20b4c3e74e88"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-5" y="495" width="568" height="20" uuid="82f7d0fc-8052-4c77-a7fc-638cbcb2ecc9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Dashed"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.25" lineStyle="Dotted" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[(주)태경열처리]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-6" y="533" width="568" height="53" uuid="5cfbfd99-67a8-41eb-9999-3c8d06f8d6b9">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="굴림" size="20" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[        공정이동식별표(고객용)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="447" y="567" width="100" height="15" uuid="6ab4485c-5eb1-4e56-af92-89e32965458c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getOrd_code()]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="411" y="536" width="150" height="30" uuid="e9535564-b73f-4375-8eda-d6e9c0371c3f">
+					<property name="com.jaspersoft.studio.unit.barWidth" value="px"/>
+					<property name="com.jaspersoft.studio.unit.barHeight" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code39" drawText="false" checksumRequired="false" barHeight="70">
+					<jr:codeExpression><![CDATA[$P{workJisiTk}.getOrd_code()]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<staticText>
+				<reportElement x="-6" y="586" width="70" height="20" uuid="c955d2b7-895d-4084-8103-303e3a41b6c0"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[고객명]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="64" y="586" width="155" height="20" uuid="0d4bcb51-e87c-4ad2-8403-01ac00a01bf6"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getCorp_name()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-6" y="606" width="70" height="20" uuid="f7ff8e31-4949-43a6-95c8-d187f3f9c4ee"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[품명]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="64" y="606" width="366" height="20" uuid="10e95749-5272-40e3-bae2-6836a73e11d9"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_name()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="219" y="586" width="70" height="20" uuid="e944230e-cad1-4090-b7f6-5c279359e8b0"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[수주NO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="289" y="586" width="141" height="20" uuid="7a61a96d-bfb5-40ac-8955-c5d3ab6f9309"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getOrd_code()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-6" y="626" width="70" height="20" uuid="b00db751-448d-48b8-953b-3e1e51b385ad"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[품번]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="64" y="626" width="155" height="20" uuid="15fc8f43-cc72-421d-90ff-543f896f5a26"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_no()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="219" y="626" width="70" height="20" uuid="0eaf628e-29f9-4bc0-9335-656bbfff0596"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[규격]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="289" y="626" width="141" height="20" uuid="063295a6-5112-4e81-8bdb-e344c3c61c0a"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_gyu()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="496" y="606" width="66" height="20" uuid="7762057d-25a7-4d85-a205-9c8024bdd3e5"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_vnyl()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="430" y="626" width="132" height="20" uuid="b07d4319-9ffa-468c-8d07-6734aa2607ff">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[기   타]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-6" y="646" width="70" height="20" uuid="8c913322-6dc6-4328-b969-ef39b30d909c"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[생산LOTNO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="219" y="646" width="70" height="20" uuid="5e3db049-4ceb-403f-8e5a-af005204f4d6"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[수량]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="289" y="646" width="141" height="20" uuid="7ba40e3a-5912-4b0d-866e-986545d1f4fa"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_su_report()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-6" y="666" width="70" height="20" uuid="530c8a70-f950-49ea-b114-d48b1724231b"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[경도]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="64" y="686" width="366" height="20" uuid="78fdbfe1-990b-4b6d-a58e-4e6fb4ac7778"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA["표면경도 : "+ $P{workJisiTk}.getProd_pg()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-6" y="686" width="70" height="40" uuid="38f7daa6-d9c7-4f3b-813e-c644d8249ebf">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[SPEC]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="64" y="706" width="366" height="20" uuid="6f4e4221-2a65-4006-852e-ee03300db6f5"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA["경화깊이 : "+$P{workJisiTk}.getProd_gd()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-6" y="726" width="70" height="20" uuid="8b3654d7-a995-41d8-b935-b16a21ecc923"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[출고자]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="430" y="646" width="132" height="100" uuid="ed0cbb26-b075-4de8-bccb-11728b130648">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[ ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-5" y="746" width="568" height="15" uuid="f9fc4730-4af6-4212-8016-6beb83fc71f2"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[(주)태경열처리]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="453" y="191" width="55" height="28" uuid="6762c10d-530a-4345-9eee-6008508c8749">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[합격]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="430" y="586" width="66" height="20" uuid="6942d3ff-4593-407a-99c4-2a3f1a2d34e5"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getOrd_lot()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="496" y="586" width="66" height="20" uuid="b83b1198-f150-4f04-909a-a6c5484d4a38"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getOrd_gyu()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="80" y="315" width="86" height="20" uuid="75fd6a70-72e4-419c-807a-b9a805db5618"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[O]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="455" width="86" height="20" uuid="3fd11136-ecec-43ba-ae8c-c512db5acb84"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[O]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="475" width="86" height="20" uuid="ff12d07b-6ed8-4b24-a883-187bbbc1753d"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[O]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="315" width="178" height="20" uuid="ee544819-5d5c-4642-b436-b5641c2eb264"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="335" width="178" height="20" uuid="df9dec83-434d-46db-ad71-591243896579"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="375" width="178" height="20" uuid="3279fede-5ff1-4914-9620-7473f93d2194"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="355" width="178" height="20" uuid="aab4795d-f2b2-4180-8b55-10d9bdedf7d5"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="415" width="178" height="20" uuid="a801d994-5e37-40da-b9aa-e9927e6c3464"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="395" width="178" height="20" uuid="49d4e42d-abb4-4e09-ac87-08a0f340dec3"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="435" width="178" height="20" uuid="6be0795d-c1f8-43ae-9510-8c5ad028741e"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="455" width="178" height="20" uuid="2dec694d-b5d4-4a8f-ab4d-d6321b54d2db"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="166" y="475" width="178" height="20" uuid="76496372-f011-4de9-b183-8b0f5c9e2818"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="430" y="606" width="66" height="20" uuid="40241c0e-fa64-4591-b8c0-edbbffa1be0a"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[후처리]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="275" width="194" height="20" uuid="db2b28dd-ef07-4d7a-ba05-360cf187a245"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="64" y="646" width="155" height="20" uuid="dd215ab0-aaf5-46a5-8ee4-e5086aa8ecb8"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="64" y="666" width="366" height="20" uuid="97fd6152-19ce-4871-9c0c-b7789703795d"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="64" y="726" width="366" height="20" uuid="46abe2ce-d591-465e-975e-f32b86a8c3fb"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" isBold="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="360" y="219" width="148" height="33" uuid="cd04ad19-d8ef-4b87-abfe-58066c3e9c4b">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="굴림" size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{workJisiTk}.getProd_note()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>

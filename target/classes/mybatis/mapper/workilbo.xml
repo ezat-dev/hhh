@@ -1221,5 +1221,75 @@
 		ORDER BY ordert.ord_code
 	</select>
 
+	<select id="workIlboProcessOrderPrintOrdcodeList" parameterType="workJisiTk" resultType="workJisiTk">
+		 SELECT 
+ 			ilbo_code
+		 	,ordert.ord_code, CONCAT('J',FORMAT(ilbo_code,'000000000')) AS danch_barcode 	
+			,CONCAT(PROD_PG,' ',PROD_PG1,' ~ ', PROD_PG2) AS prod_pg
+			,CONCAT(PROD_GD1,' ',PROD_GD3,' ',PROD_GD2,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd
+			,CONCAT(PROD_whadeep,' ',PROD_e1,' ~ ', PROD_e2) AS prod_cq
+			,CONCAT(PROD_SG,' ',PROD_SG1,'~',PROD_SG2) AS prod_sg
+			,product.prod_polish, product.prod_vnyl
+			,ISNULL(product.prod_e1,'') AS prod_e1, ISNULL(product.prod_e2,'') AS prod_e2
+			,product.prod_plt, product.prod_pad, product.prod_danch, product.prod_bangch
+			,ordert.ord_bigo, product.prod_note, ordert.ord_name
+			,FORMAT(workilbo.ilbo_su,'N0') AS ilbo_su_report
+			,usert.user_name
+			,product.prod_name, product.prod_no, product.prod_gyu
+			,techin.tech_te, product.prod_jai, product.prod_danj, product.prod_dang
+			,product.prod_upjong, ROUND(ordert.ord_amnt,3) AS ord_amnt
+			,FORMAT(ROUND(product.prod_dang,0),'N0') AS cost_ea
+			,FORMAT(ROUND((ord_su * prod_dang) / ord_amnt,0),'N0') AS cost_kg
+			,FORMAT(ROUND((ord_su * prod_dang),0),'N0') AS ord_mon
+			,ordert.ord_su, ord_dang
+			,CASE WHEN product.prod_fac1 = '1' THEN 'O' ELSE 'X' END fac1
+			,CASE WHEN product.prod_fac2 = '1' THEN 'O' ELSE 'X' END fac2
+			,CASE WHEN product.prod_fac3 = '1' THEN 'O' ELSE 'X' END fac3
+			,CASE WHEN product.prod_fac5 = '1' THEN 'O' ELSE 'X' END fac5
+			,CASE WHEN product.prod_fac6 = '1' THEN 'O' ELSE 'X' END fac6
+			,CASE WHEN product.prod_fac7 = '1' THEN 'O' ELSE 'X' END fac7
+			,workilbo.ilbo_bigo ,corp.corp_name, ordert.ord_lot, ordert.ord_gyu
+			,FORMAT(ROUND(workilbo.ilbo_jung,3),'N0') AS ilbo_amnt
+			,FORMAT(ROUND((workilbo.ilbo_su * ord_dang),0),'N0') AS ilbo_cost
+			,FORMAT(ROUND((ord_su - ilbo_su_sum),0),'N0') AS ilbo_su_diff
+			,FORMAT(ROUND((ord_su - ilbo_su_sum) * prod_danj,0),'N0') AS ilbo_jung_diff
+			,FORMAT(ROUND((ord_su - ilbo_su_sum) * ord_dang,0),'N0') AS ilbo_cost_diff
+			,CONCAT('http://127.0.0.1:8082/tkPrint/productImg/',CASE WHEN product_file_name IS NULL OR product_file_name = '' THEN 'no_image.png' ELSE product_file_name END) AS prod_img
+		 FROM workilbo
+		 INNER JOIN
+		 	ordert
+		 ON workilbo.ord_code = ordert.ord_code
+		 INNER JOIN
+		 	usert
+		 ON workilbo.user_code = usert.user_code
+		 INNER JOIN
+		 	product
+		 ON ordert.prod_code = product.prod_code
+		 INNER JOIN
+		 	techin
+		 ON product.tech_no = techin.tech_no
+		 INNER JOIN 
+		 	corp
+		 ON product.corp_code = corp.corp_code
+		 LEFT OUTER JOIN
+		 	(
+		 		SELECT 
+		 		ord_code AS ord_code_sum,
+		 		SUM(ilbo_su) AS ilbo_su_sum,
+		 		ROUND(SUM(ilbo_jung),3) AS ilbo_jung_sum
+		 		FROM workilbo
+		 		WHERE ilbo_gubn = 'J'
+		 		GROUP BY ord_code
+		 	) ord_diff
+		 ON workilbo.ord_code = ord_diff.ord_code_sum
+		 WHERE 1=1
+			AND ilbo_code IN
+			<foreach collection="ilboCodeList" item="ilbo_code" index="ilbo_code" open="(" separator="," close=")">
+				#{ilbo_code}
+			</foreach>
+		
+		 
+	</select>
+
 
 </mapper>
