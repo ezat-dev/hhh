@@ -18,6 +18,7 @@
         bcf1_oil_pv,
         (bcf1_cp_pv * 0.001) AS bcf1_cp_pv,
         bcf2_cf_pv,
+        bcf2_oil_pv,
         (bcf2_cp_pv * 0.001) AS bcf2_cp_pv,
         bcf3_cf_pv,
         bcf3_oil_pv,
@@ -111,26 +112,6 @@
 		WHERE hogi = #{hogi} AND hogi_idx = #{hogi_idx}
 	</update>
 	
-	<select id="getMonitoringDataList" resultType="workjisi">
-		SELECT *
-		FROM (
-			SELECT hogi,
-			MIN(hogi_idx) AS hogi_idx,
-			STUFF( (SELECT ';'+cutum FROM tb_monitoring_real A WHERE A.hogi = B.hogi FOR xml PATH('') ),1,1,'') AS cutum,
-			STUFF( (SELECT ';'+pum FROM tb_monitoring_real A WHERE A.hogi = B.hogi FOR xml PATH('') ),1,1,'') AS pum,
-			MAX(lot) AS lot,
-			MAX(pre) AS pre,
-			MAX(chim) AS chim,
-			MAX(diff) AS diff,
-			MAX(gang) AS gang,
-			MAX(cold) AS cold,
-			MAX(chul) AS chul,
-			MAX(lot_qr) AS lot_qr
-			FROM tb_monitoring_real B
-			GROUP BY hogi
-		) AS A
-	</select>
-	
 	<update id="setMonitoringDataReSet" parameterType="workjisi">
 		UPDATE tb_monitoring_real SET 
 			lot_qr = #{lot_qr}, cutum = #{cutum},
@@ -142,45 +123,152 @@
 	
 	
 	<select id="alarmHistoryList" parameterType="alarmHistory" resultType="alarmHistory">
-		SELECT *
-		FROM (	
-			SELECT *
-			FROM(	
-				SELECT *,
-				LEAD(alarmstate) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmstate,
-				LEAD(time) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmtime
-				FROM ALARMDATA
-				WHERE 1=1
-				AND alarmgroup = 'ALARM'
-				AND time BETWEEN #{sdateTime} AND #{edateTime}
-				ORDER BY time
-			) AS aa
-			WHERE 1=1
-			AND alarmstate != 'Clear'
-		) AS bb
-		ORDER BY time DESC
+	    SELECT
+	        regtime,
+	        a_hogi,
+	        a_value,
+	        a_addr,
+	        a_comment
+	    FROM dbo.tb_alarmlist
+	    WHERE regtime BETWEEN #{sdateTime} AND #{edateTime}
+	    ORDER BY regtime DESC
 	</select>
+
+
+
+
 	
 	<select id="alarmRankingList" parameterType="alarmRanking" resultType="alarmRanking">
-		SELECT tagname, alarmgroup, alarmdesc, COUNT(*) AS alarmcount
-		FROM (	
-			SELECT *
-			FROM(	
-				SELECT tagname, tagvalue, alarmstate, alarmlevel, alarmgroup, alarmname, alarmdesc, trigger, 
-				time, strftime('%T',time) AS time2,
-				LEAD(alarmstate) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmstate,
-				LEAD(time) OVER(PARTITION BY tagname ORDER BY time) AS lead_alarmtime
-				FROM ALARMDATA
-				WHERE 1=1
-				AND alarmgroup = 'ALARM'
-				AND time BETWEEN #{sdateTime} AND #{edateTime}
-				ORDER BY time
-			) AS aa
-			WHERE 1=1
-			AND alarmstate != 'Clear'
-		) AS bb
-		GROUP BY tagname
-		ORDER BY alarmcount DESC
+	    SELECT 
+	        a_addr,
+	        a_comment,
+	        a_hogi,
+	        COUNT(*) AS alarmcount
+	    FROM dbo.tb_alarmlist
+	    WHERE regtime BETWEEN #{sdateTime} AND #{edateTime}
+	    GROUP BY a_addr, a_comment, a_hogi
+	    ORDER BY alarmcount DESC
 	</select>
 	
+	
+	<select id="getCurrentAlarmList" parameterType="monitoring" resultType="monitoring">
+	    WITH LatestAlarms AS (
+	        SELECT 
+	            a_addr,
+	            a_value,
+	            regtime,
+	            ROW_NUMBER() OVER (
+	                PARTITION BY a_addr 
+	                ORDER BY CONVERT(DATETIME, regtime, 120) DESC
+	            ) AS rn
+	        FROM tb_alarmlist
+	    )
+	    SELECT 
+	        a_addr,
+	        a_value,
+	        regtime
+	    FROM LatestAlarms
+	    WHERE rn = 1
+	    ORDER BY a_addr;
+	</select>
+   
+   
+	<select id="getMonitoringDataList" resultType="workJisiTk">
+		SELECT *,
+			CASE WHEN hogi_code = '1' THEN '열처리;1호기'
+				 WHEN hogi_code = '2' THEN '열처리;2호기'
+				 WHEN hogi_code = '3' THEN '열처리;3호기'
+				 WHEN hogi_code = '4' THEN '열처리;4호기'
+				 WHEN hogi_code = '18' THEN '열처리;5호기'
+			END AS fac_name_view,
+			CASE WHEN hogi_proc = 1 THEN '진행'
+				 WHEN hogi_proc = 2 THEN '대기'
+			END AS proc_gb_view,
+			CASE WHEN col_name IS NULL THEN ''
+				 ELSE col_name
+			END AS col_name_view
+		FROM
+		(
+			SELECT 1 AS hogi_code,1 AS hogi_proc
+			UNION 
+			SELECT 1 AS hogi_code,2 AS hogi_proc
+			UNION
+			SELECT 2 AS hogi_code,1 AS hogi_proc
+			UNION
+			SELECT 2 AS hogi_code,2 AS hogi_proc
+			UNION
+			SELECT 3 AS hogi_code,1 AS hogi_proc
+			UNION
+			SELECT 3 AS hogi_code,2 AS hogi_proc
+			UNION
+			SELECT 4 AS hogi_code,1 AS hogi_proc
+			UNION
+			SELECT 4 AS hogi_code,2 AS hogi_proc
+			UNION
+			SELECT 18 AS hogi_code,1 AS hogi_proc
+			UNION
+			SELECT 18 AS hogi_code,2 AS hogi_proc
+		) AS HOGI_STD
+		LEFT OUTER JOIN
+		(
+			SELECT ilbo_lot, fac_code,		
+				MAX(ilbo_strt) AS ilbo_strt, MAX(ilbo_end) AS ilbo_end,
+				ROW_NUMBER() OVER(PARTITION BY fac_code ORDER BY ilbo_lot) AS work_proc,
+				MAX(SUBSTRING(ILBO_LOT,10,1)) AS fac_num,
+				' ' AS bcf_up_view,		
+				MAX(CONCAT('온도:',ILBO_G43,';시간:',ILBO_G42)) AS bcf_pre_view,
+				MAX(CONCAT('온도:',ILBO_G23,';시간:',ILBO_G24,';CP:',ILBO_G25)) AS bcf_chim_view,
+				MAX(CONCAT('온도:',ILBO_PG6,';시간:',ILBO_G26,';CP:',ILBO_G27)) AS bcf_diff_view,
+				MAX(CONCAT('온도:',ILBO_G31,';시간:',ILBO_G32,';CP:',ILBO_G33)) AS bcf_gang_view,
+				MAX(CONCAT('온도:',ILBO_G34)) AS bcf_cold_view
+			FROM workilbo
+			WHERE ilbo_gubn = 'A'
+			AND ilbo_end = '1900-01-01 00:00:00'
+			AND ilbo_strt >= FORMAT(GETDATE(),'yyyy-MM-dd 00:00')
+			GROUP BY ilbo_lot, fac_code
+		) AS WORK_DATA
+		ON HOGI_STD.hogi_code = WORK_DATA.fac_code
+		AND HOGI_STD.hogi_proc = WORK_DATA.work_proc
+		LEFT OUTER JOIN
+			v_monitoring AS v_mon
+		ON HOGI_STD.hogi_code = v_mon.cte_code
+		AND HOGI_STD.hogi_proc = v_mon.cte_proc
+		LEFT OUTER JOIN
+			v_monitoring_temp AS v_mon_temp
+		ON HOGI_STD.hogi_code = v_mon_temp.num
+		ORDER BY hogi_code, hogi_proc
+	</select>
+
+	<select id="getMonitoringDataListStd" parameterType="workJisiTk" resultType="workJisiTk">
+		SELECT *
+		FROM WORKILBO
+		INNER JOIN
+			ORDERT
+		ON WORKILBO.ORD_CODE = ORDERT.ORD_CODE
+		INNER JOIN
+			PRODUCT
+		ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+		INNER JOIN
+			CORP
+		ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+		WHERE 1=1
+		AND ILBO_GUBN = 'A'
+		AND ILBO_LOT = #{ilbo_lot}
+		ORDER BY ORDERT.ORD_CODE
+	</select>   
+
+   
+   <select id="getOverviewData" resultType="java.util.HashMap">
+    SELECT *        
+    FROM [dbo].[tb_overview_new]
+    WHERE id = 1
+</select>
+
+<select id="getCurrentAlarms" resultType="map">
+    SELECT *
+    FROM tb_alarm_current
+    WHERE id = 1
+</select>
+   
+   
 </mapper>

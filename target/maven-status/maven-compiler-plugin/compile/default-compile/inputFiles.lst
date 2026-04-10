@@ -2,6 +2,8 @@ C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\InMana
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\controller\ProductController.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\Measure.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\main\HomeController.java
+C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\WorkJisiTk.java
+C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\WorkJisiDaoTkImpl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\MonitoringServiceBcf3Impl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\Siljuk.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\UserMenu.java
@@ -19,6 +21,7 @@ C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\controller\Pr
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\controller\MainController.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\Fac.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\MonitoringServiceBcf5.java
+C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\controller\WorkJisiTkController.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\ManagementDaoImpl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\controller\PreservationController.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\UserDao.java
@@ -31,10 +34,13 @@ C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\Productio
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\Corp.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\WorkJisiDaoImpl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\Gongjung.java
+C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\WorkIlboDao.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\PreservationServiceImpl.java
+C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\WorkIlboService.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\util\XssRequestWrapper.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\MonitoringDao.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\MonitoringDaoImpl.java
+C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\controller\WorkIlboController.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\WorkJisi.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\MonitoringServiceBcf5Impl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\ProductDao.java
@@ -45,12 +51,15 @@ C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\async\Monitor
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\ProductServiceImpl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\ProductionService.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\PreservationDao.java
+C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\WorkJisiDaoTk.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\controller\WorkJisiController.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\Standard.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\UserService.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\MonitoringServiceBcf1.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\QualityServiceImpl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\Permission.java
+C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\WorkJisiServiceTk.java
+C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\WorkJisiServiceTkImpl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\WorkJisiServiceImpl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\ProductionServiceImpl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\util\ActionMap.java
@@ -72,6 +81,7 @@ C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\async\Monitor
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\ProcessDao.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\Suip.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\MonitoringServiceBcf4.java
+C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\WorkIlboDaoImpl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\OperationServiceImpl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\async\MonitoringProcessorBcf1.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\Product.java
@@ -86,6 +96,7 @@ C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\async\AsyncEx
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\controller\OperationController.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\MonitoringServiceBcf1Impl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\Work.java
+C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\service\WorkIlboServiceImpl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\OperationDaoImpl.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\domain\Chulgo.java
 C:\spring-workspace\EZ25358_TKHEAT_250908\src\main\java\com\tkheat\dao\ProductionDao.java

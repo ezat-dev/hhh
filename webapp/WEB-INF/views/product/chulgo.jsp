@@ -542,6 +542,7 @@
 				selectableRangeMode : "click",
 				reactiveData : true,
 				headerHozAlign : "center",
+				headerFilterPlaceholder: "",
 				ajaxConfig : "POST",
 				ajaxLoader : false,
 				placeholder : "조회된 데이터가 없습니다.",

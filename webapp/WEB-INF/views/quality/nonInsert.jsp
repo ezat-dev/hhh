@@ -675,6 +675,7 @@ function getNonInsertList(){
         tooltips:true,
         selectableRangeMode:"click",
         reactiveData:true,
+        headerSort:false,
         headerHozAlign:"center",
         ajaxConfig:"POST",
         ajaxLoader:false,

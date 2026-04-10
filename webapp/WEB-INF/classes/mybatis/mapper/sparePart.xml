@@ -49,25 +49,6 @@
 	</select>
 	
 	
-	<!-- spareSub 조회 -->
-	<select id="getSpareSubList" parameterType="sparePart"
-		resultType="sparePart">
-	  SET LOCK_TIMEOUT 10000;
-	  SELECT SPAREPART.SPP_PURCHASE SPP_PURCHASE_HIS
-			, SPAREPART.SPP_NO SPP_NO_HIS
-			, SPAREPART.SPP_NAME SPP_NAME_HIS
-			, SPAREPART.SPP_GYU SPP_GYU_HIS
-			, SPAREPART.SPP_YONG SPP_YONG_HIS
-			, SPAREHISTORY.SPH_IDX, SPH_TIME, SPH_INPUT, SPH_SURIOUT, SPH_JASANOUT, SPH_BIGO, SPH_USER
-        FROM SPAREHISTORY WITH(NOLOCK)
-          INNER JOIN SPAREPART WITH(NOLOCK) 
-         ON SPAREPART.SPP_IDX = SPAREHISTORY.SPP_IDX
-		WHERE 1=1
-		<if test="spp_idx != 0">
-			AND SPAREHISTORY.SPP_IDX = #{spp_idx}
-		</if>
-	</select>
-	
 	
 	
 	<insert id="sparePartInsertSave" parameterType="sparePart">
@@ -154,6 +135,26 @@
   
   
   
+	
+	<!-- spareSub 조회 -->
+	<select id="getSpareSubList" parameterType="sparePart"
+		resultType="sparePart">
+	   SET LOCK_TIMEOUT 10000;
+		  SELECT 
+		      SPAREPART.SPP_PURCHASE      AS SPP_PURCHASE_HIS,
+		      SPAREPART.SPP_NO            AS SPP_NO_HIS,
+		      SPAREPART.SPP_NAME          AS SPP_NAME_HIS,
+		      SPAREPART.SPP_GYU           AS SPP_GYU_HIS,
+		      SPAREPART.SPP_YONG          AS SPP_YONG_HIS,
+		      SPAREHISTORY.SPH_IDX,                   -- 반드시 PK
+		      SPH_TIME, SPH_INPUT, SPH_SURIOUT, SPH_JASANOUT, SPH_BIGO, SPH_USER,
+		      SPAREHISTORY.SPP_IDX          AS spp_idx_his
+		  FROM SPAREHISTORY WITH(NOLOCK)
+		  INNER JOIN SPAREPART WITH(NOLOCK) 
+		     ON SPAREPART.SPP_IDX = SPAREHISTORY.SPP_IDX
+		  WHERE SPAREHISTORY.SPP_IDX = #{spp_idx}
+		ORDER BY SPH_TIME DESC
+	</select>
   
   
    <insert id="insertSpareSub" parameterType="sparePart">
@@ -195,7 +196,11 @@
   
   
   
-  
+  <delete id="spareSubDelete" parameterType="int">
+		SET LOCK_TIMEOUT 10000;
+	    DELETE FROM SPAREHISTORY
+	    WHERE SPH_IDX = #{sph_idx}
+  </delete>
   
   
   

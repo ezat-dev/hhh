@@ -26,5 +26,7 @@
   	<mapper resource="mybatis/mapper/jeomgeom.xml"/>
   	<mapper resource="mybatis/mapper/monitoring.xml"/>
   	<mapper resource="mybatis/mapper/workjisi.xml"/>
+  	<mapper resource="mybatis/mapper/workjisitk.xml"/>
+  	<mapper resource="mybatis/mapper/workilbo.xml"/>
   </mappers>
 </configuration>

@@ -485,9 +485,11 @@
                 </div>
             </div>
             
+            
+            
             <!-- 푸터 버튼 -->
             <div class="suip-modal-footer">
-                <button type="button" class="btn-delete" onclick="deleteSuip();" style="display:none;">삭제</button>
+<!--                 <button type="button" class="btn-delete" onclick="deleteSuip();" style="display:none;">삭제</button> -->
                 <button type="button" class="save">저장</button>
                 <button type="button" class="close">닫기</button>
             </div>
