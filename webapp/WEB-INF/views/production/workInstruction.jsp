@@ -11,109 +11,250 @@
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
     
-.main{
-	width:98%;
-}
-.container {
-	display: flex;
-	justify-content: space-between;
-}
 .tabulator {
 	width: 100%;
 	max-width: 100%;
 	max-height: 900px;
-	overflow-x: hidden !important;  
+	overflow-x: hidden !important;
 }
-        
+
 .tabulator .tabulator-cell {
 	white-space: normal !important;
-	word-break: break-word; 
+	word-break: break-word;
 	text-align: center;
 }
-        
+
 .row_select{
 	background-color:#9ABCEA !important;
 }
+
+/* ========== 레이아웃 (세로 스크롤 방지) ========== */
+html, body { height: 100%; margin: 0; }
+body { display: flex; flex-direction: column; overflow: hidden; }
+.tab { flex-shrink: 0; }
+.main {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	padding: 8px;
+	overflow: hidden;
+}
+.container {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	background: #ffffff;
+	border: 1px solid #E2E8F0;
+	border-radius: 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	padding: 8px;
+	overflow: hidden;
+}
+#tab1.tabulator {
+	flex: 1;
+	min-height: 0;
+	max-height: none;
+	width: 100%;
+	min-width: 0;
+	border: none;
+	font-size: 12px;
+}
+#tab1 .tabulator-header {
+	background: linear-gradient(135deg, #2B6CB0, #3182CE);
+	border-bottom: none;
+}
+#tab1 .tabulator-col {
+	background: transparent;
+	border-right: 1px solid rgba(255,255,255,.15);
+}
+#tab1 .tabulator-col.tabulator-sortable:hover {
+	background: rgba(255,255,255,.08);
+}
+#tab1 .tabulator-col-title {
+	color: #ffffff;
+	font-weight: 700;
+}
+#tab1 .tabulator-col .tabulator-header-filter input {
+	border: none;
+	border-radius: 5px;
+	padding: 4px 6px;
+	font-size: 11px;
+	background: rgba(255,255,255,.92);
+	box-sizing: border-box;
+}
+#tab1 .tabulator-row {
+	border-bottom: 1px solid #EDF2F7;
+	transition: background-color .12s;
+}
+#tab1 .tabulator-row.tabulator-row-even {
+	background-color: #F7FAFC;
+}
+#tab1 .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
+#tab1 .tabulator-row.row_select {
+    background-color: #BEE3F8 !important;
+    box-shadow: inset 0 0 0 2px #2B6CB0;
+}
+#tab1 .tabulator-cell {
+	border: 1px solid #E2E8F0;
+	color: #2D3748;
+}
+#tab1 .tabulator-footer {
+	background: #F7FAFC;
+	border-top: 1px solid #E2E8F0;
+	padding: 8px 12px;
+}
+#tab1 .tabulator-page {
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #ffffff;
+	color: #2D3748;
+	min-width: 30px;
+	height: 28px;
+	padding: 0 8px;
+	font-size: 12px;
+	font-weight: 600;
+}
+#tab1 .tabulator-page.active {
+	background: #3182CE;
+	border-color: #2B6CB0;
+	color: #ffffff;
+}
+#tab1 .tabulator-page:not(:disabled):hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+	color: #2B6CB0;
+	cursor: pointer;
+}
+
 .box1 {
 	display: flex;
-	justify-content: right;
+	flex-wrap: wrap;
 	align-items: center;
-/*	width: 1500px;*/
-/*	margin-left: -620px;*/
+	gap: 8px;
 	margin-left: 0%;
 }
 
-.box1 input{
-	width : 7%;
+/* ========== 상단 도구바 (다른 페이지 날짜검색/검색창과 통일) ========== */
+.tab {
+	background: #ffffff;
+	border: 1px solid #E2E8F0;
+	border-radius: 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	padding: 10px 14px;
 }
-.box1 select{
-	width: 5%
-}  
+.daylabel {
+	font-size: 12px;
+	font-weight: 600;
+	color: #495057;
+	white-space: nowrap;
+}
+.box1 input[type="date"],
+.box1 input[type="text"],
+.box1 select {
+	height: 30px;
+	padding: 0 8px;
+	font-size: 12px !important;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	color: #333;
+	outline: none;
+	box-sizing: border-box;
+	transition: border-color .2s ease, background-color .2s ease;
+}
+.box1 input:focus,
+.box1 select:focus {
+	border-color: #3182CE;
+	background-color: #fff;
+}
 
 
+/* ========== 모달 (management 쪽 모달과 동일한 톤) ========== */
+.workHModal,
+.workHIpgoModal,
+.workJHModal,
+.workJisiReportModal,
 .workPrintStatusModal {
-	position: fixed; /* 화면에 고정 */
-	width:350px;
-	height:150px;	
-	top: 50%; /* 수직 중앙 */
-	left: 40%; /* 수평 중앙 */
+	position: fixed;
+	top: 50%;
+	left: 50%;
 	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
-}
-
-.workHIpgoModal {
-	position: fixed; /* 화면에 고정 */
-	width:1200px;
-	height:750px;
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20011; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
+	transform: translate(-50%, -50%);
+	z-index: 20010;
+	border: none;
+	border-radius: 12px;
+	background-color: white;
+	box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+	overflow: hidden;
 }
 
 .workHModal {
-	position: fixed; /* 화면에 고정 */
 	width:1600px;
 	height:830px;
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
+	flex-direction: column;
+}
+.workHModal form {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	padding: 10px 14px;
+	background: #f5f7fa;
+}
+
+.workHIpgoModal {
+	width:1200px;
+	height:750px;
+	z-index: 20011; /* workHModal 위에 표시되는 하위 모달 */
+	flex-direction: column;
 }
 
 .workJHModal {
-	position: fixed; /* 화면에 고정 */
 	width:1600px;
 	height:700px;
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
+	flex-direction: column;
+}
+.workJHModal form {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	padding: 10px 14px;
+	background: #f5f7fa;
 }
 
+.workJisiReportModal {
+	width:850px;
+	height:800px;
+	flex-direction: column;
+	padding: 14px;
+	gap: 10px;
+	box-sizing: border-box;
+}
+
+.workPrintStatusModal {
+	width:350px;
+	height:150px;
+	left: 40%; /* 원래 위치값 유지 */
+}
+.workPrintStatusModal .detail {
+	background: #f5f7fa;
+	padding: 10px 14px;
+}
 
 .header {
-	display: flex; /* 플렉스 박스 사용 */
-	justify-content: center; /* 중앙 정렬 */
-	align-items: center; /* 수직 중앙 정렬 */
-	margin-bottom: 10px; /* 상단 여백 */
-	background-color: #33363d; /* 배경색 */
-	height: 50px; /* 높이 */
-	color: white; /* 글자색 */
-	font-size: 20px; /* 글자 크기 */
-	text-align: center; /* 텍스트 정렬 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: linear-gradient(135deg, #2c3e50, #34495e);
+	height: 50px;
+	color: white;
+	font-size: 18px;
+	font-weight: 700;
+	text-align: center;
+	cursor: move;
 }
 
 .btnSaveClose button {
@@ -232,15 +373,14 @@ input[type="date"] {
 	width:120px;
 	height:20px;
 	text-align:center;
-	margin-bottom:2px;
-	font-size:12pt;
+	margin-bottom:4px;
+	font-size:12px;
+	font-weight:600;
+	color:#495057;
 }
 
 .iRowInput{
-	/*display:flex;*/
 	width:120px !important;
-	height:20px;
-	font-size:12pt;
 	text-align:center;
 }
 
@@ -249,15 +389,14 @@ input[type="date"] {
 	width:180px;
 	height:20px;
 	text-align:center;
-	margin-bottom:2px;
-	font-size:12pt;
+	margin-bottom:4px;
+	font-size:12px;
+	font-weight:600;
+	color:#495057;
 }
 
 .iRowInput_180{
-	/*display:flex;*/
 	width:180px !important;
-	height:20px;
-	font-size:12pt;
 	text-align:center;
 }
 
@@ -266,40 +405,184 @@ input[type="date"] {
 	width:300px;
 	height:20px;
 	text-align:center;
-	margin-bottom:2px;
-	font-size:12pt;
+	margin-bottom:4px;
+	font-size:12px;
+	font-weight:600;
+	color:#495057;
 }
 
 .iRowInput_300{
-	/*display:flex;*/
 	width:300px !important;
-	height:20px;
-	font-size:12pt;
 	text-align:center;
 }
 
+/* ========== 모달 내 입력요소 공통 스킨 (체크박스 제외) ========== */
+.iRowInput:not([type="checkbox"]),
+.iRowInput_180:not([type="checkbox"]),
+.iRowInput_300:not([type="checkbox"]),
+.iRowHInput:not([type="checkbox"]),
+.workHIpgoModal input[type="date"] {
+	height: 30px;
+	padding: 0 8px;
+	font-size: 12px !important;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	color: #333;
+	outline: none;
+	box-sizing: border-box;
+	transition: border-color .2s ease, background-color .2s ease;
+}
+.iRowInput:not([type="checkbox"]):focus,
+.iRowInput_180:not([type="checkbox"]):focus,
+.iRowInput_300:not([type="checkbox"]):focus,
+.iRowHInput:not([type="checkbox"]):focus,
+.workHIpgoModal input[type="date"]:focus {
+	border-color: #3182CE;
+	background-color: #fff;
+}
 
 .iRowBtn{
-	display:block;
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
 	cursor:pointer;
 	width:128px !important;
-	height:26px;
-	font-size:12pt;
+	height:30px;
+	font-size:12px;
+	font-weight:600;
+	border:1px solid #E2E8F0;
+	border-radius:6px;
+	background:#F0F4F8;
+	color:#2D3748;
+	transition: background-color .13s, border-color .13s;
 }
+.iRowBtn:hover{
+	background:#EBF8FF;
+	border-color:#BEE3F8;
+}
+
+/* 저장/닫기 버튼 (iRowBtn 위에 덧씌움) */
+.save{
+	background: linear-gradient(135deg, #51cf66, #37b24d);
+	color: white;
+	border: none;
+}
+.save:hover{
+	background: linear-gradient(135deg, #40c057, #2f9e44);
+}
+.workHClose,
+.workHIpgoClose,
+.workJHClose,
+.workJisiReportClose,
+.workPrintStatusClose{
+	background: linear-gradient(135deg, #868e96, #495057);
+	color: white;
+	border: none;
+}
+.workHClose:hover,
+.workHIpgoClose:hover,
+.workJHClose:hover,
+.workJisiReportClose:hover,
+.workPrintStatusClose:hover{
+	background: linear-gradient(135deg, #6c757d, #343a40);
+}
+
+/* ========== 모달 내 리스트(#workHTabu, #workHIpgoTabu) ========== */
+#workHTabu.tabulator,
+#workHIpgoTabu.tabulator {
+	border: 1px solid #E2E8F0;
+	border-radius: 8px;
+	font-size: 12px;
+}
+#workHTabu .tabulator-header,
+#workHIpgoTabu .tabulator-header {
+	background: linear-gradient(135deg, #2B6CB0, #3182CE);
+	border-bottom: none;
+}
+#workHTabu .tabulator-col,
+#workHIpgoTabu .tabulator-col {
+	background: transparent;
+	border-right: 1px solid rgba(255,255,255,.15);
+}
+#workHTabu .tabulator-col-title,
+#workHIpgoTabu .tabulator-col-title {
+	color: #ffffff;
+	font-weight: 700;
+}
+#workHTabu .tabulator-row,
+#workHIpgoTabu .tabulator-row {
+	border-bottom: 1px solid #EDF2F7;
+	transition: background-color .12s;
+}
+#workHTabu .tabulator-row.tabulator-row-even,
+#workHIpgoTabu .tabulator-row.tabulator-row-even {
+	background-color: #F7FAFC;
+}
+#workHTabu .tabulator-row:hover,
+#workHIpgoTabu .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
+#workHTabu .tabulator-row.row_select,
+#workHIpgoTabu .tabulator-row.row_select {
+    background-color: #BEE3F8 !important;
+    box-shadow: inset 0 0 0 2px #2B6CB0;
+}
+#workHTabu .tabulator-cell,
+#workHIpgoTabu .tabulator-cell {
+	border: 1px solid #E2E8F0;
+	color: #2D3748;
+}
+#workHTabu .tabulator-footer,
+#workHIpgoTabu .tabulator-footer {
+	background: #F7FAFC;
+	border-top: 1px solid #E2E8F0;
+	padding: 6px 10px;
+}
+#workHTabu .tabulator-page,
+#workHIpgoTabu .tabulator-page {
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #ffffff;
+	color: #2D3748;
+	min-width: 26px;
+	height: 24px;
+	padding: 0 6px;
+	font-size: 11px;
+	font-weight: 600;
+}
+#workHTabu .tabulator-page.active,
+#workHIpgoTabu .tabulator-page.active {
+	background: #3182CE;
+	border-color: #2B6CB0;
+	color: #ffffff;
+}
+#workHTabu .tabulator-page:not(:disabled):hover,
+#workHIpgoTabu .tabulator-page:not(:disabled):hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+	color: #2B6CB0;
+	cursor: pointer;
+}
+
 /*준비작업모달 */
 .j_container{
 	display:flex;
-/*	border-radius: 6px;
-    border: 1px solid gray*/	
+	flex-wrap:wrap;
+	align-items:center;
+	gap:8px;
 }
 
 .j_row1{
 	display:flex;
-	margin-top:1px;
+	flex-wrap:wrap;
+	align-items:center;
+	gap:8px;
 }
 
 .margin_left{
-	margin-left:5px;
+	margin-left:0 !important;
 }
 
 .tabulator-col-title > input[type='checkbox']{
@@ -315,37 +598,23 @@ input[type="date"] {
 .iRowHLabel{
 	display:block;
 	width:120px;
-	height:25px;
+	height:22px;
 	text-align:center;
-	margin-bottom:2px;
-	font-size:12pt;
+	margin-bottom:4px;
+	font-size:12px;
+	font-weight:600;
+	color:#495057;
 }
 
 .iRowHInput{
 	display:block;
 	width:120px !important;
-	height:25px;
-	font-size:12pt;
 	text-align:center;
 }
 
 .j_h_div{
 	width:130px;
 }
-
-.workJisiReportModal {
-	position: fixed; /* 화면에 고정 */
-	width:850px;
-	height:800px;
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
-}
-
 
     </style>
     
@@ -355,12 +624,14 @@ input[type="date"] {
     <div class="tab">
     <div class="box1">
          <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>
-		<form action="">
+		<form action="" autocomplete="off">
+			<div class="j_container">
 				<label class="daylabel">작업지시일 :</label>
-				<input type="date" class="jisi_sdate" id="jisi_sdate" style="font-size: 14pt; width:140px;">
+				<input type="date" class="jisi_sdate" id="jisi_sdate">
 				~
-				<input type="date" class="jisi_edate" id="jisi_edate" style="font-size: 14pt; width:140px;">
-		</form>	
+				<input type="date" class="jisi_edate" id="jisi_edate">
+			</div>
+		</form>
 	</div>
     <div class="button-container">
         <button class="select-button" onclick="getWorkJisiAllListData();">
@@ -745,9 +1016,9 @@ input[type="date"] {
 		<div class="j_container">
 			<form action="">
 					<label class="daylabel margin_left">입고일 :</label>
-					<input type="date" class="ord_sdate" id="ord_sdate" style="font-size: 14pt; width:140px;">
+					<input type="date" class="ord_sdate" id="ord_sdate">
 					~
-					<input type="date" class="ord_edate" id="ord_edate" style="font-size: 14pt; width:140px;">
+					<input type="date" class="ord_edate" id="ord_edate">
 			</form>			
 			<button class="iRowBtn margin_left" type="button" onclick="workHIpgoDataList();">조회</button>				
 		</div>	
@@ -1229,7 +1500,7 @@ input[type="date"] {
 					getWorkJisiAllListData();
     				var fileUrl = "/tkPrint/workProc/"+result.heatData;
                     $("#workJisi").attr("src",fileUrl);
-                    workJisiReportModal.style.display = "block";
+                    workJisiReportModal.style.display = "flex";
 					
 				}
 			});
@@ -1274,7 +1545,7 @@ input[type="date"] {
 					getWorkJisiAllListData();
     				var fileUrl = "/tkPrint/workJisi/"+result.heatData;
                     $("#workJisi").attr("src",fileUrl);
-                    workJisiReportModal.style.display = "block";
+                    workJisiReportModal.style.display = "flex";
 					
 				}
 			});
@@ -1367,7 +1638,7 @@ input[type="date"] {
 	var workAllDataTable;
 	function getWorkInstructionList(){
 		workAllDataTable = new Tabulator("#tab1", {
-		    height:"750px",
+		    height:"100%",
 		    layout:"fitColumns",
 //		    selectable:true,	//로우 선택설정
 		    tooltips:true,
@@ -1443,10 +1714,7 @@ input[type="date"] {
 			        hozAlign:"center", headerFilter:"input", headerSort:false},
 		    ],
 		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+			    row.getElement().style.fontWeight = "600";
 			},
 			rowClick:function(e, row){
 
@@ -1492,9 +1760,9 @@ input[type="date"] {
 			}			
 		});
 */
-		workJHModal.style.display = 'block'; // 모달 표시
+		workJHModal.style.display = 'flex'; // 모달 표시
 	}
-	
+
 	function nullValueRtn(value){
 		var rtnValue = "";
 		if(value != null){
@@ -1514,7 +1782,7 @@ input[type="date"] {
 			//모달 오픈
 			
 			getWorkHList();
-			workHModal.style.display = 'block'; // 모달 표시			
+			workHModal.style.display = 'flex'; // 모달 표시
 		}else if(wGubun = 'R'){
 			//모달 오픈
 			
@@ -1548,7 +1816,7 @@ input[type="date"] {
 	function workHDataList(){
 		getWorkHIpgoDataList();
 		workHIpgoDataList();
-		workHIpgoModal.style.display = 'block';
+		workHIpgoModal.style.display = 'flex';
 	}
 	
 	function workHIpgoDataList(){
@@ -1726,7 +1994,10 @@ input[type="date"] {
 		    reactiveData:true,
 		    headerHozAlign:"center",
 		    placeholder:"조회된 데이터가 없습니다.",
+		    pagination:"local",
 		    paginationSize:20,
+		    paginationSizeSelector:[20,50,100,500,1000],
+		    paginationCounter:"rows",
 		    headerSort:false,
 		    ajaxResponse:function(url, params, response){
 				$("#workHIpgoTabu .tabulator-col.tabulator-sortable").css("height","55px");
@@ -1753,10 +2024,7 @@ input[type="date"] {
 			    {title:"제품코드", field:"prod_code", visible:false}
 		    ],
 		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+			    row.getElement().style.fontWeight = "600";
 			},
 			rowClick:function(e, row){
 
@@ -1817,7 +2085,10 @@ input[type="date"] {
 		    reactiveData:true,
 		    headerHozAlign:"center",
 		    placeholder:"조회된 데이터가 없습니다.",
+		    pagination:"local",
 		    paginationSize:20,
+		    paginationSizeSelector:[20,50,100,500,1000],
+		    paginationCounter:"rows",
 		    headerSort:false,
 		    ajaxResponse:function(url, params, response){
 				$("#workHTabu .tabulator-col.tabulator-sortable").css("height","55px");
@@ -1884,10 +2155,7 @@ input[type="date"] {
 		    	{field:"jisi_h_code", visible:false},
 		    ],
 		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+			    row.getElement().style.fontWeight = "600";
 			},
 			rowClick:function(e, row){
 
@@ -2026,8 +2294,8 @@ input[type="date"] {
 	$("#hAddBtn").on("click",function(){
 
 		getWorkHList();
-		workHModal.style.display = 'block'; // 모달 표시
-		
+		workHModal.style.display = 'flex'; // 모달 표시
+
 	});
 	
     </script>

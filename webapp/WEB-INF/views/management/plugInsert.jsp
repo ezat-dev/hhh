@@ -36,8 +36,9 @@
         
         .tabulator .tabulator-cell {
             white-space: normal !important;
-            word-break: break-word; 
+            word-break: break-word;
             text-align: center;
+            border: 1px solid #E2E8F0;
         }
         
 .row_select{

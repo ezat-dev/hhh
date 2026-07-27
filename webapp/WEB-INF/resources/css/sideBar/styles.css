@@ -1,20 +1,30 @@
 
 
 .collapse__sublink.active {
-    background-color: var(--first-color);
-    color: var(--white-color);
+    background-color: var(--primary);
+    color: var(--white);
     border-radius: 4px;
 }
 
 /* VARIABLES CSS */
 :root {
-    --nav--width: 92px;
+    --nav-width: 170px;
 
     /* Colors */
-    --first-color: #236cf5;
-    --bg-color: #33363d;
-    --sub-color: #b6cefc;
-    --white-color: #fff;
+    --bg:        #F0F4F8;
+    --white:     #FFFFFF;
+    --primary:   #3182CE;
+    --primary-d: #2B6CB0;
+    --primary-l: #EBF8FF;
+    --primary-m: #BEE3F8;
+    --text:      #2D3748;
+    --muted:     #718096;
+    --light:     #A0AEC0;
+    --border:    #E2E8F0;
+    --red:       #E53E3E;
+    --red-l:     #FFF5F5;
+    --shadow:    0 1px 4px rgba(0,0,0,.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.10);
 
     /* Font and typography */
     --body-font: 'Poppins', sans-serif;
@@ -24,17 +34,11 @@
     /* z index */
     --z-fixed: 100;
 }
-/*
-.header {
-    background-color: #0c5df4;
-    width: 1000px;
-    height: 100px;
-}
-*/
+
 .tkLogo{
-    width: 180px;
-    height: 70px;
-    margin-left : -55px;
+    max-width: 150px;
+    height: 56px;
+    object-fit: contain;
 }
 
 *, ::before, ::after {
@@ -44,13 +48,12 @@
 body {
     position: relative;
     margin: 0;
-/*    padding: 2rem 0 0 6.75rem;*/
-	padding: 0 0 0 6.75rem;
+    padding: 0;
     font-family: var(--body-font);
     font-size: var(--normal-font-size);
-    transition: .5s;
-    background-color: #c9c8c8;
-    height:calc(99vh);
+    background-color: var(--bg);
+    height: 100vh;
+    overflow: hidden;
 }
 
 h1 {
@@ -66,168 +69,271 @@ ul {
 a {
     text-decoration: none;
 }
-/*
-.header {
-    background-color: #c9c8c8; 
-    width: 100%;
-    margin-left: 217px;
-    height: 33px; 
-    position: fixed;
-    top: 0; 
-    left: 0;
-    z-index: var(--z-fixed);
+
+/* ══ 레이아웃 ══ */
+.tk-layout {
     display: flex;
-    align-items: center;
-    padding: 0 1rem; 
-    color: var(--white-color); 
-}
-*/
-.l-navbar {
-    position: fixed;
-    top: 0px;
-    left: 0;
-    width: 217px;
-    height: calc(100vh);
-    background-color: var(--bg-color);
-    color: var(--white-color);
-    padding: 1.5rem 1.5rem 2rem;
-    transition: .5s;
-    z-index: var(--z-fixed);
+    height: 100vh;
+    overflow: hidden;
 }
 
-.nav {
-    height: 100%;
+/* ══ 사이드바 (소메뉴) ══ */
+.l-navbar {
+    width: var(--nav-width);
+    flex-shrink: 0;
+    height: 100vh;
+    background-color: var(--white);
+    color: var(--text);
+    border-right: 1px solid var(--border);
+    box-shadow: 2px 0 8px rgba(0,0,0,.05);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     overflow: hidden;
-    overflow-y: scroll;
-}
-
-
-.nav::-webkit-scrollbar {
-    width: 0;
+    z-index: var(--z-fixed);
 }
 
 .nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
 
-.nav__brand {
-    display: grid;
-    grid-template-columns: max-content max-content;
-    justify-content: space-between;
-    align-items: center;
-    /* margin-bottom: 2rem; */
-    margin-left: 50px;
-    margin-top: -5px;
+.nav > div {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1;
 }
 
-.nav__toggle {
-    font-size: 1.25rem;
-    padding: .75rem;
+.nav__brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    min-height: 62px;
+    flex-shrink: 0;
+    overflow: hidden;
     cursor: pointer;
+    transition: background .2s, box-shadow .2s;
+}
+
+.nav__brand:hover {
+    background: rgba(49,130,206,.07);
+    box-shadow: inset 0 -2px 0 var(--primary);
+}
+
+.nav__brand:hover .tkLogo {
+    filter: brightness(1.08) drop-shadow(0 1px 4px rgba(49,130,206,.25));
+}
+
+.nav__list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 10px;
+}
+
+.nav__list::-webkit-scrollbar {
+    width: 3px;
+}
+
+.nav__list::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 2px;
 }
 
 .nav__logo {
-    color: var(--white-color);
+    color: var(--text);
     font-weight: 600;
-}
-
-.nav__link {
-    display: grid;
-    grid-template-columns: max-content max-content;
+    display: flex;
     align-items: center;
-    column-gap: .75rem;
-    padding: .75rem;
-    color: var(--white-color);
-    border-radius: .5rem;
-    margin-bottom: 1rem;
-    transition: .3s;
-    cursor: pointer;
-    
 }
 
-.nav__link:hover {
-    background-color: var(--first-color);
+/* 소메뉴 리스트 (대메뉴 선택 시 하나만 표시) */
+.submenu-empty {
+    padding: 24px 10px;
+    text-align: center;
+    color: var(--light);
+    font-size: 13px;
 }
 
-.nav__icon {
-    font-size: 1.25rem;
-}
-
-.nav_name {
-    font-size: var(--small-font-size);
-}
-
-/* Expander menu */
-.expander {
-    width: calc(var(--nav--width) + 9.25rem);
-}
-
-/* Add padding body */
-.body-pd {
-    padding: 2rem 0 0 16rem;
-}
-
-/* Active links menu */
-.active {
-    background-color: var(--first-color);
-}
-
-/* COLLAPSE */
-.collapse {
-    grid-template-columns: 20px max-content 1fr;
-}
-
-.collapse__link {
-    justify-self: flex-end;
-    transition: .5;
-}
-
-.collapse__menu
- {
+.sub-menu-list {
     display: none;
-    padding: 0.75rem 2.25rem; 
-    margin-left: 1.5rem; 
 }
 
-.collapse__sublink {
-    color: var(--sub-color);
-    font-size: var(--small-font-size);
-    white-space: nowrap; 
-    display: flex; 
-    justify-content: center; 
-    padding: 0.5rem; 
-    transition: background-color 0.3s;
-}
-
-.collapse__sublink:hover {
-    color: var(--white-color);
-    background-color: var(--first-color); 
-}
-
-/* Show collapse */
-.showCollapse {
+.sub-menu-list.active-group {
     display: block;
 }
 
-/* Rotate icon */
-.rotate {
-    transform: rotate(180deg);
-    transition: .5s;
+.collapse__sublink {
+    color: var(--muted);
+    font-size: var(--small-font-size);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    padding: 9px 12px;
+    border-radius: 8px;
+    margin-bottom: 2px;
+    transition: background-color .13s, color .13s;
 }
 
-.main {
-/*    margin-left: 239px;
-    margin-right:8px; 
-    margin-top : 54px;*/
-    width : 87.12%;
-    height: calc(100vh - 66px); 
-    background-color: #ffffff; 
-/*    padding: 1rem; */
-     /* border : 1px solid rgb(53, 53, 53);  */
-    border-radius: 0px 0px 6px 6px;
+.collapse__sublink:hover {
+    color: var(--primary-d);
+    background-color: var(--primary-l);
 }
 
+/* ══ 상단 헤더 ══ */
+.tk-main-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    height: 100vh;
+    overflow: hidden;
+    padding: 12px 16px;
+    gap: 10px;
+}
+
+.tk-header {
+    height: 46px;
+    flex-shrink: 0;
+    background-color: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 16px;
+}
+
+.headerP {
+    flex-shrink: 0;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 15px;
+    color: var(--text);
+    font-weight: 700;
+    margin: 0;
+}
+
+.tk-user-area {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+.loginName {
+    display: flex;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 600;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.logout-button {
+    height: 30px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background-color: var(--white);
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    transition: all .13s;
+    margin-left: 14px;
+}
+
+.logout-button:hover {
+    background-color: var(--red-l);
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.button-image {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+/* 대메뉴 바 (헤더 한 줄 안에서 표시, 클릭 시 좌측 사이드바에 소메뉴 표시) */
+.tk-category-bar {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    gap: 6px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.tk-category-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.cat-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 14px;
+    height: 32px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color .13s, color .13s, border-color .13s;
+}
+
+.cat-btn ion-icon {
+    font-size: 14px;
+}
+
+.cat-btn:hover {
+    background: var(--primary-l);
+    border-color: var(--primary-m);
+    color: var(--primary-d);
+}
+
+.cat-btn.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary-d);
+    box-shadow: 0 2px 6px rgba(49,130,206,.35);
+}
+
+/* iframe 영역 */
+.frameDiv {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.frameDiv #pageFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+}

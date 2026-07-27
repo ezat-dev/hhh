@@ -316,6 +316,12 @@
 	    <artifactId>poi-ooxml</artifactId>
 	    <version>5.0.0</version>
 	</dependency>	
+		<!-- 트렌드 PNG 캡쳐용 차트 생성 -->
+		<dependency>
+		    <groupId>org.jfree</groupId>
+		    <artifactId>jfreechart</artifactId>
+		    <version>1.5.4</version>
+		</dependency>
 	<!-- qr코드 -->
 	<dependency>
 	    <groupId>com.google.zxing</groupId>

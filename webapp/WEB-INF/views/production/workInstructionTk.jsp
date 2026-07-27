@@ -10,334 +10,411 @@
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
-    
-.main{
-	width:98%;
-}
-.container {
-	display: flex;
-	justify-content: space-between;
-}
+
 .tabulator {
 	width: 100%;
 	max-width: 100%;
-	max-height: 900px;
-	overflow-x: hidden !important;  
+	overflow-x: hidden !important;
 }
-        
+
 .tabulator .tabulator-cell {
 	white-space: normal !important;
-	word-break: break-word; 
+	word-break: break-word;
 	text-align: center;
 }
-        
+
 .row_select{
 	background-color:#9ABCEA !important;
 }
-.box1 {
+
+/* ========== 레이아웃 (세로 스크롤 방지) ========== */
+html, body { height: 100%; margin: 0; }
+body { display: flex; flex-direction: column; overflow: hidden; }
+.tab { flex-shrink: 0; }
+.main {
+	flex: 1;
+	min-height: 0;
+	width: 100%;
 	display: flex;
-	justify-content: right;
-	align-items: center;
-/*	width: 1500px;*/
-/*	margin-left: -620px;*/
-	margin-left: 0%;
+	padding: 8px;
+	overflow: hidden;
+}
+.container {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	background: #ffffff;
+	border: 1px solid #E2E8F0;
+	border-radius: 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	padding: 8px;
+	overflow: hidden;
+}
+#workTabu.tabulator {
+	flex: 1;
+	min-height: 0;
+	max-height: none;
+	width: 100%;
+	min-width: 0;
+	border: none;
+	font-size: 12px;
+}
+#workTabu .tabulator-header {
+	background: linear-gradient(135deg, #2B6CB0, #3182CE);
+	border-bottom: none;
+}
+#workTabu .tabulator-col {
+	background: transparent;
+	border-right: 1px solid rgba(255,255,255,.15);
+}
+#workTabu .tabulator-col.tabulator-sortable:hover {
+	background: rgba(255,255,255,.08);
+}
+#workTabu .tabulator-col-title {
+	color: #ffffff;
+	font-weight: 700;
+}
+#workTabu .tabulator-col .tabulator-header-filter input {
+	border: none;
+	border-radius: 5px;
+	padding: 4px 6px;
+	font-size: 11px;
+	background: rgba(255,255,255,.92);
+	box-sizing: border-box;
+}
+#workTabu .tabulator-row {
+	border-bottom: 1px solid #EDF2F7;
+	transition: background-color .12s;
+}
+#workTabu .tabulator-row.tabulator-row-even {
+	background-color: #F7FAFC;
+}
+#workTabu .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
+#workTabu .tabulator-row.row_select {
+    background-color: #BEE3F8 !important;
+    box-shadow: inset 0 0 0 2px #2B6CB0;
+}
+#workTabu .tabulator-cell {
+	border: 1px solid #E2E8F0;
+	color: #2D3748;
+}
+#workTabu .tabulator-footer {
+	background: #F7FAFC;
+	border-top: 1px solid #E2E8F0;
+	padding: 8px 12px;
+}
+#workTabu .tabulator-page {
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #ffffff;
+	color: #2D3748;
+	min-width: 30px;
+	height: 28px;
+	padding: 0 8px;
+	font-size: 12px;
+	font-weight: 600;
+}
+#workTabu .tabulator-page.active {
+	background: #3182CE;
+	border-color: #2B6CB0;
+	color: #ffffff;
+}
+#workTabu .tabulator-page:not(:disabled):hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+	color: #2B6CB0;
+	cursor: pointer;
 }
 
-.box1 input{
-	width : 7%;
+.box1 {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
 }
-.box1 select{
-	width: 5%
-}  
+
+/* ========== 상단 도구바 (다른 페이지 날짜검색/검색창과 통일) ========== */
+.tab {
+	background: #ffffff;
+	border: 1px solid #E2E8F0;
+	border-radius: 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	padding: 10px 14px;
+}
+.j_container {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+.j_row1 {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+}
+/* 단취작업 등록 모달의 *적재방법* 영역처럼 j_row1이 여러 줄 누적되는 곳은
+   가로 flex 배치 대신 세로로 쌓이도록 강제 (그 외 j_row1은 단일행/타이틀용) */
+.j_container.j_container_stack {
+	flex-direction: column;
+	align-items: stretch;
+}
+.j_container.j_container_stack .j_row1 {
+	width: 100%;
+}
+.daylabel {
+	font-size: 12px;
+	font-weight: 600;
+	color: #495057;
+	white-space: nowrap;
+}
+/* nbsp/margin_left로 간격 맞추던 옛 방식 대체 (gap이 대신 처리) */
+.margin_left {
+	margin-left: 0 !important;
+}
+.datetimepicker_date,
+.search_input,
+.search_select,
+.box1 select,
+.box1 input[type="text"],
+.box1 input[type="number"],
+.box1 input[type="date"],
+.workDanIpgoModal input[type="text"] {
+	height: 30px;
+	padding: 0 8px;
+	font-size: 12px !important;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	color: #333;
+	outline: none;
+	box-sizing: border-box;
+	transition: border-color .2s ease, background-color .2s ease;
+}
+.datetimepicker_date:focus,
+.search_input:focus,
+.search_select:focus,
+.box1 select:focus,
+.box1 input:focus,
+.workDanIpgoModal input[type="text"]:focus {
+	border-color: #3182CE;
+	background-color: #fff;
+}
+.datetimepicker_date {
+	width: 130px !important;
+	text-align: center;
+}
+.search_input {
+	width: 130px !important;
+}
+.button-container .select-button,
+.button-container .insert-button,
+.button-container .excel-button,
+.button-container .printer-button,
+.button-container .delete {
+	height: 34px;
+	border: 1px solid #E2E8F0;
+	border-radius: 8px;
+	background: #F0F4F8;
+	transition: background-color .13s, border-color .13s;
+}
+.button-container .select-button:hover,
+.button-container .insert-button:hover,
+.button-container .excel-button:hover,
+.button-container .printer-button:hover,
+.button-container .delete:hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+}
+
+/* ========== 모달 공통 (management 쪽 모달과 동일한 톤) ========== */
+.workSelectModal,
+.workDanModal,
+.workDanIpgoModal,
+.workBcfModal,
+.workTfModal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	display: none;
+	transform: translate(-50%, -50%);
+	z-index: 20010;
+	border: none;
+	border-radius: 12px;
+	background-color: white;
+	box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+	overflow: hidden;
+}
+/* 단취-입고이력 모달은 단취모달 위에 얹히므로 z-index를 한 단계 더 높게 */
+.workDanIpgoModal {
+	z-index: 20011;
+}
+.header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: linear-gradient(135deg, #2c3e50, #34495e);
+	height: 50px;
+	color: white;
+	font-size: 18px;
+	font-weight: 700;
+	text-align: center;
+	cursor: move;
+	flex-shrink: 0;
+}
+.workSelectModal .detail,
+.workDanModal .detail,
+.workDanIpgoModal .detail,
+.workBcfModal .detail,
+.workTfModal .detail {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	background: #f5f7fa;
+	padding: 10px 14px;
+	box-sizing: border-box;
+}
+.btnSaveClose {
+	display: flex;
+	justify-content: center;
+	gap: 12px;
+	padding: 14px 0;
+	background: #ffffff;
+	border-top: 1px solid #E2E8F0;
+	margin: 0;
+	flex-shrink: 0;
+}
+.btnSaveClose button {
+	width: 100px;
+	height: 36px;
+	border: none;
+	border-radius: 6px;
+	font-weight: 700;
+	text-align: center;
+	cursor: pointer;
+	line-height: 36px;
+	margin: 0;
+	transition: transform .2s ease, box-shadow .2s ease;
+}
+.btnSaveClose .save {
+	background: linear-gradient(135deg, #51cf66, #37b24d);
+	color: white;
+}
+.btnSaveClose .close {
+	background: linear-gradient(135deg, #868e96, #495057);
+	color: white;
+	border: none;
+}
+.btnSaveClose .save:hover {
+	background: linear-gradient(135deg, #40c057, #2f9e44);
+	transform: translateY(-1px);
+}
+.btnSaveClose .close:hover {
+	background: linear-gradient(135deg, #6c757d, #343a40);
+	transform: translateY(-1px);
+}
 
 /*작업지시선택 모달*/
 .workSelectModal {
-	position: fixed; /* 화면에 고정 */
-	width:500px;
-	height:200px;	
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
+	width: 500px;
+	height: 220px;
+	flex-direction: column;
 }
-
-.workSelectModal .j_container{
-	display:flex;	
+.workSelectModal .j_container {
+	justify-content: center;
 }
-
-.workSelectModal .j_row1{
-	display:flex;
-	margin-top:1px;
-}
-
-.workSelectModal .margin_left{
-	margin-left:5px;
-}
-
-.workSelectModal .iRowBtn{
-	display:block;
-	cursor:pointer;
-	width:70px;
-	height:30px;
-	font-size:12pt;
-}
-
-.workSelectModal .workSelectBtn{
-	width:140px;
-	height:70px;
-	border-radius: 3px; /* 모서리 둥글게 */
-	border: 1px solid black;
+.workSelectModal .workSelectBtn {
+	width: 140px;
+	height: 70px;
+	border-radius: 8px;
+	border: 1px solid #E2E8F0;
 	margin-right: 5%;
-	text-align : center;
-	font-size:14pt;
-	background:white;
-	cursor:pointer;
+	text-align: center;
+	font-size: 14pt;
+	background: #F0F4F8;
+	cursor: pointer;
+	transition: background-color .13s, border-color .13s;
 }
-
-.workSelectModal .workSelectBtn:hover{
-	background:aliceblue;
+.workSelectModal .workSelectBtn:hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
 }
 
 /*단취작업 등록 모달*/
-.workDanModal{
-	position: fixed; /* 화면에 고정 */
-	width:1400px;
-	height:680px;	
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
-}
-
-.workDanModal .j_container{
-	display:flex;	
-}
-
-.workDanModal .j_row1{
-	display:flex;
-	margin-top:1px;
-}
-
-.workDanModal .margin_left{
-	margin-left:5px;
-}
-
-.workDanModal .iRowBtn{
-	display:block;
-	cursor:pointer;
-	width:70px;
-	height:30px;
-	font-size:12pt;
-}
-
-.workDanModal .iRowBtn2{
-	display:block;
-	cursor:pointer;
-	width:120px;
-	height:30px;
-	font-size:12pt;
-}
-
-.workDanModal .iRowLabel{
-	display:block;
-	width:120px;
-	height:20px;
-	text-align:center;
-	margin-bottom:2px;
-	font-size:12pt;
-}
-
-.workDanModal .iRowLabel2{
-	display:block;
-	width:120px;
-	height:24px;
-	text-align:left;
-	margin-bottom:7px;
-	font-size:12pt;
-	margin-left:10px;
-}
-
-.workDanModal .iRowInput{
-	/*display:flex;*/
-	width:120px !important;
-	height:20px;
-	font-size:12pt;
-	text-align:center;
-}
-
-.workDanModal .iRowInput2{
-	display:block;
-	width:120px !important;
-	height:20px;
-	font-size:12pt;
-	text-align:center;
-	margin-bottom:5px;
+.workDanModal {
+	width: 1400px;
+	height: 680px;
+	flex-direction: column;
 }
 
 /*단취-입고이력 저장모달*/
-.workDanIpgoModal{
-	position: fixed; /* 화면에 고정 */
-	width:1200px;
-	height:750px;
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20011; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
-}
-
-.workDanIpgoModal .iRowBtn{
-	display:block;
-	cursor:pointer;
-	width:70px;
-	height:30px;
-	font-size:12pt;
-}
-
-.workDanIpgoModal .j_container{
-	display:flex;	
-}
-
-.workDanIpgoModal .j_row1{
-	display:flex;
-	margin-top:1px;
-}
-
-.workDanIpgoModal .margin_left{
-	margin-left:5px;
+.workDanIpgoModal {
+	width: 1200px;
+	height: 750px;
+	flex-direction: column;
 }
 
 /*침탄로작업 등록 모달*/
-.workBcfModal{
-	position: fixed; /* 화면에 고정 */
-	width:1400px;
-	height:720px;	
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
-}
-
-.workBcfModal .j_container{
-	display:flex;	
-}
-
-.workBcfModal .j_row1{
-	display:flex;
-	margin-top:1px;
-}
-
-.workBcfModal .margin_left{
-	margin-left:5px;
-}
-
-.workBcfModal .iRowBtn{
-	display:block;
-	cursor:pointer;
-	width:70px;
-	height:30px;
-	font-size:12pt;
-}
-
-.workBcfModal .iRowBtn2{
-	display:block;
-	cursor:pointer;
-	width:120px;
-	height:30px;
-	font-size:12pt;
-}
-
-.workBcfModal .iRowLabel{
-	display:block;
-	width:120px;
-	height:20px;
-	text-align:center;
-	margin-bottom:2px;
-	font-size:12pt;
-}
-
-.workBcfModal .iRowLabel2{
-	display:block;
-	width:120px;
-	height:24px;
-	text-align:left;
-	margin-bottom:7px;
-	font-size:12pt;
-	margin-left:10px;
-}
-
-.workBcfModal .iRowInput{
-	/*display:flex;*/
-	width:120px !important;
-	height:20px;
-	font-size:12pt;
-	text-align:center;
-}
-
-.workBcfModal .iRowInput2{
-	display:block;
-	width:120px !important;
-	height:20px;
-	font-size:12pt;
-	text-align:center;
-	margin-bottom:5px;
+.workBcfModal {
+	width: 1400px;
+	height: 720px;
+	flex-direction: column;
 }
 
 /*템퍼링로작업 등록 모달*/
-.workTfModal{
-	position: fixed; /* 화면에 고정 */
-	width:1400px;
-	height:720px;	
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
+.workTfModal {
+	width: 1400px;
+	height: 720px;
+	flex-direction: column;
 }
 
-.workTfModal .j_container{
-	display:flex;	
+/* ========== 모달 내 공용 유틸 클래스 (5개 모달에서 공유) ========== */
+.iRowBtn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	width: 70px;
+	height: 32px;
+	font-size: 12px;
+	font-weight: 600;
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #F0F4F8;
+	color: #2D3748;
+	transition: background-color .13s, border-color .13s;
 }
-
-.workTfModal .j_row1{
-	display:flex;
-	margin-top:1px;
+.iRowBtn:hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
 }
-
-.workTfModal .margin_left{
-	margin-left:5px;
+.iRowBtn2 {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	width: 120px;
+	height: 32px;
+	font-size: 12px;
+	font-weight: 600;
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #F0F4F8;
+	color: #2D3748;
+	transition: background-color .13s, border-color .13s;
 }
-
-.workTfModal .iRowBtn{
-	display:block;
-	cursor:pointer;
-	width:70px;
-	height:30px;
-	font-size:12pt;
+.iRowBtn2:hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
 }
-
-.workTfModal .iRowBtn2{
-	display:block;
-	cursor:pointer;
-	width:120px;
-	height:30px;
-	font-size:12pt;
-}
-
-.workTfModal .iRowLabel{
+.iRowLabel{
 	display:block;
 	width:120px;
 	height:20px;
@@ -345,8 +422,7 @@
 	margin-bottom:2px;
 	font-size:12pt;
 }
-
-.workTfModal .iRowLabel2{
+.iRowLabel2{
 	display:block;
 	width:120px;
 	height:24px;
@@ -355,16 +431,20 @@
 	font-size:12pt;
 	margin-left:10px;
 }
-
-.workTfModal .iRowInput{
+.iRowInput{
 	/*display:flex;*/
 	width:120px !important;
 	height:20px;
 	font-size:12pt;
 	text-align:center;
 }
-
-.workTfModal .iRowInput2{
+.iRowInput_180{
+	width:180px !important;
+	height:20px;
+	font-size:12pt;
+	text-align:center;
+}
+.iRowInput2{
 	display:block;
 	width:120px !important;
 	height:20px;
@@ -373,35 +453,108 @@
 	margin-bottom:5px;
 }
 
-
-/**/
-
-.header {
-	display: flex; /* 플렉스 박스 사용 */
-	justify-content: center; /* 중앙 정렬 */
-	align-items: center; /* 수직 중앙 정렬 */
-	margin-bottom: 10px; /* 상단 여백 */
-	background-color: #33363d; /* 배경색 */
-	height: 50px; /* 높이 */
-	color: white; /* 글자색 */
-	font-size: 20px; /* 글자 크기 */
-	text-align: center; /* 텍스트 정렬 */
+/* ========== 모달 내 리스트 (workDanTabu / workDanIpgoTabu / workBcfTabu / workTfTabu) ========== */
+#workDanTabu.tabulator,
+#workDanIpgoTabu.tabulator,
+#workBcfTabu.tabulator,
+#workTfTabu.tabulator {
+	border: 1px solid #E2E8F0;
+	border-radius: 8px;
+	font-size: 12px;
 }
-
-.btnSaveClose button {
-	background: #007bff; /* 버튼 배경색 */
-	color: white; /* 버튼 글자색 */
-	border: none; /* 경계선 없음 */
-	padding: 8px 15px; /* 내부 여백 */
-	cursor: pointer; /* 커서 변경 */
-	border-radius: 3px; /* 모서리 둥글게 */
-	margin: 0 10px; /* 버튼 간격 */
-	margin-top: 10px;
-	align-items: center; /* 수직 중앙 정렬 */
+#workDanTabu .tabulator-header,
+#workDanIpgoTabu .tabulator-header,
+#workBcfTabu .tabulator-header,
+#workTfTabu .tabulator-header {
+	background: linear-gradient(135deg, #2B6CB0, #3182CE);
+	border-bottom: none;
 }
-
-.btnSaveClose button:hover {
-	background: #0056b3; /* 호버 시 색상 변경 */
+#workDanTabu .tabulator-col,
+#workDanIpgoTabu .tabulator-col,
+#workBcfTabu .tabulator-col,
+#workTfTabu .tabulator-col {
+	background: transparent;
+	border-right: 1px solid rgba(255,255,255,.15);
+}
+#workDanTabu .tabulator-col-title,
+#workDanIpgoTabu .tabulator-col-title,
+#workBcfTabu .tabulator-col-title,
+#workTfTabu .tabulator-col-title {
+	color: #ffffff;
+	font-weight: 700;
+}
+#workDanTabu .tabulator-row,
+#workDanIpgoTabu .tabulator-row,
+#workBcfTabu .tabulator-row,
+#workTfTabu .tabulator-row {
+	border-bottom: 1px solid #EDF2F7;
+	transition: background-color .12s;
+}
+#workDanTabu .tabulator-row.tabulator-row-even,
+#workDanIpgoTabu .tabulator-row.tabulator-row-even,
+#workBcfTabu .tabulator-row.tabulator-row-even,
+#workTfTabu .tabulator-row.tabulator-row-even {
+	background-color: #F7FAFC;
+}
+#workDanTabu .tabulator-row:hover,
+#workDanIpgoTabu .tabulator-row:hover,
+#workBcfTabu .tabulator-row:hover,
+#workTfTabu .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
+#workDanTabu .tabulator-row.row_select,
+#workDanIpgoTabu .tabulator-row.row_select,
+#workBcfTabu .tabulator-row.row_select,
+#workTfTabu .tabulator-row.row_select {
+    background-color: #BEE3F8 !important;
+    box-shadow: inset 0 0 0 2px #2B6CB0;
+}
+#workDanTabu .tabulator-cell,
+#workDanIpgoTabu .tabulator-cell,
+#workBcfTabu .tabulator-cell,
+#workTfTabu .tabulator-cell {
+	border: 1px solid #E2E8F0;
+	color: #2D3748;
+}
+#workDanTabu .tabulator-footer,
+#workDanIpgoTabu .tabulator-footer,
+#workBcfTabu .tabulator-footer,
+#workTfTabu .tabulator-footer {
+	background: #F7FAFC;
+	border-top: 1px solid #E2E8F0;
+	padding: 6px 10px;
+}
+#workDanTabu .tabulator-page,
+#workDanIpgoTabu .tabulator-page,
+#workBcfTabu .tabulator-page,
+#workTfTabu .tabulator-page {
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #ffffff;
+	color: #2D3748;
+	min-width: 26px;
+	height: 24px;
+	padding: 0 6px;
+	font-size: 11px;
+	font-weight: 600;
+}
+#workDanTabu .tabulator-page.active,
+#workDanIpgoTabu .tabulator-page.active,
+#workBcfTabu .tabulator-page.active,
+#workTfTabu .tabulator-page.active {
+	background: #3182CE;
+	border-color: #2B6CB0;
+	color: #ffffff;
+}
+#workDanTabu .tabulator-page:not(:disabled):hover,
+#workDanIpgoTabu .tabulator-page:not(:disabled):hover,
+#workBcfTabu .tabulator-page:not(:disabled):hover,
+#workTfTabu .tabulator-page:not(:disabled):hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+	color: #2B6CB0;
+	cursor: pointer;
 }
 
 .tabulator-header > .tabulator-headers > .tabulator-col{
@@ -437,18 +590,19 @@
     <div class="box1">
          <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>
 		<form action="" autocomplete="off">
+			<div class="j_container">
 				<label class="daylabel">작업일 :</label>
-				<input type="date" id="s_all_sdate" style="font-size: 14pt; width:140px;">
+				<input type="date" id="s_all_sdate" class="datetimepicker_date">
 				~
-				<input type="date" id="s_all_edate" style="font-size: 14pt; width:140px;">
+				<input type="date" id="s_all_edate" class="datetimepicker_date">
 				<label class="daylabel">거래처 :</label>
-				<input type="text" id="s_all_corp_name" style="font-size: 14pt; width:140px;">
+				<input type="text" id="s_all_corp_name" class="search_input">
 				<label class="daylabel">품명 :</label>
-				<input type="text" id="s_all_prod_name" style="font-size: 14pt; width:140px;">
+				<input type="text" id="s_all_prod_name" class="search_input">
 				<label class="daylabel">품번 :</label>
-				<input type="text" id="s_all_prod_no" style="font-size: 14pt; width:140px;">
-				
-		</form>	
+				<input type="text" id="s_all_prod_no" class="search_input">
+			</div>
+		</form>
 	</div>
     <div class="button-container">
         <button class="select-button">
@@ -486,7 +640,7 @@
 </div>
 <main class="main">
 	<div class="container">
-		<div id="workTabu"></div>
+		<div id="workTabu" class="tabulator"></div>
 	</div>
 </main>
 	    
@@ -497,22 +651,18 @@
 		<div class="header">
 		작업지시 선택
 		</div>
+
+		<form id="workSelectForm" name="workSelectForm" autocomplete="off">
+			<div class="j_container">
+				<button class="workSelectBtn margin_left" type="button" onclick="workDanModalOpen();">단취</button>
+				<button class="workSelectBtn margin_left" type="button" onclick="workBcfModalOpen();">열처리</button>
+				<button class="workSelectBtn margin_left" type="button" onclick="workTfModalOpen();">템퍼링</button>
+			</div>
+		</form>
 	</div>
-	
-	<form id="workSelectForm" name="workSelectForm" autocomplete="off">
-		<div class="j_container">
-			<button class="workSelectBtn margin_left" type="button" onclick="workDanModalOpen();">단취</button>
-			<button class="workSelectBtn margin_left" type="button" onclick="workBcfModalOpen();">열처리</button>
-			<button class="workSelectBtn margin_left" type="button" onclick="workTfModalOpen();">템퍼링</button>
-		</div>
-	</form>
-	
-	<hr />
-	
-    <div class="j_container" style="justify-content:end;">
-    	<div class="j_row1">
-			<button class="iRowBtn margin_left" type="button" onclick="workSelectModalClose();">닫기</button>
-		</div>
+
+    <div class="btnSaveClose">
+		<button class="close" type="button" onclick="workSelectModalClose();">닫기</button>
     </div>
 </div>
 
@@ -522,8 +672,7 @@
 		<div class="header">
 		단취작업 등록
 		</div>
-	</div>
-	
+
 		<form id="workDanForm" name="workDanForm" autocomplete="off">
 			<div class="j_container">
 				<!-- 수주no 바코드스캔 후 적용과 입고이력을 조회한다음 추가하는 방법 2가지 -->				
@@ -578,9 +727,9 @@
 			<div class="j_row1">*적재방법*</div>			
 		</div>
 		<hr />
-		
-		
-		<div class="j_container">
+
+
+		<div class="j_container j_container_stack">
 			<div class="j_row1">
 				<div class="j_div">
 					<label for="wstd_t32" class="iRowLabel2">1줄/1판</label>
@@ -653,14 +802,11 @@
 		</div>
 		
 	</form>
-	
-	<hr />
-	
-    <div class="j_container" style="justify-content:end;">
-    	<div class="j_row1">
-			<button class="iRowBtn margin_left" type="button" onclick="workDanModalSave();">저장</button>
-			<button class="iRowBtn margin_left" type="button" onclick="workDanModalClose();">닫기</button>
-		</div>
+	</div>
+
+    <div class="btnSaveClose">
+		<button class="save" type="button" onclick="workDanModalSave();">저장</button>
+		<button class="close" type="button" onclick="workDanModalClose();">닫기</button>
     </div>
 </div>
 
@@ -671,7 +817,7 @@
 		<div class="header">
 		작업대기 리스트
 		</div>
-	</div>
+
 		<div class="j_container">
 			<form id="workDanIpgoForm" name="workDanIpgoForm" autocomplete="off">
 				<label for="" class="iRowLabel margin_left">거래처</label>
@@ -690,12 +836,10 @@
 				<div id="workDanIpgoTabu"></div>
 			</div>
 		</div>
-		<hr />	
-		
-    <div class="j_container" style="justify-content:end;">
-    	<div class="j_row1">
-			<button class="iRowBtn margin_left" type="button" onclick="workDanIpgoModalClose();">닫기</button>
-		</div>
+	</div>
+
+    <div class="btnSaveClose">
+		<button class="close" type="button" onclick="workDanIpgoModalClose();">닫기</button>
     </div>
 </div>
 
@@ -705,8 +849,7 @@
 		<div class="header">
 		열처리작업 등록
 		</div>
-	</div>
-	
+
 		<form id="workBcfForm" name="workBcfForm" autocomplete="off">
 			<div class="j_container">
 				<!-- 수주no 바코드스캔 후 적용과 입고이력을 조회한다음 추가하는 방법 2가지 -->				
@@ -865,14 +1008,11 @@
 		</div>
 		
 	</form>
-	
-	<hr />
-	
-    <div class="j_container" style="justify-content:end;">
-    	<div class="j_row1">
-			<button class="iRowBtn margin_left" type="button" onclick="workBcfModalSave();">저장</button>
-			<button class="iRowBtn margin_left" type="button" onclick="workBcfModalClose();">닫기</button>
-		</div>
+	</div>
+
+    <div class="btnSaveClose">
+		<button class="save" type="button" onclick="workBcfModalSave();">저장</button>
+		<button class="close" type="button" onclick="workBcfModalClose();">닫기</button>
     </div>
 </div>
 
@@ -882,8 +1022,7 @@
 		<div class="header">
 		템퍼링작업 등록
 		</div>
-	</div>
-	
+
 		<form id="workTfForm" name="workTfForm" autocomplete="off">
 			<div class="j_container">
 				<!-- 수주no 바코드스캔 후 적용과 입고이력을 조회한다음 추가하는 방법 2가지 -->				
@@ -1022,14 +1161,11 @@
 		</div>
 		
 	</form>
-	
-	<hr />
-	
-    <div class="j_container" style="justify-content:end;">
-    	<div class="j_row1">
-			<button class="iRowBtn margin_left" type="button" onclick="workTfModalSave();">저장</button>
-			<button class="iRowBtn margin_left" type="button" onclick="workTfModalClose();">닫기</button>
-		</div>
+	</div>
+
+    <div class="btnSaveClose">
+		<button class="save" type="button" onclick="workTfModalSave();">저장</button>
+		<button class="close" type="button" onclick="workTfModalClose();">닫기</button>
     </div>
 </div>
 
@@ -1195,7 +1331,7 @@
 	
 	//작업선택 모달
 	function workSelectModalOpen(){		
-		workSelectModal.style.display = 'block'; // 모달 숨김
+		workSelectModal.style.display = 'flex'; // 모달 표시
 	}
 	function workSelectModalClose(){		
 		workSelectModal.style.display = 'none'; // 모달 숨김
@@ -1222,7 +1358,7 @@
 		workSelectModalClose();
 		getWorkDanData();
 		getWorkDanDataUserCode();
-		workDanModal.style.display = 'block'; // 모달 숨김
+		workDanModal.style.display = 'flex'; // 모달 표시
 	}	
 	function workDanModalClose(){		
 		workDanModal.style.display = 'none'; // 모달 숨김
@@ -1265,7 +1401,7 @@
 				
 				workSelectModalClose();
 				getWorkBcfDataUserCode();
-				workBcfModal.style.display = 'block'; // 모달 숨김
+				workBcfModal.style.display = 'flex'; // 모달 표시
 				
 				var selectedDataParam = JSON.stringify(selectedData);
 				
@@ -1369,7 +1505,7 @@
 						getWorkTfDataFacCode();
 						getWorkTfDataUserCode();
 
-						workTfModal.style.display = 'block';
+						workTfModal.style.display = 'flex';
 					}
 				});
 				
@@ -1390,7 +1526,7 @@
 		$("#workDanIpgoForm")[0].reset();
 		getWorkDanIpgoData();
 		getWorkDanIpgoDataList();
-		workDanIpgoModal.style.display = 'block'; // 모달 숨김
+		workDanIpgoModal.style.display = 'flex'; // 모달 표시
 	}
 	function workDanIpgoModalClose(){
 		workDanIpgoModal.style.display = 'none'; // 모달 숨김
@@ -1432,7 +1568,7 @@
 	function getWorkData(){
 		
 		workDataTable = new Tabulator("#workTabu", {
-		    height:"700px",
+		    height:"100%",
 		    layout:"fitColumns",
 		    selectable:true,	//로우 선택설정
 		    tooltips:true,
@@ -1482,10 +1618,7 @@
 			    {title:"일보코드_pc", field:"ilbo_pc", visible:false},
 		    ],
 		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+			    row.getElement().style.fontWeight = "600";
 			},
 			rowClick:function(e, row){
 
@@ -1584,7 +1717,10 @@
 		    reactiveData:true,
 		    headerHozAlign:"center",
 		    placeholder:"조회된 데이터가 없습니다.",
+		    pagination:"local",
 		    paginationSize:20,
+		    paginationSizeSelector:[20,50,100,500,1000],
+		    paginationCounter:"rows",
 		    headerSort:false,
 		    ajaxResponse:function(url, params, response){
 				$("#workDanTabu .tabulator-col.tabulator-sortable").css("height","30px");
@@ -1638,10 +1774,7 @@
 			    {title:"입고단중", field:"ord_danj", visible:false}
 		    ],
 		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+			    row.getElement().style.fontWeight = "600";
 			},
 			rowClick:function(e, row){
 
@@ -1719,7 +1852,10 @@
 		    reactiveData:true,
 		    headerHozAlign:"center",
 		    placeholder:"조회된 데이터가 없습니다.",
+		    pagination:"local",
 		    paginationSize:20,
+		    paginationSizeSelector:[20,50,100,500,1000],
+		    paginationCounter:"rows",
 		    headerSort:false,
 		    ajaxResponse:function(url, params, response){
 				$("#workDanIpgoTabu .tabulator-col.tabulator-sortable").css("height","55px");
@@ -1773,10 +1909,7 @@
 			    
 		    ],
 		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+			    row.getElement().style.fontWeight = "600";
 			},
 			rowClick:function(e, row){
 
@@ -1965,7 +2098,10 @@
 		    reactiveData:true,
 		    headerHozAlign:"center",
 		    placeholder:"조회된 데이터가 없습니다.",
+		    pagination:"local",
 		    paginationSize:20,
+		    paginationSizeSelector:[20,50,100,500,1000],
+		    paginationCounter:"rows",
 		    headerSort:false,
 		    ajaxResponse:function(url, params, response){
 				$("#workBcfTabu .tabulator-col.tabulator-sortable").css("height","30px");
@@ -2006,10 +2142,7 @@
 			    {title:"입고단중", field:"ord_danj", visible:false}
 		    ],
 		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+			    row.getElement().style.fontWeight = "600";
 			},
 			rowClick:function(e, row){
 
@@ -2130,7 +2263,10 @@
 		    reactiveData:true,
 		    headerHozAlign:"center",
 		    placeholder:"조회된 데이터가 없습니다.",
+		    pagination:"local",
 		    paginationSize:20,
+		    paginationSizeSelector:[20,50,100,500,1000],
+		    paginationCounter:"rows",
 		    headerSort:false,
 		    ajaxResponse:function(url, params, response){
 				$("#workTfTabu .tabulator-col.tabulator-sortable").css("height","30px");
@@ -2194,10 +2330,7 @@
 			    {title:"TF이미있는지", field:"ilbo_lot_yn_chk", visible:false}
 		    ],
 		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+			    row.getElement().style.fontWeight = "600";
 			},
 			rowClick:function(e, row){
 

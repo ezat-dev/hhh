@@ -12,7 +12,7 @@
 .main { width:98%; }
 .container { display:flex; justify-content:space-between; }
 .tabulator { width:100%; max-width:100%; max-height:900px; overflow-x:hidden !important; }
-.tabulator .tabulator-cell { white-space:normal !important; word-break:break-word; text-align:center; }
+.tabulator .tabulator-cell { white-space:normal !important; word-break:break-word; text-align:center; border:1px solid #E2E8F0; }
 .row_select { background-color:#9ABCEA !important; }
 .box1 { display:flex; justify-content:right; align-items:center; width:1500px; margin-left:-1050px; }
 .box1 input[type="date"] { width:150px; padding:5px 10px; font-size:16px; border:1px solid #ccc; border-radius:6px; background:#f9f9f9; color:#333; }

@@ -297,9 +297,11 @@
 	</select>
 
 	<insert id="workIlboDanchDataSave" parameterType="workJisiTk">
-	
+
 		EXEC WORKILBO_DANCH_SAVE #{ilbo_code}, #{ilbo_no}, #{ord_code}, #{ilbo_gubn}, #{ilbo_su}, #{ilbo_jung},
-							 #{ilbo_strt}, #{ilbo_end}, #{user_code}, #{ilbo_g11}, #{ilbo_g12}
+							 #{ilbo_strt}, #{ilbo_end}, #{user_code}, #{ilbo_g11}, #{ilbo_g12},
+							 #{wstd_t32}, #{wstd_t33}, #{wstd_t41}, #{wstd_t87}, #{wstd_t43},
+							 #{wstd_t44}, #{wstd_t51}, #{wstd_t52}, #{wstd_t53}, #{wstd_t54}, #{wstd_t30}
 	</insert>
 	
 	<!-- 열처리 -->
@@ -314,7 +316,6 @@
 			FORMAT(WORKILBO.ILBO_END,'HH:mm') AS ilbo_end_time,
 			CONVERT(VARCHAR(16),ILBO_STRT,120) AS ilbo_strt,
 			CONVERT(VARCHAR(16),ILBO_END,120) AS ilbo_end,
-			FORMAT(ilbo_jung,'N2') AS ilbo_jung,
 			CONCAT(prod_si,' ', prod_si1,' ~ ',prod_si2) AS prod_si,
 			CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr
 		FROM WORKILBO
@@ -527,7 +528,6 @@
 		CONCAT(PROD_GD3,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd,
 		CONVERT(VARCHAR(16),ILBO_STRT,120) AS ilbo_strt,
 		CONVERT(VARCHAR(16),ILBO_END,120) AS ilbo_end,
-		FORMAT(ilbo_jung,'N2') AS ilbo_jung,
 	    dbo.func_prod_spec_msg(prod_si1) AS prod_si1_msg,
 	    dbo.func_prod_spec_msg(prod_si2) AS prod_si2_msg,
 	    dbo.func_prod_spec_msg(prod_sr1) AS prod_sr1_msg,
@@ -597,7 +597,6 @@
 			FORMAT(WORKILBO.ILBO_END,'HH:mm') AS ilbo_end_time,
 			CONVERT(VARCHAR(16),ILBO_STRT,120) AS ilbo_strt,
 			CONVERT(VARCHAR(16),ILBO_END,120) AS ilbo_end,
-			FORMAT(ilbo_jung,'N2') AS ilbo_jung,
 			CONCAT(prod_si,' ', prod_si1,' ~ ',prod_si2) AS prod_si,
 			CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr
 		FROM WORKILBO
@@ -628,12 +627,19 @@
 		<if test="prod_no != '' and prod_no != null">
 			AND PRODUCT.PROD_NO LIKE CONCAT('%',#{prod_no},'%')
 		</if>
+		<if test="ilbo_code != 0 and ilbo_code != null">
+			AND WORKILBO.ILBO_CODE = #{ilbo_code}
+		</if>
+		<if test="ord_code != 0 and ord_code != null">
+			AND WORKILBO.ORD_CODE = #{ord_code}
+		</if>
 		ORDER BY ILBO_CODE
 	</select>
-	
-	
+
+
 	<select id="workIlboTfDataSearch" parameterType="workJisiTk" resultType="workJisiTk">
 		SELECT *,
+		CONCAT('J',FORMAT(ILBO_PC,'000000000')) AS danch_barcode,
 		CONVERT(VARCHAR(10),ord_input,120) AS ord_input_view,
 		CONCAT(PROD_PG,' ',PROD_PG1,' ~ ', PROD_PG2) AS prod_pg,
 		CONCAT(PROD_GD3,' ',PROD_GD4,' ~ ',PROD_GD5) AS prod_gd,
@@ -733,7 +739,18 @@
 			CONVERT(VARCHAR(16),ILBO_STRT,120) AS ilbo_strt,
 			CONVERT(VARCHAR(16),ILBO_END,120) AS ilbo_end,
 			CONCAT(prod_si,' ', prod_si1,' ~ ',prod_si2) AS prod_si,
-			CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr
+			CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr,
+			ILBO_G21 AS wstd_t32,
+			ILBO_G22 AS wstd_t33,
+			ILBO_G23 AS wstd_t41,
+			ILBO_G24 AS wstd_t87,
+			ILBO_G25 AS wstd_t43,
+			ILBO_G26 AS wstd_t44,
+			ILBO_G27 AS wstd_t51,
+			ILBO_G31 AS wstd_t52,
+			ILBO_G32 AS wstd_t53,
+			ILBO_G33 AS wstd_t54,
+			ILBO_G34 AS wstd_t30
 		FROM WORKILBO
 		INNER JOIN
 		    ORDERT
@@ -747,17 +764,17 @@
 		LEFT OUTER JOIN
 		(
 			SELECT PROD_CODE,
-			MAX(REPLACE((CASE WHEN WSTD_T43 IS NULL OR WSTD_T43 = '' THEN '0' ELSE WSTD_T43 END),',','')) AS WSTD_T43,
-			MAX(wstd_t32) AS WSTD_T32,
-			MAX(wstd_t33) AS WSTD_T33,
-			MAX(wstd_t41) AS WSTD_T41,
-			MAX(wstd_t87) AS WSTD_T87,
-			MAX(wstd_t44) AS WSTD_T44,
-			MAX(wstd_t51) AS WSTD_T51,
-			MAX(wstd_t52) AS WSTD_T52,
-			MAX(wstd_t53) AS WSTD_T53,
-			MAX(wstd_t54) AS WSTD_T54,
-			MAX(wstd_t30) AS WSTD_T30,
+			MAX(REPLACE((CASE WHEN WSTD_T43 IS NULL OR WSTD_T43 = '' THEN '0' ELSE WSTD_T43 END),',','')) AS WSTD_T43_STD,
+			MAX(wstd_t32) AS WSTD_T32_STD,
+			MAX(wstd_t33) AS WSTD_T33_STD,
+			MAX(wstd_t41) AS WSTD_T41_STD,
+			MAX(wstd_t87) AS WSTD_T87_STD,
+			MAX(wstd_t44) AS WSTD_T44_STD,
+			MAX(wstd_t51) AS WSTD_T51_STD,
+			MAX(wstd_t52) AS WSTD_T52_STD,
+			MAX(wstd_t53) AS WSTD_T53_STD,
+			MAX(wstd_t54) AS WSTD_T54_STD,
+			MAX(wstd_t30) AS WSTD_T30_STD,
 			MAX(wstd_gj11) AS WSTD_GJ11,
 			MAX(wstd_gj12) AS WSTD_GJ12,
 			MAX(wstd_gj13) AS WSTD_GJ13,
@@ -802,13 +819,26 @@
 			CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr,
 			CONVERT(VARCHAR(16),ILBO_STRT,120) AS ilbo_strt,
 			CONVERT(VARCHAR(16),ILBO_END,120) AS ilbo_end,
-			FORMAT(ilbo_jung,'N2') AS ilbo_jung,
 	    dbo.func_prod_spec_msg(prod_si1) AS prod_si1_msg,
 	    dbo.func_prod_spec_msg(prod_si2) AS prod_si2_msg,
 	    dbo.func_prod_spec_msg(prod_sr1) AS prod_sr1_msg,
 	    dbo.func_prod_spec_msg(prod_sr2) AS prod_sr2_msg,
 		CONCAT(prod_si,' ', prod_si1,' ~ ',prod_si2) AS prod_si,
-		CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr
+		CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr,
+		ILBO_G43 AS wstd_gj11,
+		ILBO_G23 AS wstd_gj12,
+		ILBO_PG6 AS wstd_gj13,
+		ILBO_G31 AS wstd_gj14,
+		ILBO_G34 AS wstd_gj16,
+		ILBO_G35 AS wstd_gj17,
+		ILBO_G42 AS wstd_gj21,
+		ILBO_G24 AS wstd_gj22,
+		ILBO_G26 AS wstd_gj23,
+		ILBO_G32 AS wstd_gj24,
+		ILBO_G25 AS wstd_gj32,
+		ILBO_G27 AS wstd_gj33,
+		ILBO_G33 AS wstd_gj34,
+		ILBO_G11 AS wstd_gj42
 		FROM WORKILBO
 		INNER JOIN
 		    ORDERT
@@ -833,20 +863,20 @@
 			MAX(wstd_t53) AS WSTD_T53,
 			MAX(wstd_t54) AS WSTD_T54,
 			MAX(wstd_t30) AS WSTD_T30,
-			MAX(wstd_gj11) AS WSTD_GJ11,
-			MAX(wstd_gj12) AS WSTD_GJ12,
-			MAX(wstd_gj13) AS WSTD_GJ13,
-			MAX(wstd_gj14) AS WSTD_GJ14,
-			MAX(wstd_gj16) AS WSTD_GJ16,
-			MAX(wstd_gj17) AS WSTD_GJ17,
-			MAX(wstd_gj21) AS WSTD_GJ21,
-			MAX(wstd_gj22) AS WSTD_GJ22,
-			MAX(wstd_gj23) AS WSTD_GJ23,
-			MAX(wstd_gj24) AS WSTD_GJ24,
-			MAX(wstd_gj32) AS WSTD_GJ32,
-			MAX(wstd_gj33) AS WSTD_GJ33,
-			MAX(wstd_gj34) AS WSTD_GJ34,
-			MAX(wstd_gj42) AS WSTD_GJ42,
+			MAX(wstd_gj11) AS WSTD_GJ11_STD,
+			MAX(wstd_gj12) AS WSTD_GJ12_STD,
+			MAX(wstd_gj13) AS WSTD_GJ13_STD,
+			MAX(wstd_gj14) AS WSTD_GJ14_STD,
+			MAX(wstd_gj16) AS WSTD_GJ16_STD,
+			MAX(wstd_gj17) AS WSTD_GJ17_STD,
+			MAX(wstd_gj21) AS WSTD_GJ21_STD,
+			MAX(wstd_gj22) AS WSTD_GJ22_STD,
+			MAX(wstd_gj23) AS WSTD_GJ23_STD,
+			MAX(wstd_gj24) AS WSTD_GJ24_STD,
+			MAX(wstd_gj32) AS WSTD_GJ32_STD,
+			MAX(wstd_gj33) AS WSTD_GJ33_STD,
+			MAX(wstd_gj34) AS WSTD_GJ34_STD,
+			MAX(wstd_gj42) AS WSTD_GJ42_STD,
 			MAX(WSTD_READY) AS WSTD_READY,
 			MAX(WSTD_WORKTIME) AS WSTD_WORKTIME	
 			FROM WORKSTD
@@ -877,11 +907,12 @@
 			CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr,
 			CONVERT(VARCHAR(16),ILBO_STRT,120) AS ilbo_strt,
 			CONVERT(VARCHAR(16),ILBO_END,120) AS ilbo_end,
-			FORMAT(ilbo_jung,'N2') AS ilbo_jung,
 	    dbo.func_prod_spec_msg(prod_si1) AS prod_si1_msg,
 	    dbo.func_prod_spec_msg(prod_si2) AS prod_si2_msg,
 	    dbo.func_prod_spec_msg(prod_sr1) AS prod_sr1_msg,
-	    dbo.func_prod_spec_msg(prod_sr2) AS prod_sr2_msg
+	    dbo.func_prod_spec_msg(prod_sr2) AS prod_sr2_msg,
+		ILBO_G11 AS wstd_ready,
+		ILBO_G12 AS wstd_worktime
 		FROM WORKILBO
 		INNER JOIN
 		    ORDERT
@@ -920,8 +951,8 @@
 			MAX(wstd_gj33) AS WSTD_GJ33,
 			MAX(wstd_gj34) AS WSTD_GJ34,
 			MAX(wstd_gj42) AS WSTD_GJ42,
-			MAX(WSTD_READY) AS WSTD_READY,
-			MAX(WSTD_WORKTIME) AS WSTD_WORKTIME	
+			MAX(WSTD_READY) AS WSTD_READY_STD,
+			MAX(WSTD_WORKTIME) AS WSTD_WORKTIME_STD	
 			FROM WORKSTD
 			GROUP BY PROD_CODE		
 		) WORKSTD
@@ -1031,13 +1062,19 @@
 		<if test="ilbo_code != 0 and ilbo_code != null">
 			AND bcf.ilbo_code = #{ilbo_code}
 		</if>
+		<if test="danch_barcode != '' and danch_barcode != null">
+			AND CONCAT('J',FORMAT(bcf.ILBO_PC,'000000000')) = #{danch_barcode}
+		</if>
+		<if test="ord_code != 0 and ord_code != null">
+			AND bcf.ord_code = #{ord_code}
+		</if>
 		<if test="ilboCodeList != null and !ilboCodeList.isEmpty()">
 			AND bcf.ilbo_code NOT IN
 			<foreach collection="ilboCodeList" item="ilbo_code" index="ilbo_code" open="(" separator="," close=")">
 				#{ilbo_code}
 			</foreach>
 		</if>
-		ORDER BY bcf.ilbo_code DESC	
+		ORDER BY bcf.ilbo_code DESC
 	</select>
 
 <!-- 템퍼링 - "검색"클릭해서 열처리완료된 항목 선택 후 데이터 표현 -->
@@ -1063,7 +1100,6 @@
 			CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr,
 			CONVERT(VARCHAR(16),ILBO_STRT,120) AS ilbo_strt,
 			CONVERT(VARCHAR(16),ILBO_END,120) AS ilbo_end,
-			FORMAT(ilbo_jung,'N2') AS ilbo_jung,
 	    dbo.func_prod_spec_msg(prod_si1) AS prod_si1_msg,
 	    dbo.func_prod_spec_msg(prod_si2) AS prod_si2_msg,
 	    dbo.func_prod_spec_msg(prod_sr1) AS prod_sr1_msg,

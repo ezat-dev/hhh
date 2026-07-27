@@ -456,10 +456,38 @@ public class PreservationController {
 		rtnMap.put("last_page",1);
 		rtnMap.put("data",rtnList);
 
-		return rtnMap; 
+		return rtnMap;
 	}
-	
-	
+
+
+	//설비별 작업현황 (작업수/작업중량/시작·종료시간/총작업시간)
+	@RequestMapping(value = "/preservation/begaAnaly/getBegaWorkStatusList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getBegaWorkStatusList(
+			@RequestParam String sdate,
+			@RequestParam String edate
+			) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Bega bega = new Bega();
+		bega.setSdate(sdate);
+		bega.setEdate(edate);
+
+		List<Map<String, Object>> workStatusList = preservationService.getBegaWorkStatusList(bega);
+
+		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
+		for (int i = 0; i < workStatusList.size(); i++) {
+			HashMap<String, Object> rowMap = new HashMap<String, Object>(workStatusList.get(i));
+			rowMap.put("idx", (i + 1));
+			rtnList.add(rowMap);
+		}
+
+		rtnMap.put("last_page", 1);
+		rtnMap.put("data", rtnList);
+
+		return rtnMap;
+	}
+
 
 	//설비수리이력관리 - 화면로드
 	@RequestMapping(value = "/preservation/suriHistory", method = RequestMethod.GET)
@@ -1118,6 +1146,7 @@ public class PreservationController {
 				rowMap.put("mcd_reg_cd", gigiJeomgeomList.get(i).getMcd_reg_cd());
 				rowMap.put("mcd_mod_dt", gigiJeomgeomList.get(i).getMcd_mod_dt());
 				rowMap.put("mcd_mod_cd", gigiJeomgeomList.get(i).getMcd_mod_cd());
+				rowMap.put("idx", i + 1);
 
 				rtnList.add(rowMap);
 			}
@@ -1125,7 +1154,7 @@ public class PreservationController {
 			rtnMap.put("last_page",1);
 			rtnMap.put("data",rtnList);
 
-			return rtnMap; 
+			return rtnMap;
 		}
 		
 		

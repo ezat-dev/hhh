@@ -60,10 +60,8 @@
         }
 
         /* 🔹 Tabulator 테이블 */
-        #tab1, #tab2 {
-            width: 100%;
-            min-width: 1200px;   /* 최소 크기 확보 */
-            max-height: 900px;
+        .tabulator {
+            overflow-x: hidden !important;
         }
         .tabulator .tabulator-cell {
             white-space: normal !important;
@@ -84,6 +82,199 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+/* ========== 레이아웃 (세로 스크롤 방지, 여백 축소) ========== */
+/* 이 페이지는 .tab 래퍼 없이 .box1이 바로 .main 안에서 툴바 역할을 함 — .box1/.container를 세로로 쌓음 */
+html, body { height: 100%; margin: 0; }
+body { display: flex; flex-direction: column; overflow: hidden; }
+.tab { flex-shrink: 0; }
+.main {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    overflow: hidden;
+}
+
+/* ========== 상단 도구바 ========== */
+.tab {
+    background: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    padding: 0 14px;
+}
+.box1 {
+    flex-shrink: 0;
+    background: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    padding: 10px 14px;
+    margin: 0 !important;
+}
+.button-container .select-button,
+.button-container .insert-button,
+.button-container .excel-button,
+.button-container .printer-button,
+.button-container .delete {
+    height: 34px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    background: #F0F4F8;
+    transition: background-color .13s, border-color .13s;
+}
+.button-container .select-button:hover,
+.button-container .insert-button:hover,
+.button-container .excel-button:hover,
+.button-container .printer-button:hover,
+.button-container .delete:hover {
+    background: #EBF8FF;
+    border-color: #BEE3F8;
+}
+
+/* ========== 리스트 카드 영역 ========== */
+.container {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    padding: 8px;
+    overflow: hidden;
+}
+
+/* ========== Tabulator 리스트 ========== */
+#tab1.tabulator {
+    flex: 1;
+    min-height: 0;
+    border: none;
+    font-size: 12px;
+}
+#tab1 .tabulator-header {
+    background: linear-gradient(135deg, #2B6CB0, #3182CE);
+    border-bottom: none;
+}
+#tab1 .tabulator-col {
+    background: transparent;
+    border-right: 1px solid rgba(255,255,255,.15);
+}
+#tab1 .tabulator-col.tabulator-sortable:hover {
+    background: rgba(255,255,255,.08);
+}
+#tab1 .tabulator-col-title {
+    color: #ffffff;
+    font-weight: 700;
+}
+#tab1 .tabulator-col .tabulator-header-filter input {
+    border: none;
+    border-radius: 5px;
+    padding: 4px 6px;
+    font-size: 11px;
+    background: rgba(255,255,255,.92);
+    box-sizing: border-box;
+}
+#tab1 .tabulator-col .tabulator-header-filter input:focus {
+    outline: none;
+    background: #ffffff;
+    box-shadow: 0 0 0 2px rgba(255,255,255,.6);
+}
+#tab1 .tabulator-row {
+    border-bottom: 1px solid #EDF2F7;
+    transition: background-color .12s;
+}
+#tab1 .tabulator-row.tabulator-row-even {
+    background-color: #F7FAFC;
+}
+#tab1 .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
+#tab1 .tabulator-row.row_select,
+#tab1 .tabulator-row.tabulator-selected {
+    background-color: #BEE3F8 !important;
+    box-shadow: inset 0 0 0 2px #2B6CB0;
+}
+#tab1 .tabulator-cell {
+    border: 1px solid #E2E8F0;
+    color: #2D3748;
+}
+
+/* ========== 페이지네이션 (직관적으로 개선) ========== */
+/* 주의: .tabulator-footer는 display:flex로 바꾸지 않음 — 합계(bottomCalc) 줄이
+   footer 안에 음수 마진으로 겹쳐 쌓이는 구조라 flex로 바꾸면 페이지네이션과 겹침 */
+#tab1 .tabulator-footer {
+    background: #F7FAFC;
+    border-top: 1px solid #E2E8F0;
+    padding: 8px 12px;
+}
+#tab1 .tabulator-footer .tabulator-calcs-holder {
+    background: #EBF8FF !important;
+    border-top: none;
+    border-bottom: 1px solid #BEE3F8;
+    color: #2B6CB0;
+    font-weight: 700;
+}
+#tab1 .tabulator-paginator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+#tab1 .tabulator-page-size {
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    background: #ffffff;
+    color: #2D3748;
+    cursor: pointer;
+    margin: 0;
+}
+#tab1 .tabulator-page-size:focus {
+    outline: none;
+    border-color: #3182CE;
+}
+#tab1 .tabulator-pages {
+    display: flex;
+    gap: 4px;
+    margin: 0;
+}
+#tab1 .tabulator-page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #2D3748;
+    min-width: 30px;
+    height: 28px;
+    padding: 0 8px;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+    transition: background-color .13s, border-color .13s, color .13s;
+}
+#tab1 .tabulator-page.active {
+    background: #3182CE;
+    border-color: #2B6CB0;
+    color: #ffffff;
+}
+#tab1 .tabulator-page:not(:disabled):hover {
+    background: #EBF8FF;
+    border-color: #BEE3F8;
+    color: #2B6CB0;
+    cursor: pointer;
+}
+#tab1 .tabulator-page:disabled {
+    opacity: .4;
+    cursor: not-allowed;
 }
     </style>
 </head>
@@ -144,7 +335,7 @@ function getPIpgoStatusList(){
     $('#tab1').empty();
     
     tab1 = new Tabulator("#tab1", {
-        height:"720px",
+        height:"100%",
         layout:"fitColumns",
         ajaxConfig:"POST",
         ajaxURL:"/tkheat/operation/pIpgoStatus/getPIpgoStatusList",
@@ -186,8 +377,7 @@ function getPIpgoStatusList(){
         ],
         
         rowFormatter:function(row){
-            row.getElement().style.fontWeight = "700";
-            row.getElement().style.backgroundColor = "#FFFFFF";
+            row.getElement().style.fontWeight = "600";
         },
         
         rowClick:function(e, row){

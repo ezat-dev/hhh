@@ -11,7 +11,7 @@
     <style>
     
 .main{
-	width:98%;
+	width:100%;
 }
 .container {
 	display: flex;
@@ -33,103 +33,324 @@
 .row_select{
 	background-color:#9ABCEA !important;
 }
-.box1 {
+
+/* ========== 레이아웃 (세로 스크롤 방지) ========== */
+html, body { height: 100%; margin: 0; }
+body { display: flex; flex-direction: column; overflow: hidden; }
+.tab { flex-shrink: 0; }
+.main {
+	flex: 1;
+	min-height: 0;
 	display: flex;
-	justify-content: right;
-	align-items: center;
-/*	width: 880px;
-	margin-left: -620px;
-	margin-left: -21%;*/
+	padding: 8px;
+	overflow: hidden;
+}
+.container {
+	flex: 1;
+	min-height: 0;
+	flex-direction: column;
+	background: #ffffff;
+	border: 1px solid #E2E8F0;
+	border-radius: 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	padding: 8px;
+	overflow: hidden;
+}
+#tab1.tabulator {
+	flex: 1;
+	min-height: 0;
+	max-height: none;
+	width: 100%;
+	min-width: 0;
+	border: none;
+	font-size: 12px;
+}
+#tab1 .tabulator-header {
+	background: linear-gradient(135deg, #2B6CB0, #3182CE);
+	border-bottom: none;
+}
+#tab1 .tabulator-col {
+	background: transparent;
+	border-right: 1px solid rgba(255,255,255,.15);
+}
+#tab1 .tabulator-col.tabulator-sortable:hover {
+	background: rgba(255,255,255,.08);
+}
+#tab1 .tabulator-col-title {
+	color: #ffffff;
+	font-weight: 700;
+}
+#tab1 .tabulator-col .tabulator-header-filter input {
+	border: none;
+	border-radius: 5px;
+	padding: 4px 6px;
+	font-size: 11px;
+	background: rgba(255,255,255,.92);
+	box-sizing: border-box;
+}
+#tab1 .tabulator-row {
+	border-bottom: 1px solid #EDF2F7;
+	transition: background-color .12s;
+}
+#tab1 .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
+#tab1 .tabulator-row.row_select {
+    background-color: #BEE3F8 !important;
+    box-shadow: inset 0 0 0 2px #2B6CB0;
+}
+#tab1 .tabulator-cell {
+	border: 1px solid #E2E8F0;
+	color: #2D3748;
+}
+#tab1 .tabulator-footer {
+	background: #F7FAFC;
+	border-top: 1px solid #E2E8F0;
+	padding: 8px 12px;
+}
+#tab1 .tabulator-page {
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #ffffff;
+	color: #2D3748;
+	min-width: 30px;
+	height: 28px;
+	padding: 0 8px;
+	font-size: 12px;
+	font-weight: 600;
+}
+#tab1 .tabulator-page.active {
+	background: #3182CE;
+	border-color: #2B6CB0;
+	color: #ffffff;
+}
+#tab1 .tabulator-page:not(:disabled):hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+	color: #2B6CB0;
+	cursor: pointer;
 }
 
+.box1 {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	row-gap: 6px;
+}
 
 .box1 input{
-	width : 24%;
 	font-size:12pt;
 }
 .box1 select{
-	width : 26%;
 	font-size:12pt;
-}         
-
-.ipgoModal {
-	position: fixed; /* 화면에 고정 */
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
 }
 
+/* ========== 상단 도구바 (다른 페이지 날짜검색/검색창과 통일) ========== */
+.tab {
+	background: #ffffff;
+	border: 1px solid #E2E8F0;
+	border-radius: 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	padding: 10px 14px;
+}
+.j_container {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+.j_row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+.daylabel {
+	font-size: 12px;
+	font-weight: 600;
+	color: #495057;
+	white-space: nowrap;
+}
+/* nbsp로 간격 맞추던 옛 방식 대체 (gap이 대신 처리) */
+.search_margin_left,
+.margin_left {
+	margin-left: 0 !important;
+}
+.datetimepicker_date,
+.search_input,
+.search_select,
+.box1 select,
+.box1 input[type="text"],
+.box1 input[type="number"] {
+	height: 30px;
+	padding: 0 8px;
+	font-size: 12px !important;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	color: #333;
+	outline: none;
+	box-sizing: border-box;
+	transition: border-color .2s ease, background-color .2s ease;
+}
+.datetimepicker_date:focus,
+.search_input:focus,
+.search_select:focus,
+.box1 select:focus,
+.box1 input:focus {
+	border-color: #3182CE;
+	background-color: #fff;
+}
+.button-container .select-button,
+.button-container .insert-button,
+.button-container .excel-button,
+.button-container .printer-button,
+.button-container .delete {
+	height: 34px;
+	border: 1px solid #E2E8F0;
+	border-radius: 8px;
+	background: #F0F4F8;
+	transition: background-color .13s, border-color .13s;
+}
+.button-container .select-button:hover,
+.button-container .insert-button:hover,
+.button-container .excel-button:hover,
+.button-container .printer-button:hover,
+.button-container .delete:hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+}
+
+/* ========== 모달 (management 쪽 모달과 동일한 톤) ========== */
+.ipgoModal,
+.orderPrintStatusModal,
+.orderReportModal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	display: none;
+	transform: translate(-50%, -50%);
+	z-index: 20010;
+	border: none;
+	border-radius: 12px;
+	background-color: white;
+	box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+	overflow: hidden;
+}
 .header {
-	display: flex; /* 플렉스 박스 사용 */
-	justify-content: center; /* 중앙 정렬 */
-	align-items: center; /* 수직 중앙 정렬 */
-	margin-bottom: 10px; /* 상단 여백 */
-	background-color: #33363d; /* 배경색 */
-	height: 50px; /* 높이 */
-	color: white; /* 글자색 */
-	font-size: 20px; /* 글자 크기 */
-	text-align: center; /* 텍스트 정렬 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: linear-gradient(135deg, #2c3e50, #34495e);
+	height: 50px;
+	color: white;
+	font-size: 18px;
+	font-weight: 700;
+	text-align: center;
+	cursor: move;
+}
+.ipgoModal .detail,
+.orderPrintStatusModal .detail {
+	background: #f5f7fa;
+	padding: 10px 14px;
+}
+.orderReportModal {
+	flex-direction: column;
+	padding: 14px;
+	gap: 10px;
+	box-sizing: border-box;
+}
+.orderPrintStatusModal .j_container[style*="justify-content:end"],
+.orderReportModal .j_container[style*="justify-content:end"] {
+	padding: 0 14px 14px;
 }
 .btnSaveClose {
 	display: flex;
-	justify-content: center; /* 가운데 정렬 */
-	gap: 20px; /* 버튼 사이 여백 */
-	margin-top: 30px; /* 모달 내용과의 간격 */
-	margin-bottom: 20px; /* 모달 하단과 버튼 사이 간격  */
+	justify-content: center;
+	gap: 12px;
+	padding: 14px 0;
+	background: #ffffff;
+	border-top: 1px solid #E2E8F0;
+	margin: 0;
 }
 .btnSaveClose button {
 	width: 100px;
-	height: 35px;
-	background-color: #FFD700; /* 기본 배경 - 노란색 */
-	color: black;
-	border: 2px solid #FFC107; /* 노란 테두리 */
-	border-radius: 5px;
-	font-weight: bold;
+	height: 36px;
+	border: none;
+	border-radius: 6px;
+	font-weight: 700;
 	text-align: center;
 	cursor: pointer;
-	line-height: 35px;
-	margin: 0 10px;
-	margin-top: 10px;
-	transition: background-color 0.3s ease, transform 0.2s ease;
+	line-height: 36px;
+	margin: 0;
+	transition: transform .2s ease, box-shadow .2s ease;
+}
+.btnSaveClose .save {
+	background: linear-gradient(135deg, #51cf66, #37b24d);
+	color: white;
+}
+.btnSaveClose .close {
+	background: linear-gradient(135deg, #868e96, #495057);
+	color: white;
+	border: none;
 }
 
 /*입고등록 모달*/
 .ipgoModal{
-	position: fixed; /* 화면에 고정 */
 	width:1400px;
-	height:720px;	
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
+	height:745px;
+	flex-direction: column;
+}
+
+.ipgoModal .detail {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+/* 목록(#tabuData)이 남는 세로공간을 모두 흡수하도록 하여, 검색줄 등 정적 콘텐츠
+   때문에 생기던 모달 레벨의 불필요한 스크롤을 없앰. 행이 많아 넘칠 때는
+   타뷸레이터가 자체적으로 스크롤을 보여줌(모달 레벨 스크롤과는 별개) */
+.ipgoModal #tabuData{
+	flex: 1;
+	min-height: 0;
 }
 
 .ipgoModal .j_container{
-	display:flex;	
+	display:flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
 }
 
 .ipgoModal .j_row1{
 	display:flex;
-	margin-top:1px;
+	align-items: center;
+	gap: 8px;
 }
 
-.ipgoModal .margin_left{
-	margin-left:5px;
-}
-
-.ipgoModal .iRowBtn{
-	display:block;
+.iRowBtn{
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	cursor:pointer;
 	width:70px;
-	height:30px;
-	font-size:12pt;
+	height:32px;
+	font-size:12px;
+	font-weight: 600;
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #F0F4F8;
+	color: #2D3748;
+	transition: background-color .13s, border-color .13s;
+}
+.iRowBtn:hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
 }
 
 .ipgoModal .iRowBtn2{
@@ -176,23 +397,75 @@
 	margin-bottom:5px;
 }
 
-/* 저장 버튼 호버 시 */
+/* ========== 모달 내 리스트(#tabuData) ========== */
+#tabuData.tabulator {
+	border: 1px solid #E2E8F0;
+	border-radius: 8px;
+	font-size: 12px;
+}
+#tabuData .tabulator-header {
+	background: linear-gradient(135deg, #2B6CB0, #3182CE);
+	border-bottom: none;
+}
+#tabuData .tabulator-col {
+	background: transparent;
+	border-right: 1px solid rgba(255,255,255,.15);
+}
+#tabuData .tabulator-col-title {
+	color: #ffffff;
+	font-weight: 700;
+}
+#tabuData .tabulator-row {
+	border-bottom: 1px solid #EDF2F7;
+	transition: background-color .12s;
+}
+#tabuData .tabulator-row.tabulator-row-even {
+	background-color: #F7FAFC;
+}
+#tabuData .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
+#tabuData .tabulator-cell {
+	border: 1px solid #E2E8F0;
+	color: #2D3748;
+}
+#tabuData .tabulator-footer {
+	background: #F7FAFC;
+	border-top: 1px solid #E2E8F0;
+	padding: 6px 10px;
+}
+#tabuData .tabulator-page {
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #ffffff;
+	color: #2D3748;
+	min-width: 26px;
+	height: 24px;
+	padding: 0 6px;
+	font-size: 11px;
+	font-weight: 600;
+}
+#tabuData .tabulator-page.active {
+	background: #3182CE;
+	border-color: #2B6CB0;
+	color: #ffffff;
+}
+#tabuData .tabulator-page:not(:disabled):hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+	color: #2B6CB0;
+	cursor: pointer;
+}
+
+/* 저장/닫기 버튼 호버 시 */
 .btnSaveClose .save:hover {
-	background-color: #FFC107;
-	transform: scale(1.05);
+	background: linear-gradient(135deg, #40c057, #2f9e44);
+	transform: translateY(-1px);
 }
-
-/* 닫기 버튼 - 회색 톤 */
-.btnSaveClose .close {
-	background-color: #A9A9A9;
-	color: black;
-	border: 2px solid #808080;
-}
-
-/* 닫기 버튼 호버 시 */
 .btnSaveClose .close:hover {
-	background-color: #808080;
-	transform: scale(1.05);
+	background: linear-gradient(135deg, #6c757d, #343a40);
+	transform: translateY(-1px);
 }
 /*
 input[type="date"] {
@@ -218,16 +491,8 @@ input[type="date"] {
 }
 
 .orderPrintStatusModal {
-	position: fixed; /* 화면에 고정 */
-	width:350px;
-	height:200px;	
-	top: 50%; /* 수직 중앙 */
-	left: 40%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
+	width:390px;
+	height:200px;
 }
 
 .j_container{
@@ -246,16 +511,8 @@ input[type="date"] {
 }
 
 .orderReportModal {
-	position: fixed; /* 화면에 고정 */
 	width:850px;
 	height:800px;
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
 }
 
 .search_input{
@@ -300,22 +557,19 @@ input[type="date"] {
 		<p class="tabP" style="font-size: 20px; margin-left: 20px; color: white; font-weight: 800;"></p>
 		<form id="searchForm" name="searchForm">
 			<div class="j_container">
-			
-				<label class="daylabel">입고일 </label>
+				<label class="daylabel">입고일</label>
 				<input type="text" name="sdate" id="sdate" class="datetimepicker_date">
 				~
 				<input type="text" name="edate" id="edate" class="datetimepicker_date">
-				<label class="daylabel search_margin_left">거래처명&nbsp;</label>
+				<label class="daylabel">거래처명</label>
 				<input type="text" name="corp_name" id="s_corp_name" class="search_input">
-				<label class="daylabel search_margin_left">품명&nbsp;</label>
+				<label class="daylabel">품명</label>
 				<input type="text" name="prod_name" id="s_prod_name" class="search_input">
-				<label class="daylabel search_margin_left">품번&nbsp;</label>
+				<label class="daylabel">품번</label>
 				<input type="text" name="prod_no" id="s_prod_no" class="search_input">
-				&nbsp;&nbsp;
-				<label class="daylabel search_margin_left">입고/타각LOT&nbsp;</label>
+				<label class="daylabel">입고/타각LOT</label>
 				<input type="text" name="ord_lot" id="s_ordlot" class="search_input">
-				
-				<select name="ord_print_gb" id="ord_print_gb" class="search_select search_margin_left">
+				<select name="ord_print_gb" id="ord_print_gb" class="search_select">
 					<option value="1">열처리 수주서</option>
 					<option value="2">열후TAG</option>
 					<option value="3">입고현황표</option>
@@ -323,35 +577,27 @@ input[type="date"] {
 			</div>
 			<div class="j_container">
 				<div class="j_row">
-					<label class="daylabel">제품구분 </label>
+					<label class="daylabel">제품구분</label>
 					<select name="prod_gubn" id="s_prod_gubn" class="search_select">
 						<option value="">전체</option>
 						<option value="양산">양산</option>
 						<option value="개발">개발</option>
 					</select>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<label class="daylabel">규격&nbsp;</label>
-					&nbsp;&nbsp;&nbsp;&nbsp;
+					<label class="daylabel">규격</label>
 					<input type="text" name="prod_gyu" id="s_prod_gyu" class="search_input">
-					<label class="daylabel">재질 </label>
+					<label class="daylabel">재질</label>
 					<input type="text" name="prod_jai" id="s_prod_jai" class="search_input">
-					<label class="daylabel">공정 </label>
+					<label class="daylabel">공정</label>
 					<select name="tech_te" id="s_tech_te" class="search_select">
-					
+
 					</select>
-					<label class="daylabel">담당자&nbsp;</label>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<label class="daylabel">담당자</label>
 					<input type="text" name="ord_name" id="s_ord_name" class="search_input">
-					<label class="daylabel">수주NO </label>
+					<label class="daylabel">수주NO</label>
 					<input type="number" name="ord_code" id="s_ord_code" class="search_input" value="0">
-
-
 				</div>
 			</div>
-		</form>	
+		</form>
 	</div>
 	
     
@@ -389,26 +635,25 @@ input[type="date"] {
 		<div class="setRow">
 			<form action="" id="searchAddForm" autocomplete="off">
 				<div class="j_container">
-					<label class="daylabel">입고일 :</label>
-					<input type="text" class="ord_date datetimepicker_date" id="s_ord_date" 
-						style="font-size: 12pt;">
-					<label class="daylabel search_margin_left">거래처명&nbsp;</label>
+					<label class="daylabel">입고일</label>
+					<input type="text" class="ord_date datetimepicker_date" id="s_ord_date">
+					<label class="daylabel">거래처명</label>
 					<input type="text" name="corp_name" id="sa_corp_name" class="search_input">
-					<label class="daylabel search_margin_left">품명&nbsp;</label>
+					<label class="daylabel">품명</label>
 					<input type="text" name="prod_name" id="sa_prod_name" class="search_input">
-					<label class="daylabel search_margin_left">품번&nbsp;</label>
+					<label class="daylabel">품번</label>
 					<input type="text" name="prod_no" id="sa_prod_no" class="search_input">
-					<label class="daylabel search_margin_left">제품구분 </label>
-					<select name="prod_gubn" id="sa_prod_gubn" class="search_select" style="width:60px important!;">
+					<label class="daylabel">제품구분</label>
+					<select name="prod_gubn" id="sa_prod_gubn" class="search_select">
 						<option value="">전체</option>
 						<option value="양산">양산</option>
 						<option value="개발">개발</option>
 					</select>
 					<label class="daylabel">규격</label>
 					<input type="text" name="prod_gyu" id="sa_prod_gyu" class="search_input">
-					<label class="daylabel search_margin_left">재질 </label>
+					<label class="daylabel">재질</label>
 					<input type="text" name="prod_jai" id="sa_prod_jai" class="search_input">
-					<label class="daylabel search_margin_left">공정 </label>
+					<label class="daylabel">공정</label>
 					<input type="text" name="tech_te" id="sa_prod_jai" class="search_input">
 					<button class="iRowBtn margin_left" type="button" onclick="getIpgoAddData();">검색</button>
 				</div>
@@ -474,9 +719,8 @@ input[type="date"] {
 	$(function(){
 		
 		var tdate = todayDate();
-		var ydate = yesterDate();
-		
-		$("#sdate").val(ydate);
+
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		
 		//모달창 입고일
@@ -537,7 +781,7 @@ input[type="date"] {
 				success:function(result){
     				var fileUrl = "/tkPrint/ipgoPdf/"+result.heatData;
                     $("#orderReport").attr("src",fileUrl);
-                    orderReportModal.style.display = "block";
+                    orderReportModal.style.display = "flex";
 					
 					orderPrintStatusCloseBtn();
 					getIpgoList();
@@ -686,7 +930,10 @@ input[type="date"] {
 	
 	function getIpgoList(){
 		var searchForm = new FormData($("#searchForm")[0]);
-		
+
+		//출력 등으로 재조회되어도 체크박스 선택이 풀리지 않도록, 조회 전 선택된 항목을 기억해뒀다가 재조회 후 복원
+		var selectedOrdCodes = ipgoListTable.getSelectedData().map(function(d){ return d.ord_code; });
+
 		$.ajax({
 			url:"/tkheat/product/ipgo/getIpgoList",
 			type:"post",
@@ -695,7 +942,15 @@ input[type="date"] {
 	        processData: false,
 			data:searchForm,
 			success:function(result){
-				ipgoListTable.setData(result.data);
+				ipgoListTable.setData(result.data).then(function(){
+					if(selectedOrdCodes.length > 0){
+						ipgoListTable.getRows().forEach(function(row){
+							if(selectedOrdCodes.indexOf(row.getData().ord_code) !== -1){
+								row.select();
+							}
+						});
+					}
+				});
 			}
 		});
 	}
@@ -705,14 +960,18 @@ input[type="date"] {
 	function getIpgoData(){
 		
 		ipgoListTable = new Tabulator("#tab1", {
-		    height:"750px",
+		    tableBuilt:function(){ this.redraw(true); },
+		    height:"100%",
 		    layout:"fitColumns",
-		    selectable:true,
+		    //체크박스는 formatter:"rowSelection"이 change 이벤트로 자체 처리함.
+		    //selectable:true(기본값)면 행 전체에 클릭리스너가 걸려 편집 가능한 셀(박스수량 등)을 클릭만 해도 체크박스가 같이 토글됨.
+		    //"highlight"는 그 자동 토글만 막고 체크박스 자체 선택 동작은 그대로 유지함.
+		    selectable:"highlight",
 		    tooltips:true,
 //		    selectableRangeMode:"click",
 		    reactiveData:true,
 		    headerHozAlign:"center",
-		    
+
 /*		    ajaxConfig:"POST",
 		    ajaxLoader:false,
 		    ajaxURL:"/tkheat/product/ipgo/getIpgoList",
@@ -722,7 +981,10 @@ input[type="date"] {
 		    	"edate": $("#edate").val(),
 			    },
 */		    placeholder:"조회된 데이터가 없습니다.",
+		    pagination:"local",
 		    paginationSize:20,
+		    paginationSizeSelector:[20,50,100,500,1000],
+		    paginationCounter:"rows",
 		    ajaxResponse:function(url, params, response){
 //				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
 		        return response; //return the response data to tabulator
@@ -741,7 +1003,7 @@ input[type="date"] {
 //		    				alert("작업로트 " + jisi_lot_view);
 		    				var fileUrl = "/tkPrint/열처리수주서/"+ord_code+".pdf";
 		                    $("#orderReport").attr("src",fileUrl);
-		                    orderReportModal.style.display = "block";
+		                    orderReportModal.style.display = "flex";
 		    			}
 		    		}
 				},
@@ -754,7 +1016,7 @@ input[type="date"] {
 //		    				alert("작업로트 " + jisi_lot_view);
 		    				var fileUrl = "/tkPrint/열후TAG/"+ord_code+".pdf";
 		                    $("#orderReport").attr("src",fileUrl);
-		                    orderReportModal.style.display = "block";
+		                    orderReportModal.style.display = "flex";
 		    			}
 		    		}
 				},
@@ -765,7 +1027,7 @@ input[type="date"] {
 //		    				alert("작업로트 " + jisi_lot_view);
 		    				var fileUrl = "/tkPrint/입고현황표/"+ord_code+".pdf";
 		                    $("#orderReport").attr("src",fileUrl);
-		                    orderReportModal.style.display = "block";
+		                    orderReportModal.style.display = "flex";
 		    			}
 		    		}
 				},
@@ -782,7 +1044,7 @@ input[type="date"] {
 				{title:"출고예정", field:"ord_nap", sorter:"string", width:60,
 				    hozAlign:"center",  headerSort:false,
 				    editor:dateEditor}, 
-		        {title:"거래처", field:"corp_name", sorter:"string", width:100,
+		        {title:"거래처", field:"corp_name", sorter:"string", width:90,
 		        	hozAlign:"center", headerSort:false},		        
 		        {title:"품명", field:"prod_name", sorter:"string", width:100,
 		        	hozAlign:"center",  headerSort:false},
@@ -840,25 +1102,25 @@ input[type="date"] {
 						values:["선입1","선입2","선입3","선입4","선입5"]
 					}
 				},
-				{title:"비고", field:"ord_bigo", sorter:"int", width:80,
+				{title:"비고", field:"ord_bigo", sorter:"int", width:60,
 					hozAlign:"center",  headerSort:false,
 					editor:"input"
 				},
-				{title:"표면경도", field:"prod_pg", sorter:"int", width:80,
+				{title:"표면경도", field:"prod_pg", sorter:"int", width:70,
 					hozAlign:"center",  headerSort:false},
-				{title:"경화깊이", field:"prod_cd", sorter:"int", width:80,
+				{title:"경화깊이", field:"prod_cd", sorter:"int", width:70,
 					hozAlign:"center",  headerSort:false},
 				{title:"심부경도", field:"prod_sg", sorter:"int", width:80,
 					hozAlign:"center",  headerSort:false},
-				{title:"화합물층", field:"prod_e1", sorter:"int", width:80,
+				{title:"화합물층", field:"prod_e1", sorter:"int", width:60,
 					hozAlign:"center",  headerSort:false},
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
-			    row.getElement().style.fontWeight = "700";
-			    
-			    if(data.ord_prn == 0){				    
-				    row.getElement().style.backgroundColor = "#FAED7D";	
+			    row.getElement().style.fontWeight = "600";
+
+			    if(data.ord_prn == 0){
+				    row.getElement().style.backgroundColor = "#FAED7D";
 			    }else{
 			    	row.getElement().style.backgroundColor = "#FFFFFF";
 			    }
@@ -944,9 +1206,13 @@ input[type="date"] {
 	function getIpgoAddDataList(){
 		
 		ipgoAddTable = new Tabulator("#tabuData", {
-		    height:"550px",
+		    tableBuilt:function(){ this.redraw(true); },
+		    height:"100%",
 		    layout:"fitColumns",
-//		    selectable:true,
+		    //체크박스는 formatter:"rowSelection"이 change 이벤트로 자체 처리함.
+		    //selectable:true(기본값)면 Tabulator가 행 전체에 클릭리스너를 걸어 셀 편집을 위해 클릭만 해도 체크박스가 같이 토글됨.
+		    //"highlight"는 그 자동 토글 리스너만 막고 체크박스 자체 선택 동작(및 선택 개수 제한 없음)은 그대로 유지함.
+		    selectable:"highlight",
 		    tooltips:true,
 //		    selectableRangeMode:"click",
 		    reactiveData:true,
@@ -992,11 +1258,11 @@ input[type="date"] {
 		        	hozAlign:"center", },  	
 		        {title:"공정", field:"tech_te", sorter:"int", width:80,
 			        hozAlign:"center", },	
-			    {title:"표면경도", field:"prod_pg", sorter:"int", width:100,
+			    {title:"표면경도", field:"prod_pg", sorter:"int", width:90,
 				    hozAlign:"center", },	
-				{title:"심부경도", field:"prod_sg", sorter:"int", width:100,
+				{title:"심부경도", field:"prod_sg", sorter:"int", width:90,
 				    hozAlign:"center", },
-				{title:"경화깊이", field:"prod_cd", sorter:"int", width:100,
+				{title:"경화깊이", field:"prod_cd", sorter:"int", width:90,
 					hozAlign:"center", },
 				{title:"단위", field:"prod_danw", sorter:"int", width:60,
 					hozAlign:"center", headerSort:false},	
@@ -1005,7 +1271,7 @@ input[type="date"] {
 		            mutatorData: function(value, data) {
 		                return 1; // 값이 없으면 1
 		            }
-				},	
+				},
 				{title:"수량", field:"ord_su", sorter:"int", width:60,
 					hozAlign:"center", headerSort:false,editor:true,
 		            mutatorData: function(value, data) {
@@ -1022,12 +1288,9 @@ input[type="date"] {
 					hozAlign:"center", headerSort:false},
 		    ],
 		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+			    row.getElement().style.fontWeight = "600";
 			},
-			cellEdited: function(cell) {       		
+			cellEdited: function(cell) {
 
 		        // 편집이 끝난 후 아래 행 같은 열로 이동 + 편집 시작
 		        setTimeout(function() {
@@ -1135,7 +1398,7 @@ input[type="date"] {
 	insertButton.addEventListener('click', function() {
 		getIpgoAddData();
 		getIpgoAddDataList();
-		ipgoModal.style.display = 'block'; // 모달 표시
+		ipgoModal.style.display = 'flex'; // 모달 표시
 	});
 
 	function closeBtn(){

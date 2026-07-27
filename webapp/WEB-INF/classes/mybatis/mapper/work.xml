@@ -1193,7 +1193,7 @@
 		LEFT OUTER JOIN TECHIN ON PRODUCT.TECH_NO = TECHIN.TECH_NO
 	WHERE 1 = 1
 	<if test="sdate != null and sdate != '' and edate != null and edate != ''">
-		AND ORDERT.ORD_DATE BETWEEN #{sdate} AND #{edate}
+		AND ORDERT.ORD_DATE BETWEEN #{sdate} AND CONCAT(#{edate},' 23:59:59')
 	</if>
 	<if test="corp_name != null and corp_name != ''">
 		AND CORP_NAME LIKE '%' + #{corp_name} + '%'
@@ -1287,7 +1287,7 @@
 				INNER JOIN ORDERT ON WORKILBO.ORD_CODE = ORDERT.ORD_CODE
 				INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
 				INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
-		WHERE  WORKILBO.ILBO_STRT BETWEEN #{sdate} AND #{edate}
+		WHERE  WORKILBO.ILBO_STRT BETWEEN #{sdate} AND CONCAT(#{edate},' 23:59:59')
 			AND ILBO_LOT != ''
 			AND ILBO_PC IS NOT NULL
 		ORDER BY WORKILBO.ILBO_STRT DESC

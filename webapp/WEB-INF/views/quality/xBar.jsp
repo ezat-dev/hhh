@@ -124,6 +124,112 @@
     }
  
 
+/* ========== 상단 도구바 ========== */
+.tab {
+    background: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    padding: 10px 14px;
+    margin-bottom: 10px;
+}
+.button-container .select-button,
+.button-container .insert-button,
+.button-container .excel-button,
+.button-container .printer-button {
+    height: 34px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    background: #F0F4F8;
+    transition: background-color .13s, border-color .13s;
+}
+.button-container .select-button:hover,
+.button-container .insert-button:hover,
+.button-container .excel-button:hover,
+.button-container .printer-button:hover {
+    background: #EBF8FF;
+    border-color: #BEE3F8;
+}
+
+/* ========== 리스트/차트 카드 공통 (여러 패널을 한 화면에 보여주는 페이지라 자연스러운 세로 스크롤은 유지) ========== */
+.view {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+}
+.view > div {
+    flex: 1;
+    min-width: 0;
+}
+#standardTable,
+#dataTable,
+#cpkCalcTable {
+    background: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    overflow: hidden;
+}
+#xBar,
+#rBar {
+    background: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    padding: 10px;
+    margin-bottom: 12px;
+}
+
+/* ========== Tabulator 리스트 재도장 (기준정보/측정값/계산값 테이블, 품번선택 모달은 제외) ========== */
+#standardTable .tabulator-header,
+#dataTable .tabulator-header,
+#cpkCalcTable .tabulator-header {
+    background: linear-gradient(135deg, #2B6CB0, #3182CE);
+    border-bottom: none;
+}
+#standardTable .tabulator-col,
+#dataTable .tabulator-col,
+#cpkCalcTable .tabulator-col {
+    background: transparent;
+    border-right: 1px solid rgba(255,255,255,.15);
+}
+#standardTable .tabulator-col-title,
+#dataTable .tabulator-col-title,
+#cpkCalcTable .tabulator-col-title {
+    color: #ffffff;
+    font-weight: 700;
+}
+#standardTable .tabulator-row,
+#dataTable .tabulator-row,
+#cpkCalcTable .tabulator-row {
+    border-bottom: 1px solid #EDF2F7;
+    transition: background-color .12s;
+}
+#standardTable .tabulator-row.tabulator-row-even,
+#dataTable .tabulator-row.tabulator-row-even,
+#cpkCalcTable .tabulator-row.tabulator-row-even {
+    background-color: #F7FAFC;
+}
+#standardTable .tabulator-row:hover,
+#dataTable .tabulator-row:hover,
+#cpkCalcTable .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
+#standardTable .tabulator-row.row_select,
+#dataTable .tabulator-row.row_select,
+#cpkCalcTable .tabulator-row.row_select {
+    background-color: #BEE3F8 !important;
+    box-shadow: inset 0 0 0 2px #2B6CB0;
+}
+#standardTable .tabulator-cell,
+#dataTable .tabulator-cell,
+#cpkCalcTable .tabulator-cell {
+    border: 1px solid #E2E8F0;
+    color: #2D3748;
+}
+
 /*품번모달*/
         .pumbunModal {
             display: none;
@@ -260,7 +366,7 @@
         	<div id="rBar"></div>
         <div class="view">
             <div id="dataTable"></div>
-             <div id="cpkCalcTable" style="margin-left:160px;"></div> 
+             <div id="cpkCalcTable"></div>
 
 	
 		</div>

@@ -9,440 +9,153 @@
   <link rel="stylesheet" href="/tkheat/css/login/style.css">
 
 	<script src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"></script>
-	
+
   <link rel="stylesheet" href="/tkheat/css/sideBar/styles.css">
-<%@include file="../include/pluginpage.jsp" %>  
+<%@include file="../include/pluginpage.jsp" %>
   <title>태경열처리</title>
 </head>
 <style>
-*{
-	font-weight:700;
-}
-
 .row_select{
 	background-color:#9ABCEA !important;
 }
-
-
-   .menuDiv {
-       display: flex;
-       align-items: center;
-       width: 92.7%;
-       height: 50px;
-       
-       margin-left: 131px;
-       padding: 8px 14px;
-       border-radius: 14px;
-       box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.12);
-       overflow-x: auto;
-       white-space: nowrap;
-       gap: 8px;  /* 탭 간격 좁히기 */
-       scrollbar-width: none;
-       -ms-overflow-style: none;
-   }
-   
-   .menuDiv::-webkit-scrollbar {
-       display: none;
-   }
-   
-   
-   .menuDivTab {
-    text-align: center;
-    cursor: pointer;
-    background: white;
-    border-radius: 10px;
-    padding: 12px 18px;
-    font-size: 14px;
-    font-weight: 700;
-    color: #333;
-    border: 1px solid #ddd;
-    transition: all 0.3s ease-in-out;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-    user-select: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;  /* ✅ 변경 */
-    gap: 6px;
-    
-    /* ✅ 고정 크기 설정 */
-    min-width: 150px;  
-    max-width: 150px;
-    width: 150px;
-    height: 43px;
-    cursor: pointer;
-}
-   
-.menuDivTab .menuName {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    cursor: pointer;
-    text-align: left;  /* 왼쪽 정렬 */
-}
-   
-	   .menuDivTab:hover {
-	    background: #f0f2f5;
-	    transform: translateY(-2px);
-	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-	}
-	
-	.menuDivTab.active {
-	    background: #007aff;
-	    color: white;
-	    border: 1px solid #0062cc;
-	    box-shadow: 0 3px 8px rgba(0, 122, 255, 0.3);
-	    transform: translateY(-2px);
-	}
-	
-	.menuDivTab i {
-	    font-size: 16px;
-	    color: inherit;
-	}
-   
-   
-   .menuDivTab .close-btn {
-       font-size: 19px; 
-       background: none;
-       border: none;
-       color: #888; 
-       cursor: pointer;
-       padding: 0;
-       margin-left: 10px;
-       display: flex;
-       align-items: center; 
-       justify-content: center;
-       transition: color 0.2s ease-in-out;
-   }
-
-   
-   .menuDivTab .close-btn:hover {
-       color: #ff3b30; 
-   }
-   
-   
-   .frameDiv {
-       display: flex;
-       width: 92.7%;
-       height: 90%;
-       background: white;
-       margin-left: 131px;
-       border-radius: 14px;
-       box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
-       overflow: hidden;
-   }
-   
-   .frameDiv #pageFrame {
-       width: 100%;
-       height: 100%;
-       border: none;
-   }
-
-
-.header{
-    margin-left: 131px;
-    /* margin-right: 8px; */
-    margin-top: 5px;
-    height: 30px;
-    background-color: #33363d;
-    border-radius: 6px 6px 0px 0px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.logout-button {
-    height: 30px; /* tab보다 조금 작게 설정 */
-    padding: 0 11px; /* 좌우 패딩 */
-    border: 1px solid rgb(53, 53, 53);
-    border-radius: 4px; /* 모서리 둥글게 */
-    background-color: #ffffff; /* 배경색 */
-    cursor: pointer; /* 포인터 커서 */
-    display: flex; /* 내부 요소를 플렉스 박스로 설정 */
-    align-items: center; /* 버튼 안에서 세로 가운데 정렬 */
-    margin-right: 30px;
-    
-    /*opacity: 0.5;  버튼을 흐릿하게 */
- 	/*pointer-events: none;  마우스 이벤트 차단 */
-}
-
-
-.logout-button:hover {
-    background-color: #f0f0f0; /* hover 시 색상 변화 */
-}
-.button-image {
-    width: 20px; /* 원하는 너비 설정 */
-    height: 20px; /* 원하는 높이 설정 */
-    margin-right: 0px; /* 이미지와 텍스트 사이의 여백 */
-    vertical-align: middle; /* 세로 가운데 정렬 */
-}
-
-.loginName{
-	display: flex;
-}
-   /* ✅ X 버튼 고정 위치 */
-.menuDivTab .close-btn {
-    font-size: 19px; 
-    background: none;
-    border: none;
-    color: #888; 
-    cursor: pointer;
-    padding: 0;
-    margin-left: 6px;
-    display: flex;
-    align-items: center; 
-    justify-content: center;
-    transition: color 0.2s ease-in-out;
-    flex-shrink: 0;  /* ✅ X 버튼 크기 고정 */
-}
-
-   
-   .menuDivTab .close-btn:hover {
-       color: #ff3b30; 
-   }
-
-	.menuName{
-		cursor:pointer;
-	}   
-
 </style>
 
 <body>
-    <header class="header">
-	    <p class="headerP" style="font-size:20px; margin-left:40px; color : white; font-weight:800;"></p>
-	    <!-- 로그인정보 표현, 로그아웃 버튼 -->
-	    <p class="loginName" style="font-size:20px; margin-left:960px; color : white; font-weight:800;"></p>
-        <button class="logout-button">
-            <img src="/tkheat/css/sideBar/exit-outline.svg" alt="select" class="button-image">로그아웃	 	           
-        </button>
-    </header>
-    <div class="hhhh"></div>
-    <div class="l-navbar" id="navbar" style="overflow-y: auto;">
-        <nav class="nav">
+  <div class="tk-layout">
+    <nav class="l-navbar" id="navbar">
+        <div class="nav">
             <div>
-                <div class="nav__brand">
-                     <a href="#" class="nav__logo"><img class="tkLogo" src="/tkheat/css/sideBar/tkLogo.png"></a>
+                <div class="nav__brand" onclick="iframeSrc('/tkheat/monitoring/overView','모니터링-설비모니터링')">
+                     <a href="#" class="nav__logo" onclick="return false;"><img class="tkLogo" src="/tkheat/css/sideBar/tkLogo.png"></a>
                 </div>
                 <div class="nav__list">
-                	
-                	
-                	 <div class="nav__link collapse">
-                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">제품관리</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="aMenu">
-<!--                         
-                             <li><a href="#" class="collapse__sublink" onclick="updateHeader('입고관리')">입고관리</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('출고관리')">출고관리</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('재고현황(상세정보)')">재고현황(상세정보)</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별재고현황')">제품별재고현황</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('출고대기현황')">출고대기현황</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('공정작업현황')">공정작업현황</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('입출고삭제현황')">입출고삭제현황</a></li>
- -->
-                        </ul>
-                    </div>
-                	
-                	
-                    
-                     <div class="nav__link collapse">
-                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">생산관리</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="bMenu">
+                    <div class="submenu-empty" id="submenuEmpty">상단 메뉴를 선택하세요</div>
 
-                            
- 
-                        </ul>
-                    </div>
-                    
-                    
-                    <div class="nav__link collapse">
-                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">생산공정관리</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="cMenu">
-<!-- 
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('준비 작업실적')">준비 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('전세정 작업실적')">전세정 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('침탄 작업실적')">침탄 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('고주파 작업실적')">고주파 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('템퍼링 작업실적')">템퍼링 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('후세정 작업실적')">후세정 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('쇼트/샌딩 작업실적')">쇼트/샌딩 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비별 작업실적')">설비별 작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별 불량현황')">제품별 불량현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('소입경도현황')">소입경도현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('템퍼링경도현황')">템퍼링경도현황</a></li>
- -->					        
-                        </ul>
-                    </div>
-                    
-                    
-                    <div class="nav__link collapse">
-                        <ion-icon name="desktop-outline"></ion-icon>
-                        <span class="nav_name">모니터링</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="dMenu">
-                          
-                            <li><a href="/tkheat/monitoring/monitoring" class="collapse__sublink"">생산모니터링</a></li>
-
-                        </ul>
-                    </div>
-                    
-                    
-                  
-
-                     <div class="nav__link collapse">
-                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">설비보존관리</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="eMenu">
-<!-- 
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('SparePart관리')">SparePart관리</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('비가동정보')">비가동정보</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비가동율분석')">설비가동율분석</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비수리이력관리')">설비수리이력관리</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비점검기준등록')">설비점검기준등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비별점검현황(일별)')">설비별점검현황(일별)</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비별점검현황(월별)')">설비별점검현황(월별)</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('측정기기고장이력')">측정기기고장이력</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('측정기기점검관리')">측정기기점검관리</a></li>
- -->
-                        </ul>
-                    </div>
-
-                    
-					
-                     <div class="nav__link collapse">
-                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">품질관리</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="fMenu">
-<!-- 
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('수입검사')">수입검사</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('부적합등록')">부적합등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('소입경도현황')">소입경도현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('템퍼링경도현황')">템퍼링경도현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('자주검사불량현황')">자주검사불량현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('자주검사불량조치관리')">자주검사불량조치관리</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('Xbar-R관리도')">Xbar-R관리도</a></li>
- -->
-                        </ul>
-                    </div>
-                    
-                      
-                    
-                     <div class="nav__link collapse">
-                        <ion-icon name="folder-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">경영정보</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="gMenu">
-<!--  
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별입고현황')">제품별입고현황</a></li>
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별출고현황')">제품별출고현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('거래처별입고현황')">거래처별입고현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('거래처별출고현황')">거래처별출고현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('년간매출현황')">년간매출현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('월별불량현황')">월별불량현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('월별거래처별불량현황')">월별거래처별불량현황</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('제품별작업실적')">제품별작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('설비별작업실적')">설비별작업실적</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('공지사항')">공지사항</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('월매출현황(마감)')">월매출현황(마감)</a></li>
--->					        
-                        </ul>
-                    </div>
-                    
-                   
-					<div class="nav__link collapse">
-                        <ion-icon name="people-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">기준정보</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="hMenu">
-<!--                         
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/cutumInsert','')">거래처등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/productInsert', '')">제품등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/facInsert', '')">설비등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/chimStandard', '')">침탄로작업표준</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/goStandard', '')">고주파로작업표준</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/coilInsert', '')">코일등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/plugInsert', '등록')">PLUG등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('PLUG점검기준등록')">PLUG점검기준등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/userinsert', '')">작업자등록</a></li>
-       						<li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/authority', '')">사원별권한등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('측정기기관리')">측정기기관리</a></li>
- -->					        
-                        </ul>
-                    </div>
-					<div class="nav__link collapse">
-                        <ion-icon name="people-outline" class="nav__icon"></ion-icon>
-                        <span class="nav_name">작업지시</span>
-                        <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
-                        <ul class="collapse__menu" id="iMenu">
-<!--                         
-                            <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/cutumInsert','')">거래처등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/productInsert', '')">제품등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/facInsert', '')">설비등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/chimStandard', '')">침탄로작업표준</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/goStandard', '')">고주파로작업표준</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/coilInsert', '')">코일등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/plugInsert', '등록')">PLUG등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('PLUG점검기준등록')">PLUG점검기준등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/userinsert', '')">작업자등록</a></li>
-       						<li><a href="#" class="collapse__sublink" onclick="updateHeaderAndNavigate(event, '/tkheat/management/authority', '')">사원별권한등록</a></li>
-					        <li><a href="#" class="collapse__sublink" onclick="updateHeader('측정기기관리')">측정기기관리</a></li>
- -->					        
-                        </ul>
-                    </div>
-
-                  
-	
-					
-                   
-                    
-                   
+                    <ul class="sub-menu-list" id="aMenu"></ul>
+                    <ul class="sub-menu-list" id="bMenu"></ul>
+                    <ul class="sub-menu-list" id="cMenu"></ul>
+                    <ul class="sub-menu-list" id="dMenu">
+                        <li><a href="/tkheat/monitoring/monitoring" class="collapse__sublink">생산모니터링</a></li>
+                    </ul>
+                    <ul class="sub-menu-list" id="eMenu"></ul>
+                    <ul class="sub-menu-list" id="fMenu"></ul>
+                    <ul class="sub-menu-list" id="gMenu"></ul>
+                    <ul class="sub-menu-list" id="hMenu"></ul>
+                    <ul class="sub-menu-list" id="iMenu"></ul>
                 </div>
             </div>
-        </nav>
+        </div>
+    </nav>
+
+    <div class="tk-main-area">
+        <header class="tk-header">
+            <p class="headerP"></p>
+
+            <div class="tk-category-bar" id="categoryBar">
+                <button class="cat-btn" data-menu="aMenu" onclick="selectCategory('aMenu',this)">
+                    <ion-icon name="folder-outline"></ion-icon><span>제품관리</span>
+                </button>
+                <button class="cat-btn" data-menu="bMenu" onclick="selectCategory('bMenu',this)">
+                    <ion-icon name="folder-outline"></ion-icon><span>생산관리</span>
+                </button>
+                <button class="cat-btn" data-menu="cMenu" onclick="selectCategory('cMenu',this)">
+                    <ion-icon name="folder-outline"></ion-icon><span>생산공정관리</span>
+                </button>
+                <button class="cat-btn" data-menu="dMenu" onclick="selectCategory('dMenu',this)">
+                    <ion-icon name="desktop-outline"></ion-icon><span>모니터링</span>
+                </button>
+                <button class="cat-btn" data-menu="eMenu" onclick="selectCategory('eMenu',this)">
+                    <ion-icon name="folder-outline"></ion-icon><span>설비보존관리</span>
+                </button>
+                <button class="cat-btn" data-menu="fMenu" onclick="selectCategory('fMenu',this)">
+                    <ion-icon name="folder-outline"></ion-icon><span>품질관리</span>
+                </button>
+                <button class="cat-btn" data-menu="gMenu" onclick="selectCategory('gMenu',this)">
+                    <ion-icon name="folder-outline"></ion-icon><span>경영정보</span>
+                </button>
+                <button class="cat-btn" data-menu="hMenu" onclick="selectCategory('hMenu',this)">
+                    <ion-icon name="people-outline"></ion-icon><span>기준정보</span>
+                </button>
+                <button class="cat-btn" data-menu="iMenu" onclick="selectCategory('iMenu',this)">
+                    <ion-icon name="people-outline"></ion-icon><span>작업지시</span>
+                </button>
+            </div>
+
+            <div class="tk-user-area">
+                <p class="loginName"></p>
+                <button class="logout-button">
+                    <img src="/tkheat/css/sideBar/exit-outline.svg" alt="select" class="button-image">로그아웃
+                </button>
+            </div>
+        </header>
+
+        <div class="frameDiv">
+            <iframe id="pageFrame" src="" frameborder="0"></iframe>
+        </div>
     </div>
-    
-    <div class="menuDiv"></div>
-    <div class="frameDiv">
-		<iframe id="pageFrame" src="" frameborder="0"></iframe>
-    </div>
+  </div>
    <script>
+
+// ✅ 대메뉴 클릭 시 좌측 사이드바에 소메뉴 표시 (애니메이션 없이 즉시 전환)
+// autoNavigate: 대메뉴 버튼을 직접 클릭했을 때만 true로 호출 -> 첫번째 소메뉴 페이지로 자동 이동
+// (setActiveMenu에서 UI 동기화 목적으로 호출할 때는 false로 넘겨서 재이동이 일어나지 않도록 함)
+function selectCategory(groupId, btnEl, autoNavigate){
+    document.querySelectorAll('.sub-menu-list').forEach(function(el){
+        el.classList.remove('active-group');
+    });
+    var target = document.getElementById(groupId);
+    if(target){
+        target.classList.add('active-group');
+    }
+
+    document.querySelectorAll('.cat-btn').forEach(function(b){
+        b.classList.remove('active');
+    });
+    if(!btnEl){
+        btnEl = document.querySelector('.cat-btn[data-menu="'+groupId+'"]');
+    }
+    if(btnEl){
+        btnEl.classList.add('active');
+    }
+
+    var empty = document.getElementById('submenuEmpty');
+    if(empty){
+        empty.style.display = 'none';
+    }
+
+    if(autoNavigate !== false && target){
+        var firstLink = target.querySelector('a.collapse__sublink[onclick]');
+        if(firstLink){
+            firstLink.click();
+        }
+    }
+}
 
 // ✅ 메뉴 클릭 시 활성 상태 유지 함수
 function setActiveMenu(menuUrl) {
     $('.collapse__sublink').removeClass('active');
-    
+
     $('.collapse__sublink').each(function() {
         const clickAttr = $(this).attr('onclick');
-        if(clickAttr && clickAttr.includes(menuUrl)) {
+        //단순 includes()는 예: '/tkheat/product/chulgo'가 '/tkheat/product/chulgoWaiting'의 접두어라
+        //출고관리 클릭시 출고대기현황까지 같이 active 처리되는 오탐이 있어, 따옴표로 감싼 정확한 URL만 매칭
+        if(clickAttr && clickAttr.includes("'" + menuUrl + "'")) {
             $(this).addClass('active');
-            
-            const $parentCollapse = $(this).closest('.collapse__menu');
-            const $parentLink = $parentCollapse.prev('.nav__link.collapse');
-            
-            $parentCollapse.addClass('showCollapse');
-            $parentLink.find('.collapse__link').addClass('rotate');
+
+            const groupId = $(this).closest('.sub-menu-list').attr('id');
+            if(groupId){
+                selectCategory(groupId, null, false);
+            }
         }
     });
 }
-
-$(document).on('click', '.menuDivTab', function () {
-    $('.menuDivTab').removeClass('active');
-    $(this).addClass('active');
-});
 
 // 로드
 $(function(){
     var loginInfo = "${loginUser.user_name}";
     $(".loginName").text(loginInfo+"님 로그인");
-   
+
     loginUserMenuSetting();
-    menuList();
 });
 
 function loginUserMenuSetting(){
@@ -455,15 +168,17 @@ function loginUserMenuSetting(){
             var data = result.data;
             var idx = 0;
             for(let key in data){
-                if(key != "perm_code" && key != "user_code"){
+                // b01(작업지시), b06(작업지시NEW)는 생산관리 메뉴에서 숨김 처리
+                // i07(최종검사)는 미구현 페이지라 작업지시 메뉴에서 숨김 처리
+                if(key != "perm_code" && key != "user_code" && key != "b01" && key != "b06" && key != "i07"){
                     if(data[key] != null && data[key] != "N"){
-                        
+
                         if(typeof pageObject(key) != "undefined"){
                             var _link = pageObject(key)[0];
                             var _name = pageObject(key)[1];
-                            
+
                             if(typeof _link != "undefined" && typeof _name != "undefined"){
-                                
+
                                 var _group = "";
                                 var _groupID = "";
 
@@ -498,11 +213,11 @@ function loginUserMenuSetting(){
 
                                 _group_t = _group.replace(/\s/gi,"&nbsp;");
                                 _name_t = _name.replace(/\s/gi,"&nbsp;");
-                                
+
                                 var _menu = "<li>";
                                 _menu += "<a class='collapse__sublink' onClick=updateHeaderAndNavigate(event,'"+_link+"','"+_group+"-"+_name+"');>"+_name+"</a>"
                                 _menu += "</li>";
-                                
+
                                 $("#"+_groupID).append(_menu);
                                 if(idx == 0){
                                     const savedUrl = localStorage.getItem("currentPageUrl");
@@ -519,11 +234,19 @@ function loginUserMenuSetting(){
                             }
                         }
                     }
-                }                    
+                }
             }
 
-            
             checkParentMenuVisibility();
+
+            if($('.sub-menu-list.active-group').length === 0){
+                var $firstBtn = $('.cat-btn:visible').first();
+                if($firstBtn.length){
+                    // 초기 로딩 시 페이지 이동은 위에서 이미 처리됐으므로(복원된 페이지 또는 기본 페이지),
+                    // 여기서는 사이드바 활성 표시만 맞추고 재이동은 시키지 않음
+                    selectCategory($firstBtn.data('menu'), $firstBtn.get(0), false);
+                }
+            }
         }
     });
 }
@@ -535,13 +258,12 @@ function checkParentMenuVisibility() {
     menuIds.forEach(function(menuId) {
         const $menu = $("#" + menuId);
         const childCount = $menu.find("li").length;
+        const $btn = $('.cat-btn[data-menu="'+menuId+'"]');
 
         if(childCount === 0) {
-            
-            $menu.closest(".nav__link.collapse").hide();
+            $btn.hide();
         } else {
-            
-            $menu.closest(".nav__link.collapse").show();
+            $btn.show();
         }
     });
 }
@@ -562,131 +284,9 @@ function updateHeader(menuGroupName) {
 function updateHeaderAndNavigate(event, url, menuGroupName) {
     event.preventDefault();
     event.stopPropagation();
-    
+
     iframeSrc(url,menuGroupName);
-    
-    var loginCode = "${loginUser.user_code}";
-    var menuUrl = url;
-    var menuName = menuGroupName;
-    
-    menuSave(loginCode, menuUrl, menuName);
 }
-
-function menuSave(loginCode, menuUrl, menuName){
-    $.ajax({
-        url:"/tkheat/user/login/menuSave",
-        type:"post",
-        dataType:"json",
-        data:{
-            "user_code":loginCode,
-            "menu_url":menuUrl,
-            "menu_name":menuName
-        },
-        success:function(result){                
-            menuList();
-        }
-    });
-}
-
-function menuList(){
-    var loginCode = "${loginUser.user_code}";
-        
-    $.ajax({
-        url:"/tkheat/user/login/menuList",
-        type:"post",
-        dataType:"json",
-        data:{
-            "user_code":loginCode
-        },
-        success:function(result){
-            var data = result.data;
-            var _div = "";
-            var idx = 0;
-            $(".menuDiv").empty();
-        
-            for(let key in data){
-                var menuName = data[key].menu_name;
-                var menuNameIndex = (data[key].menu_name).indexOf("-")+1;
-                
-                menuName = menuName.substring(menuNameIndex,menuName.length);                
-                menuName = menuName.replace("/\s/g","&nbsp;");
-
-                _div = "<div class='menuDivTab' onClick=iframeSrc('"+data[key].menu_url+"','"+menuName+"')>";
-                _div += "<label class='menuName' onClick=iframeSrc('"+data[key].menu_url+"','"+menuName+"')>" + menuName + "</label>";
-                _div += "<button class='close-btn' onClick=removeMenu('"+data[key].menu_url+"')>×</button>";
-                _div += "</div>";
-
-                $(".menuDiv").append(_div);
-            }
-        }
-    });
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    const collapseItems = document.querySelectorAll('.nav__link.collapse');
-
-    collapseItems.forEach(item => {
-        item.addEventListener('click', function (e) {
-            if (e.target.closest('.collapse__menu')) {
-                return;
-            }
-            
-            e.stopPropagation();
-
-            const collapseMenu = this.querySelector('.collapse__menu');
-            const icon = this.querySelector('.collapse__link');
-
-            collapseMenu.classList.toggle('showCollapse');
-            icon.classList.toggle('rotate');
-        });
-    });
-
-    document.querySelectorAll('.collapse__menu a').forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.stopPropagation();
-        });
-    });
-});
-
-function removeMenu(url) {
-    event.stopPropagation();
-    
-    var loginCode = "${loginUser.user_code}";       
-   
-    $.ajax({
-        url:"/tkheat/user/login/menuRemove",
-        type:"post",
-        dataType:"json",
-        data:{
-            "user_code":loginCode,
-            "menu_url":url
-        },
-        success:function(result){
-            menuList();
-        }
-    });
-}    
-
-document.addEventListener('DOMContentLoaded', function() {
-    const linkColor = document.querySelectorAll('.nav__link');
-
-    function colorLink() {
-        linkColor.forEach(l => l.classList.remove('active'));
-        this.classList.add('active');
-    }
-    linkColor.forEach(l => l.addEventListener('click', colorLink));
-
-    const linkCollapse = document.getElementsByClassName('collapse__link');
-    let i;
-    for(i = 0; i < linkCollapse.length; i++) {
-        linkCollapse[i].addEventListener('click', function() {
-            const collapseMenu = this.nextElementSibling;
-            collapseMenu.classList.toggle('showCollapse');
-            const rotate = collapseMenu.previousElementSibling;
-            rotate.classList.toggle('rotate');
-        });
-    }
-});
 
 $(".logout-button").on("click",function(){
 	localStorage.removeItem("currentPageUrl");
@@ -699,9 +299,9 @@ $(".logout-button").on("click",function(){
             location.href = "/tkheat";
         }
     });
-});  
+});
 
 </script>
-    
+
 </body>
 </html>

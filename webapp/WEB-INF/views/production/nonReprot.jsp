@@ -14,43 +14,164 @@
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
     
-.main{
-	width:98%;
+.tabulator {
+	width: 100%;
+	max-width: 100%;
+	overflow-x: hidden !important;
+}
+
+.tabulator .tabulator-cell {
+	white-space: normal !important;
+	word-break: break-word;
+	text-align: center;
+}
+
+.row_select {
+	background-color: #9ABCEA !important;
+}
+
+/* ========== 레이아웃 (세로 스크롤 방지) ========== */
+html, body { height: 100%; margin: 0; }
+body { display: flex; flex-direction: column; overflow: hidden; }
+.tab { flex-shrink: 0; }
+.main {
+	flex: 1;
+	min-height: 0;
+	width: 100%;
+	display: flex;
+	padding: 8px;
+	overflow: hidden;
 }
 .container {
+	flex: 1;
+	min-height: 0;
 	display: flex;
-	justify-content: space-between;
+	flex-direction: column;
+	background: #ffffff;
+	border: 1px solid #E2E8F0;
+	border-radius: 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	padding: 8px;
+	overflow: hidden;
 }
+#tab1.tabulator {
+	flex: 1;
+	min-height: 0;
+	max-height: none;
+	border: none;
+	font-size: 12px;
+}
+#tab1 .tabulator-header {
+	background: linear-gradient(135deg, #2B6CB0, #3182CE);
+	border-bottom: none;
+}
+#tab1 .tabulator-col {
+	background: transparent;
+	border-right: 1px solid rgba(255,255,255,.15);
+}
+#tab1 .tabulator-col.tabulator-sortable:hover {
+	background: rgba(255,255,255,.08);
+}
+#tab1 .tabulator-col-title {
+	color: #ffffff;
+	font-weight: 700;
+}
+#tab1 .tabulator-col .tabulator-header-filter input {
+	border: none;
+	border-radius: 5px;
+	padding: 4px 6px;
+	font-size: 11px;
+	background: rgba(255,255,255,.92);
+	box-sizing: border-box;
+}
+#tab1 .tabulator-row {
+	border-bottom: 1px solid #EDF2F7;
+	transition: background-color .12s;
+}
+#tab1 .tabulator-row.tabulator-row-even {
+	background-color: #F7FAFC;
+}
+#tab1 .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
+#tab1 .tabulator-row.row_select {
+    background-color: #BEE3F8 !important;
+    box-shadow: inset 0 0 0 2px #2B6CB0;
+}
+#tab1 .tabulator-cell {
+	border: 1px solid #E2E8F0;
+	color: #2D3748;
+}
+#tab1 .tabulator-footer {
+	background: #F7FAFC;
+	border-top: 1px solid #E2E8F0;
+	padding: 8px 12px;
+}
+#tab1 .tabulator-page {
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #ffffff;
+	color: #2D3748;
+	min-width: 30px;
+	height: 28px;
+	padding: 0 8px;
+	font-size: 12px;
+	font-weight: 600;
+}
+#tab1 .tabulator-page.active {
+	background: #3182CE;
+	border-color: #2B6CB0;
+	color: #ffffff;
+}
+#tab1 .tabulator-page:not(:disabled):hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+	color: #2B6CB0;
+	cursor: pointer;
+}
+
+/* ========== 모달 (management 쪽 모달과 동일한 톤) ========== */
 .nonReportModal {
-    position: fixed; /* 화면에 고정 */
-    top: 50%; /* 수직 중앙 */
-    left: 50%; /* 수평 중앙 */
-    display : none;
-    transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-    z-index: 1000; /* 다른 요소 위에 표시 */
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	display: none;
+	transform: translate(-50%, -50%);
+	z-index: 20010;
+	border: none;
+	border-radius: 12px;
+	background-color: white;
+	box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+	overflow: hidden;
+	width: 1200px;
+	height: 670px;
+	flex-direction: column;
 }
 .header {
-    display: flex; /* 플렉스 박스 사용 */
-    justify-content: center; /* 중앙 정렬 */
-    align-items: center; /* 수직 중앙 정렬 */
-    background-color: #33363d; /* 배경색 */
-    height: 50px; /* 높이 */
-    color: white; /* 글자색 */
-    font-size: 20px; /* 글자 크기 */
-    text-align: center; /* 텍스트 정렬 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: linear-gradient(135deg, #2c3e50, #34495e);
+	height: 50px;
+	color: white;
+	font-size: 18px;
+	font-weight: 700;
+	text-align: center;
+	cursor: move;
 }
-.detail {
-    background: #ffffff;
-    border: 1px solid #000000;
-    width: 1200px; /* 가로 길이 고정 */
-    height: 670px; /* 세로 길이 고정 */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
-    margin: 20px auto; /* 중앙 정렬 */
-    padding: 20px;
-    border-radius: 5px; /* 모서리 둥글게 */
-    overflow-y: auto; /* 세로 스크롤 추가 */
-    position: relative;
-    margin-top: 0;
+.nonReportModal .detail {
+	background: #f5f7fa;
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	padding: 14px;
+	margin: 0;
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	width: auto;
+	height: auto;
 }
 
 .insideTable {
@@ -112,81 +233,147 @@ textarea {
     height: 100%; /* 이미지 높이 */
     object-fit: cover; /* 이미지 비율 유지 */
 }
+/* ========== 상단 도구바 (다른 페이지 날짜검색/검색창과 통일) ========== */
+.tab {
+	background: #ffffff;
+	border: 1px solid #E2E8F0;
+	border-radius: 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	padding: 10px 14px;
+}
+.j_container {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+.j_row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+.daylabel {
+	font-size: 12px;
+	font-weight: 600;
+	color: #495057;
+	white-space: nowrap;
+}
 .box1 {
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: right;
 	align-items: center;
+	gap: 8px;
 	width: 1500px;
 	margin-left: -1050px;
 }
 
 .box1 select{
-	width: 5%
-}  
-.box1 input[type="date"] {
-	width: 150px;
-	padding: 5px 10px;
-	font-size: 16px;
+	width: 5%;
+}
+.datetimepicker_date,
+.search_input,
+.search_select,
+.box1 select,
+.box1 input[type="text"],
+.box1 input[type="date"],
+.box1 input[type="number"] {
+	height: 30px;
+	padding: 0 8px;
+	font-size: 12px !important;
 	border: 1px solid #ccc;
 	border-radius: 6px;
 	background-color: #f9f9f9;
 	color: #333;
 	outline: none;
-	transition: border 0.3s ease;
+	box-sizing: border-box;
+	transition: border-color .2s ease, background-color .2s ease;
+}
+.datetimepicker_date:focus,
+.search_input:focus,
+.search_select:focus,
+.box1 select:focus,
+.box1 input:focus {
+	border-color: #3182CE;
+	background-color: #fff;
+}
+.box1 input[type="date"] {
+	width: 150px;
+}
+.button-container .select-button,
+.button-container .insert-button,
+.button-container .excel-button,
+.button-container .printer-button,
+.button-container .delete {
+	height: 34px;
+	border: 1px solid #E2E8F0;
+	border-radius: 8px;
+	background: #F0F4F8;
+	transition: background-color .13s, border-color .13s;
+}
+.button-container .select-button:hover,
+.button-container .insert-button:hover,
+.button-container .excel-button:hover,
+.button-container .printer-button:hover,
+.button-container .delete:hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
 }
 
-.box1 input[type="date"]:focus {
-	border: 1px solid #007bff;
-	background-color: #fff;
-}  
-.box1 label,
-.box1 input {
-	margin-right: 10px; /* 요소 사이 간격 */
-}  
 .btnSaveClose {
 	display: flex;
-	justify-content: center; /* 가운데 정렬 */
-	gap: 20px; /* 버튼 사이 여백 */
-	margin-top: 30px; /* 모달 내용과의 간격 */
-	margin-bottom: 20px; /* 모달 하단과 버튼 사이 간격  */
+	justify-content: center;
+	gap: 12px;
+	padding: 14px 0;
+	background: #ffffff;
+	border-top: 1px solid #E2E8F0;
+	margin: 0;
 }
 .btnSaveClose button {
 	width: 100px;
-	height: 35px;
-	background-color: #FFD700; /* 기본 배경 - 노란색 */
-	color: black;
-	border: 2px solid #FFC107; /* 노란 테두리 */
-	border-radius: 5px;
-	font-weight: bold;
+	height: 36px;
+	border: none;
+	border-radius: 6px;
+	font-weight: 700;
 	text-align: center;
 	cursor: pointer;
-	line-height: 35px;
-	margin: 0 10px;
-	margin-top: 10px;
-	transition: background-color 0.3s ease, transform 0.2s ease;
+	line-height: 36px;
+	margin: 0;
+	transition: transform .2s ease, box-shadow .2s ease;
 }
-
-/* 저장 버튼 호버 시 */
-.btnSaveClose .save:hover {
-	background-color: #FFC107;
-	transform: scale(1.05);
+.btnSaveClose .save {
+	background: linear-gradient(135deg, #51cf66, #37b24d);
+	color: white;
 }
-
-/* 닫기 버튼 - 회색 톤 */
 .btnSaveClose .close {
-	background-color: #A9A9A9;
-	color: black;
-	border: 2px solid #808080;
+	background: linear-gradient(135deg, #868e96, #495057);
+	color: white;
+	border: none;
 }
-
-/* 닫기 버튼 호버 시 */
+.btnSaveClose .delete {
+	background: linear-gradient(135deg, #ff8787, #fa5252);
+	color: white;
+	border: none;
+}
+/* 저장/닫기/삭제 버튼 호버 시 */
+.btnSaveClose .save:hover {
+	background: linear-gradient(135deg, #40c057, #2f9e44);
+	transform: translateY(-1px);
+}
 .btnSaveClose .close:hover {
-	background-color: #808080;
-	transform: scale(1.05);
+	background: linear-gradient(135deg, #6c757d, #343a40);
+	transform: translateY(-1px);
+}
+.btnSaveClose .delete:hover {
+	background: linear-gradient(135deg, #fa5252, #e03131);
+	transform: translateY(-1px);
 }
 th{
 	font-size : 14px;
 }
+
+/* ========== 수주정보 검색 팝업(모달) ========== */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -197,30 +384,112 @@ th{
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 20020;
 }
 
 .modal-content {
   background: white;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 12px;
   width: 90%;
   max-width: 1000px;
+  box-shadow: 0 10px 50px rgba(0,0,0,0.3);
   position: relative;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
-  font-weight: bold;
-  font-size: 18px;
-  margin-bottom: 10px;
+  align-items: center;
+  background: linear-gradient(135deg, #2c3e50, #34495e);
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  margin: -20px -20px 14px -20px;
+  padding: 12px 20px;
+  border-radius: 12px 12px 0 0;
 }
 
 .modal-close {
   cursor: pointer;
-  font-size: 24px;
-}    
+  font-size: 22px;
+  line-height: 1;
+  color: white;
+  transition: color .13s;
+}
+.modal-close:hover {
+	color: #FED7D7;
+}
+
+/* ========== 수주정보 검색 리스트(#ipgoListTabulator) ========== */
+#ipgoListTabulator.tabulator {
+	border: 1px solid #E2E8F0;
+	border-radius: 8px;
+	font-size: 12px;
+}
+#ipgoListTabulator .tabulator-header {
+	background: linear-gradient(135deg, #2B6CB0, #3182CE);
+	border-bottom: none;
+}
+#ipgoListTabulator .tabulator-col {
+	background: transparent;
+	border-right: 1px solid rgba(255,255,255,.15);
+}
+#ipgoListTabulator .tabulator-col-title {
+	color: #ffffff;
+	font-weight: 700;
+}
+#ipgoListTabulator .tabulator-col .tabulator-header-filter input {
+	border: none;
+	border-radius: 5px;
+	padding: 4px 6px;
+	font-size: 11px;
+	background: rgba(255,255,255,.92);
+	box-sizing: border-box;
+}
+#ipgoListTabulator .tabulator-row {
+	border-bottom: 1px solid #EDF2F7;
+	transition: background-color .12s;
+}
+#ipgoListTabulator .tabulator-row.tabulator-row-even {
+	background-color: #F7FAFC;
+}
+#ipgoListTabulator .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
+#ipgoListTabulator .tabulator-cell {
+	border: 1px solid #E2E8F0;
+	color: #2D3748;
+}
+#ipgoListTabulator .tabulator-footer {
+	background: #F7FAFC;
+	border-top: 1px solid #E2E8F0;
+	padding: 6px 10px;
+}
+#ipgoListTabulator .tabulator-page {
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #ffffff;
+	color: #2D3748;
+	min-width: 26px;
+	height: 24px;
+	padding: 0 6px;
+	font-size: 11px;
+	font-weight: 600;
+}
+#ipgoListTabulator .tabulator-page.active {
+	background: #3182CE;
+	border-color: #2B6CB0;
+	color: #ffffff;
+}
+#ipgoListTabulator .tabulator-page:not(:disabled):hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+	color: #2B6CB0;
+	cursor: pointer;
+}
+
     
     
     </style>
@@ -480,13 +749,13 @@ th{
 								</td>
 							</tr>
 					</table>
-					<div class="btnSaveClose">
-						 <button class="delete" type="button" onclick="deleteNonReprot();"  style="display: none;">삭제</button>	
-						 <button class="save" type="button" onclick="save();">저장</button>
-						 <button class="close" type="button" onclick="window.close();">닫기</button>
-    	  			</div>
 				</div>
-			</div>	
+				<div class="btnSaveClose">
+					 <button class="delete" type="button" onclick="deleteNonReprot();"  style="display: none;">삭제</button>
+					 <button class="save" type="button" onclick="save();">저장</button>
+					 <button class="close" type="button" onclick="window.close();">닫기</button>
+    	  		</div>
+			</div>
 			</form>
 			
 			
@@ -521,7 +790,7 @@ th{
 	function getNonReportList(){
 		
 		userTable = new Tabulator("#tab1", {
-		    height:"750px",
+		    height:"100%",
 		    layout:"fitColumns",
 		    selectable:true,	//로우 선택설정
 		    tooltips:true,
@@ -572,10 +841,7 @@ th{
 				    
 		    ],
 		    rowFormatter:function(row){
-			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-				row.getElement().style.backgroundColor = "#FFFFFF";
+			    row.getElement().style.fontWeight = "600";
 			},
 			rowClick:function(e, row){
 
@@ -632,7 +898,7 @@ th{
 					$("input[name='"+key+"']").val(allData[key]);
 				}
 
-				$('.nonReportModal').show().addClass('show');
+				$('.nonReportModal').css('display', 'flex').addClass('show');
 			}
 		});
 	}
@@ -673,7 +939,7 @@ th{
 	insertButton.addEventListener('click', function() {
 		isEditMode = false;  // 추가 모드
 	    $('#nonReportForm')[0].reset(); // 폼 초기화
-	    nonReportModal.style.display = 'block'; // 모달 표시
+	    nonReportModal.style.display = 'flex'; // 모달 표시
 
 		$('.delete').hide();
 	});
@@ -693,6 +959,11 @@ th{
             height:"450px",
             layout:"fitColumns",
             selectable:true,
+            placeholder:"조회된 데이터가 없습니다.",
+            pagination:"local",
+            paginationSize:20,
+            paginationSizeSelector:[20,50,100,500,1000],
+            paginationCounter:"rows",
             ajaxURL:"/tkheat/production/nonReport/getNonReportIpgoList",
             ajaxConfig:"POST",
             ajaxParams:{

@@ -84,6 +84,202 @@
     color: #000;
 }
 
+/* ========== 레이아웃 (세로 스크롤 방지, 여백 축소) ========== */
+/* 이 페이지는 리스트가 위/아래 2개(#tab1, #sub) — 기존 비율(2:1)을 유지한 채 세로로 쌓음 */
+html, body { height: 100%; margin: 0; }
+body { display: flex; flex-direction: column; overflow: hidden; }
+.tab { flex-shrink: 0; }
+.main {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    overflow: hidden;
+}
+.table-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin-bottom: 0;
+    overflow: hidden;
+}
+.table-section:nth-of-type(1) { flex: 2; }
+.table-section:nth-of-type(2) { flex: 1; }
+.section-header { flex-shrink: 0; }
+
+/* ========== 상단 도구바 ========== */
+.tab {
+    background: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    padding: 0 14px;
+}
+.button-container .select-button,
+.button-container .insert-button,
+.button-container .excel-button,
+.button-container .printer-button,
+.button-container .delete {
+    height: 34px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    background: #F0F4F8;
+    transition: background-color .13s, border-color .13s;
+}
+.button-container .select-button:hover,
+.button-container .insert-button:hover,
+.button-container .excel-button:hover,
+.button-container .printer-button:hover,
+.button-container .delete:hover {
+    background: #EBF8FF;
+    border-color: #BEE3F8;
+}
+
+/* ========== Tabulator 리스트 (위: #tab1, 아래: #sub 둘 다 동일하게 적용) ========== */
+#tab1.tabulator,
+#sub.tabulator {
+    flex: 1;
+    min-height: 0;
+    border: none;
+    font-size: 12px;
+}
+#tab1 .tabulator-header,
+#sub .tabulator-header {
+    background: linear-gradient(135deg, #2B6CB0, #3182CE);
+    border-bottom: none;
+}
+#tab1 .tabulator-col,
+#sub .tabulator-col {
+    background: transparent;
+    border-right: 1px solid rgba(255,255,255,.15);
+}
+#tab1 .tabulator-col.tabulator-sortable:hover,
+#sub .tabulator-col.tabulator-sortable:hover {
+    background: rgba(255,255,255,.08);
+}
+#tab1 .tabulator-col-title,
+#sub .tabulator-col-title {
+    color: #ffffff;
+    font-weight: 700;
+}
+#tab1 .tabulator-col .tabulator-header-filter input,
+#sub .tabulator-col .tabulator-header-filter input {
+    border: none;
+    border-radius: 5px;
+    padding: 4px 6px;
+    font-size: 11px;
+    background: rgba(255,255,255,.92);
+    box-sizing: border-box;
+}
+#tab1 .tabulator-col .tabulator-header-filter input:focus,
+#sub .tabulator-col .tabulator-header-filter input:focus {
+    outline: none;
+    background: #ffffff;
+    box-shadow: 0 0 0 2px rgba(255,255,255,.6);
+}
+#tab1 .tabulator-row,
+#sub .tabulator-row {
+    border-bottom: 1px solid #EDF2F7;
+    transition: background-color .12s;
+}
+#tab1 .tabulator-row.tabulator-row-even,
+#sub .tabulator-row.tabulator-row-even {
+    background-color: #F7FAFC;
+}
+#tab1 .tabulator-row:hover,
+#sub .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
+#tab1 .tabulator-row.row_select,
+#tab1 .tabulator-row.tabulator-selected,
+#sub .tabulator-row.row_select,
+#sub .tabulator-row.tabulator-selected {
+    background-color: #BEE3F8 !important;
+    box-shadow: inset 0 0 0 2px #2B6CB0;
+}
+#tab1 .tabulator-cell,
+#sub .tabulator-cell {
+    border: 1px solid #E2E8F0;
+    color: #2D3748;
+}
+
+/* ========== 페이지네이션 (직관적으로 개선) ========== */
+#tab1 .tabulator-footer,
+#sub .tabulator-footer {
+    background: #F7FAFC;
+    border-top: 1px solid #E2E8F0;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+#tab1 .tabulator-paginator,
+#sub .tabulator-paginator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+#tab1 .tabulator-page-size,
+#sub .tabulator-page-size {
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    background: #ffffff;
+    color: #2D3748;
+    cursor: pointer;
+    margin: 0;
+}
+#tab1 .tabulator-page-size:focus,
+#sub .tabulator-page-size:focus {
+    outline: none;
+    border-color: #3182CE;
+}
+#tab1 .tabulator-pages,
+#sub .tabulator-pages {
+    display: flex;
+    gap: 4px;
+    margin: 0;
+}
+#tab1 .tabulator-page,
+#sub .tabulator-page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #E2E8F0;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #2D3748;
+    min-width: 30px;
+    height: 28px;
+    padding: 0 8px;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+    transition: background-color .13s, border-color .13s, color .13s;
+}
+#tab1 .tabulator-page.active,
+#sub .tabulator-page.active {
+    background: #3182CE;
+    border-color: #2B6CB0;
+    color: #ffffff;
+}
+#tab1 .tabulator-page:not(:disabled):hover,
+#sub .tabulator-page:not(:disabled):hover {
+    background: #EBF8FF;
+    border-color: #BEE3F8;
+    color: #2B6CB0;
+    cursor: pointer;
+}
+#tab1 .tabulator-page:disabled,
+#sub .tabulator-page:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
 /* ========== 모달 오버레이 ========== */
 .modal-overlay {
     display: none;
@@ -705,7 +901,7 @@ function getSparePartList(){
     $('#tab1').empty();
     
     spareTable = new Tabulator("#tab1", {
-        height:"400px",
+        height:"100%",
         layout:"fitColumns",
         selectable:true,
         tooltips:true,
@@ -794,8 +990,7 @@ function getSparePartList(){
         ],
         
         rowFormatter:function(row){
-            row.getElement().style.fontWeight = "700";
-            row.getElement().style.backgroundColor = "#FFFFFF";
+            row.getElement().style.fontWeight = "600";
         },
         
         rowClick:function(e, row){
@@ -1096,7 +1291,7 @@ function getSpareSubList(spp_idx) {
     $('#sub').empty();
     
     subTable = new Tabulator("#sub", {
-        height: "200px",
+        height: "100%",
         layout: "fitColumns",
         selectable: true,
         tooltips: true,
@@ -1144,10 +1339,9 @@ function getSpareSubList(spp_idx) {
         ],
         
         rowFormatter: function(row) {
-            row.getElement().style.fontWeight = "700";
-            row.getElement().style.backgroundColor = "#FFFFFF";
+            row.getElement().style.fontWeight = "600";
         },
-        
+
         rowClick: function(e, row) {
             $("#sub .tabulator-tableHolder > .tabulator-table > .tabulator-row").removeClass("row_select");
             row.getElement().classList.add("row_select");

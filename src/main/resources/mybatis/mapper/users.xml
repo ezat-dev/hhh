@@ -96,8 +96,8 @@
         #{user_ret},
         #{user_phone}
     );
-    
-    INSERT INTO PERMISSION 
+
+    INSERT INTO PERMISSION_TKHEAT
     (
         USER_CODE,
         A01, A02, A03, A04, A05, A06, A07, A08, A09, A10,
@@ -172,8 +172,76 @@
 
 
 	<select id="userLoginPermission" parameterType="users" resultType="permission">
-		SELECT *
-		FROM permission
+		SELECT
+			USER_CODE,
+			RTRIM(A01) AS a01,
+			RTRIM(A02) AS a02,
+			RTRIM(A03) AS a03,
+			RTRIM(A04) AS a04,
+			RTRIM(A05) AS a05,
+			RTRIM(A06) AS a06,
+			RTRIM(A07) AS a07,
+			RTRIM(B01) AS b01,
+			RTRIM(B02) AS b02,
+			RTRIM(B03) AS b03,
+			RTRIM(B04) AS b04,
+			RTRIM(B05) AS b05,
+			RTRIM(B06) AS b06,
+			RTRIM(B07) AS b07,
+			RTRIM(C01) AS c01,
+			RTRIM(C02) AS c02,
+			RTRIM(C03) AS c03,
+			RTRIM(C04) AS c04,
+			RTRIM(C05) AS c05,
+			RTRIM(C06) AS c06,
+			RTRIM(C07) AS c07,
+			RTRIM(D01) AS d01,
+			RTRIM(D02) AS d02,
+			RTRIM(D03) AS d03,
+			RTRIM(D04) AS d04,
+			RTRIM(D05) AS d05,
+			RTRIM(D06) AS d06,
+			RTRIM(E01) AS e01,
+			RTRIM(E02) AS e02,
+			RTRIM(E03) AS e03,
+			RTRIM(E04) AS e04,
+			RTRIM(E05) AS e05,
+			RTRIM(E06) AS e06,
+			RTRIM(E07) AS e07,
+			RTRIM(E08) AS e08,
+			RTRIM(F01) AS f01,
+			RTRIM(F02) AS f02,
+			RTRIM(F03) AS f03,
+			RTRIM(F04) AS f04,
+			RTRIM(F05) AS f05,
+			RTRIM(F06) AS f06,
+			RTRIM(G01) AS g01,
+			RTRIM(G02) AS g02,
+			RTRIM(G03) AS g03,
+			RTRIM(G04) AS g04,
+			RTRIM(G05) AS g05,
+			RTRIM(G06) AS g06,
+			RTRIM(G07) AS g07,
+			RTRIM(G08) AS g08,
+			RTRIM(G09) AS g09,
+			RTRIM(G10) AS g10,
+			RTRIM(H01) AS h01,
+			RTRIM(H02) AS h02,
+			RTRIM(H03) AS h03,
+			RTRIM(H04) AS h04,
+			RTRIM(H05) AS h05,
+			RTRIM(H06) AS h06,
+			RTRIM(H07) AS h07,
+			RTRIM(I01) AS i01,
+			RTRIM(I02) AS i02,
+			RTRIM(I03) AS i03,
+			RTRIM(I04) AS i04,
+			RTRIM(I05) AS i05,
+			RTRIM(I06) AS i06,
+			RTRIM(I07) AS i07,
+			RTRIM(I08) AS i08,
+			RTRIM(I09) AS i09
+		FROM PERMISSION_TKHEAT
 		WHERE user_code = #{user_code}
 	</select>
 	
@@ -320,20 +388,20 @@
         RTRIM(I07) AS i07,
         RTRIM(I08) AS i08,
         RTRIM(I09) AS i09
-    FROM PERMISSION
+    FROM PERMISSION_TKHEAT
     WHERE USER_CODE = #{user_code}
 </select>
 
     <!-- 권한 존재 여부 확인 -->
     <select id="checkPermissionExists" parameterType="int" resultType="int">
-        SELECT COUNT(*) 
-        FROM PERMISSION 
+        SELECT COUNT(*)
+        FROM PERMISSION_TKHEAT
         WHERE USER_CODE = #{user_code}
     </select>
 
     <!-- 권한 INSERT -->
     <insert id="insertPermission" parameterType="permission">
-        INSERT INTO PERMISSION 
+        INSERT INTO PERMISSION_TKHEAT
         (
             USER_CODE,
             A01, A02, A03, A04, A05, A06, A07,
@@ -363,7 +431,7 @@
 
     <!-- 권한 UPDATE -->
     <update id="updatePermission" parameterType="permission">
-        UPDATE PERMISSION SET 
+        UPDATE PERMISSION_TKHEAT SET
             A01 = #{a01}, A02 = #{a02}, A03 = #{a03}, A04 = #{a04}, 
             A05 = #{a05}, A06 = #{a06}, A07 = #{a07},
             B01 = #{b01}, B02 = #{b02}, B03 = #{b03}, B04 = #{b04}, 

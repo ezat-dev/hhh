@@ -85,15 +85,22 @@ public class UserController {
 	}	
 	
 	 //로그인한 사용자의 메뉴셋팅
-	 @RequestMapping(value = "/user/login/menuSetting", method = RequestMethod.POST) 
-	 @ResponseBody 
+	 @RequestMapping(value = "/user/login/menuSetting", method = RequestMethod.POST)
+	 @ResponseBody
 	 public Map<String, Object> userLoginMenuSetting(HttpSession session) {
 		 Map<String, Object> rtnMap = new HashMap<String, Object>();
-		 
-		 Permission pageData = (Permission)session.getAttribute("loginUserPage");
-		 
+
+		 Users loginUser = (Users) session.getAttribute("loginUser");
+		 Permission pageData = null;
+
+		 if (loginUser != null) {
+			 // 세션 캐시 대신 매번 최신 권한을 DB에서 조회 (관리자가 방금 바꾼 권한이 바로 반영되도록)
+			 pageData = userService.userLoginPermission(loginUser);
+			 session.setAttribute("loginUserPage", pageData);
+		 }
+
 		 rtnMap.put("data",pageData);
-		 
+
 		 return rtnMap;
 	 }
 	 
@@ -160,19 +167,18 @@ public class UserController {
 	 @ResponseBody
 	 public Map<String, Object> getUserInfo(HttpSession session) {
 	     Map<String, Object> result = new HashMap<>();
-	     
-	     // 세션에서 데이터 가져오기
-	     Users loginUser = (Users) session.getAttribute("loginUser");
-	     Permission loginPermission = (Permission) session.getAttribute("loginUserPage");
 
-	 
+	     // 세션에서 로그인 사용자만 가져오고, 권한은 세션 캐시 대신 매번 DB에서 최신값을 조회
+	     Users loginUser = (Users) session.getAttribute("loginUser");
+
 	     if (loginUser != null) {
 	         result.put("loginUser", loginUser);
-	     }
-	     if (loginPermission != null) {
+
+	         Permission loginPermission = userService.userLoginPermission(loginUser);
+	         session.setAttribute("loginUserPage", loginPermission);
 	         result.put("loginUserPage", loginPermission);
 	     }
-	     
+
 	     return result;
 	 }
 	 

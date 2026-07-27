@@ -28,6 +28,8 @@ public class WorkJisi {
 	private String cell_field;
 	private String cell_value;
 	private int cell_code;
+
+	private int idx;			//타뷸레이터 NO(순번) 표시용, 컨트롤러에서 조회결과 순서대로 세팅
 	
 	
 	//tb_workjisi 테이블
@@ -1599,6 +1601,12 @@ public class WorkJisi {
 	}
 	public void setCell_code(int cell_code) {
 		this.cell_code = cell_code;
+	}
+	public int getIdx() {
+		return idx;
+	}
+	public void setIdx(int idx) {
+		this.idx = idx;
 	}
 	public int getS_ord_sunip_check() {
 		return s_ord_sunip_check;

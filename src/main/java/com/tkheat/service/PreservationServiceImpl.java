@@ -1,6 +1,7 @@
 package com.tkheat.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -103,6 +104,11 @@ public class PreservationServiceImpl implements PreservationService{
 	@Override
 	public List<Bega> getBegaAnalyList(Bega bega){
 		return preservationDao.getBegaAnalyList(bega);
+	}
+
+	@Override
+	public List<Map<String, Object>> getBegaWorkStatusList(Bega bega){
+		return preservationDao.getBegaWorkStatusList(bega);
 	}
 	
 	

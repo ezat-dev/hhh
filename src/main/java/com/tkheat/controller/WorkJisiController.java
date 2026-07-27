@@ -80,6 +80,9 @@ public class WorkJisiController {
 		List<WorkJisi> ipgoList = workJisiService.getIpgoList(w);
 		List<WorkJisi> ipgoTechList = workJisiService.getIpgoTechList(w);
 
+		for(int i=0; i<ipgoList.size(); i++) {
+			ipgoList.get(i).setIdx(i+1);
+		}
 
 		rtnMap.put("data",ipgoList);
 		rtnMap.put("techin",ipgoTechList);
@@ -1056,6 +1059,10 @@ public class WorkJisiController {
 		chulgo.setProd_gubn(prod_gubn);
 
 		List<WorkJisi> chulgoList = workJisiService.getChulgoList(chulgo);
+
+		for(int i=0; i<chulgoList.size(); i++) {
+			chulgoList.get(i).setIdx(i+1);
+		}
 
 		rtnMap.put("data",chulgoList);
 

@@ -172,7 +172,8 @@ public class QualityController {
 	  nonInsertList.get(i).getWerr_amnt()); rowMap.put("werr_mon",
 	  nonInsertList.get(i).getWerr_mon());
 	  rowMap.put("werr_code", nonInsertList.get(i).getWerr_code());
-	  
+	  rowMap.put("idx", i + 1);
+
 	  rtnList.add(rowMap); }
 	  
 	  rtnMap.put("last_page",1); rtnMap.put("data",rtnList);
@@ -363,7 +364,7 @@ System.out.println("subilbo_lot : "+ilbo_lot);
 			rowMap.put("ilbo_pg4", jajuStatusList.get(i).getIlbo_pg4());
 			rowMap.put("ilbo_pg5", jajuStatusList.get(i).getIlbo_pg5());
 			rowMap.put("user_name", jajuStatusList.get(i).getUser_name());
-			
+			rowMap.put("idx", i + 1);
 
 			rtnList.add(rowMap);
 		}
@@ -371,7 +372,7 @@ System.out.println("subilbo_lot : "+ilbo_lot);
 		rtnMap.put("last_page",1);
 		rtnMap.put("data",rtnList);
 
-		return rtnMap; 
+		return rtnMap;
 	}
 
 	//자주검사불량조치관리 - 화면로드
@@ -408,6 +409,7 @@ System.out.println("subilbo_lot : "+ilbo_lot);
 			rowMap.put("jerr_rdate", jajuJochiList.get(i).getJerr_rdate());
 			rowMap.put("jerr_gubn", jajuJochiList.get(i).getJerr_gubn());
 			rowMap.put("jerr_jgubn", jajuJochiList.get(i).getJerr_jgubn());
+			rowMap.put("idx", i + 1);
 
 			rtnList.add(rowMap);
 		}
@@ -415,7 +417,7 @@ System.out.println("subilbo_lot : "+ilbo_lot);
 		rtnMap.put("last_page",1);
 		rtnMap.put("data",rtnList);
 
-		return rtnMap; 
+		return rtnMap;
 	}
 
 	//Xbar-R관리도 - 화면로드

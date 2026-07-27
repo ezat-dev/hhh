@@ -130,7 +130,10 @@
 }
 .box1 select{
 	width: 5%
-} 
+}
+#tab1 .tabulator-cell {
+	border: 1px solid #E2E8F0;
+}
     </style>
     
     

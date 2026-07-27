@@ -97,9 +97,10 @@
 			AND ORDERT.ORD_PRN like '%'+#{ord_prn}+'%'
 		</if>
 		<if test="prod_gubn != null and prod_gubn != ''">
-			AND PRODUCT.PROD_GUBN LIKE + '%' + CASE #{prod_gubn} WHEN '양산' THEN '양산' WHEN '개발' THEN '개발' ELSE 
+			AND PRODUCT.PROD_GUBN LIKE + '%' + CASE #{prod_gubn} WHEN '양산' THEN '양산' WHEN '개발' THEN '개발' ELSE
 			'' END + '%'
 		</if>
+		ORDER BY ORDERT.ORD_CODE ASC
 	</select>
 
 	<!-- 입고등록 리스트 -->

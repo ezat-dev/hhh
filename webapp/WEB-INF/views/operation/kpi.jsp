@@ -7,14 +7,30 @@
     <%@include file="../include/pluginpage.jsp" %>
     <style>
         .main { width: 98%; margin: auto; }
+        .tabulator {
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        }
         .tabulator .tabulator-header .tabulator-col {
-            font-size: 16px; font-weight: 700; background-color: #B2EBF4;
+            font-size: 14px; font-weight: 700;
+            background: linear-gradient(135deg, #2B6CB0, #3182CE);
+            color: #ffffff;
             text-align: center;
         }
+        .tabulator .tabulator-row.tabulator-row-even {
+            background-color: #F7FAFC;
+        }
+        .tabulator .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
         .tabulator .tabulator-cell {
             font-size: 14px; text-align: center;
+            border: 1px solid #E2E8F0;
         }
-        h3 { margin: 20px 0 10px; }
+        h3 { margin: 20px 0 10px; color: #2D3748; }
     </style>
 </head>
 <body>

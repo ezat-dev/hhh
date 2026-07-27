@@ -606,6 +606,17 @@ public class WorkIlboController {
 				int user_code = Integer.parseInt(ifNullStringReturn(formViewObj.get("user_code")));
 				String ilbo_strt = ifNullStringReturn(formViewObj.get("ilbo_strt"));
 				String ilbo_end = ifNullStringReturn(formViewObj.get("ilbo_end"));
+				String wstd_t32 = ifNullStringReturn(formViewObj.get("wstd_t32"));
+				String wstd_t33 = ifNullStringReturn(formViewObj.get("wstd_t33"));
+				String wstd_t41 = ifNullStringReturn(formViewObj.get("wstd_t41"));
+				String wstd_t87 = ifNullStringReturn(formViewObj.get("wstd_t87"));
+				String wstd_t43 = ifNullStringReturn(formViewObj.get("wstd_t43"));
+				String wstd_t44 = ifNullStringReturn(formViewObj.get("wstd_t44"));
+				String wstd_t51 = ifNullStringReturn(formViewObj.get("wstd_t51"));
+				String wstd_t52 = ifNullStringReturn(formViewObj.get("wstd_t52"));
+				String wstd_t53 = ifNullStringReturn(formViewObj.get("wstd_t53"));
+				String wstd_t54 = ifNullStringReturn(formViewObj.get("wstd_t54"));
+				String wstd_t30 = ifNullStringReturn(formViewObj.get("wstd_t30"));
 				int ilbo_no = 0;
 				for(Object lObj : listJsonArray) {
 					if (lObj instanceof JSONObject) {
@@ -630,7 +641,18 @@ public class WorkIlboController {
 	                    wSave.setIlbo_jung(Float.parseFloat(listJsonObject.get("ilbo_jung").toString()));
 	                    wSave.setIlbo_g11("0");
 	                    wSave.setIlbo_g12("");
-	                    
+	                    wSave.setWstd_t32(wstd_t32);
+	                    wSave.setWstd_t33(wstd_t33);
+	                    wSave.setWstd_t41(wstd_t41);
+	                    wSave.setWstd_t87(wstd_t87);
+	                    wSave.setWstd_t43(wstd_t43);
+	                    wSave.setWstd_t44(wstd_t44);
+	                    wSave.setWstd_t51(wstd_t51);
+	                    wSave.setWstd_t52(wstd_t52);
+	                    wSave.setWstd_t53(wstd_t53);
+	                    wSave.setWstd_t54(wstd_t54);
+	                    wSave.setWstd_t30(wstd_t30);
+
 	                    workIlboService.workIlboDanchDataSave(wSave);
 	                    ilbo_no++;
 	                }					
@@ -640,6 +662,7 @@ public class WorkIlboController {
 			rtnMap.put("data", "저장완료");
 		}catch(Exception e) {
 			e.printStackTrace();
+			rtnMap.put("error", e.toString());
 		}
 		
 		return rtnMap;
@@ -1016,6 +1039,7 @@ public class WorkIlboController {
 			rtnMap.put("data", "저장완료");
 		}catch(Exception e) {
 			e.printStackTrace();
+			rtnMap.put("error", e.toString());
 		}
 		return rtnMap;
 	}
@@ -1071,16 +1095,20 @@ public class WorkIlboController {
 			@RequestParam(required=false) String s_edate,
 			@RequestParam(required=false) String s_corp_name,
 			@RequestParam(required=false) String s_prod_name,
-			@RequestParam(required=false) String s_prod_no){			
+			@RequestParam(required=false) String s_prod_no,
+			@RequestParam(required=false, defaultValue="0") int s_ilbo_code,
+			@RequestParam(required=false, defaultValue="0") int s_ord_code){
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
-				
+
 		WorkJisiTk w = new WorkJisiTk();
 		w.setSdate(s_sdate);
 		w.setEdate(s_edate);
 		w.setCorp_name(s_corp_name);
 		w.setProd_name(s_prod_name);
 		w.setProd_no(s_prod_no);
-		
+		w.setIlbo_code(s_ilbo_code);
+		w.setOrd_code(s_ord_code);
+
 		List<WorkJisiTk> list = workIlboService.workIlboTfAllList(w);
 		
 		
@@ -1162,6 +1190,9 @@ public class WorkIlboController {
 			e.printStackTrace();
 		}
 		
+		String tf_barcode = ifNullStringReturn(searchViewObj.get("tf_barcode"));
+		String tf_ord_code = ifNullStringReturn(searchViewObj.get("tf_ord_code"));
+
 		WorkJisiTk w = new WorkJisiTk();
 		w.setCorp_name(ifNullStringReturn(searchViewObj.get("tf_bcf_cname")));
 		w.setProd_name(ifNullStringReturn(searchViewObj.get("tf_bcf_pname")));
@@ -1169,8 +1200,12 @@ public class WorkIlboController {
 		w.setSdate(ifNullStringReturn(searchViewObj.get("tf_bcf_sdate")));
 		w.setEdate(ifNullStringReturn(searchViewObj.get("tf_bcf_edate")));
 		w.setSunipOrdList(ilboCodeList);
-		
-		List<WorkJisiTk> list = workIlboService.workIlboTfBcfList(w);		
+		w.setDanch_barcode(tf_barcode);
+		if(tf_ord_code != null && !tf_ord_code.isEmpty()) {
+			w.setOrd_code(Integer.parseInt(tf_ord_code));
+		}
+
+		List<WorkJisiTk> list = workIlboService.workIlboTfBcfList(w);
 		
 		rtnMap.put("data",list);
 		
@@ -1334,6 +1369,7 @@ public class WorkIlboController {
 			rtnMap.put("data", "저장완료");
 		}catch(Exception e) {
 			e.printStackTrace();
+			rtnMap.put("error", e.toString());
 		}
 		return rtnMap;
 	}

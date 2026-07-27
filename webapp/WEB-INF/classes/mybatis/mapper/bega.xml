@@ -136,12 +136,33 @@
 	
 	<select id="getBegaAnalyList" parameterType="bega" resultType="bega">
 		SET LOCK_TIMEOUT 10000;
-		SELECT   ROW_NUMBER()OVER(ORDER BY FAC_NAME) AS ROW_NUM, 
-		FAC_NAME, SUM(FSTP_TU) AS FSTP_TU, SUM(FSTP_10) AS FSTP_10, 
+		SELECT   ROW_NUMBER()OVER(ORDER BY FAC_NAME) AS ROW_NUM,
+		FAC_NAME, SUM(FSTP_TU) AS FSTP_TU, SUM(FSTP_10) AS FSTP_10,
 		round(SUM(FSTP_SIL) / SUM(FSTP_TU) * 100,2) AS RunRate
 		FROM     dbo.vFacStop
 		Where FSTP_DATE between #{sdate} and #{edate}
 		GROUP BY FAC_NAME
+	</select>
+
+	<!-- 설비별 작업현황 (작업수/작업중량/시작·종료시간/총작업시간) -->
+	<select id="getBegaWorkStatusList" parameterType="bega" resultType="map">
+		SELECT
+			FACILITY.FAC_NAME AS fac_name,
+			COUNT(*) AS work_cnt,
+			SUM(WORKILBO.ILBO_JUNG) AS work_jung,
+			MIN(WORKILBO.ILBO_STRT) AS work_strt,
+			MAX(CASE WHEN WORKILBO.ILBO_END = '1900-01-01 00:00' THEN NULL ELSE WORKILBO.ILBO_END END) AS work_end,
+			SUM(
+				CASE WHEN WORKILBO.ILBO_END IS NULL OR WORKILBO.ILBO_END = '1900-01-01 00:00'
+					 OR WORKILBO.ILBO_END &lt;= WORKILBO.ILBO_STRT THEN 0
+					 ELSE DATEDIFF(MINUTE, WORKILBO.ILBO_STRT, WORKILBO.ILBO_END)
+				END
+			) AS work_time
+		FROM WORKILBO
+		INNER JOIN FACILITY ON FACILITY.FAC_CODE = WORKILBO.FAC_CODE
+		WHERE WORKILBO.ILBO_STRT BETWEEN #{sdate} AND #{edate}
+		GROUP BY FACILITY.FAC_NAME
+		ORDER BY FACILITY.FAC_NAME
 	</select>
 	
 	

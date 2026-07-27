@@ -6,7 +6,70 @@
 
 <!-- Tabulator 테이블 -->
 <script type="text/javascript" src="/tkheat/js/tabulator/tabulator.js"></script>
-<link rel="stylesheet" href="/tkheat/css/tabulator/tabulator_simple.css"> 
+<link rel="stylesheet" href="/tkheat/css/tabulator/tabulator_simple.css">
+
+<script>
+//등록/수정/삭제 후 리스트를 다시 그릴 때(new Tabulator(...)로 재생성) 사용자가 설정한 페이지 크기/현재 페이지가
+//초기화되던 문제 -> Tabulator 자체 내장 persistence 기능을 모든 로컬 페이징 테이블에 자동으로 적용해서
+//페이지를 새로고침하지 않는 한(같은 브라우저 세션 내) 항상 마지막 설정을 기억하도록 함.
+//(개별 페이지 JSP 코드는 전혀 수정하지 않고, Tabulator 생성자를 감싸는 방식으로 전체 앱에 일괄 적용)
+//날짜/시간 표시가 "년-월-일 시:분:초"(또는 ISO 형식)로 그대로 나와 불필요하게 길어보이던 문제 ->
+//커스텀 formatter가 없는(=서버값을 그대로 보여주는) 컬럼에 한해, 화면 표시만 "년-월-일 시:분"까지로 잘라줌
+//(정렬/getData() 등 실제 데이터 값 자체는 그대로 유지 - 순수 표시상의 문제만 해결)
+function tkheatTruncateSeconds(text){
+	if(typeof text !== 'string'){ return text; }
+	return text.replace(/(\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}):\d{2}(\.\d+)?(Z|[+-]\d{2}:?\d{2})?/g, '$1');
+}
+
+function tkheatWrapColumnsForDateTruncation(columns){
+	if(!columns){ return; }
+	columns.forEach(function(col){
+		if(col.columns){
+			tkheatWrapColumnsForDateTruncation(col.columns);
+			return;
+		}
+		//이미 커스텀 formatter가 지정된 컬럼은 작성자의 의도를 존중해 건드리지 않음
+		//editor:true(불리언) 컬럼은 Tabulator가 "커스텀 formatter가 없을 때만" 에디터를 자동 매칭하므로,
+		//여기서 formatter를 넣어버리면 클릭해도 편집모드가 전혀 시작되지 않게 됨 -> 이런 컬럼은 건드리지 않음
+		if(typeof col.formatter === 'undefined' && col.editor !== true){
+			col.formatter = function(cell){
+				return tkheatTruncateSeconds(cell.getValue());
+			};
+		}
+	});
+}
+
+(function(){
+	if(typeof Tabulator === 'undefined'){ return; }
+	var OriginalTabulator = Tabulator;
+
+	function TabulatorWithPagingMemory(element, options){
+		options = options || {};
+		//로컬 페이징(사용자가 페이지 크기를 직접 선택하는 목록)만 대상 - 서버사이드/스크롤 로딩 방식은 건드리지 않음
+		if(options.pagination === "local" && typeof options.persistence === 'undefined'){
+			var elId = (typeof element === 'string') ? element.replace(/^#/, '') : ((element && element.id) || '');
+			if(elId){
+				options.persistence = { page: true };
+				options.persistenceID = "tkheat_pg_" + location.pathname.replace(/[^a-zA-Z0-9]/g, '_') + "_" + elId;
+			}
+		}
+		if(options.columns){
+			tkheatWrapColumnsForDateTruncation(options.columns);
+		}
+		return new OriginalTabulator(element, options);
+	}
+
+	TabulatorWithPagingMemory.prototype = OriginalTabulator.prototype;
+	for(var k in OriginalTabulator){
+		if(Object.prototype.hasOwnProperty.call(OriginalTabulator, k)){
+			TabulatorWithPagingMemory[k] = OriginalTabulator[k];
+		}
+	}
+
+	Tabulator = TabulatorWithPagingMemory;
+	window.Tabulator = TabulatorWithPagingMemory;
+})();
+</script>
 
 <!-- moment -->
 <script type="text/javascript" src="/tkheat/js/moment/moment.min.js"></script>
@@ -39,12 +102,60 @@
     z-index: 30020 !important;
 }
 
+/* ========== 전역 조회중 로딩 오버레이 (ajaxStart/ajaxStop으로 자동 표시) ========== */
+#globalLoadingOverlay {
+	display: none;
+	position: fixed;
+	top: 0; left: 0; right: 0; bottom: 0;
+	background: rgba(255,255,255,.55);
+	z-index: 99999;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+#globalLoadingOverlay .spinner {
+	width: 42px;
+	height: 42px;
+	border: 4px solid #BEE3F8;
+	border-top-color: #3182CE;
+	border-radius: 50%;
+	animation: globalLoadingSpin .7s linear infinite;
+}
+#globalLoadingOverlay .loading-text {
+	margin-top: 12px;
+	font-size: 14px;
+	font-weight: 700;
+	color: #2B6CB0;
+}
+@keyframes globalLoadingSpin {
+	to { transform: rotate(360deg); }
+}
+
 </style>
 
 <script>
 
 $(function(){
 	rpImagePopup();
+
+	//전역 조회중 오버레이: <head> 안에서 include되므로 정적 HTML 대신 body에 동적으로 추가
+	if($("#globalLoadingOverlay").length === 0){
+		$("body").prepend('<div id="globalLoadingOverlay"><div class="spinner"></div><div class="loading-text"></div></div>');
+	}
+
+	//전역 ajax 로딩 표시: 어떤 페이지든 조회/등록/수정/삭제 등 ajax 호출 중엔 자동으로 오버레이 표시
+	var globalLoadingTimer = null;
+	$(document).ajaxStart(function(){
+		clearTimeout(globalLoadingTimer);
+		//아주 빠르게 끝나는 요청은 깜빡임만 생기므로 살짝 지연 후 표시
+		globalLoadingTimer = setTimeout(function(){
+			$("#globalLoadingOverlay").css("display","flex");
+		}, 150);
+	});
+	$(document).ajaxStop(function(){
+		clearTimeout(globalLoadingTimer);
+		$("#globalLoadingOverlay").css("display","none");
+	});
 	
 	//airDatePicker 설정
 	//날짜 : 일
@@ -85,12 +196,95 @@ $(function(){
 	datePickerDateTime();
 });
 
+//현재 편집중인 날짜입력칸과 짝을 이루는 종료일 입력칸을 DOM상 위치로 찾음.
+//전체 앱에서 <input>~<input> 처럼 시작~종료 필드 사이에 물결(~) 텍스트가 있는 관례를 이용해서,
+//중간에 다른 라벨/입력칸이 끼어있는 "서로 무관한 다음 날짜쌍"과 혼동되지 않도록 정확히 짝을 찾음.
+//(페이지마다 id 이름이 달라도 항상 동작함)
+function tkheatFindPairedDateEl(inputEl, direction){
+	var node = direction === 'next' ? inputEl.nextSibling : inputEl.previousSibling;
+	var sawTilde = false;
+	while(node){
+		if(node.nodeType === 3){ //텍스트 노드
+			if(node.textContent.indexOf('~') !== -1){
+				sawTilde = true;
+			}else if(node.textContent.trim() !== ''){
+				break; //물결(~) 없이 다른 텍스트가 나오면 짝이 아님
+			}
+		}else if(node.nodeType === 1){ //엘리먼트 노드
+			if(sawTilde){
+				return node;
+			}
+			break; //물결(~) 전에 다른 엘리먼트가 나오면 짝이 아님
+		}
+		node = direction === 'next' ? node.nextSibling : node.previousSibling;
+	}
+	return null;
+}
+
+//짝을 이루는 날짜입력칸에 제약을 건다 - 네이티브 <input type="date">의 min/max 속성과
+//xdsoft 위젯이 붙어있다면 그 내부 옵션(minDate/minTime, maxDate/maxTime)을 동시에 갱신함.
+//(일부 페이지는 <input type="date">에 xdsoft 클래스도 같이 붙어있어 실제로 어느 쪽 달력 UI가
+// 뜨는지 확실치 않으므로, 두 메커니즘을 전부 갱신해서 어느 쪽이든 항상 정확히 막히도록 함)
+//Date 객체나 문자열 어느 쪽이 들어와도 네이티브 <input type="date">의 min/max 속성에 쓸 수 있는
+//"YYYY-MM-DD" 문자열로 정규화
+function tkheatToDateAttrString(val){
+	var d = (val instanceof Date) ? val : new Date(val);
+	if(isNaN(d.getTime())){
+		return (typeof val === 'string') ? val.substring(0,10) : '';
+	}
+	var mm = ('0' + (d.getMonth()+1)).slice(-2);
+	var dd = ('0' + d.getDate()).slice(-2);
+	return d.getFullYear() + '-' + mm + '-' + dd;
+}
+
+//val: xdsoft 콜백에서는 Date 객체, 네이티브 change 이벤트에서는 "YYYY-MM-DD" 문자열
+function tkheatConstrainPairedDate(sourceEl, direction, val){
+	var targetEl = tkheatFindPairedDateEl(sourceEl, direction);
+	if(!targetEl || targetEl.tagName !== 'INPUT'){ return; }
+
+	var $target = $(targetEl);
+	var isNativeDate = targetEl.type === 'date';
+	var isXdsoft = !!$target.data('xdsoft_datetimepicker');
+	var attrVal = tkheatToDateAttrString(val);
+
+	if(direction === 'next'){
+		//대상은 "종료일" 쪽 -> 이 값보다 이전 날짜를 선택하지 못하게 최소값 제한
+		if(isNativeDate && attrVal){
+			targetEl.min = attrVal;
+			if(targetEl.value && targetEl.value < attrVal){ targetEl.value = attrVal; }
+		}
+		if(isXdsoft){
+			$target.datetimepicker('setOptions', { minDate: val, minTime: val });
+		}
+	}else{
+		//대상은 "시작일" 쪽 -> 이 값보다 이후 날짜를 선택하지 못하게 최대값 제한
+		if(isNativeDate && attrVal){
+			targetEl.max = attrVal;
+			if(targetEl.value && targetEl.value > attrVal){ targetEl.value = attrVal; }
+		}
+		if(isXdsoft){
+			$target.datetimepicker('setOptions', { maxDate: val, maxTime: val });
+		}
+	}
+}
+
+//전체 앱의 <input type="date"> 네이티브 달력 입력칸(및 xdsoft가 겹쳐 붙은 하이브리드 입력칸 포함):
+//시작일 선택시 짝을 이루는 종료일의 최소값을, 종료일 선택시 짝을 이루는 시작일의 최대값을
+//자동으로 걸어서 서로 어긋난 날짜를 아예 선택 못하게 막음
+$(document).on('change', 'input[type="date"]', function(){
+	var val = this.value;
+	if(!val){ return; }
+	tkheatConstrainPairedDate(this, 'next', val);
+	tkheatConstrainPairedDate(this, 'prev', val);
+});
+
 function datePickerDate(){
 	$(".datetimepicker_date").datetimepicker({
 		changeMonth: true,
 		changeYear: true,
 		showButtonPanel: true,
 		format:'Y-m-d',
+		mask: true,
 		step: 1,
 		timepicker:false,
 		defaultSelect: false,
@@ -108,13 +302,11 @@ function datePickerDate(){
 			}
 		},
 		onSelectDate: function(ct, $i){
-			$("#dateEnd").datetimepicker('setOptions', { minDate: ct });
-			$("#dateEnd").datetimepicker('setOptions', { minTime: ct });
+			tkheatConstrainPairedDate($i.get(0), 'next', ct);
 		},
 		onSelectTime: function(ct, $i){
-			$("#dateEnd").datetimepicker('setOptions', { minDate: ct });
-			$("#dateEnd").datetimepicker('setOptions', { minTime: ct });
-		}		
+			tkheatConstrainPairedDate($i.get(0), 'next', ct);
+		}
 	});
 }
 
@@ -124,6 +316,7 @@ function datePickerDateTime(){
 		changeYear: true,
 		showButtonPanel: true,
 		format:'Y-m-d H:i',
+		mask: true,
 		step: 1,
 		defaultSelect: false,
 		defaultDate: false,
@@ -140,13 +333,11 @@ function datePickerDateTime(){
 			}
 		},
 		onSelectDate: function(ct, $i){
-			$("#dateEnd").datetimepicker('setOptions', { minDate: ct });
-			$("#dateEnd").datetimepicker('setOptions', { minTime: ct });
+			tkheatConstrainPairedDate($i.get(0), 'next', ct);
 		},
 		onSelectTime: function(ct, $i){
-			$("#dateEnd").datetimepicker('setOptions', { minDate: ct });
-			$("#dateEnd").datetimepicker('setOptions', { minTime: ct });
-		}		
+			tkheatConstrainPairedDate($i.get(0), 'next', ct);
+		}
 	});
 }
 
@@ -156,6 +347,7 @@ function datePickerMonth(){
 	    changeYear: true,
 	    showButtonPanel: true,
 	    format:'Y-m',
+	    mask: true,
 	    step: 1,
 	    timepicker:false,
 	    defaultSelect: false,

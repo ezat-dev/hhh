@@ -1,6 +1,7 @@
 package com.tkheat.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -99,6 +100,11 @@ public class PreverationDaoImpl implements PreservationDao {
 	@Override
 	 public List<Bega> getBegaAnalyList(Bega bega) {
 		 return sqlSession.selectList("bega.getBegaAnalyList", bega);
+	 }
+
+	@Override
+	 public List<Map<String, Object>> getBegaWorkStatusList(Bega bega) {
+		 return sqlSession.selectList("bega.getBegaWorkStatusList", bega);
 	 }
 	
 	

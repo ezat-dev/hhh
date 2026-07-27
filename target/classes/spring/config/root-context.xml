@@ -24,6 +24,7 @@
     <bean id="monitoringProcessorBcf3" class="com.tkheat.async.MonitoringProcessorBcf3" />
     <bean id="monitoringProcessorBcf4" class="com.tkheat.async.MonitoringProcessorBcf4" />
     <bean id="monitoringProcessorBcf5" class="com.tkheat.async.MonitoringProcessorBcf5" />
+    <bean id="trendSnapshotScheduler" class="com.tkheat.async.TrendSnapshotScheduler" />
 
     <task:scheduler id="scheduler" pool-size="4" />
     <task:executor id="executor" keep-alive="10" pool-size="10-20"
@@ -32,7 +33,7 @@
     <!-- 로컬 테스트용 MSSQL -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> 
         <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" /> 
-        <property name="url" value="jdbc:sqlserver://192.168.0.201:1433;DataBaseName=HEATDB_EZAT;" /> 
+        <property name="url" value="jdbc:sqlserver://192.168.0.201:1433;DataBaseName=HEATDB;" /> 
         <property name="username" value="heatmaster" /> 
         <property name="password" value="rpn123!!"/>
     </bean>

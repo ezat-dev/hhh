@@ -1,6 +1,7 @@
 package com.tkheat.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.tkheat.domain.Bega;
 import com.tkheat.domain.Jeomgeom;
@@ -45,6 +46,8 @@ public interface PreservationDao {
 	
 	
 	List<Bega> getBegaAnalyList(Bega bega);
+
+	List<Map<String, Object>> getBegaWorkStatusList(Bega bega);
 	
 	
 	

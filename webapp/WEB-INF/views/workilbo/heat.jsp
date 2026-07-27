@@ -10,216 +10,565 @@
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
-    
-.main{
-	width:98%;
-}
-.container {
-	display: flex;
-	justify-content: space-between;
-}
+
 .tabulator {
 	width: 100%;
 	max-width: 100%;
 	max-height: 900px;
-	overflow-x: hidden !important;  
+	overflow-x: hidden !important;
 }
-        
+
 .row_select{
 	background-color:#9ABCEA !important;
 }
+
+/* ========== 레이아웃 (세로 스크롤 방지) ========== */
+html, body { height: 100%; margin: 0; }
+body { display: flex; flex-direction: column; overflow: hidden; }
+.tab { flex-shrink: 0; }
+.main {
+	flex: 1;
+	min-height: 0;
+	width: 100%;
+	display: flex;
+	padding: 8px;
+	overflow: hidden;
+}
+.container {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	background: #ffffff;
+	border: 1px solid #E2E8F0;
+	border-radius: 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	padding: 8px;
+	overflow: hidden;
+}
+#workTabu.tabulator {
+	flex: 1;
+	min-height: 0;
+	max-height: none;
+	width: 100%;
+	min-width: 0;
+	border: none;
+	font-size: 12px;
+}
+#workTabu .tabulator-header {
+	background: linear-gradient(135deg, #2B6CB0, #3182CE);
+	border-bottom: none;
+}
+#workTabu .tabulator-col {
+	background: transparent;
+	border-right: 1px solid rgba(255,255,255,.15);
+}
+#workTabu .tabulator-col.tabulator-sortable:hover {
+	background: rgba(255,255,255,.08);
+}
+#workTabu .tabulator-col-title {
+	color: #ffffff;
+	font-weight: 700;
+}
+#workTabu .tabulator-col .tabulator-header-filter input {
+	border: none;
+	border-radius: 5px;
+	padding: 4px 6px;
+	font-size: 11px;
+	background: rgba(255,255,255,.92);
+	box-sizing: border-box;
+}
+#workTabu .tabulator-row {
+	border-bottom: 1px solid #EDF2F7;
+	transition: background-color .12s;
+}
+#workTabu .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
+#workTabu .tabulator-row.row_select {
+    background-color: #BEE3F8 !important;
+    box-shadow: inset 0 0 0 2px #2B6CB0;
+}
+#workTabu .tabulator-cell {
+	border: 1px solid #E2E8F0;
+	color: #2D3748;
+}
+#workTabu .tabulator-footer {
+	background: #F7FAFC;
+	border-top: 1px solid #E2E8F0;
+	padding: 8px 12px;
+}
+#workTabu .tabulator-page {
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #ffffff;
+	color: #2D3748;
+	min-width: 30px;
+	height: 28px;
+	padding: 0 8px;
+	font-size: 12px;
+	font-weight: 600;
+}
+#workTabu .tabulator-page.active {
+	background: #3182CE;
+	border-color: #2B6CB0;
+	color: #ffffff;
+}
+#workTabu .tabulator-page:not(:disabled):hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+	color: #2B6CB0;
+	cursor: pointer;
+}
+
 .box1 {
 	display: flex;
-	justify-content: right;
+	flex-wrap: wrap;
 	align-items: center;
-/*	width: 1500px;*/
-/*	margin-left: -620px;*/
-	margin-left: 0%;
+	gap: 8px;
 }
 
-.box1 input{
-	width : 7%;
+/* ========== 상단 도구바 (다른 페이지 날짜검색/검색창과 통일) ========== */
+.tab {
+	background: #ffffff;
+	border: 1px solid #E2E8F0;
+	border-radius: 10px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	padding: 10px 14px;
 }
-.box1 select{
-	width: 5%
-}  
+.j_container {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+.j_row1 {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+.daylabel {
+	font-size: 12px;
+	font-weight: 600;
+	color: #495057;
+	white-space: nowrap;
+}
+/* nbsp로 간격 맞추던 옛 방식 대체 (gap이 대신 처리) */
+.margin_left {
+	margin-left: 0 !important;
+}
+.datetimepicker_date,
+.search_input,
+.box1 select,
+.box1 input[type="text"],
+.box1 input[type="number"] {
+	height: 30px;
+	padding: 0 8px;
+	font-size: 12px !important;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	color: #333;
+	outline: none;
+	box-sizing: border-box;
+	transition: border-color .2s ease, background-color .2s ease;
+}
+.datetimepicker_date:focus,
+.search_input:focus,
+.box1 select:focus,
+.box1 input:focus {
+	border-color: #3182CE;
+	background-color: #fff;
+}
+.datetimepicker_date {
+	width: 140px !important;
+	text-align: center;
+}
+.search_input {
+	width: 140px !important;
+}
+.button-container .select-button,
+.button-container .insert-button,
+.button-container .excel-button,
+.button-container .printer-button,
+.button-container .delete {
+	height: 34px;
+	border: 1px solid #E2E8F0;
+	border-radius: 8px;
+	background: #F0F4F8;
+	transition: background-color .13s, border-color .13s;
+}
+.button-container .select-button:hover,
+.button-container .insert-button:hover,
+.button-container .excel-button:hover,
+.button-container .printer-button:hover,
+.button-container .delete:hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+}
 
-/*침탄로작업 등록 모달*/
-.workBcfModal{
-	position: fixed; /* 화면에 고정 */
-	width:1400px;
-	height:720px;	
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
+/* 호기(설비) 선택 버튼 - 활성/비활성 배경은 selectHogiBtn() JS에서 동적으로 지정 */
+.select-hogi-button.select-button {
+	height: 34px;
+	padding: 0 16px;
+	border: 1px solid #E2E8F0;
+	border-radius: 8px;
+	background: #F0F4F8;
+	font-size: 12px;
+	font-weight: 600;
+	color: #2D3748;
+	transition: background-color .13s, border-color .13s;
+}
+.select-hogi-button.select-button:hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+}
+
+/* ========== 모달 공통 (management 쪽 모달과 동일한 톤) ========== */
+.workBcfModal,
+.workBcfDanchModal,
+.checkSheetStatusModal,
+.checkSheetReportModal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
 	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
+	transform: translate(-50%, -50%);
+	z-index: 20010;
+	border: none;
+	border-radius: 12px;
+	background-color: white;
+	box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+	overflow: hidden;
+}
+/* 작업대기 리스트 모달은 열처리작업 모달 위에 얹히므로 z-index를 한 단계 더 높게 */
+.workBcfDanchModal {
+	z-index: 20011;
+}
+.header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: linear-gradient(135deg, #2c3e50, #34495e);
+	height: 50px;
+	color: white;
+	font-size: 18px;
+	font-weight: 700;
+	text-align: center;
+	cursor: move;
+	flex-shrink: 0;
+}
+.workBcfModal .detail,
+.workBcfDanchModal .detail,
+.checkSheetStatusModal .detail {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	background: #f5f7fa;
+	padding: 10px 14px;
+	box-sizing: border-box;
+}
+/* 목록(#workBcfDanchTabu)이 남는 세로공간을 모두 흡수하도록 하여, 검색줄 등 정적
+   콘텐츠 때문에 생기던 모달 레벨의 불필요한 스크롤을 없앰. 행이 많아 넘칠 때는
+   타뷸레이터가 자체적으로 스크롤을 보여줌(모달 레벨 스크롤과는 별개) */
+.workBcfDanchModal .detail > .j_container:last-of-type,
+.workBcfDanchModal .setRow{
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+.workBcfDanchModal #workBcfDanchTabu{
+	flex: 1;
+	min-height: 0;
+}
+.btnSaveClose {
+	display: flex;
+	justify-content: center;
+	gap: 12px;
+	padding: 14px 0;
+	background: #ffffff;
+	border-top: 1px solid #E2E8F0;
+	margin: 0;
+	flex-shrink: 0;
+}
+.btnSaveClose button {
+	width: 100px;
+	height: 36px;
+	border: none;
+	border-radius: 6px;
+	font-weight: 700;
+	text-align: center;
+	cursor: pointer;
+	line-height: 36px;
+	margin: 0;
+	transition: transform .2s ease, box-shadow .2s ease;
+}
+.btnSaveClose .save {
+	background: linear-gradient(135deg, #51cf66, #37b24d);
+	color: white;
+}
+.btnSaveClose .close {
+	background: linear-gradient(135deg, #868e96, #495057);
+	color: white;
+	border: none;
+}
+.btnSaveClose .save:hover {
+	background: linear-gradient(135deg, #40c057, #2f9e44);
+	transform: translateY(-1px);
+}
+.btnSaveClose .close:hover {
+	background: linear-gradient(135deg, #6c757d, #343a40);
+	transform: translateY(-1px);
 }
 
-.workBcfModal .j_container{
-	display:flex;	
+/* ========== 모달 내 공용 유틸 클래스 ========== */
+.iRowBtn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	width: 70px;
+	height: 32px;
+	font-size: 12px;
+	font-weight: 600;
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #F0F4F8;
+	color: #2D3748;
+	transition: background-color .13s, border-color .13s;
 }
-
-.workBcfModal .j_row1{
-	display:flex;
-	margin-top:1px;
+.iRowBtn:hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
 }
-
-.workBcfModal .margin_left{
-	margin-left:5px;
+.iRowBtn2 {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	width: 140px;
+	height: 32px;
+	font-size: 12px;
+	font-weight: 600;
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #F0F4F8;
+	color: #2D3748;
+	transition: background-color .13s, border-color .13s;
 }
-
-.workBcfModal .iRowBtn{
-	display:block;
-	cursor:pointer;
-	width:70px;
-	height:30px;
-	font-size:14pt;
+.iRowBtn2:hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
 }
-
-.workBcfModal .iRowBtn2{
-	display:block;
-	cursor:pointer;
-	width:140px;
-	height:30px;
-	font-size:14pt;
-}
-
-.workBcfModal .iRowLabel{
+.iRowLabel{
 	display:block;
 	width:120px;
 	height:20px;
 	text-align:center;
 	margin-bottom:2px;
-	font-size:14pt;
+	font-size:12pt;
 }
-
-.workBcfModal .iRowLabel2{
+.iRowLabel2{
 	display:block;
 	width:120px;
 	height:24px;
 	text-align:left;
 	margin-bottom:7px;
-	font-size:14pt;
+	font-size:12pt;
 	margin-left:10px;
 }
-
-.workBcfModal .iRowInput{
-	/*display:flex;*/
+.iRowInput{
 	width:120px !important;
-	height:20px;
-	font-size:14pt;
+	height:30px;
+	font-size:12pt;
 	text-align:center;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	box-sizing: border-box;
 }
-
-.workBcfModal .iRowInput2{
+.iRowInput2{
 	display:block;
 	width:120px !important;
-	height:20px;
-	font-size:14pt;
+	height:28px;
+	font-size:12pt;
 	text-align:center;
 	margin-bottom:5px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	box-sizing: border-box;
 }
-
-.workBcfModal .iRowInput_180{
-	/*display:flex;*/
+.iRowInput_180{
 	width:180px !important;
-	height:24px;
-	font-size:14pt;
+	height:32px;
+	font-size:12pt;
 	text-align:center;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	background-color: #f9f9f9;
+	box-sizing: border-box;
+}
+.j_h_div{
+	width:130px;
 }
 
+/*침탄로작업 등록 모달*/
+.workBcfModal{
+	width:1400px;
+	height:760px;
+	flex-direction: column;
+}
+.workBcfModal .j_container{
+	display:flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+.workBcfModal .j_row1{
+	display:flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+/* 폼 내부 섹션(행) 간 세로 리듬 통일: <hr> 기본 여백 대신 gap 8px로 일괄 처리
+   (기존에는 <hr> 앞뒤로는 브라우저 기본 마진이 생기고, 일반 div끼리는 여백이 0이라
+   구간마다 위/아래 여백이 들쭉날쭉해 "단차"처럼 보였음) */
+.workBcfModal #workBcfForm,
+.workBcfModal .bcfInfo0,
+.workBcfModal .bcfInfo1,
+.workBcfModal .bcfInfo2 {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.workBcfModal #workBcfForm{
+	flex: 1;
+	min-height: 0;
+}
+.workBcfModal #workBcfForm hr {
+	width: 100%;
+	margin: 0;
+	border: none;
+	border-top: 1px solid #E2E8F0;
+}
+/* 목록(#workBcfTabu)이 남는 세로공간을 모두 흡수하도록 하여, 조건 입력 영역 등 정적
+   콘텐츠 때문에 생기던 모달 레벨의 불필요한 스크롤을 없앰. 행이 많아 넘칠 때는
+   타뷸레이터가 자체적으로 스크롤을 보여줌(모달 레벨 스크롤과는 별개) */
+.workBcfModal .setRow{
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+.workBcfModal #workBcfTabu{
+	flex: 1;
+	min-height: 0;
+}
 
-/*열처리 대기이력*/
+/*열처리 대기이력(작업대기 리스트)*/
 .workBcfDanchModal{
-	position: fixed; /* 화면에 고정 */
 	width:1300px;
 	height:750px;
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20011; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
+	flex-direction: column;
 }
-
-.workBcfDanchModal .iRowBtn{
-	display:block;
-	cursor:pointer;
-	width:70px;
-	height:30px;
-	font-size:14pt;
+/* 검색줄 라벨(거래처/품명/품번)이 120px 고정폭이라 인풋+버튼까지 합치면 모달 폭을 살짝
+   넘겨서 조회버튼만 다음 줄로 밀려나던 문제 -> 라벨을 텍스트 크기에 맞게 축소 */
+.workBcfDanchModal .iRowLabel{
+	width:auto;
+	min-width:0;
+	padding:0 2px;
 }
-
 .workBcfDanchModal .j_container{
-	display:flex;	
+	display:flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
 }
-
 .workBcfDanchModal .j_row1{
 	display:flex;
-	margin-top:1px;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
 }
 
-.workBcfDanchModal .margin_left{
-	margin-left:5px;
+/* ========== 모달 내 리스트(#workBcfTabu / #workBcfDanchTabu) ========== */
+#workBcfTabu.tabulator,
+#workBcfDanchTabu.tabulator {
+	border: 1px solid #E2E8F0;
+	border-radius: 8px;
+	font-size: 12px;
 }
-
-.workBcfDanchModal .iRowInput{
-	/*display:flex;*/
-	width:120px !important;
-	height:20px;
-	font-size:14pt;
-	text-align:center;
+#workBcfTabu .tabulator-header,
+#workBcfDanchTabu .tabulator-header {
+	background: linear-gradient(135deg, #2B6CB0, #3182CE);
+	border-bottom: none;
 }
-
-.workBcfDanchModal .iRowInput2{
-	display:block;
-	width:120px !important;
-	height:20px;
-	font-size:14pt;
-	text-align:center;
-	margin-bottom:5px;
+#workBcfTabu .tabulator-col,
+#workBcfDanchTabu .tabulator-col {
+	background: transparent;
+	border-right: 1px solid rgba(255,255,255,.15);
 }
-
-.workBcfDanchModal .iRowInput_180{
-	/*display:flex;*/
-	width:180px !important;
-	height:24px;
-	font-size:14pt;
-	text-align:center;
+#workBcfTabu .tabulator-col-title,
+#workBcfDanchTabu .tabulator-col-title {
+	color: #ffffff;
+	font-weight: 700;
 }
-
-/**/
-
-.header {
-	display: flex; /* 플렉스 박스 사용 */
-	justify-content: center; /* 중앙 정렬 */
-	align-items: center; /* 수직 중앙 정렬 */
-	margin-bottom: 10px; /* 상단 여백 */
-	background-color: #33363d; /* 배경색 */
-	height: 50px; /* 높이 */
-	color: white; /* 글자색 */
-	font-size: 20px; /* 글자 크기 */
-	text-align: center; /* 텍스트 정렬 */
+#workBcfTabu .tabulator-row,
+#workBcfDanchTabu .tabulator-row {
+	border-bottom: 1px solid #EDF2F7;
+	transition: background-color .12s;
 }
-
-.btnSaveClose button {
-	background: #007bff; /* 버튼 배경색 */
-	color: white; /* 버튼 글자색 */
-	border: none; /* 경계선 없음 */
-	padding: 8px 15px; /* 내부 여백 */
-	cursor: pointer; /* 커서 변경 */
-	border-radius: 3px; /* 모서리 둥글게 */
-	margin: 0 10px; /* 버튼 간격 */
-	margin-top: 10px;
-	align-items: center; /* 수직 중앙 정렬 */
+#workBcfTabu .tabulator-row.tabulator-row-even,
+#workBcfDanchTabu .tabulator-row.tabulator-row-even {
+	background-color: #F7FAFC;
 }
-
-.btnSaveClose button:hover {
-	background: #0056b3; /* 호버 시 색상 변경 */
+#workBcfTabu .tabulator-row:hover,
+#workBcfDanchTabu .tabulator-row:hover {
+    background-color: #EBF8FF !important;
+    box-shadow: inset 0 0 0 1px #3182CE;
+}
+#workBcfTabu .tabulator-cell,
+#workBcfDanchTabu .tabulator-cell {
+	border: 1px solid #E2E8F0;
+	color: #2D3748;
+}
+#workBcfTabu .tabulator-footer,
+#workBcfDanchTabu .tabulator-footer {
+	background: #F7FAFC;
+	border-top: 1px solid #E2E8F0;
+	padding: 6px 10px;
+}
+#workBcfTabu .tabulator-page,
+#workBcfDanchTabu .tabulator-page {
+	border: 1px solid #E2E8F0;
+	border-radius: 6px;
+	background: #ffffff;
+	color: #2D3748;
+	min-width: 26px;
+	height: 24px;
+	padding: 0 6px;
+	font-size: 11px;
+	font-weight: 600;
+}
+#workBcfTabu .tabulator-page.active,
+#workBcfDanchTabu .tabulator-page.active {
+	background: #3182CE;
+	border-color: #2B6CB0;
+	color: #ffffff;
+}
+#workBcfTabu .tabulator-page:not(:disabled):hover,
+#workBcfDanchTabu .tabulator-page:not(:disabled):hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+	color: #2B6CB0;
+	cursor: pointer;
 }
 
 .tabulator-header > .tabulator-headers > .tabulator-col{
@@ -232,7 +581,7 @@
 }
 
 .tabulator-header > .tabulator-headers > .tabulator-col > .tabulator-col-content > .tabulator-col-title-holder > .tabulator-col-title{
-	font-size: 12pt !important;	
+	font-size: 12pt !important;
 }
 
 .tabulator-col-title > input[type='checkbox']{
@@ -252,10 +601,6 @@
     border: 1px solid #ccc !important;
 }
 
-.main{
-	height: calc(100vh - 162px);
-}
-
 /*말줄임표*/
 .ellipsis-cell .tabulator-cell-value {
 	white-space: nowrap;
@@ -263,56 +608,24 @@
 	text-overflow: ellipsis;
 }
 
-.select-hogi-button{
-	font-size:14pt;
-}
-
-
 .checkSheetStatusModal {
-	position: fixed; /* 화면에 고정 */
 	width:350px;
-	height:150px;	
-	top: 50%; /* 수직 중앙 */
-	left: 40%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
+	height:200px;
 }
-
-.checkSheetStatusModal .j_container{
-	display:flex;
-}
-
-.checkSheetStatusModal .j_row1{
-	display:flex;
-	margin-top:1px;
-}
-
 
 .checkSheetReportModal {
-	position: fixed; /* 화면에 고정 */
 	width:850px;
 	height:800px;
-	top: 50%; /* 수직 중앙 */
-	left: 50%; /* 수평 중앙 */
-	display: none;
-	transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
-	z-index: 20010; /* 다른 요소 위에 표시 */
-	border:2px solid black;
-	background-color:white;
+	flex-direction: column;
+	padding: 14px;
+	gap: 10px;
+	box-sizing: border-box;
 }
 
-.checkSheetReportModal .j_container{
-	display:flex;
+.checkSheetStatusModal .j_container[style*="justify-content:end"],
+.checkSheetReportModal .j_container[style*="justify-content:end"] {
+	padding: 0 14px 14px;
 }
-
-.checkSheetReportModal .j_row1{
-	display:flex;
-	margin-top:1px;
-}
-
 
     </style>
     
@@ -321,20 +634,20 @@
     
     <div class="tab">
     <div class="box1">
-         <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>
 		<form action="" autocomplete="off">
+			<div class="j_container">
 				<label class="daylabel">작업일 :</label>
-				<input type="text" id="s_all_sdate" class="datetimepicker_date" style="font-size: 14pt; width:140px;">
+				<input type="text" id="s_all_sdate" class="datetimepicker_date">
 				~
-				<input type="text" id="s_all_edate" class="datetimepicker_date" style="font-size: 14pt; width:140px;">
+				<input type="text" id="s_all_edate" class="datetimepicker_date">
 				<label class="daylabel">거래처 :</label>
-				<input type="text" id="s_all_corp_name" style="font-size: 14pt; width:140px;">
+				<input type="text" id="s_all_corp_name" class="search_input">
 				<label class="daylabel">품명 :</label>
-				<input type="text" id="s_all_prod_name" style="font-size: 14pt; width:140px;">
+				<input type="text" id="s_all_prod_name" class="search_input">
 				<label class="daylabel">품번 :</label>
-				<input type="text" id="s_all_prod_no" style="font-size: 14pt; width:140px;">
-				
-		</form>	
+				<input type="text" id="s_all_prod_no" class="search_input">
+			</div>
+		</form>
 	</div>
     <div class="button-container">
         <button class="select-button" onClick="getWorkDataList();">
@@ -392,8 +705,7 @@
 		<div class="header">
 		열처리작업 등록
 		</div>
-	</div>
-	
+
 		<form id="workBcfForm" name="workBcfForm" autocomplete="off">
 			<div class="j_container">
 				<!-- 수주no 바코드스캔 후 적용과 입고이력을 조회한다음 추가하는 방법 2가지 -->				
@@ -557,11 +869,12 @@
 							style="text-align:center; margin-left:0; background:lightpink;
 							border:1px solid black; width: 125px;"
 						>냉각</label>
-						<input type="text" name="wstd_gj16" class="iRowInput2"/>					
+						<input type="text" name="wstd_gj16" class="iRowInput2"/>
 						<input type="text" name="wstd_gj26" class="iRowInput2" disabled="disabled"/>
 						<input type="text" name="wstd_gj36" class="iRowInput2" disabled="disabled"/>
-						<input type="text" name="" class="iRowInput2" disabled="disabled"/>	
-						<input type="text" name="" class="iRowInput2" disabled="disabled"/>					
+						<input type="text" name="" class="iRowInput2" disabled="disabled"/>
+						<input type="text" name="" class="iRowInput2" disabled="disabled"/>
+						<input type="text" name="" class="iRowInput2" disabled="disabled"/>
 					</div>
 					
 				</div>
@@ -629,19 +942,19 @@
 						<label class="iRowLabel2">소입검사</label>
 					</div>
 					<div class="j_div">
-						<input type="number" name="ilbo_pg1" class="iRowInput bcf_hard_input"/>					
+						<input type="text" name="ilbo_pg1" class="iRowInput bcf_hard_input"/>
 					</div>
 					<div class="j_div">
-						<input type="number" name="ilbo_pg2" class="iRowInput margin_left bcf_hard_input"/>					
+						<input type="text" name="ilbo_pg2" class="iRowInput margin_left bcf_hard_input"/>
 					</div>
 					<div class="j_div">
-						<input type="number" name="ilbo_pg3" class="iRowInput margin_left bcf_hard_input"/>					
+						<input type="text" name="ilbo_pg3" class="iRowInput margin_left bcf_hard_input"/>
 					</div>
 					<div class="j_div">
-						<input type="number" name="ilbo_pg4" class="iRowInput margin_left bcf_hard_input"/>					
+						<input type="text" name="ilbo_pg4" class="iRowInput margin_left bcf_hard_input"/>
 					</div>
 					<div class="j_div">
-						<input type="number" name="ilbo_pg5" class="iRowInput margin_left bcf_hard_input"/>					
+						<input type="text" name="ilbo_pg5" class="iRowInput margin_left bcf_hard_input"/>
 					</div>
 					<div class="j_div">
 						<select name="ilbo_okng" class="iRowInput2 margin_left" style="height:27px;">
@@ -724,19 +1037,16 @@
 		
 		<div class="bcfInfo2">
 			<div class="j_container" style="justify-content:center; font-size:14pt;">
-				<div class="j_row1">*과거불량이력*</div>			
+				<div class="j_row1">*과거불량이력*</div>
 			</div>
 			<hr />
 		</div>
 	</form>
-	
-	<hr />
-	
-    <div class="j_container" style="justify-content:end;">
-    	<div class="j_row1">
-			<button class="iRowBtn margin_left" type="button" onclick="workBcfModalSave();">저장</button>
-			<button class="iRowBtn margin_left" type="button" onclick="workBcfModalClose();">닫기</button>
-		</div>
+	</div>
+
+    <div class="btnSaveClose">
+		<button class="save" type="button" onclick="workBcfModalSave();">저장</button>
+		<button class="close" type="button" onclick="workBcfModalClose();">닫기</button>
     </div>
 </div>
 
@@ -745,45 +1055,38 @@
 		<div class="header">
 		작업대기 리스트
 		</div>
-	</div>
+
 		<div class="j_container">
 			<form id="workBcfDanchForm" name="workBcfDanchForm" autocomplete="off" style="width:100%;">
 				<div class="j_row1">
 					<label class="daylabel">입고일 :</label>
-					<input type="text" id="bcf_danch_sdate" class="iRowInput datetimepicker_date" 
-					style="width:100px;">
+					<input type="text" id="bcf_danch_sdate" class="datetimepicker_date">
 					~
-					<input type="text" id="bcf_danch_edate" class="iRowInput datetimepicker_date" 
-					style="width:100px;">				
-	
+					<input type="text" id="bcf_danch_edate" class="datetimepicker_date">
+
 					<label for="" class="iRowLabel margin_left">거래처</label>
-					<input type="text" id="bcf_danch_cname" class="iRowInput_180 bcf_danch_input"
-					style="width:140px;"/>
+					<input type="text" id="bcf_danch_cname" class="search_input bcf_danch_input"/>
 					<label for="" class="iRowLabel margin_left">품명</label>
-					<input type="text" id="bcf_danch_pname" class="iRowInput_180 bcf_danch_input"
-					style="width:140px;"/>
+					<input type="text" id="bcf_danch_pname" class="search_input bcf_danch_input"/>
 					<label for="" class="iRowLabel margin_left">품번</label>
-					<input type="text" id="bcf_danch_pno" class="iRowInput_180 bcf_danch_input"
-					style="width:140px;"/>
+					<input type="text" id="bcf_danch_pno" class="search_input bcf_danch_input"/>
 					<button class="iRowBtn margin_left" type="button" onclick="getWorkBcfDanchDataList();">조회</button>
 				</div>
 				<div class="j_row1" style="justify-content: end;">
 					<span style="color:red;" class="margin_left">*적색 행은 단취완료가 안된 작업입니다!!</span>
-				</div>				
+				</div>
 			</form>
 		</div>
-	
+
 		<div class="j_container">
 			<div class="setRow">
 				<div id="workBcfDanchTabu"></div>
 			</div>
 		</div>
-		<hr />	
-		
-    <div class="j_container" style="justify-content:end;">
-    	<div class="j_row1">
-			<button class="iRowBtn margin_left" type="button" onclick="workBcfDanchModalClose();">닫기</button>
-		</div>
+	</div>
+
+    <div class="btnSaveClose">
+		<button class="close" type="button" onclick="workBcfDanchModalClose();">닫기</button>
     </div>
 </div>
 
@@ -848,10 +1151,9 @@
 	//로드
 	$(function(){
 		//전체 거래처목록 조회
-		var ydate = yesterDate();
 		var tdate = todayDate();
-		
-		$("#s_all_sdate").val(ydate);
+
+		$("#s_all_sdate").val(tdate);
 		$("#s_all_edate").val(tdate);
 		
 		getWorkData();
@@ -890,7 +1192,7 @@
 			success:function(result){
    				var fileUrl = "/tkPrint/workilboCheckSheet/"+result.fileName;
                 $("#checkSheetReport").attr("src",fileUrl);
-                checkSheetReportModal.style.display = "block";
+                checkSheetReportModal.style.display = "flex";
 				
                 checkSheetStatusCloseBtn();
 //				getChulgoData();
@@ -999,6 +1301,7 @@
 				},
 				success:function(result){
 					getWorkDataList();
+					alert("삭제되었습니다.");
 				}
 			});
 		}
@@ -1098,12 +1401,12 @@
 	function selectHogiBtn(hogi){
 
 		var hogiArray = [0,1,2,3,4,18];
-		
+
 		for(var i=0; i<hogiArray.length; i++){
 			if(hogiArray[i] == hogi){
-				$("#selectHogi"+hogi).css("background-color","#FAED7D");		
+				$("#selectHogi"+hogi).css({"background-color":"#BEE3F8","border-color":"#3182CE","color":"#1A365D"});
 			}else{
-				$("#selectHogi"+hogiArray[i]).css("background-color","#FFFFFF");
+				$("#selectHogi"+hogiArray[i]).css({"background-color":"#F0F4F8","border-color":"#E2E8F0","color":"#2D3748"});
 			}
 		}
 
@@ -1229,17 +1532,28 @@
 	
 	
 	//침탄로작업
+	//더블클릭으로 기존 데이터를 불러올 때, 설비/작업자 목록이 아직 로딩되기 전(최초 진입 시)이면
+	//select에 값 설정이 조용히 실패하므로, 목록 로딩(getWorkBcfDataFacCode/UserCode)이 끝난 뒤에도
+	//적용할 수 있도록 값을 임시 보관해둔다.
+	var bcfPendingFacCode = null;
+	var bcfPendingUserCode = null;
+	var tkheatLoginUserCode = "${loginUser.user_code}"; //신규 등록시 작업자 기본값용(현재 로그인 사용자)
+
 	function workBcfModalOpen(){
 		bcfModalSet(0);
-		
+
 		$("#workBcfForm")[0].reset();
-		
+		bcfPendingFacCode = null;
+		bcfPendingUserCode = null;
+		//select에 남아있는 이전(수정모드 등) 선택값을 지워야, 신규등록시 로그인 사용자 기본선택 로직이 정상 동작함
+		$("#workBcfForm select[name='user_code']").val('');
+
 		getWorkBcfData();
 		getWorkBcfDataFacCode();
 		getWorkBcfDataUserCode();
 		ilboLotRtn(1);
 		
-		workBcfModal.style.display = 'block'; // 모달 보임
+		workBcfModal.style.display = 'flex'; // 모달 보임
 		$("#workBcfForm input[name='ilbo_strt']").val("1900-01-01 00:00");
 		$("#workBcfForm input[name='ilbo_end']").val("1900-01-01 00:00");
 	}
@@ -1268,7 +1582,7 @@
 		getWorkBcfDanchData();
 		getWorkBcfDanchDataList();
 		
-		workBcfDanchModal.style.display = 'block'; // 모달 숨김
+		workBcfDanchModal.style.display = 'flex'; // 모달 보임
 	}
 	function workBcfDanchModalClose(){
 		workBcfDanchModal.style.display = 'none'; // 모달 숨김
@@ -1313,7 +1627,7 @@
 	function getWorkData(){
 		
 		workDataTable = new Tabulator("#workTabu", {
-		    height:"650px",
+		    height:"100%",
 		    layout:"fitColumns",
 		    selectable:1,	//로우 선택설정
 		    tooltips:true,
@@ -1321,7 +1635,10 @@
 		    reactiveData:false,
 		    headerHozAlign:"center",
 		    placeholder:"조회된 데이터가 없습니다.",
+		    pagination:"local",
 		    paginationSize:20,
+		    paginationSizeSelector:[20,50,100,500,1000],
+		    paginationCounter:"rows",
 		    headerSort:false,
 		    rowSelectionChanged:function(data, rows){
 		        // 현재 화면에 보이는 모든 행 다시 그림
@@ -1329,7 +1646,7 @@
 		            r.reformat();
 		        });
 		    },
-		    rowClick: function(e, row){		    	
+		    rowClick: function(e, row){
 		        // 이미 선택된 행이면 아무것도 안 함
 		        if(!row.isSelected()){
 		            row.select();   // 다른 행 누르면 기존 자동 해제
@@ -1394,7 +1711,14 @@
 											key == "ilbo_pg4" || key == "ilbo_pg5"){
 										bcfHardInputCalc(key,stdData[key],stdVal1,stdVal2);
 									}
-									
+
+									if(key == "fac_code"){
+										bcfPendingFacCode = stdData[key];
+									}
+									if(key == "user_code"){
+										bcfPendingUserCode = stdData[key];
+									}
+
 									$("#workBcfForm input[name='"+key+"']").val(stdData[key]);
 									$("#workBcfForm select[name='"+key+"']").val(stdData[key]);
 								}
@@ -1410,6 +1734,7 @@
 		        }
 		    },	    
 	    	columns:[
+		        {title:"NO", formatter:"rownum", width:40, hozAlign:"center", headerSort:false},
 		        {
 		            title: "",
 		            field: "indicator",
@@ -1474,22 +1799,20 @@
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
-			    
-			    row.getElement().style.fontWeight = "700";
-			    
+
 			    var ilbo_end = data.ilbo_end;
-			    
+
 			    if(ilbo_end == "1900-01-01 00:00"){
 			    	row.getElement().style.backgroundColor = "#FAED7D";
 			    }else{
-			    	row.getElement().style.backgroundColor = "#FFFFFF";	
+			    	row.getElement().style.backgroundColor = "#FFFFFF";
 			    }
-			    
+
 			}
-		});		
+		});
 
 	}
-		
+
 	/*열처리 작업*/
 	//작업지시(열처리) - 등록된 단취작업 리스트
 	var workBcfDataTable;	
@@ -1497,7 +1820,7 @@
 		
 		workBcfDataTable = new Tabulator("#workBcfTabu", {
 			index:"id",
-		    height:"140px",
+		    height:"100%",
 		    layout:"fitColumns",
 		    selectable:1,	//로우 선택설정
 		    tooltips:true,
@@ -1505,7 +1828,10 @@
 		    reactiveData:false,
 		    headerHozAlign:"center",
 		    placeholder:"조회된 데이터가 없습니다.",
+		    pagination:"local",
 		    paginationSize:20,
+		    paginationSizeSelector:[20,50,100,500,1000],
+		    paginationCounter:"rows",
 		    headerSort:false,
 		    rowSelectionChanged:function(data, rows){
 		        // 현재 화면에 보이는 모든 행 다시 그림
@@ -1518,7 +1844,7 @@
 		        if(!row.isSelected()){
 		            row.select();   // 다른 행 누르면 기존 자동 해제
 		        }
-		    },  
+		    },
 		    columns:[
 		        {
 		            title: "",
@@ -1579,7 +1905,7 @@
 		
 		workBcfDanchDataTable = new Tabulator("#workBcfDanchTabu", {
 			index:"id",
-		    height:"580px",
+		    height:"100%",
 		    layout:"fitColumns",
 		    selectable:1,	//로우 선택설정
 		    tooltips:true,
@@ -1587,7 +1913,10 @@
 		    reactiveData:false,
 		    headerHozAlign:"center",
 		    placeholder:"조회된 데이터가 없습니다.",
+		    pagination:"local",
 		    paginationSize:20,
+		    paginationSizeSelector:[20,50,100,500,1000],
+		    paginationCounter:"rows",
 		    headerSort:false,
 		    rowSelectionChanged:function(data, rows){
 		        // 현재 화면에 보이는 모든 행 다시 그림
@@ -1600,7 +1929,7 @@
 		        if(!row.isSelected()){
 		            row.select();   // 다른 행 누르면 기존 자동 해제
 		        }
-		        
+
 		        if(e.detail === 2){
 		        	
 					var rData = row.getData();
@@ -1760,12 +2089,14 @@
 				$("#workBcfForm input[name='bcf_ilbo_lot']").val(ilbo_lot);
 				
 				sdateTimeSetBtn("bcfStart");
-				
+
 				workBcfDanchModalClose();
-			
+
+				alert("목록에 추가되었습니다.");
+
 			}
-		});	
-		
+		});
+
 	}
 
 
@@ -1813,12 +2144,27 @@
 				for(var i=0; i<data.length; i++){
 					_option += "<option value='"+data[i].user_code+"'>"+data[i].user_name+"</option>";
 				}
+				var curVal = $("#workBcfForm select[name='user_code']").val();
 				$("#workBcfForm select[name='user_code']").empty();
 				$("#workBcfForm select[name='user_code']").append(_option);
+				if(bcfPendingUserCode !== null){
+					$("#workBcfForm select[name='user_code']").val(bcfPendingUserCode);
+					bcfPendingUserCode = null;
+				}else if(curVal){
+					$("#workBcfForm select[name='user_code']").val(curVal);
+				}
+				//신규 등록시에는 현재 로그인한 사용자를 기본값으로 선택. 목록에 없으면(예: 권한범위 밖) 첫 번째 항목으로 대체
+				if(!$("#workBcfForm select[name='user_code']").val() && data.length > 0){
+					if(tkheatLoginUserCode && $("#workBcfForm select[name='user_code'] option[value='"+tkheatLoginUserCode+"']").length > 0){
+						$("#workBcfForm select[name='user_code']").val(tkheatLoginUserCode);
+					}else{
+						$("#workBcfForm select[name='user_code']").val(data[0].user_code);
+					}
+				}
 			}
 		})
 	}
-	
+
 	function getWorkBcfDataFacCode(){
 //		user_code
 		$.ajax({
@@ -1832,9 +2178,20 @@
 				for(var i=0; i<data.length; i++){
 					_option += "<option value='"+data[i].fac_code+"'>"+data[i].fac_name+"</option>";
 				}
-				
+
+				var curVal = $("#workBcfForm select[name='fac_code']").val();
 				$("#workBcfForm select[name='fac_code']").empty();
 				$("#workBcfForm select[name='fac_code']").append(_option);
+				if(bcfPendingFacCode !== null){
+					$("#workBcfForm select[name='fac_code']").val(bcfPendingFacCode);
+					bcfPendingFacCode = null;
+				}else if(curVal){
+					$("#workBcfForm select[name='fac_code']").val(curVal);
+				}
+				//신규 등록 등 선택된 값이 없을 때는 첫 번째 항목을 기본값으로 선택(빈 값으로 저장 시도되는 것 방지)
+				if(!$("#workBcfForm select[name='fac_code']").val() && data.length > 0){
+					$("#workBcfForm select[name='fac_code']").val(data[0].fac_code);
+				}
 			}
 		})
 	}
@@ -1842,9 +2199,18 @@
 	//열처리작업 저장
 	function workBcfModalSave(){
 
+		if(!$("#workBcfForm select[name='fac_code']").val()){
+			alert("설비를 선택해주세요.");
+			return;
+		}
+		if(!$("#workBcfForm select[name='user_code']").val()){
+			alert("작업자를 선택해주세요.");
+			return;
+		}
+
 		//단취모달 리스트 데이터 조회
 		var bcfSettingDataList = JSON.stringify(workBcfDataTable.getData());
-		
+
 		var formObj = {
 				"fac_code":$("#workBcfForm select[name='fac_code']").val(),
 				"user_code":$("#workBcfForm select[name='user_code']").val(),
@@ -1891,12 +2257,17 @@
 				"formObjParam":formObjParam
 			},
 			success:function(result){
+				if(result.error){
+					alert("저장 중 오류가 발생했습니다: "+result.error);
+					return;
+				}
 				//모달 닫기
-				workBcfModalClose();				
+				workBcfModalClose();
 				//전체이력 조회
 				getWorkDataList();
-			}			
-		});			
+				alert("등록되었습니다.");
+			}
+		});
 	}
 
 	function checkSheetStatusCloseBtn(){
@@ -1914,30 +2285,34 @@
 	const checkSheetStatusModal = document.querySelector('.checkSheetStatusModal');
 	const checkSheetReportModal = document.querySelector('.checkSheetReportModal');
 
-	const header = document.querySelector('.header'); // 헤더를 드래그할 요소로 사용
-	
-	header.addEventListener('mousedown', function(e) {
-		// transform 제거를 위한 초기 위치 설정
-		const rect = workSetModal.getBoundingClientRect();
-		workSetModal.style.left = rect.left + 'px';
-		workSetModal.style.top = rect.top + 'px';
-		workSetModal.style.transform = 'none'; // 중앙 정렬 해제
+	// 헤더를 드래그할 요소로 사용 -> 모달이 여러 개이므로 각 헤더마다 자신이 속한 모달을 찾아 개별적으로 드래그 처리
+	document.querySelectorAll('.header').forEach(function(header){
+		header.addEventListener('mousedown', function(e) {
+			const modal = header.closest('.workBcfModal, .workBcfDanchModal, .checkSheetStatusModal, .checkSheetReportModal');
+			if(!modal){ return; }
 
-		let offsetX = e.clientX - rect.left;
-		let offsetY = e.clientY - rect.top;
+			// transform 제거를 위한 초기 위치 설정
+			const rect = modal.getBoundingClientRect();
+			modal.style.left = rect.left + 'px';
+			modal.style.top = rect.top + 'px';
+			modal.style.transform = 'none'; // 중앙 정렬 해제
 
-		function moveModal(e) {
-			workSetModal.style.left = (e.clientX - offsetX) + 'px';
-			workSetModal.style.top = (e.clientY - offsetY) + 'px';
-		}
+			let offsetX = e.clientX - rect.left;
+			let offsetY = e.clientY - rect.top;
 
-		function stopMove() {
-			window.removeEventListener('mousemove', moveModal);
-			window.removeEventListener('mouseup', stopMove);
-		}
+			function moveModal(e) {
+				modal.style.left = (e.clientX - offsetX) + 'px';
+				modal.style.top = (e.clientY - offsetY) + 'px';
+			}
 
-		window.addEventListener('mousemove', moveModal);
-		window.addEventListener('mouseup', stopMove);
+			function stopMove() {
+				window.removeEventListener('mousemove', moveModal);
+				window.removeEventListener('mouseup', stopMove);
+			}
+
+			window.addEventListener('mousemove', moveModal);
+			window.addEventListener('mouseup', stopMove);
+		});
 	});
 
 	

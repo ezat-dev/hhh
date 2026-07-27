@@ -231,9 +231,9 @@
         <label class="daylabel">검색 날짜 :</label>
         
         <div class="date_input" id="dateInputArea">
-            <input type="text" autocomplete="off" class="datetimeSet" id="startDate">
+            <input type="text" autocomplete="off" class="datetimeSet datetimepicker_datetime" id="startDate">
             <span class="mid"> ~ </span>
-            <input type="text" autocomplete="off" class="datetimeSet" id="endDate">
+            <input type="text" autocomplete="off" class="datetimeSet datetimepicker_datetime" id="endDate">
         </div>
         
         <button class="select-button" id="btnSearch">
@@ -835,14 +835,6 @@ $(".hogi-btn").on("click", function(){
 $(document).ready(function () {
     Highcharts.setOptions({
         time: { useUTC: false }
-    });
-
-    $(".datetimeSet").datepicker({
-        language: 'ko',
-        timepicker: true,
-        dateFormat: 'yyyy-mm-dd',
-        timeFormat: 'hh:ii',
-        autoClose: true
     });
 
     // 최초 로딩시 12시간 전 ~ 현재 시간

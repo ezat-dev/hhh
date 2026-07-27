@@ -83,7 +83,7 @@ public class WorkIlboDaoImpl implements WorkIlboDao{
 
 	@Override
 	public List<WorkJisiTk> workIlboTfDataSearch(WorkJisiTk w) {
-		return sqlSession.selectList("workilbo.workIlboTfTfDataSearch",w);
+		return sqlSession.selectList("workilbo.workIlboTfDataSearch",w);
 	}
 
 	@Override
