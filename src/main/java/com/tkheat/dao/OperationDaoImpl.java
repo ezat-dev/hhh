@@ -53,7 +53,27 @@ public class OperationDaoImpl implements OperationDao{
 	public List<Users> getNoticeList() {
 		return sqlSession.selectList("users.getNoticeList");
 	}
-	
+
+	@Override
+	public void noticeSave(Users users) {
+		sqlSession.insert("users.noticeSave", users);
+	}
+
+	@Override
+	public void noticeUpdateSave(Users users) {
+		sqlSession.update("users.noticeUpdateSave", users);
+	}
+
+	@Override
+	public Users noticeDetail(Users users) {
+		return sqlSession.selectOne("users.noticeDetail", users);
+	}
+
+	@Override
+	public void noticeDelete(int notice_code) {
+		sqlSession.delete("users.noticeDelete", notice_code);
+	}
+
 	@Override
 	public List<Chulgo> getYearSaleList(Chulgo chulgo) {
 		return sqlSession.selectList("chulgo.getYearSaleList",chulgo);

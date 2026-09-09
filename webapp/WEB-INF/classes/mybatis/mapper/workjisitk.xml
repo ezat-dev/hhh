@@ -95,7 +95,7 @@
 		CONVERT(VARCHAR(10),ord_input,120) AS ord_input_view,
 		CASE WHEN WSTD_T43 IS NULL THEN '0' ELSE WSTD_T43 END AS wstd_t43,
 		ISNULL(product_file_name,'no_image.png') AS product_file_name,
-		ISNULL(wstd_chim_file_name1,'no_image.png') AS wstd_chim_file_name1
+		ISNULL(heat_file_name,'no_image.png') AS heat_file_name
 		FROM ORDERT A
 		LEFT OUTER JOIN
 		(
@@ -124,8 +124,7 @@
 			MAX(wstd_t52) AS WSTD_T52,
 			MAX(wstd_t53) AS WSTD_T53,
 			MAX(wstd_t54) AS WSTD_T54,
-			MAX(wstd_t30) AS WSTD_T30,
-			MAX(wstd_chim_file_name1) AS WSTD_CHIM_FILE_NAME1		
+			MAX(wstd_t30) AS WSTD_T30
 			FROM WORKSTD
 			GROUP BY PROD_CODE		
 		) E
@@ -161,7 +160,7 @@
 		CONVERT(VARCHAR(10),ord_input,120) AS ord_input_view,
 		CASE WHEN WSTD_T43 IS NULL THEN '0' ELSE WSTD_T43 END AS wstd_t43,
 		ISNULL(product_file_name,'no_image.png') AS product_file_name,
-		ISNULL(wstd_chim_file_name1,'no_image.png') AS wstd_chim_file_name1
+		ISNULL(heat_file_name,'no_image.png') AS heat_file_name
 		FROM ORDERT A
 		LEFT OUTER JOIN
 		(
@@ -190,8 +189,7 @@
 			MAX(wstd_t52) AS WSTD_T52,
 			MAX(wstd_t53) AS WSTD_T53,
 			MAX(wstd_t54) AS WSTD_T54,
-			MAX(wstd_t30) AS WSTD_T30,
-			MAX(wstd_chim_file_name1) AS WSTD_CHIM_FILE_NAME1			
+			MAX(wstd_t30) AS WSTD_T30
 			FROM WORKSTD
 			GROUP BY PROD_CODE		
 		) E
@@ -255,13 +253,15 @@
 		WHERE (A.ord_su > B.danch_su OR B.danch_su IS NULL)
 		AND A.ord_input >= '2025-01-01 00:00:00'
 		AND A.prod_code = #{prod_code}
-		AND A.ord_code <![CDATA[<]]> #{ord_code}
+		<!-- 선입선출은 등록순번(ord_code)이 아닌 실제 입고일자(ord_input) 기준으로 판단해야 함 -->
+		AND A.ord_input <![CDATA[<]]> (SELECT ord_input FROM ORDERT WHERE ord_code = #{ord_code})
 		<if test="sunipOrdList != null and !sunipOrdList.isEmpty()">
 			AND A.ord_code IN
 			<foreach collection="sunipOrdList" item="ord_code" index="ord_code" open="(" separator="," close=")">
 				#{ord_code}
 			</foreach>
 		</if>
+		ORDER BY A.ord_input
 	</select>
 
 	<!-- 일보코드 조회 -->
@@ -333,9 +333,9 @@
 			MAX(wstd_gj34) AS WSTD_GJ34,
 			MAX(wstd_gj42) AS WSTD_GJ42,
 			MAX(WSTD_READY) AS WSTD_READY,
-			MAX(WSTD_WORKTIME) AS WSTD_WORKTIME	
+			MAX(WSTD_WORKTIME) AS WSTD_WORKTIME
 			FROM WORKSTD
-			GROUP BY PROD_CODE		
+			GROUP BY PROD_CODE
 		) WORKSTD
 		ON PRODUCT.PROD_CODE = WORKSTD.PROD_CODE
 		LEFT OUTER JOIN
@@ -429,15 +429,15 @@
 	<select id="workInstructionBcfIlboLotRtn" parameterType="workJisiTk" resultType="string">
 		SELECT CONCAT('TK',RIGHT(REPLACE(#{ilbo_lot_date},'-',''),6),'-',#{fac_code}, (COUNT(*)+1),
 			(
-				SELECT CASE WHEN COUNT(*) = 1 THEN '0'
-				            WHEN COUNT(*) = 2 THEN 'A'
-				            WHEN COUNT(*) = 3 THEN 'B'
+				SELECT CASE WHEN COUNT(DISTINCT ord_code) = 1 THEN '0'
+				            WHEN COUNT(DISTINCT ord_code) = 2 THEN 'A'
+				            WHEN COUNT(DISTINCT ord_code) = 3 THEN 'B'
 				            ELSE 'B'
 				        END AS ilbo_lot_count
 				FROM workilbo
 				WHERE 1=1
 				AND ilbo_code = #{ilbo_code}
-				GROUP BY ilbo_code			
+				GROUP BY ilbo_code
 			)
 		)
 		FROM (
@@ -613,49 +613,100 @@
 	
 	
 	<!-- lot보고서 리스트 -->
+	<!-- LOT 보고서 리스트: report_type='HEAT'/'TF'면 단계별(기존과 동일, 설비별로 행 분리) / 'ALL'(기본)이면 LOT당 1행으로 병합(침탄로 시작~템퍼링 종료) -->
 	<select id="getLotList" parameterType="workJisiTk" resultType="workJisiTk">
-		SELECT DISTINCT
-			ILBO_LOT,
-			FAC.FAC_NAME,
-			MIN(ILBO_STRT) AS ILBO_STRT,
-			MAX(ILBO_END) AS ILBO_END,
-			MAX(CASE WHEN ILBO_GUBN = 'R' THEN 'R' WHEN ILBO_GUBN = 'A' THEN 'A' ELSE 'J' END) AS ILBO_GUBN,
-			CORP.CORP_NAME,
-			PROD.PROD_NAME,
-			PROD.PROD_NO
-		FROM WORKILBO WI
-		LEFT OUTER JOIN ORDERT ORD ON WI.ORD_CODE = ORD.ORD_CODE
-		LEFT OUTER JOIN PRODUCT PROD ON ORD.PROD_CODE = PROD.PROD_CODE
-		LEFT OUTER JOIN CORP ON PROD.CORP_CODE = CORP.CORP_CODE
-		LEFT OUTER JOIN FACILITY FAC ON WI.FAC_CODE = FAC.FAC_CODE
-		WHERE ILBO_LOT IS NOT NULL
-		AND ILBO_LOT != ''
-		AND ILBO_GUBN IN ('A', 'R')
-		<if test="lotno_date != null and lotno_date != ''">
-			AND CONVERT(VARCHAR(6), ILBO_STRT, 112) = #{lotno_date}
-		</if>
-		GROUP BY ILBO_LOT, FAC.FAC_NAME, CORP.CORP_NAME, PROD.PROD_NAME, PROD.PROD_NO
-		ORDER BY MAX(ILBO_END) DESC
+		<choose>
+			<when test="report_type == 'HEAT' or report_type == 'TF'">
+				SELECT DISTINCT
+					ILBO_LOT,
+					WI.FAC_CODE,
+					FAC.FAC_NAME,
+					MIN(ILBO_STRT) AS ILBO_STRT,
+					MAX(ILBO_END) AS ILBO_END,
+					MAX(CASE WHEN ILBO_GUBN = 'R' THEN 'R' WHEN ILBO_GUBN = 'A' THEN 'A' ELSE 'J' END) AS ILBO_GUBN,
+					CORP.CORP_NAME,
+					PROD.PROD_NAME,
+					PROD.PROD_NO
+				FROM WORKILBO WI
+				LEFT OUTER JOIN ORDERT ORD ON WI.ORD_CODE = ORD.ORD_CODE
+				LEFT OUTER JOIN PRODUCT PROD ON ORD.PROD_CODE = PROD.PROD_CODE
+				LEFT OUTER JOIN CORP ON PROD.CORP_CODE = CORP.CORP_CODE
+				LEFT OUTER JOIN FACILITY FAC ON WI.FAC_CODE = FAC.FAC_CODE
+				WHERE ILBO_LOT IS NOT NULL
+				AND ILBO_LOT != ''
+				<if test="report_type == 'HEAT'">AND ILBO_GUBN = 'A'</if>
+				<if test="report_type == 'TF'">AND ILBO_GUBN = 'R'</if>
+				<if test="lotno_date != null and lotno_date != ''">
+					AND CONVERT(VARCHAR(6), ILBO_STRT, 112) = #{lotno_date}
+				</if>
+				GROUP BY ILBO_LOT, WI.FAC_CODE, FAC.FAC_NAME, CORP.CORP_NAME, PROD.PROD_NAME, PROD.PROD_NO
+				ORDER BY MAX(ILBO_END) DESC
+			</when>
+			<otherwise>
+				SELECT DISTINCT
+					ILBO_LOT,
+					MIN(CASE WHEN ILBO_GUBN = 'A' THEN ILBO_STRT END) AS ILBO_STRT,
+					MAX(CASE WHEN ILBO_GUBN = 'R' THEN ILBO_END END) AS ILBO_END,
+					MAX(CASE WHEN ILBO_GUBN = 'A' THEN FAC.FAC_NAME END) AS HEAT_FAC_NAME,
+					MAX(CASE WHEN ILBO_GUBN = 'R' THEN FAC.FAC_NAME END) AS TF_FAC_NAME,
+					'ALL' AS ILBO_GUBN,
+					CORP.CORP_NAME,
+					PROD.PROD_NAME,
+					PROD.PROD_NO
+				FROM WORKILBO WI
+				LEFT OUTER JOIN ORDERT ORD ON WI.ORD_CODE = ORD.ORD_CODE
+				LEFT OUTER JOIN PRODUCT PROD ON ORD.PROD_CODE = PROD.PROD_CODE
+				LEFT OUTER JOIN CORP ON PROD.CORP_CODE = CORP.CORP_CODE
+				LEFT OUTER JOIN FACILITY FAC ON WI.FAC_CODE = FAC.FAC_CODE
+				WHERE ILBO_LOT IS NOT NULL
+				AND ILBO_LOT != ''
+				AND ILBO_GUBN IN ('A', 'R')
+				<if test="lotno_date != null and lotno_date != ''">
+					AND CONVERT(VARCHAR(6), ILBO_STRT, 112) = #{lotno_date}
+				</if>
+				GROUP BY ILBO_LOT, CORP.CORP_NAME, PROD.PROD_NAME, PROD.PROD_NO
+				ORDER BY ILBO_STRT DESC
+			</otherwise>
+		</choose>
 	</select>
 	
 	
 	
 	<!-- LOT 보고서 조회(리포트) -->
 <select id="getLotListReport" parameterType="workJisiTk" resultType="workJisiTk">
-    SELECT 
+    SELECT
         WI.ILBO_LOT,
         WI.ILBO_STRT,
         WI.ILBO_END,
         WI.ILBO_GUBN,
-        
+        WI.FAC_CODE,
+
         FAC.FAC_NAME,
-        
+
         CORP.CORP_NAME,
         PROD.PROD_NAME,
         PROD.PROD_NO,
         PROD.PROD_JAI,
         PROD.PROD_GYU,
-        
+
+        -- 존 투입시간(열처리 예열/침탄/확산/강온) / 템퍼링 온도·시간
+        WI.ILBO_G42 AS ZONE_TIME_PREHEAT,
+        WI.ILBO_G24 AS ZONE_TIME_CARBURIZE,
+        WI.ILBO_G26 AS ZONE_TIME_DIFFUSE,
+        WI.ILBO_G32 AS ZONE_TIME_COOLDOWN,
+        WI.ILBO_G11 AS TF_TEMP,
+        WI.ILBO_G12 AS TF_TIME,
+
+        -- 측정값 판정 및 규격 (WORKILBO엔 소입/소려 구분 없이 ILBO_OKNG 컬럼 하나뿐 - 다른 화면들과 동일한 별명 재사용 패턴)
+        WI.ILBO_OKNG AS ILBO_OKNG_SI,
+        WI.ILBO_OKNG AS ILBO_OKNG_SR,
+        PROD.PROD_PG,
+        PROD.PROD_PG1,
+        PROD.PROD_PG2,
+        PROD.PROD_SG,
+        PROD.PROD_SG1,
+        PROD.PROD_SG2,
+
         WI.ILBO_G11 AS WSTD_GJ11,
         WI.ILBO_G12 AS WSTD_GJ12,
         WI.ILBO_G13 AS WSTD_GJ13,
@@ -703,14 +754,23 @@
     
     WHERE WI.ILBO_LOT = #{ilbo_lot}
       AND WI.ILBO_GUBN IN ('A', 'R')
-    
+
     ORDER BY WI.ILBO_STRT
 </select>
-	
-	
-	
-	
-	
+
+	<!-- LOT 보고서 - 작업기간중 알람이력 -->
+	<select id="getLotAlarmList" parameterType="workJisiTk" resultType="workJisiTk">
+		SELECT
+			CONVERT(VARCHAR(19), regtime, 120) AS REGTIME,
+			a_value AS A_VALUE,
+			a_comment AS A_COMMENT
+		FROM dbo.tb_alarmlist
+		WHERE regtime BETWEEN #{sdate} AND #{edate}
+		AND a_hogi = #{a_hogi}
+		ORDER BY regtime
+	</select>
+
+
 	
 	
 	

@@ -543,6 +543,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 
 	//로드
 	$(function(){
+		$("#sdate").val(todayDate());
 		//전체 거래처목록 조회
 		getDayJeomgeomList();
 	});
@@ -716,6 +717,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 
 	function OpenDayJeomgeomModal() {
         document.getElementById('dayJeomgeomModal').style.display = 'flex';
+        registerModalOpen('dayJeomgeom-main', closeDayJeomgeomModal);
 
         let facListTable = new Tabulator("#dayJeomgeomTabulator", {
             height:"450px",
@@ -764,14 +766,16 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     }
 
     function closeDayJeomgeomModal() {
+        registerModalClose('dayJeomgeom-main');
         document.getElementById('dayJeomgeomModal').style.display = 'none';
     }
 
-
-    
-
-
-	
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "설비점검현황_일별_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "설비점검현황(일별)" });
+	});
 
     </script>
 

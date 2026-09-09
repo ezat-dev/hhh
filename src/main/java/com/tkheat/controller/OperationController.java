@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import com.tkheat.domain.Siljuk;
 import com.tkheat.domain.Users;
 import com.tkheat.domain.Work;
 import com.tkheat.service.OperationService;
+import com.tkheat.util.UtilClass;
 
 @Controller
 public class OperationController {
@@ -575,8 +578,8 @@ public class OperationController {
 	
 	
 	//공지사항 조회
-	@RequestMapping(value = "/operation/notice/getNoticeList", method = RequestMethod.POST) 
-	@ResponseBody 
+	@RequestMapping(value = "/operation/notice/getNoticeList", method = RequestMethod.POST)
+	@ResponseBody
 	public Map<String, Object> getNoticeList() {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 
@@ -586,9 +589,14 @@ public class OperationController {
 		for(int i=0; i<noticeList.size(); i++) {
 			HashMap<String, Object> rowMap = new HashMap<String, Object>();
 			rowMap.put("idx", (i+1));
+			rowMap.put("notice_code", noticeList.get(i).getNotice_code());
 			rowMap.put("notice_name", noticeList.get(i).getNotice_name());
 			rowMap.put("notice_memo", noticeList.get(i).getNotice_memo());
 			rowMap.put("notice_user", noticeList.get(i).getNotice_user());
+			rowMap.put("notice_date", noticeList.get(i).getNotice_date());
+			rowMap.put("notice_views", noticeList.get(i).getNotice_views());
+			rowMap.put("notice_dates", noticeList.get(i).getNotice_dates());
+			rowMap.put("notice_datee", noticeList.get(i).getNotice_datee());
 
 			rtnList.add(rowMap);
 		}
@@ -596,7 +604,75 @@ public class OperationController {
 		rtnMap.put("last_page",1);
 		rtnMap.put("data",rtnList);
 
-		return rtnMap; 
+		return rtnMap;
+	}
+
+	//공지사항 등록/수정
+	@RequestMapping(value = "/operation/notice/noticeSave", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> noticeSave(
+			@RequestParam String mode,
+			Users users,
+			HttpServletRequest request
+			) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		try {
+			if("update".equals(mode)) {
+				operationService.noticeUpdateSave(users);
+			} else {
+				UtilClass util = new UtilClass();
+				Users loginUser = util.getSessionUser(request);
+				if(loginUser != null) {
+					users.setUser_code(loginUser.getUser_code());
+					users.setNotice_user(loginUser.getUser_name());
+				}
+				operationService.noticeSave(users);
+			}
+			rtnMap.put("status", "success");
+		} catch (Exception e) {
+			rtnMap.put("status", "error");
+			rtnMap.put("message", e.getMessage());
+		}
+
+		return rtnMap;
+	}
+
+	//공지사항 더블클릭 상세조회
+	@RequestMapping(value = "/operation/notice/noticeDetail", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> noticeDetail(
+			@RequestParam int notice_code
+			) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Users users = new Users();
+		users.setNotice_code(notice_code);
+
+		Users detail = operationService.noticeDetail(users);
+
+		rtnMap.put("data", detail);
+
+		return rtnMap;
+	}
+
+	//공지사항 삭제
+	@RequestMapping(value = "/operation/notice/noticeDelete", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> noticeDelete(
+			@RequestParam int notice_code
+			) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		try {
+			operationService.noticeDelete(notice_code);
+			rtnMap.put("status", "success");
+		} catch (Exception e) {
+			rtnMap.put("status", "error");
+			rtnMap.put("message", e.getMessage());
+		}
+
+		return rtnMap;
 	}
 
 	//월매출현황(마감) - 화면로드

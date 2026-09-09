@@ -207,6 +207,23 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	border-color: #BEE3F8;
 }
 
+/* 호기(설비) 선택 버튼 - 활성/비활성 배경은 selectHogiBtn() JS에서 동적으로 지정 */
+.select-hogi-button.select-button {
+	height: 34px;
+	padding: 0 16px;
+	border: 1px solid #E2E8F0;
+	border-radius: 8px;
+	background: #F0F4F8;
+	font-size: 12px;
+	font-weight: 600;
+	color: #2D3748;
+	transition: background-color .13s, border-color .13s;
+}
+.select-hogi-button.select-button:hover {
+	background: #EBF8FF;
+	border-color: #BEE3F8;
+}
+
 /* ========== 모달 (management 쪽 모달과 동일한 톤) ========== */
 .workTfModal,
 .workTfBcfModal,
@@ -690,12 +707,24 @@ select[readonly] {
             <img src="/tkheat/css/image/delete-icon.png" alt="delete" class="button-image">
             삭제
         </button>
-
-        <button class="printer-button" id="printBtn">
-            <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
-			 체크시트
+        <button class="excel-button">
+            <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
+            엑셀
         </button>
     </div>
+</div>
+<div class="tab">
+    <div class="button-container" style="margin-left:20px;">
+        <button class="select-hogi-button select-button" type="button" onclick="selectHogiBtn(0);" id="selectHogi0">
+            전체호기
+        </button>
+        <button class="select-hogi-button select-button" type="button" onclick="selectHogiBtn(16);" id="selectHogi16">
+            템퍼링 1호기
+        </button>
+        <button class="select-hogi-button select-button" type="button" onclick="selectHogiBtn(17);" id="selectHogi17">
+            템퍼링 2호기
+        </button>
+	</div>
 </div>
 <main class="main">
 	<div class="container">
@@ -954,6 +983,8 @@ select[readonly] {
 	<input type="text" id="reportPlnpLot" name="reportPlnpLot" style="display:none;"/>
 </form>
 
+<input type="number" id="s_fac_code" value="0" style="display:none;" />
+
 <a style="display:none;" id="downLoadLink" href="#" download="#"></a>
 
 <script>
@@ -972,7 +1003,7 @@ select[readonly] {
 		$("#s_all_edate").val(tdate);
 
 		getWorkData();
-		getWorkDataList();
+		selectHogiBtn(0);
 	});
 
 	//이벤트
@@ -987,6 +1018,13 @@ select[readonly] {
 		}
 
 		checkSheetStatusModal.style.display = "block";
+		registerModalOpen('tempering-checksheet-status', checkSheetStatusCloseBtn);
+
+		//클릭(사용자 제스처) 시점에 바로 빈 창을 열어야 팝업이 차단되지 않음 - 내용은 ajax 응답 후 채움
+		var reportWin = window.open('', '_blank');
+		if(reportWin){
+			reportWin.document.write('<p style="font-family:sans-serif;padding:20px;">체크시트 생성중입니다...</p>');
+		}
 
 		var sendObj = {
 				"checkSheetData": selectedData
@@ -1002,8 +1040,11 @@ select[readonly] {
 			data:JSON.stringify(sendObj),
 			success:function(result){
    				var fileUrl = "/tkPrint/workilboCheckSheet/"+result.fileName;
-                $("#checkSheetReport").attr("src",fileUrl);
-                checkSheetReportModal.style.display = "flex";
+                if(reportWin){
+                    reportWin.location.href = fileUrl;
+                }else{
+                    alert("팝업이 차단되어 새 창을 열 수 없습니다. 브라우저 팝업 차단을 해제해주세요.");
+                }
 
                 checkSheetStatusCloseBtn();
 //				getChulgoData();
@@ -1077,6 +1118,12 @@ select[readonly] {
 
 	$(".select-button").on("click", function(){
 		getWorkDataList();
+	});
+
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "템퍼링작업일보_" + today + ".xlsx";
+	    workDataTable.download("xlsx", filename, { sheetName: "템퍼링작업일보" });
 	});
 
 	//작업삭제
@@ -1291,9 +1338,9 @@ select[readonly] {
 
 		$("#workTfForm")[0].reset();
 		tfPendingFacCode = null;
-		tfPendingUserCode = null;
-		//select에 남아있는 이전(수정모드 등) 선택값을 지워야, 신규등록시 로그인 사용자 기본선택 로직이 정상 동작함
-		$("#workTfForm select[name='user_code']").val('');
+		//select에 이전(수정모드 등) 선택값이 남아있으면 jQuery val('')로는 지워지지 않으므로(일치하는 option이 없으면 무시됨),
+		//신규등록시엔 pending 메커니즘으로 현재 로그인 사용자를 직접 지정
+		tfPendingUserCode = tkheatLoginUserCode || null;
 
 		getWorkTfData();
 		getWorkTfDataFacCode();
@@ -1301,11 +1348,13 @@ select[readonly] {
 //		ilboLotRtn(1);
 
 		workTfModal.style.display = 'flex'; // 모달 보임
-		$("#workTfForm input[name='ilbo_strt']").val("1900-01-01 00:00");
-		$("#workTfForm input[name='ilbo_end']").val("1900-01-01 00:00");
+		//작업시작시간은 모달을 여는 시점의 현재시각으로 자동세팅, 작업종료시간은 종료버튼을 누르기 전까지 공란
+		sdateTimeSetBtn('tfStart');
+		registerModalOpen('tempering-tf', workTfModalClose);
 	}
 
 	function workTfModalClose(){
+		registerModalClose('tempering-tf');
 		workTfModal.style.display = 'none'; // 모달 숨김
 	}
 
@@ -1331,9 +1380,11 @@ select[readonly] {
 		getWorkTfBcfDataList();
 
 		workTfBcfModal.style.display = 'flex'; // 모달 숨김
+		registerModalOpen('tempering-tf-bcf', workTfBcfModalClose);
 	}
 
 	function workTfBcfModalClose(){
+		registerModalClose('tempering-tf-bcf');
 		workTfBcfModal.style.display = 'none'; // 모달 숨김
 	}
 
@@ -1352,6 +1403,7 @@ select[readonly] {
 		var s_corp_name = $("#s_all_corp_name").val();
 		var s_prod_name = $("#s_all_prod_name").val();
 		var s_prod_no = $("#s_all_prod_no").val();
+		var s_fac_code = $("#s_fac_code").val();
 		var s_ilbo_code = $("#s_all_ilbo_code").val();
 		var s_ord_code = $("#s_all_ord_code").val();
 
@@ -1365,6 +1417,7 @@ select[readonly] {
 				"s_corp_name":s_corp_name,
 				"s_prod_name":s_prod_name,
 				"s_prod_no":s_prod_no,
+				"s_fac_code":s_fac_code,
 				"s_ilbo_code":s_ilbo_code,
 				"s_ord_code":s_ord_code
 			},
@@ -1372,6 +1425,21 @@ select[readonly] {
 				workDataTable.setData(result.data);
 			}
 		});
+	}
+
+	function selectHogiBtn(hogi){
+		var hogiArray = [0,16,17];
+
+		for(var i=0; i<hogiArray.length; i++){
+			if(hogiArray[i] == hogi){
+				$("#selectHogi"+hogi).css({"background-color":"#BEE3F8","border-color":"#3182CE","color":"#1A365D"});
+			}else{
+				$("#selectHogi"+hogiArray[i]).css({"background-color":"#F0F4F8","border-color":"#E2E8F0","color":"#2D3748"});
+			}
+		}
+
+		$("#s_fac_code").val(hogi);
+		getWorkDataList();
 	}
 
 	var workDataTable;
@@ -2030,6 +2098,7 @@ select[readonly] {
 	}
 
 	function checkSheetStatusCloseBtn(){
+		registerModalClose('tempering-checksheet-status');
 		checkSheetStatusModal.style.display = 'none'; // 모달 숨김
 	}
 

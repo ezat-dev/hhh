@@ -169,7 +169,12 @@ public class ManagementServiceImpl implements ManagementService {
 	public Standard getChimStandardDetail(Standard standard) {
 		return managementDao.getChimStandardDetail(standard);
 	}
-	
+
+	@Override
+	public Standard getProcessStandardForChart(Standard standard) {
+		return managementDao.getProcessStandardForChart(standard);
+	}
+
 	@Override
 	public void chimStandardInsertSave(Standard standard) {
 		managementDao.chimStandardInsertSave(standard);

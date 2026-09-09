@@ -353,7 +353,8 @@ public class Standard {
 	private String drawing_file_name;
 	private String prod_drawing_file_name;
 	private String prod_product_file_name;
-	
+	private String prod_heat_file_name; //단취사진(제품등록의 heat_file_name)
+
 	
 	public String getDrawing_file_name() {
 		return drawing_file_name;
@@ -2306,5 +2307,11 @@ public class Standard {
 	}
 	public void setProd_product_file_name(String prod_product_file_name) {
 		this.prod_product_file_name = prod_product_file_name;
+	}
+	public String getProd_heat_file_name() {
+		return prod_heat_file_name;
+	}
+	public void setProd_heat_file_name(String prod_heat_file_name) {
+		this.prod_heat_file_name = prod_heat_file_name;
 	}
 }

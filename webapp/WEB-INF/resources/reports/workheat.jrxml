@@ -4,6 +4,7 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="row_data"/>
 	<parameter name="workJisiTk" class="com.tkheat.domain.WorkJisiTk"/>
+	<parameter name="stdChart" class="com.tkheat.domain.Standard"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -712,7 +713,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<text><![CDATA[X]]></text>
+				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="119" y="257" width="76" height="36" uuid="596b50b5-79bc-4e87-9ecc-4c15aad07c1a">
@@ -1753,7 +1754,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_g43()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stdChart}.getWstd_gj11()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="117" y="59" width="50" height="19" uuid="457f72eb-d235-4c6b-a2e5-09766cf9b3c3">
@@ -1771,7 +1772,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_g23()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stdChart}.getWstd_gj12()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="173" y="59" width="50" height="19" uuid="65e6875e-b4c1-4a71-bbcf-1eb3f8b82378">
@@ -1789,7 +1790,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_pg6()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stdChart}.getWstd_gj13()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="282" y="59" width="50" height="19" uuid="11688483-dba4-49b3-a14a-7009f1e38722">
@@ -1807,7 +1808,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_g31()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stdChart}.getWstd_gj14()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="57" y="159" width="50" height="19" uuid="a17fd140-95ea-4db6-bd09-76f88a71b6d5">
@@ -1825,7 +1826,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_g42()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stdChart}.getWstd_gj21()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="117" y="159" width="50" height="19" uuid="984371b7-6ef5-4a01-954d-0c20e629fba4">
@@ -1843,7 +1844,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_g24()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stdChart}.getWstd_gj22()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="173" y="159" width="50" height="19" uuid="ac247b2d-a983-4cbf-8ea8-e0f432c7877e">
@@ -1861,7 +1862,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_g26()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stdChart}.getWstd_gj23()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="282" y="159" width="50" height="19" uuid="23291973-0da9-476e-9cbf-abc5d8a1a070">
@@ -1879,7 +1880,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_g32()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stdChart}.getWstd_gj24()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="117" y="187" width="50" height="19" uuid="b9137e53-85cc-4797-810f-40be3032c970">
@@ -1897,7 +1898,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_g25()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stdChart}.getWstd_gj32()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="173" y="187" width="50" height="19" uuid="463ce3b4-0e85-420f-894d-52e5cfba826e">
@@ -1915,25 +1916,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_g27()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="282" y="187" width="50" height="19" uuid="deb85e69-b679-4786-b717-525c5570aeb8">
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<box>
-					<pen lineWidth="0.0"/>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_g33()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stdChart}.getWstd_gj33()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="10" y="235" width="116" height="22" uuid="c373141b-8af4-4f10-ab2f-cb1f0b712d27">
@@ -2041,7 +2024,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_g34()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stdChart}.getWstd_gj16()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="195" y="257" width="33" height="36" uuid="49408fe6-7145-4671-a4fa-6de115ad4254">
@@ -2057,7 +2040,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<text><![CDATA[X]]></text>
+				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="304" y="257" width="33" height="36" uuid="200037ca-ee5a-4eb8-9f9d-bb06f8539f62">
@@ -2073,7 +2056,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<text><![CDATA[X]]></text>
+				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="413" y="257" width="33" height="36" uuid="fca9af29-5bfa-4acf-9f7c-93b66801cef8">
@@ -2089,7 +2072,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<text><![CDATA[X]]></text>
+				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="522" y="257" width="33" height="36" uuid="ac14ded6-d9ee-4042-8051-7484cf0f9bfb">
@@ -2105,7 +2088,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<text><![CDATA[X]]></text>
+				<text><![CDATA[]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="460" y="59" width="50" height="19" uuid="f93d2d34-a866-47ad-bf3b-b9fcce803b9a">
@@ -2123,7 +2106,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_g11()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stdChart}.getWstd_ready()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="460" y="159" width="50" height="19" uuid="bbf505e7-864c-448d-8e86-c439c49467b9">
@@ -2141,7 +2124,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="굴림" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{workJisiTk}.getIlbo_g12()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{stdChart}.getWstd_worktime()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="14" y="36" width="40" height="19" uuid="d270c9cd-492e-4e81-a461-dfd1ee4c3480">

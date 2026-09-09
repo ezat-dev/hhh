@@ -157,9 +157,15 @@
 				var rowData = row.getData();
 				
 			},
-		});		
+		});
 	}
-	
+
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "금형점검_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "금형점검" });
+	});
 
     </script>
 

@@ -279,7 +279,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		getJaegoStatusList();
 	});
@@ -301,7 +301,6 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	    ajaxConfig: "POST",
 	    ajaxLoader: false,
 	    ajaxURL: "/tkheat/product/jaegoStatus/getJaegoStatusList",
-	    ajaxProgressiveLoad: "scroll",
 	    ajaxParams: {
 	        "sdate": $("#sdate").val(),
 	        "edate": $("#edate").val(),
@@ -331,50 +330,50 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	        {
 	            title: "단가", field: "ord_dang", sorter: "int", width: 50, hozAlign: "center", headerFilter: "input",
 	            formatter: "money",
-	            formatterParams: {thousand: ",", precision: 0},
+	            formatterParams: {thousand: ",", precision: 1},
 	            bottomCalc: "sum",
 	            bottomCalcFormatter: "money",
-	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 1}
 	        },
 	        {
 	            title: "단중", field: "ord_danj", sorter: "int", width: 50, hozAlign: "center", headerFilter: "input",
 	            formatter: "money",
-	            formatterParams: {thousand: ",", precision: 0},
+	            formatterParams: {thousand: ",", precision: 2},
 	            bottomCalc: "sum",
 	            bottomCalcFormatter: "money",
-	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 2}
 	        },
 	        {
 	            title: "입고수", field: "ord_su", sorter: "int", width: 50, hozAlign: "center", headerFilter: "input",
 	            formatter: "money",
-	            formatterParams: {thousand: ",", precision: 0},
+	            formatterParams: {thousand: ",", precision: 1},
 	            bottomCalc: "sum",
 	            bottomCalcFormatter: "money",
-	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 1}
 	        },
 	        {
 	            title: "입고중량", field: "ord_amnt", sorter: "int", width: 50, hozAlign: "center", headerFilter: "input",
 	            formatter: "money",
-	            formatterParams: {thousand: ",", precision: 0},
+	            formatterParams: {thousand: ",", precision: 1},
 	            bottomCalc: "sum",
 	            bottomCalcFormatter: "money",
-	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 1}
 	        },
 	        {
 	            title: "재고수", field: "jaigo_su", sorter: "int", width: 50, hozAlign: "center", headerFilter: "input",
 	            formatter: "money",
-	            formatterParams: {thousand: ",", precision: 0},
+	            formatterParams: {thousand: ",", precision: 1},
 	            bottomCalc: "sum",
 	            bottomCalcFormatter: "money",
-	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 1}
 	        },
 	        {
 	            title: "재고중량", field: "jaigo_amnt", sorter: "int", width: 50, hozAlign: "center", headerFilter: "input",
 	            formatter: "money",
-	            formatterParams: {thousand: ",", precision: 0},
+	            formatterParams: {thousand: ",", precision: 1},
 	            bottomCalc: "sum",
 	            bottomCalcFormatter: "money",
-	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 1}
 	        },
 	        
 	        {title: "입고비고", field: "ord_bigo", sorter: "int", width: 50, hozAlign: "center", headerFilter: "input"},
@@ -384,10 +383,10 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	        {
 	            title: "금액", field: "och_mon", sorter: "int", width: 80, hozAlign: "center", headerFilter: "input",
 	            formatter: "money",
-	            formatterParams: {thousand: ",", precision: 0},
+	            formatterParams: {thousand: ",", precision: 1},
 	            bottomCalc: "sum",
 	            bottomCalcFormatter: "money",
-	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 0}
+	            bottomCalcFormatterParams: {decimal: ".", thousand: ",", precision: 1}
 	        },
 	        {title: "출고비고", field: "och_bigo", sorter: "int", width: 50, hozAlign: "center", headerFilter: "input"},
 	    ],
@@ -406,10 +405,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	        });
 	        var rowData = row.getData();
 	    },
-	});		
+	});
 }
 
-	
+// ========== 엑셀 다운로드 ==========
+$(".excel-button").click(function () {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const filename = "재고현황상세_" + today + ".xlsx";
+    userTable.download("xlsx", filename, { sheetName: "재고현황상세" });
+});
 
     </script>
 

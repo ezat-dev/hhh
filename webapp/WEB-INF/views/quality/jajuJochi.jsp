@@ -576,7 +576,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		getJajuJochiList();
 	});
@@ -655,6 +655,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				isEditMode = true;
 				$('#jajuJochiForm')[0].reset();
 				$('.jajujochiModal').show().addClass('show');
+				registerModalOpen('jajuJochi-main', closeJajujochiModal);
 
 				Object.keys(data).forEach(function (key) {
 			        const field = $('#jajuJochiForm [name="' + key + '"]');
@@ -666,9 +667,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 
 				 $('.delete').show();
 			},
-		});		
+		});
 	}
-	
+
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "자주검사불량조치_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "자주검사불량조치" });
+	});
 
     </script>
     
@@ -734,6 +740,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
   //자주현황 검색 리스트 모달
     function openJajuListModal() {
         document.getElementById('jajuListModal').style.display = 'flex';
+        registerModalOpen('jajuJochi-jajuList', closeJajuListModal);
 
         
         let jajuListTable = new Tabulator("#jajuListTabulator", {
@@ -804,13 +811,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                 document.getElementById('corp_name').value = data.corp_name;
                 document.getElementById('prod_no').value = data.prod_no;
                 document.getElementById('corp_code').value = data.corp_code;
-                
+
+                registerModalClose('jajuJochi-jajuList');
                 document.getElementById('jajuListModal').style.display = 'none';
             }
         });
     }
 
     function closeJajuListModal() {
+        registerModalClose('jajuJochi-jajuList');
         document.getElementById('jajuListModal').style.display = 'none';
     }
 
@@ -856,13 +865,17 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		isEditMode = false;  // 추가 모드
 	    $('#jajuJochiForm')[0].reset(); // 폼 초기화
 	    jajujochiModal.style.display = 'block'; // 모달 표시
+		registerModalOpen('jajuJochi-main', closeJajujochiModal);
 
 		$('.delete').hide();
 	});
 
-	closeButton.addEventListener('click', function() {
+	function closeJajujochiModal() {
+		registerModalClose('jajuJochi-main');
 		jajujochiModal.style.display = 'none'; // 모달 숨김
-	});
+	}
+
+	closeButton.addEventListener('click', closeJajujochiModal);
 
     </script>
 

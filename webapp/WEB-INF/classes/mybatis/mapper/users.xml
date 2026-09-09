@@ -310,12 +310,60 @@
 		SELECT *
 		FROM NOTICE
 	</select>
-	
-	
-	
-	
-	
-	
+
+	<!-- 공지사항 등록 -->
+	<insert id="noticeSave" parameterType="users">
+		INSERT INTO NOTICE
+		(
+			NOTICE_NAME,
+			NOTICE_MEMO,
+			NOTICE_USER,
+			NOTICE_DATE,
+			USER_CODE,
+			NOTICE_VIEWS,
+			NOTICE_DATES,
+			NOTICE_DATEE
+		)
+		VALUES
+		(
+			#{notice_name},
+			#{notice_memo},
+			#{notice_user},
+			GETDATE(),
+			#{user_code},
+			0,
+			#{notice_dates},
+			#{notice_datee}
+		)
+	</insert>
+
+	<!-- 공지사항 수정 -->
+	<update id="noticeUpdateSave" parameterType="users">
+		UPDATE NOTICE
+		   SET NOTICE_NAME = #{notice_name},
+		       NOTICE_MEMO = #{notice_memo},
+		       NOTICE_DATES = #{notice_dates},
+		       NOTICE_DATEE = #{notice_datee}
+		 WHERE NOTICE_CODE = #{notice_code}
+	</update>
+
+	<!-- 공지사항 더블클릭 상세조회 -->
+	<select id="noticeDetail" parameterType="users" resultType="users">
+		SELECT *
+		FROM NOTICE
+		WHERE NOTICE_CODE = #{notice_code}
+	</select>
+
+	<!-- 공지사항 삭제 -->
+	<delete id="noticeDelete" parameterType="int">
+		DELETE FROM NOTICE
+		WHERE NOTICE_CODE = #{notice_code}
+	</delete>
+
+
+
+
+
 	<!-- 선택한 사용자 권한 조회 -->
     <!-- 권한 조회 시 CHAR(1) 공백 제거 -->
 <select id="authorityUserSelect" parameterType="permission" resultType="permission">

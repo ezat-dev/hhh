@@ -599,12 +599,15 @@ $('.insert-button').on('click', function() {
     });
     
     $('.modal-overlay, .cutum-modal').addClass('active');
+    registerModalOpen('cutumInsert-main', closeCutumModal);
 });
 
 // ========== 모달 닫기 ==========
-$('.modal-close-btn, .btn-cancel').on('click', function() {
+function closeCutumModal() {
+    registerModalClose('cutumInsert-main');
     $('.modal-overlay, .cutum-modal').removeClass('active');
-});
+}
+$('.modal-close-btn, .btn-cancel').on('click', closeCutumModal);
 
 // ========== 모달 드래그 ==========
 let isDragging = false;
@@ -765,6 +768,7 @@ function cutumInsertDetail(corp_code){
 
             // 모달 열기
             $('.modal-overlay, .cutum-modal').addClass('active');
+            registerModalOpen('cutumInsert-main', closeCutumModal);
         },
         error: function(xhr, status, error) {
             console.error("❌ 상세 조회 오류:", error);
@@ -823,10 +827,10 @@ function save() {
         success: function(result) {
             console.log("💾 저장 완료:", result);
             alert("저장 되었습니다.");
-            
+
             // 모달 닫기
-            $('.modal-overlay, .cutum-modal').removeClass('active');
-            
+            closeCutumModal();
+
             // 모달 위치 초기화
             $('.cutum-modal').css({
                 'left': '50%',
@@ -879,8 +883,8 @@ function deleteCutum() {
         success: function(result) {
             if (result.status === "success") {
                 alert("삭제되었습니다.");
-                $('.modal-overlay, .cutum-modal').removeClass('active');
-                
+                closeCutumModal();
+
                 // 모달 위치 초기화
                 $('.cutum-modal').css({
                     'left': '50%',

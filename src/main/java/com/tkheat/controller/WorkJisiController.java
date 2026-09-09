@@ -2,6 +2,8 @@ package com.tkheat.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -107,10 +109,13 @@ public class WorkJisiController {
 		//입고관리 - 등록
 		@RequestMapping(value = "/product/ipgo/ipgoAdd", method = RequestMethod.POST) 
 		@ResponseBody 
-		public Map<String, Object> setIpgoAdd(@RequestBody String str){
+		public Map<String, Object> setIpgoAdd(@RequestBody String str, HttpServletRequest request){
 			Map<String, Object> rtnMap = new HashMap<String, Object>();
 
 			JSONParser jParser = new JSONParser();
+			UtilClass util = new UtilClass();
+			Users loginUser = util.getSessionUser(request);
+			String ordName = (loginUser != null && loginUser.getUser_name() != null) ? loginUser.getUser_name() : "";
 
 			try {
 				JSONObject workObj = (JSONObject)jParser.parse(str);
@@ -159,7 +164,7 @@ public class WorkJisiController {
 						ipgo.setOrd_su(Integer.parseInt(jObj.get("ord_su").toString()));
 						ipgo.setOrd_amnt(amnt);
 						ipgo.setOrd_mon(ord_mon);
-						ipgo.setOrd_name("김성우");
+						ipgo.setOrd_name(ordName);
 						ipgo.setOrd_gyu("");
 						ipgo.setOrd_sunip("선입1");
 						ipgo.setOrd_boxsu(jObj.get("prod_boxsu").toString());
@@ -238,6 +243,16 @@ public class WorkJisiController {
 					
 					if(ord_print_gb == 1) {
 						ipgoList = workJisiService.ipgoListPrintBeforeHeat(ipgo);
+						//JasperReports(자바)의 이미지 로더는 브라우저와 달리 URL의 한글 경로/파일명을
+						//자동으로 URL인코딩해주지 않아서, SQL에서 그대로 조합한 한글 경로 URL은
+						//조용히(onErrorType="Blank") 로드 실패함 - 여기서 파일명까지 포함해 제대로 재인코딩.
+						//ipgoList는 List<Ipgo>로 선언돼있지만 MyBatis resultType="workjisi"라 실제로는
+						//WorkJisi 인스턴스들이 들어있음(기존부터 있던 타입불일치 - Ipgo에는 prod_img 필드 자체가 없음)
+						@SuppressWarnings("unchecked")
+						List<WorkJisi> ipgoWorkJisiList = (List<WorkJisi>)(List<?>)ipgoList;
+						for(WorkJisi w : ipgoWorkJisiList) {
+							w.setProd_img(buildEncodedImageUrl(w.getProduct_file_name()));
+						}
 						abPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/BeforeHeat.jrxml");
 						fileName = fileNameGb+ordCodeArray[0]+"_"+ordCodeArray.length;
 					}else if(ord_print_gb == 2) {
@@ -1233,7 +1248,6 @@ public class WorkJisiController {
 		JSONParser jParser = new JSONParser();
 		List<Integer> och_code_list = null;
 		List<Integer> och_no_list = null;
-		String fileName = "";		//파일명
 		String fileNameGb = "";		//거래명세서별 구분값
 		
 		
@@ -1300,153 +1314,105 @@ public class WorkJisiController {
 			List<Integer> ochList = new ArrayList<Integer>();
 			
 
-				if(chulgo_print_gb == 1) {
-					/*거래명세서 - 일반*/
-					
-					//출고일+거래처코드별 출고코드 리스트 저장
-					//출고일, 거래처코드, 출고코드
-					String och_date = "";
-					int corp_code = 0;
-					int och_code = 0;
-					
-					for(int i=0; i<chulgoReportList.size(); i++) {
-						
-						//출고일이나 거래처코드 둘중 하나라도 다르다면
-						if(!och_date.equals(chulgoReportList.get(i).getOch_date())
-								|| corp_code != chulgoReportList.get(i).getCorp_code()) {
-							
-							ochList = new ArrayList<Integer>();
-						}
-						
-						corp_code = chulgoReportList.get(i).getCorp_code();
-						och_date = chulgoReportList.get(i).getOch_date();
-						och_code = chulgoReportList.get(i).getOch_code();
-						
-						ochList.add(och_code);
-						ochMap.put(och_date+";"+corp_code,ochList);
+			if(chulgo_print_gb == 1) {
+				/*거래명세서 - 일반*/
+
+				//출고일+거래처코드별 출고코드 리스트 저장
+				//출고일, 거래처코드, 출고코드
+				String och_date = "";
+				int corp_code = 0;
+				int och_code = 0;
+
+				for(int i=0; i<chulgoReportList.size(); i++) {
+
+					//출고일이나 거래처코드 둘중 하나라도 다르다면
+					if(!och_date.equals(chulgoReportList.get(i).getOch_date())
+							|| corp_code != chulgoReportList.get(i).getCorp_code()) {
+
+						ochList = new ArrayList<Integer>();
 					}
-					
-					//체크한 항목들을 거래처코드+출고일 기준으로 매핑
-					int printIdx = 1;
-					for(Entry<String, List<Integer>> och : ochMap.entrySet()) {
-		
-						//출고일;거래처코드
-						String[] keyArr = och.getKey().split(";");
-						
-						WorkJisi cw = new WorkJisi();
-						cw.setOch_date(keyArr[0]);
-						cw.setCorp_code(Integer.parseInt(keyArr[1]));
-						cw.setOch_code_list(och.getValue());
-						
-						//상단 리스트
-						List<WorkJisi> chulgoReportMainList = workJisiService.getChulgoReportMainNormal(cw);
-						//하단 리스트				
-						List<WorkJisi> chulgoReportSubList = workJisiService.getChulgoReportSubNormal(cw);
-						
-						fileName = fileNameGb+"_"+keyArr[0].replace("-","")+"_"+chulgoReportMainList.get(0).getCorp_name()+printIdx;
-						mergePathFileName = keyArr[0].replace("-","")+"_"+chulgoReportMainList.get(0).getCorp_name();
-						
-						JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(chulgoReportMainList);
-						JRBeanCollectionDataSource subDataSource = new JRBeanCollectionDataSource(chulgoReportSubList);
-						JRBeanCollectionDataSource subDataSource2 = new JRBeanCollectionDataSource(chulgoReportSubList);
-						
-						JasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
-						JasperCompileManager compileManager = JasperCompileManager.getInstance(jasperReportsContext);
-						JasperReport report = JasperCompileManager.compileReport(reportPath);
-						JasperReport subReport = JasperCompileManager.compileReport(subReportPath);
-						
-						Map<String, Object> reportMap = new HashMap<String, Object>();
-						reportMap.put("report_list", chulgoReportList);
-						reportMap.put("SUBREPORT_DATASOURCE", subDataSource);
-						reportMap.put("SUBREPORT", subReport);
-						reportMap.put("SUBREPORT_DATASOURCE2", subDataSource2);
-						reportMap.put("SUBREPORT2", subReport);
-						
-						
-						JasperFillManager fillManager = JasperFillManager.getInstance(jasperReportsContext);
-						
-						JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);		
-						
-						JasperExportManager exportManager = JasperExportManager.getInstance(jasperReportsContext); 
-						JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/"+fileName+".pdf");
-						printIdx++;
-						merge.addSource("D:/태경출력파일/"+fileName+".pdf");
+
+					corp_code = chulgoReportList.get(i).getCorp_code();
+					och_date = chulgoReportList.get(i).getOch_date();
+					och_code = chulgoReportList.get(i).getOch_code();
+
+					ochList.add(och_code);
+					ochMap.put(och_date+";"+corp_code,ochList);
+				}
+
+				//체크한 항목들을 거래처코드+출고일 기준으로 매핑
+				int printIdx = 1;
+				for(Entry<String, List<Integer>> och : ochMap.entrySet()) {
+
+					//출고일;거래처코드
+					String[] keyArr = och.getKey().split(";");
+
+					WorkJisi cw = new WorkJisi();
+					cw.setOch_date(keyArr[0]);
+					cw.setCorp_code(Integer.parseInt(keyArr[1]));
+					cw.setOch_code_list(och.getValue());
+
+					//상단 리스트
+					List<WorkJisi> chulgoReportMainList = workJisiService.getChulgoReportMainNormal(cw);
+					//하단 리스트
+					List<WorkJisi> chulgoReportSubList = workJisiService.getChulgoReportSubNormal(cw);
+
+					String fileBaseName = fileNameGb+"_"+keyArr[0].replace("-","")+"_"+chulgoReportMainList.get(0).getCorp_name()+printIdx;
+					mergePathFileName = keyArr[0].replace("-","")+"_"+chulgoReportMainList.get(0).getCorp_name();
+
+					generateChulgoPdfChunks(reportPath, subReportPath, chulgoReportMainList, chulgoReportSubList, chulgoReportList, fileBaseName, merge);
+					printIdx++;
+				}
+			}else if(chulgo_print_gb == 5) {
+				/*거래명세서 - 제품별*/
+
+				//출고일+거래처코드별 출고코드 리스트 저장
+				//출고일, 거래처코드, 출고코드
+				String och_date = "";
+				int corp_code = 0;
+				int och_code = 0;
+
+				for(int i=0; i<chulgoReportList.size(); i++) {
+
+					//출고일이나 거래처코드 둘중 하나라도 다르다면
+					if(!och_date.equals(chulgoReportList.get(i).getOch_date())
+							|| corp_code != chulgoReportList.get(i).getCorp_code()) {
+
+						ochList = new ArrayList<Integer>();
 					}
-				}else if(chulgo_print_gb == 5) {
-					/*거래명세서 - 제품별*/
-					/*거래명세서 - 일반*/
-					
-					//출고일+거래처코드별 출고코드 리스트 저장
-					//출고일, 거래처코드, 출고코드
-					String och_date = "";
-					int prod_code = 0;
-					int och_code = 0;
-					
-					for(int i=0; i<chulgoReportList.size(); i++) {
-						
-						//출고일이나 거래처코드 둘중 하나라도 다르다면
-						if(!och_date.equals(chulgoReportList.get(i).getOch_date())) {
-							
-							ochList = new ArrayList<Integer>();
-						}
-						
-						prod_code = chulgoReportList.get(i).getProd_code();
-						och_date = chulgoReportList.get(i).getOch_date();
-						och_code = chulgoReportList.get(i).getOch_code();
-						
-						ochList.add(och_code);
-						ochMap.put(och_date,ochList);
-					}
-					
-					//체크한 항목들을 거래처코드+출고일 기준으로 매핑
-					int printIdx = 1;
-					for(Entry<String, List<Integer>> och : ochMap.entrySet()) {
-//						System.out.println(och.getKey());
-//						System.out.println(och.getValue());
-						//출고일;거래처코드
-						String keyArr = och.getKey();
-						
-						WorkJisi cw = new WorkJisi();
-						cw.setOch_date(keyArr);
-						cw.setOch_code_list(och.getValue());
-						
-						//상단 리스트
-						List<WorkJisi> chulgoReportMainList = workJisiService.getChulgoReportMainProd(cw);
-						//하단 리스트				
-						List<WorkJisi> chulgoReportSubList = workJisiService.getChulgoReportSubProd(cw);
-						
-						fileName = fileNameGb+"_"+keyArr.replace("-","")+"_"+printIdx;
-						mergePathFileName = keyArr.replace("-","")+"_";
-						
-						JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(chulgoReportMainList);
-						JRBeanCollectionDataSource subDataSource = new JRBeanCollectionDataSource(chulgoReportSubList);
-						JRBeanCollectionDataSource subDataSource2 = new JRBeanCollectionDataSource(chulgoReportSubList);
-						
-						JasperReportsContext jasperReportsContext = new SimpleJasperReportsContext();
-						JasperCompileManager compileManager = JasperCompileManager.getInstance(jasperReportsContext);
-						JasperReport report = JasperCompileManager.compileReport(reportPath);
-						JasperReport subReport = JasperCompileManager.compileReport(subReportPath);
-						
-						Map<String, Object> reportMap = new HashMap<String, Object>();
-						reportMap.put("report_list", chulgoReportList);
-						reportMap.put("SUBREPORT_DATASOURCE", subDataSource);
-						reportMap.put("SUBREPORT", subReport);
-						reportMap.put("SUBREPORT_DATASOURCE2", subDataSource2);
-						reportMap.put("SUBREPORT2", subReport);
-						
-						
-						JasperFillManager fillManager = JasperFillManager.getInstance(jasperReportsContext);
-						
-						JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);		
-						
-						JasperExportManager exportManager = JasperExportManager.getInstance(jasperReportsContext); 
-						JasperExportManager.exportReportToPdfFile(jasperPrint,"D:/태경출력파일/"+fileName+".pdf");
-						printIdx++;
-						merge.addSource("D:/태경출력파일/"+fileName+".pdf");
+
+					corp_code = chulgoReportList.get(i).getCorp_code();
+					och_date = chulgoReportList.get(i).getOch_date();
+					och_code = chulgoReportList.get(i).getOch_code();
+
+					ochList.add(och_code);
+					ochMap.put(och_date+";"+corp_code,ochList);
+				}
+
+				//체크한 항목들을 거래처코드+출고일 기준으로 매핑
+				int printIdx = 1;
+				for(Entry<String, List<Integer>> och : ochMap.entrySet()) {
+					//출고일;거래처코드
+					String[] keyArr = och.getKey().split(";");
+
+					WorkJisi cw = new WorkJisi();
+					cw.setOch_date(keyArr[0]);
+					cw.setCorp_code(Integer.parseInt(keyArr[1]));
+					cw.setOch_code_list(och.getValue());
+
+					//상단 리스트
+					List<WorkJisi> chulgoReportMainList = workJisiService.getChulgoReportMainProd(cw);
+					//하단 리스트
+					List<WorkJisi> chulgoReportSubList = workJisiService.getChulgoReportSubProd(cw);
+
+					String fileBaseName = fileNameGb+"_"+keyArr[0].replace("-","")+"_"+printIdx;
+					mergePathFileName = keyArr[0].replace("-","")+"_";
+
+					generateChulgoPdfChunks(reportPath, subReportPath, chulgoReportMainList, chulgoReportSubList, chulgoReportList, fileBaseName, merge);
+					printIdx++;
 				}
 			}
-				
-	
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1460,6 +1426,59 @@ public class WorkJisiController {
 		}
 
 		return rtnMap;
+	}
+
+
+	//열처리수주서(BeforeHeat.jrxml) 제품사진 URL - java.net.URL/ImageIO는 브라우저와 달리 경로의 한글을
+	//자동으로 URL인코딩해주지 않아 그대로 넘기면 조용히 로드 실패함(onErrorType="Blank"라 원인 파악도 어려움).
+	//고정된 폴더명("사진","제품등록")과 파일명(한글 포함 가능) 전부 세그먼트 단위로 인코딩해서 재조합.
+	private String buildEncodedImageUrl(String fileName) {
+		try {
+			String encodedFolder1 = URLEncoder.encode("사진", "UTF-8").replace("+", "%20");
+			String encodedFolder2 = URLEncoder.encode("제품등록", "UTF-8").replace("+", "%20");
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+			return "http://127.0.0.1:8082/tkPrint/" + encodedFolder1 + "/" + encodedFolder2 + "/" + encodedFileName;
+		} catch (UnsupportedEncodingException e) {
+			return "http://127.0.0.1:8082/tkPrint/no_image.png";
+		}
+	}
+
+	//거래명세서 - 회사(및 일반의 경우 출고일)당 라인아이템이 페이지 용량(7줄, TradePortfolio*.jrxml 서브리포트 박스 203/29)을 넘으면
+	//7개 단위로 나눠서 여러 장(PDF)으로 생성 후 merge에 순서대로 추가. gb=1(일반)/gb=5(제품별) 공통 사용.
+	private void generateChulgoPdfChunks(String reportPath, String subReportPath,
+			List<WorkJisi> chulgoReportMainList, List<WorkJisi> chulgoReportSubList,
+			List<WorkJisi> reportListParam, String fileBaseName, PDFMergerUtility merge) throws Exception {
+
+		final int PAGE_ITEM_CAPACITY = 7;
+
+		JasperReport report = JasperCompileManager.compileReport(reportPath);
+		JasperReport subReport = JasperCompileManager.compileReport(subReportPath);
+
+		int totalItems = chulgoReportSubList.size();
+		int pageCount = Math.max(1, (int) Math.ceil(totalItems / (double) PAGE_ITEM_CAPACITY));
+
+		for (int page = 0; page < pageCount; page++) {
+			int fromIdx = page * PAGE_ITEM_CAPACITY;
+			int toIdx = Math.min(fromIdx + PAGE_ITEM_CAPACITY, totalItems);
+			List<WorkJisi> chunk = (fromIdx < toIdx) ? chulgoReportSubList.subList(fromIdx, toIdx) : new ArrayList<WorkJisi>();
+
+			JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(chulgoReportMainList);
+			JRBeanCollectionDataSource subDataSource = new JRBeanCollectionDataSource(chunk);
+			JRBeanCollectionDataSource subDataSource2 = new JRBeanCollectionDataSource(chunk);
+
+			Map<String, Object> reportMap = new HashMap<String, Object>();
+			reportMap.put("report_list", reportListParam);
+			reportMap.put("SUBREPORT_DATASOURCE", subDataSource);
+			reportMap.put("SUBREPORT", subReport);
+			reportMap.put("SUBREPORT_DATASOURCE2", subDataSource2);
+			reportMap.put("SUBREPORT2", subReport);
+
+			JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);
+
+			String chunkFileName = fileBaseName + "_page" + (page + 1);
+			JasperExportManager.exportReportToPdfFile(jasperPrint, "D:/태경출력파일/" + chunkFileName + ".pdf");
+			merge.addSource("D:/태경출력파일/" + chunkFileName + ".pdf");
+		}
 	}
 
 }

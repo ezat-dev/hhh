@@ -361,7 +361,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		getFacSiljukList();
 	});
@@ -475,7 +475,12 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     });
 }
 
-
+// ========== 엑셀 다운로드 ==========
+$(".excel-button").click(function () {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const filename = "설비별작업실적_" + today + ".xlsx";
+    userTable.download("xlsx", filename, { sheetName: "설비별작업실적" });
+});
 
 
 

@@ -94,6 +94,9 @@
 	</div>
 <script>
 
+//생산모니터링은 2초마다 자동조회되므로 전역 조회중 오버레이(pluginpage.jsp)를 이 화면만 끔
+window.disableGlobalLoadingOverlay = true;
+
 /*전역변수*/
 var serachInterval;
 

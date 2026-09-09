@@ -108,6 +108,13 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	border-top: 1px solid #E2E8F0;
 	padding: 8px 12px;
 }
+#tab1 .tabulator-footer .tabulator-calcs-holder {
+	background: #EBF8FF !important;
+	border-top: none;
+	border-bottom: 1px solid #BEE3F8;
+	color: #2B6CB0;
+	font-weight: 700;
+}
 #tab1 .tabulator-page {
 	border: 1px solid #E2E8F0;
 	border-radius: 6px;
@@ -604,7 +611,8 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		
 		function getChulgoData(){
 			//출력/저장/삭제 등으로 재조회되어도 체크박스 선택이 풀리지 않도록, 조회 전 선택된 항목을 기억해뒀다가 재조회 후 복원
-			var selectedOchCodes = chulgoTable.getSelectedData().map(function(d){ return d.och_code; });
+			//(최초 페이지 로드시엔 getChulgoList()가 아직 실행되기 전이라 chulgoTable이 없을 수 있음)
+			var selectedOchCodes = chulgoTable ? chulgoTable.getSelectedData().map(function(d){ return d.och_code; }) : [];
 
 			$.ajax({
 				url:"/tkheat/product/chulgo/getChulgoList",
@@ -744,6 +752,9 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var userEditing = false;
 		var chulgoRowCalcState = new Map();
 		var chulgoTable;
+		//출고등록 모달에서 마지막으로 조회했던 조건/결과 - 페이지를 벗어나지 않는 한(새로고침 전까지)
+		//모달을 닫았다 다시 열어도 재조회 없이 그대로 복원해주기 위함
+		var chulgoAddCache = null;
 		function getChulgoList() {
 
 			chulgoTable = new Tabulator("#tab1",{
@@ -869,14 +880,20 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 					{title : "단위",field : "prod_danw",sorter : "int",width : 40,hozAlign : "center",
 							headerFilter : "input", headerSort:false}, 
 					{title : "출고수량",field : "och_su",sorter : "int",width : 50,hozAlign : "center",
-							headerFilter : "input", headerSort:false, editor:"input"
-					}, 
+							headerFilter : "input", headerSort:false, editor:"input",
+							bottomCalc:"sum", bottomCalcFormatter:"money",
+							bottomCalcFormatterParams:{decimal:".", thousand:",", precision:1}
+					},
 					{title : "출고중량",field : "och_amnt",sorter : "int",width : 50,hozAlign : "center",
-							headerFilter : "input", headerSort:false, editor:"input"
-					}, 
+							headerFilter : "input", headerSort:false, editor:"input",
+							bottomCalc:"sum", bottomCalcFormatter:"money",
+							bottomCalcFormatterParams:{decimal:".", thousand:",", precision:1}
+					},
 					{title : "금액",field : "och_mon",sorter : "int",width : 60,hozAlign : "center",
-						headerFilter : "input", headerSort:false, editor:"input"
-					}, 
+						headerFilter : "input", headerSort:false, editor:"input",
+						bottomCalc:"sum", bottomCalcFormatter:"money",
+						bottomCalcFormatterParams:{decimal:".", thousand:",", precision:1}
+					},
 					{title : "단가",field : "och_dang",sorter : "int",width : 50,hozAlign : "center",
 						headerFilter : "input", headerSort:false, editor:"input"
 					}, 
@@ -959,15 +976,32 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				},
 				success:function(result){
 					chulgoAddTable.setData(result.data);
+					chulgoAddCache = {sdate:sdate, edate:edate, data:result.data};
 				}
 			});
 		}
-				
+
 		//출고등록(입고리스트) 모달
 		function getChulgoAddList() {
 
+			//모달을 새로 열 때마다 이전 세션에서 입력/차감됐던 값이 남아있지 않도록 초기화
+			$("#och_jan").val(0);
+			chulgoRowCalcState = new Map();
+
+			//다른 페이지로 이동하지 않은 이상(새로고침 전까지), 마지막으로 조회했던 입고일 조건을 복원
+			if(chulgoAddCache){
+				$("#ord_sdate").val(chulgoAddCache.sdate);
+				$("#ord_edate").val(chulgoAddCache.edate);
+			}
+
 			chulgoAddTable = new Tabulator("#tabuData",{
-				tableBuilt : function(){ this.redraw(true); },
+				//전역 페이징기억 기능(pluginpage.jsp)이 pagination:"local" 테이블에 자동으로 페이지 번호를
+				//localStorage에서 복원시키는데, 방금 캐시된 데이터로 다시 채울 때 예전 페이지 번호가
+				//새 데이터 범위를 벗어나면 빈 화면처럼 보이는 문제가 있어 이 테이블만 명시적으로 꺼둠
+				persistence : false,
+				tableBuilt : function(){
+					this.redraw(true);
+				},
 				height : "100%",
 				layout : "fitColumns",
 				tooltips : true,
@@ -1178,7 +1212,8 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				hozAlign:"center", headerFilter:"input", headerSort:false, editor:"input"
 				},
 				{title:"금액", field:"och_mon", sorter:"int", width:80,
-				hozAlign:"center", headerFilter:"input", headerSort:false},
+				hozAlign:"center", headerFilter:"input", headerSort:false
+				},
 				{title:"비고", field:"och_bigo", sorter:"string", width:80,
 				hozAlign:"center", headerFilter:"input", headerSort:false, editor:"input"},
 				{title:"마감월", field:"och_ma", sorter:"int", width:60,
@@ -1188,9 +1223,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 					row.getElement().style.fontWeight = "600";
 				},
 			});
+
+			//마지막으로 조회했던 결과가 있으면 재조회 없이 그대로 복원(tableBuilt 콜백 안에서 호출하면
+			//반영이 안 되는 경우가 있어, 이 파일의 다른 테이블들처럼 생성자 호출 직후 직접 호출)
+			if(chulgoAddCache){
+				chulgoAddTable.setData(chulgoAddCache.data);
+			}
 		}
-		
-		
+
+
 		function ochSave(){
 			if(chulgoAddTable.getSelectedData().length > 0){
 
@@ -1239,34 +1280,44 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				$(".chulgoPrint5").css("display","inline-block");
 			}
 			
-			chulgoPrintStatusModal.style.display = "block";
-				
-			var sendObj = {
-				"chulgo_print_gb":chulgo_print_gb,
-				"chulgoData": chulgoTable.getSelectedData()
-			}
-			
-			$.ajax({
-				url:"/tkheat/product/chulgo/chulgoReport",
-				type:"post",
-				contentType: false,
-				processData: false,			
-				dataType:"json",
-				data:JSON.stringify(sendObj),
-				success:function(result){
-	   				var fileUrl = result.fileName;
-                    $("#chulgoReport").attr("src",fileUrl);
-                    chulgoReportModal.style.display = "flex";
-					
-                    chulgoPrintStatusCloseBtn();
-					getChulgoData();
-					
-				},error: function(xhr, status, status) {
-					console.log(xhr);
-					console.log(status);
-					console.log(status);
+		chulgoPrintStatusModal.style.display = "block";
+		registerModalOpen('chulgo-printStatus', chulgoPrintStatusCloseBtn);
+
+		//클릭(사용자 제스처) 시점에 바로 빈 창을 열어야 팝업이 차단되지 않음 - 내용은 ajax 응답 후 채움
+		var reportWin = window.open('', '_blank');
+		if(reportWin){
+			reportWin.document.write('<p style="font-family:sans-serif;padding:20px;">거래명세서 생성중입니다...</p>');
+		}
+
+		var sendObj = {
+			"chulgo_print_gb":chulgo_print_gb,
+			"chulgoData": chulgoTable.getSelectedData()
+		}
+
+		$.ajax({
+			url:"/tkheat/product/chulgo/chulgoReport",
+			type:"post",
+			contentType: false,
+			processData: false,
+			dataType:"json",
+			data:JSON.stringify(sendObj),
+			success:function(result){
+   				var fileUrl = result.fileName;
+                if(reportWin){
+                    reportWin.location.href = fileUrl;
+                }else{
+                    alert("팝업이 차단되어 새 창을 열 수 없습니다. 브라우저 팝업 차단을 해제해주세요.");
+                }
+
+                chulgoPrintStatusCloseBtn();
+				getChulgoData();
+
+			},error: function(xhr, status, status) {
+				console.log(xhr);
+				console.log(status);
+				console.log(status);
 	            }
-			});
+		});
 
 	    }
 
@@ -1306,14 +1357,17 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	    }
 		
 		function closeBtn(){
+			registerModalClose('chulgo-main');
 			chulgoModal.style.display = 'none'; // 모달 숨김
 		}
 
 		function chulgoPrintStatusCloseBtn(){
+			registerModalClose('chulgo-printStatus');
 			chulgoPrintStatusModal.style.display = 'none'; // 모달 숨김
 		}
 
 		function chulgoReportCloseBtn(){
+			registerModalClose('chulgo-report');
 			chulgoReportModal.style.display = 'none'; // 모달 숨김
 		}
 		
@@ -1352,10 +1406,19 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		insertButton.addEventListener('click', function() {
 			getChulgoAddList();
 			chulgoModal.style.display = 'flex'; // 모달 표시
+			registerModalOpen('chulgo-main', closeBtn);
 		});
 
 		closeButton.addEventListener('click', function() {
+			registerModalClose('chulgo-main');
 			chulgoModal.style.display = 'none'; // 모달 숨김
+		});
+
+		// ========== 엑셀 다운로드 ==========
+		$(".excel-button").click(function () {
+		    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+		    const filename = "출고관리_" + today + ".xlsx";
+		    chulgoTable.download("xlsx", filename, { sheetName: "출고관리" });
 		});
 	</script>
 

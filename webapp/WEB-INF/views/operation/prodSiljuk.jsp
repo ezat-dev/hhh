@@ -292,7 +292,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		getProdSiljukList();
 	});
@@ -346,9 +346,9 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                 headerFilter: "input",
                 bottomCalc: "sum",
                 formatter: "money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalcFormatter: "money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {
                 title: "중량",
@@ -359,9 +359,9 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                 headerFilter: "input",
                 bottomCalc: "sum",
                 formatter: "money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 2 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalcFormatter: "money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 2 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {
                 title: "단가",
@@ -371,7 +371,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                 hozAlign: "center",
                 headerFilter: "input",
                 formatter: "money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {
                 title: "금액",
@@ -382,9 +382,9 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                 headerFilter: "input",
                 bottomCalc: "sum",
                 formatter: "money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalcFormatter: "money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
         ],
         rowFormatter: function (row) {

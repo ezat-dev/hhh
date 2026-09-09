@@ -30,6 +30,14 @@ public class Bega {
 	private String fstp_09; //기타
 	private String fstp_10; //계
 	private double RunRate;
+
+	private String gubn; //구분(열처리/템퍼링)
+	private int total_time; //전체시간(분)
+	private int run_time; //가동시간(분, WORKILBO 실제시간 기준)
+	private int idle_natural; //자연비가동시간(분) = 전체시간 - 가동시간
+	private int idle_registered; //등록비가동시간(분, FACSTOP 특이사항)
+	private int idle_total; //총비가동시간(분) = 자연비가동 + 등록비가동
+	private double idle_rate; //비가동율(%)
 	
 	
 	
@@ -193,6 +201,48 @@ public class Bega {
 	}
 	public void setRunRate(double runRate) {
 		RunRate = runRate;
+	}
+	public String getGubn() {
+		return gubn;
+	}
+	public void setGubn(String gubn) {
+		this.gubn = gubn;
+	}
+	public int getTotal_time() {
+		return total_time;
+	}
+	public void setTotal_time(int total_time) {
+		this.total_time = total_time;
+	}
+	public int getRun_time() {
+		return run_time;
+	}
+	public void setRun_time(int run_time) {
+		this.run_time = run_time;
+	}
+	public int getIdle_natural() {
+		return idle_natural;
+	}
+	public void setIdle_natural(int idle_natural) {
+		this.idle_natural = idle_natural;
+	}
+	public int getIdle_registered() {
+		return idle_registered;
+	}
+	public void setIdle_registered(int idle_registered) {
+		this.idle_registered = idle_registered;
+	}
+	public int getIdle_total() {
+		return idle_total;
+	}
+	public void setIdle_total(int idle_total) {
+		this.idle_total = idle_total;
+	}
+	public double getIdle_rate() {
+		return idle_rate;
+	}
+	public void setIdle_rate(double idle_rate) {
+		this.idle_rate = idle_rate;
 	}
 
 }

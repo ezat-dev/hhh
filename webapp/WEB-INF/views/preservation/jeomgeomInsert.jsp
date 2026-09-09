@@ -8,7 +8,6 @@
     <title>설비점검기준등록</title>
     <link rel="stylesheet" href="/tkheat/css/management/productInsert.css">
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
-    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
 /* ========== 기본 스타일 ========== */
@@ -789,6 +788,7 @@ function jeomgeomInsertDetail(chs_code){
             // 모달 열기
             $('.modal-overlay').addClass('active');
             $('.jg-modal').addClass('active');
+            registerModalOpen('jeomgeomInsert-main', closeJgModal);
         },
         error: function(xhr, status, error) {
             console.error("❌ 상세 조회 오류:", error);
@@ -875,10 +875,9 @@ function save() {
         success: function(result) {
             console.log("💾 저장 완료:", result);
             alert("저장 되었습니다.");
-            
-            $('.modal-overlay').removeClass('active');
-            $('.jg-modal').removeClass('active');
-            
+
+            closeJgModal();
+
             // 모달 위치 초기화
             $('.jg-modal').css({
                 'left': '50%',
@@ -934,9 +933,8 @@ function deleteJeomgeom() {
         success: function(result) {
             if (result.status === "success") {
                 alert("삭제되었습니다.");
-                $('.modal-overlay').removeClass('active');
-                $('.jg-modal').removeClass('active');
-                
+                closeJgModal();
+
                 setTimeout(function() {
                     getJeomgeomInsertList();
                 }, 300);
@@ -954,7 +952,8 @@ function deleteJeomgeom() {
 // ========== 설비검색 모달 ==========
 function openFacListModal() {
     document.getElementById('facListModal').style.display = 'flex';
-    
+    registerModalOpen('jeomgeomInsert-facPicker', closeFacListModal);
+
     // 기존 테이블 제거
     if (window.facListTable) {
         window.facListTable.destroy();
@@ -1002,6 +1001,7 @@ function openFacListModal() {
 }
 
 function closeFacListModal() {
+    registerModalClose('jeomgeomInsert-facPicker');
     document.getElementById('facListModal').style.display = 'none';
 }
 
@@ -1016,14 +1016,16 @@ function openDrawingModal(event, fileName) {
     }
     
     const filePath = FILE_PREFIX_PATH + fileName;
-    
+
     $("#drawingFileName").text(fileName);
     $("#imageViewer").attr("src", filePath);
-    
+
     $('#drawingFileModal').css('display', 'flex');
+    registerModalOpen('jeomgeomInsert-drawingPreview', closeDrawingModal);
 }
 
 function closeDrawingModal() {
+    registerModalClose('jeomgeomInsert-drawingPreview');
     $('#drawingFileModal').hide();
     $("#imageViewer").attr("src", "");
 }
@@ -1089,18 +1091,23 @@ insertButton.addEventListener('click', function() {
     
     modalOverlay.classList.add('active');
     jgModal.classList.add('active');
-    
+    registerModalOpen('jeomgeomInsert-main', closeJgModal);
+
     $('.btn-delete').hide();
 });
 
-closeButton.addEventListener('click', function() {
+function closeJgModal() {
+    registerModalClose('jeomgeomInsert-main');
     modalOverlay.classList.remove('active');
     jgModal.classList.remove('active');
+}
+
+closeButton.addEventListener('click', function() {
+    closeJgModal();
 });
 
 headerCloseBtn.addEventListener('click', function() {
-    modalOverlay.classList.remove('active');
-    jgModal.classList.remove('active');
+    closeJgModal();
 });
 
 // ========== 저장 버튼 ==========

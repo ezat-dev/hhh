@@ -292,7 +292,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		getPChulgoStatusList();
 	});
@@ -346,7 +346,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                 bottomCalc: "sum",
                 bottomCalcFormatter: "money",
                 bottomCalcFormatterParams: {
-                    precision: 0,
+                    precision: 1,
                     thousand: ","
                 }
             },
@@ -373,14 +373,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                 formatterParams: {
                     decimal: ".",
                     thousand: ",",
-                    precision: 0
+                    precision: 1
                 },
                 bottomCalc: "sum",
                 bottomCalcFormatter: "money",
                 bottomCalcFormatterParams: {
                     decimal: ".",
                     thousand: ",",
-                    precision: 0
+                    precision: 1
                 }
             },
         ],
@@ -403,8 +403,12 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     });
 }
 
-
-	
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "제품별출고현황_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "제품별출고현황" });
+	});
 
     </script>
 

@@ -134,14 +134,55 @@
 	
 	
 	
+	<!-- 설비가동율분석: 열처리1~5호기(FAC_CODE 1,2,3,4,18), 템퍼링1~2호기(FAC_CODE 16,17) 대상.
+	     가동시간은 WORKILBO 실제 시작~종료시간 기준으로 계산하고, 설비비가동등록(FACSTOP)의
+	     등록비가동시간(FSTP_10)은 자연비가동시간을 대체하지 않고 그 위에 더해진다. -->
 	<select id="getBegaAnalyList" parameterType="bega" resultType="bega">
 		SET LOCK_TIMEOUT 10000;
-		SELECT   ROW_NUMBER()OVER(ORDER BY FAC_NAME) AS ROW_NUM,
-		FAC_NAME, SUM(FSTP_TU) AS FSTP_TU, SUM(FSTP_10) AS FSTP_10,
-		round(SUM(FSTP_SIL) / SUM(FSTP_TU) * 100,2) AS RunRate
-		FROM     dbo.vFacStop
-		Where FSTP_DATE between #{sdate} and #{edate}
-		GROUP BY FAC_NAME
+		SELECT
+			ROW_NUMBER() OVER (ORDER BY t.fac_code) AS ROW_NUM,
+			t.fac_code,
+			t.fac_name,
+			t.gubn,
+			t.total_time,
+			t.run_time,
+			t.idle_registered,
+			CASE WHEN t.total_time - t.run_time &lt; 0 THEN 0 ELSE t.total_time - t.run_time END AS idle_natural,
+			(CASE WHEN t.total_time - t.run_time &lt; 0 THEN 0 ELSE t.total_time - t.run_time END) + t.idle_registered AS idle_total,
+			ROUND(t.run_time * 100.0 / NULLIF(t.total_time, 0), 2) AS RunRate,
+			ROUND(((CASE WHEN t.total_time - t.run_time &lt; 0 THEN 0 ELSE t.total_time - t.run_time END) + t.idle_registered) * 100.0 / NULLIF(t.total_time, 0), 2) AS idle_rate
+		FROM (
+			SELECT
+				FAC.FAC_CODE AS fac_code,
+				FAC.FAC_NAME AS fac_name,
+				CASE WHEN FAC.FAC_CODE IN (1,2,3,4,18) THEN '열처리' ELSE '템퍼링' END AS gubn,
+				DATEDIFF(MINUTE, #{sdate}, DATEADD(DAY, 1, #{edate})) AS total_time,
+				ISNULL(WI.run_time, 0) AS run_time,
+				ISNULL(FS.idle_registered, 0) AS idle_registered
+			FROM FACILITY FAC
+			LEFT JOIN (
+				SELECT FAC_CODE,
+					SUM(
+						CASE WHEN ILBO_END IS NULL OR ILBO_END = '1900-01-01 00:00'
+							 OR ILBO_END &lt;= ILBO_STRT THEN 0
+							 ELSE DATEDIFF(MINUTE, ILBO_STRT, ILBO_END)
+						END
+					) AS run_time
+				FROM WORKILBO
+				WHERE FAC_CODE IN (1,2,3,4,18,16,17)
+				  AND ILBO_STRT BETWEEN #{sdate} AND #{edate}
+				GROUP BY FAC_CODE
+			) WI ON WI.FAC_CODE = FAC.FAC_CODE
+			LEFT JOIN (
+				SELECT FAC_CODE, SUM(ISNULL(TRY_CONVERT(INT, FSTP_10), 0)) AS idle_registered
+				FROM FACSTOP
+				WHERE FAC_CODE IN (1,2,3,4,18,16,17)
+				  AND FSTP_DATE BETWEEN #{sdate} AND #{edate}
+				GROUP BY FAC_CODE
+			) FS ON FS.FAC_CODE = FAC.FAC_CODE
+			WHERE FAC.FAC_CODE IN (1,2,3,4,18,16,17)
+		) t
+		ORDER BY t.fac_code
 	</select>
 
 	<!-- 설비별 작업현황 (작업수/작업중량/시작·종료시간/총작업시간) -->
@@ -161,6 +202,7 @@
 		FROM WORKILBO
 		INNER JOIN FACILITY ON FACILITY.FAC_CODE = WORKILBO.FAC_CODE
 		WHERE WORKILBO.ILBO_STRT BETWEEN #{sdate} AND #{edate}
+		  AND FACILITY.FAC_CODE IN (1,2,3,4,18,16,17)
 		GROUP BY FACILITY.FAC_NAME
 		ORDER BY FACILITY.FAC_NAME
 	</select>

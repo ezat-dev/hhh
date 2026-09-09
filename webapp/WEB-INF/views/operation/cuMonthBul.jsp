@@ -415,6 +415,7 @@ textarea {
     var sdate = $("#sdate").val();
 	//로드
 	$(function(){
+		$("#sdate").val(todayDate().substring(0,7));
 		//전체 거래처목록 조회
 		getCuMonthBulList();
 		getCuBulSubList();
@@ -460,17 +461,17 @@ textarea {
 
             {title:"총납품수량", field:"och_su", sorter:"number", width:100, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"불량수량", field:"werr_su", sorter:"number", width:90, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
 
             {
@@ -478,73 +479,73 @@ textarea {
                 columns: [
                     { title: "찍힘", field: "werr_gubn1", width: 70, hozAlign: "right", headerSort: false,
                         formatter:"money",
-                        formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                        formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                         bottomCalc:"sum",
                         bottomCalcFormatter:"money",
-                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
                     },
                     { title: "외관(이물)", field: "werr_gubn2", width: 80, hozAlign: "right", headerSort: false,
                         formatter:"money",
-                        formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                        formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                         bottomCalc:"sum",
                         bottomCalcFormatter:"money",
-                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
                     },
                     { title: "외관(조도)", field: "werr_gubn3", width: 80, hozAlign: "right", headerSort: false,
                         formatter:"money",
-                        formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                        formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                         bottomCalc:"sum",
                         bottomCalcFormatter:"money",
-                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
                     },
                     { title: "외관(발청)", field: "werr_gubn4", width: 80, hozAlign: "right", headerSort: false,
                         formatter:"money",
-                        formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                        formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                         bottomCalc:"sum",
                         bottomCalcFormatter:"money",
-                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
                     },
                     { title: "경도", field: "werr_gubn5", width: 70, hozAlign: "right", headerSort: false,
                         formatter:"money",
-                        formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                        formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                         bottomCalc:"sum",
                         bottomCalcFormatter:"money",
-                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
                     },
                     { title: "경화깊이", field: "werr_gubn6", width: 80, hozAlign: "right", headerSort: false,
                         formatter:"money",
-                        formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                        formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                         bottomCalc:"sum",
                         bottomCalcFormatter:"money",
-                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
                     },
                     { title: "조직", field: "werr_gubn7", width: 70, hozAlign: "right", headerSort: false,
                         formatter:"money",
-                        formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                        formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                         bottomCalc:"sum",
                         bottomCalcFormatter:"money",
-                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
                     },
                     { title: "크랙", field: "werr_gubn8", width: 70, hozAlign: "right", headerSort: false,
                         formatter:"money",
-                        formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                        formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                         bottomCalc:"sum",
                         bottomCalcFormatter:"money",
-                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
                     },
                     { title: "사양오정용", field: "werr_gubn9", width: 80, hozAlign: "right", headerSort: false,
                         formatter:"money",
-                        formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                        formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                         bottomCalc:"sum",
                         bottomCalcFormatter:"money",
-                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
                     },
                     { title: "변형", field: "werr_gubn10", width: 70, hozAlign: "right", headerSort: false,
                         formatter:"money",
-                        formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                        formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                         bottomCalc:"sum",
                         bottomCalcFormatter:"money",
-                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                        bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
                     },
                 ],
             },
@@ -553,17 +554,17 @@ textarea {
 
             {title:"총 납품금액", field:"och_mon", sorter:"number", width:120, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"불량금액", field:"werr_mon", sorter:"number", width:120, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"불량금액률(%)", field:"ppm_mon", sorter:"number", width:120, hozAlign:"center", headerSort: false},
         ],
@@ -616,94 +617,94 @@ function getCuBulSubList(){
             {title:"항목", field:"quantityItem", sorter:"string", width:120, hozAlign:"center", headerFilter:"input", headerSort: false},
             {title:"1월", field:"m1", sorter:"number", width:120, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"2월", field:"m2", sorter:"number", width:120, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"3월", field:"m3", sorter:"number", width:120, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"4월", field:"m4", sorter:"number", width:120, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"5월", field:"m5", sorter:"number", width:100, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"6월", field:"m6", sorter:"number", width:100, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"7월", field:"m7", sorter:"number", width:100, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"8월", field:"m8", sorter:"number", width:100, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"9월", field:"m9", sorter:"number", width:100, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"10월", field:"m10", sorter:"number", width:100, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"11월", field:"m11", sorter:"number", width:100, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"12월", field:"m12", sorter:"number", width:100, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
             {title:"평균", field:"average_SUM", sorter:"number", width:100, hozAlign:"right", headerSort: false,
                 formatter:"money",
-                formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+                formatterParams: { decimal: ".", thousand: ",", precision: 1 },
                 bottomCalc:"sum",
                 bottomCalcFormatter:"money",
-                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+                bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
             },
         ],
         rowFormatter:function(row){
@@ -723,6 +724,12 @@ function getCuBulSubList(){
     });
 }
 
+// ========== 엑셀 다운로드 ==========
+$(".excel-button").click(function () {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const filename = "월별거래처별불량현황_" + today + ".xlsx";
+    userTable.download("xlsx", filename, { sheetName: "월별불량현황" });
+});
 
     </script>
 

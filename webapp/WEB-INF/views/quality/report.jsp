@@ -338,7 +338,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		//전체 거래처목록 조회
 		getLotHeatList();
@@ -752,8 +752,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				var rowData = row.getData();
 				
 			},
-		});		
+		});
 	}
+
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "열처리LOT추적_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "열처리LOT추적" });
+	});
     </script>
 
 	</body>

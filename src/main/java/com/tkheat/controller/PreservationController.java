@@ -442,13 +442,16 @@ public class PreservationController {
 		for(int i=0; i<begaAnalyList.size(); i++) {
 			HashMap<String, Object> rowMap = new HashMap<String, Object>();
 			rowMap.put("idx", (i+1));
-			rowMap.put("fstp_date", begaAnalyList.get(i).getFstp_date());
 			rowMap.put("fac_name", begaAnalyList.get(i).getFac_name());
-			rowMap.put("RunRate", begaAnalyList.get(i).getRunRate());
-			rowMap.put("fstp_tu", begaAnalyList.get(i).getFstp_tu());
-			rowMap.put("fstp_10", begaAnalyList.get(i).getFstp_10());
-			rowMap.put("fstp_sil", begaAnalyList.get(i).getFstp_sil());
 			rowMap.put("fac_code", begaAnalyList.get(i).getFac_code());
+			rowMap.put("gubn", begaAnalyList.get(i).getGubn());
+			rowMap.put("total_time", begaAnalyList.get(i).getTotal_time());
+			rowMap.put("run_time", begaAnalyList.get(i).getRun_time());
+			rowMap.put("idle_natural", begaAnalyList.get(i).getIdle_natural());
+			rowMap.put("idle_registered", begaAnalyList.get(i).getIdle_registered());
+			rowMap.put("idle_total", begaAnalyList.get(i).getIdle_total());
+			rowMap.put("RunRate", begaAnalyList.get(i).getRunRate());
+			rowMap.put("idle_rate", begaAnalyList.get(i).getIdle_rate());
 
 			rtnList.add(rowMap);
 		}

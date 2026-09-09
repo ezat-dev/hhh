@@ -274,7 +274,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		getWorkStatusList();
 	});
@@ -296,7 +296,6 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		    ajaxConfig:"POST",
 		    ajaxLoader:false,
 		    ajaxURL:"/tkheat/product/workStatus/getWorkStatusList",
-		    ajaxProgressiveLoad:"scroll",
 		    ajaxParams:{
 			    "sdate": $("#sdate").val(),
 			    "edate": $("#edate").val(),				  
@@ -365,11 +364,17 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				});
 
 				var rowData = row.getData();
-				
+
 			},
-		});		
+		});
 	}
-	
+
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "공정작업현황_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "공정작업현황" });
+	});
 
     </script>
 

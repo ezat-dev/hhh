@@ -793,7 +793,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				
 				<div class="j_div">
 					<!-- 제품사진, 단취사진 img -->
-					<img src="" alt="" name="wstd_chim_file_name1" style="width:150px; height:150px;"/>
+					<img src="" alt="" name="heat_file_name" style="width:150px; height:150px;"/>
 				</div>
 			</div>
 
@@ -1245,7 +1245,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		}
 	});
 	
-	$("#workBcfForm select[name='fac_code']").change(function(){
+	$("#workBcfForm select[name='fac_code']").change(function(e){
+		//getWorkBcfDataFacCode()가 모달을 열 때마다 이 select의 옵션을 통째로 비우고 다시 채우는데,
+		//그 과정에서 브라우저가 (첫 옵션으로 자동 선택되며) change 이벤트를 발생시켜버려서
+		//e.isTrusted 체크로도 걸러지지 않고 이미 불러온 기존 생산LOT를 새 채번값으로 덮어써버림.
+		//그래서 이벤트 신뢰 여부가 아니라, 지금 모달이 "신규등록(J)"인 경우에만 재채번하도록
+		//명시적인 모드 플래그로 확실히 구분함(수정(A)/템퍼링 등에서는 절대 재채번 안 함)
+		console.log("[LOT진단] fac_code change 이벤트 발생. isTrusted="+e.isTrusted+", bcfModalMode="+bcfModalMode+", value="+this.value);
+		if(bcfModalMode !== "J"){ console.log("[LOT진단] -> 재채번 차단됨(수정모드)"); return; }
 		ilboLotRtn(facNumberRtn(this.value));
 	});
 	
@@ -1265,7 +1272,8 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	}
 	
 	function ilboLotRtn(facCodeParam){
-		
+		console.trace("[LOT진단] ilboLotRtn 호출됨. facCodeParam="+facCodeParam+", bcfModalMode="+bcfModalMode);
+
 		var now = new Date();
 		var ye = now.getFullYear();
 		var mo = paddingZero(now.getMonth()+1);
@@ -1290,7 +1298,8 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				"ilbo_code":workDataTable.getSelectedData()[0].ilbo_code
 			},
 			success:function(result){
-				$("#workBcfForm input[name='bcf_ilbo_lot']").val(result.data);		
+				console.trace("[LOT진단] ilboLotRtn 응답으로 bcf_ilbo_lot을 "+result.data+"로 덮어씀");
+				$("#workBcfForm input[name='bcf_ilbo_lot']").val(result.data);
 			}
 		});
 	}
@@ -1330,10 +1339,12 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	}
 	
 	//작업선택 모달
-	function workSelectModalOpen(){		
+	function workSelectModalOpen(){
 		workSelectModal.style.display = 'flex'; // 모달 표시
+		registerModalOpen('workInstructionTk-select', workSelectModalClose);
 	}
-	function workSelectModalClose(){		
+	function workSelectModalClose(){
+		registerModalClose('workInstructionTk-select');
 		workSelectModal.style.display = 'none'; // 모달 숨김
 	}
 	
@@ -1359,8 +1370,10 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		getWorkDanData();
 		getWorkDanDataUserCode();
 		workDanModal.style.display = 'flex'; // 모달 표시
-	}	
-	function workDanModalClose(){		
+		registerModalOpen('workInstructionTk-dan', workDanModalClose);
+	}
+	function workDanModalClose(){
+		registerModalClose('workInstructionTk-dan');
 		workDanModal.style.display = 'none'; // 모달 숨김
 	}
 	
@@ -1377,15 +1390,25 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		}else{
 			var ilbo_gubn = selectedData.ilbo_gubn;
 			var ilbo_pc = selectedData.ilbo_pc;
-			
+			bcfModalMode = ilbo_gubn;
+
 			if(ilbo_gubn == "J" || ilbo_gubn == "A"){
 				//정상선택
 				//선택한 제품의 리스트 조회해서 타뷸레이터 적용
 				getWorkBcfData();
 				getWorkBcfDataFacCode();
-				//일보로트 입력
-				ilboLotRtn(1);
-				
+				//일보로트(생산NO) 입력 - 단취(J)에서 새로 등록할 때만 새로 채번. 이미 등록된 열처리(A)를
+				//더블클릭해서 수정하는 경우엔 workDataTable 자체가 이미 정확한 값을 갖고 있으므로
+				//(getWorkBcfDataFacCode/getWorkBcfDataUserCode 등 여러 비동기 호출이 동시에 얽혀있어
+				//나중에 bcfDataSearch 응답만 믿기보다) 여기서 즉시, 동기적으로 확정해서 채워둠
+				if(ilbo_gubn == "J"){
+					console.log("[LOT진단] 신규(J) 분기 - ilboLotRtn(1) 호출");
+					ilboLotRtn(1);
+				}else{
+					console.log("[LOT진단] 수정(A) 분기 - bcf_ilbo_lot을 "+selectedData.ilbo_lot+"로 동기 설정 (ilbo_code="+selectedData.ilbo_code+")");
+					$("#workBcfForm input[name='bcf_ilbo_lot']").val(selectedData.ilbo_lot);
+				}
+
 				var now = new Date();
 				var ye = now.getFullYear();
 				var mo = paddingZero(now.getMonth()+1);
@@ -1402,6 +1425,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				workSelectModalClose();
 				getWorkBcfDataUserCode();
 				workBcfModal.style.display = 'flex'; // 모달 표시
+				registerModalOpen('workInstructionTk-bcf', workBcfModalClose);
 				
 				var selectedDataParam = JSON.stringify(selectedData);
 				
@@ -1432,6 +1456,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 								$("#workBcfForm input[name='"+key+"']").val(rowData[key]);
 							}
 						}
+
+						//생산NO(폼 input의 실제 name은 bcf_ilbo_lot이라 위 루프의 name 매칭 방식으로는 안 채워짐).
+						//같은 배치(ilbo_code)의 모든 행은 같은 생산LOT을 공유하므로 첫 행 값으로 마지막에 한 번 더
+						//확정해서 채움 - 그 사이 다른 비동기 처리(설비 select 재구성 등)가 끼어들어도 이 값이 최종적으로 이김
+						if(rowDatas && rowDatas.length > 0 && rowDatas[0].ilbo_lot){
+							console.log("[LOT진단] bcfDataSearch 응답 최종처리 - bcf_ilbo_lot을 "+rowDatas[0].ilbo_lot+"로 재확정");
+							$("#workBcfForm input[name='bcf_ilbo_lot']").val(rowDatas[0].ilbo_lot);
+						}
+						console.log("[LOT진단] 최종 화면 값(현재 input.val()) = "+$("#workBcfForm input[name='bcf_ilbo_lot']").val());
 						
 						$("#workBcfForm input[name='bcf_total_cnt']").val(bcf_total_cnt);
 						$("#workBcfForm input[name='bcf_total_weight']").val(bcf_total_weight.toFixed(2));
@@ -1446,7 +1479,8 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		}
 		
 	}	
-	function workBcfModalClose(){		
+	function workBcfModalClose(){
+		registerModalClose('workInstructionTk-bcf');
 		workBcfModal.style.display = 'none'; // 모달 숨김
 	}
 	
@@ -1506,6 +1540,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 						getWorkTfDataUserCode();
 
 						workTfModal.style.display = 'flex';
+						registerModalOpen('workInstructionTk-tf', workTfModalClose);
 					}
 				});
 				
@@ -1518,17 +1553,20 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		
 	}
 	function workTfModalClose(){
+		registerModalClose('workInstructionTk-tf');
 		workTfModal.style.display = 'none'; // 모달 숨김
 	}
-	
+
 	//단취작업 입고이력 모달
 	function workDanIpgoModalOpen(){
 		$("#workDanIpgoForm")[0].reset();
 		getWorkDanIpgoData();
 		getWorkDanIpgoDataList();
 		workDanIpgoModal.style.display = 'flex'; // 모달 표시
+		registerModalOpen('workInstructionTk-danIpgo', workDanIpgoModalClose);
 	}
 	function workDanIpgoModalClose(){
+		registerModalClose('workInstructionTk-danIpgo');
 		workDanIpgoModal.style.display = 'none'; // 모달 숨김
 	}
 	
@@ -1565,6 +1603,9 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	}
 	
 	var workDataTable;
+	//현재 열려있는 열처리(workBcfModal) 등록모달이 신규(J)인지 수정(A)인지 - 설비 select의 change
+	//핸들러가 신규등록일 때만 생산LOT를 재채번하도록 구분하는 데 사용
+	var bcfModalMode = null;
 	function getWorkData(){
 		
 		workDataTable = new Tabulator("#workTabu", {
@@ -1636,13 +1677,20 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			rowDblClick:function(e, row){
 				var rowData = row.getData();
 
+				//workBcfModalOpen()/workTfModalOpen()이 workDataTable.getSelectedData()[0]로
+				//"어떤 행을 수정하는지"를 판단하는데, selectable:true(무제한 다중선택)라서 예전에
+				//클릭했던 다른 행이 여전히 선택된 상태로 남아있으면 getSelectedData()[0]이 그 행을
+				//반환해버림(더블클릭한 행이 아니라) - 그래서 확실히 이 행만 선택되도록 먼저 전체 해제 후 선택
+				this.deselectRow();
+				row.select();
+
 				//일보구분에 따라 각각 표기
-				
+
 				var ilbo_code = rowData.ilbo_code;
 				var ilbo_gubn = rowData.ilbo_gubn;
 				var ilbo_lot = rowData.ilbo_lot;
 				var ilbo_pc = rowData.ilbo_pc;
-				
+
 				$.ajax({
 					url:"/tkheat/production/workInstructionTk/dataUpdateList",
 					type:"post",
@@ -1674,12 +1722,20 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 									if(key != "danch_sunip_chk_pw" && key != "danch_sunip_chk"){
 										$("#workDanForm input[name='"+key+"']").val(stdData[key]);
 									}
-									
+
+									//제품사진/단취사진 (신규등록 화면과 동일하게 수정화면에서도 복원)
+									if(key == "product_file_name" && stdData[key]){
+										$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/사진/제품등록/"+stdData[key]);
+									}
+									if(key == "heat_file_name" && stdData[key]){
+										$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/사진/제품등록/"+stdData[key]);
+									}
+
 									if(key == "wstd_t43"){
-										danch_std_cnt = stdData[key]; 
+										danch_std_cnt = stdData[key];
 									}
 									if(key == "ilbo_su"){
-										danch_total_cnt += stdData[key]; 
+										danch_total_cnt += stdData[key];
 									}
 								}
 							}
@@ -2026,14 +2082,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 							$("#workDanForm input[name='"+key+"']").val(stdMap[key]);
 						}
 						
-						//제품사진
+						//제품사진 (제품등록/침탄로작업표준과 동일한 실제 저장 경로 사용)
 						if(key == "product_file_name"){
-							$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/productImg/"+stdMap[key]);
+							$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/사진/제품등록/"+stdMap[key]);
 						}
-						
+
 						//단취사진
-						if(key == "wstd_chim_file_name1"){
-							$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/workStdImg/"+stdMap[key]);
+						if(key == "heat_file_name"){
+							$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/사진/제품등록/"+stdMap[key]);
 						}
 						
 					}
@@ -2476,7 +2532,13 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		window.addEventListener('mouseup', stopMove);
 	});
 
-	
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "작업지시NEW_" + today + ".xlsx";
+	    workDataTable.download("xlsx", filename, { sheetName: "작업지시NEW" });
+	});
+
     </script>
 
 	</body>

@@ -16,6 +16,7 @@
 	<field name="och_lot" class="java.lang.String"/>
 	<field name="ord_lot" class="java.lang.String"/>
 	<field name="och_amnt" class="java.lang.Double"/>
+	<field name="och_bigo" class="java.lang.String"/>
 	<variable name="Tax" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -171,6 +172,21 @@
 					<paragraph rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{och_mon_report}*0.10]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="524" y="0" width="41" height="29" uuid="7f6b0a8a-8c3e-4a8c-9a2f-1a2b3c4d5e6f">
+					<property name="local_mesure_unitheight" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineColor="#0000FF"/>
+					<leftPen lineWidth="0.0" lineColor="#0000FF"/>
+					<bottomPen lineWidth="0.0" lineColor="#0000FF"/>
+					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{och_bigo}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

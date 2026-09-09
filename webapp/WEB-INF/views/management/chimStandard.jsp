@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>침탄로작업표준</title>
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
-    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %>     
     
     <style>
@@ -686,9 +685,8 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                                         <th>확산</th>
                                         <th>강온</th>
                                         <th>균열</th>
-                                        <th>Oil</th>
+                                        <th>냉각</th>
                                         <th>교반기</th>
-                                        <th>냉각시간</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -701,7 +699,6 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                                         <td><input type="text" id="wstd_gj15" name="wstd_gj15"></td>
                                         <td><input type="text" id="wstd_gj16" name="wstd_gj16"></td>
                                         <td><input type="text" id="wstd_gj17" name="wstd_gj17"></td>
-                                        <td><input type="text" id="wstd_gj18" name="wstd_gj18"></td>
                                     </tr>
                                     <tr>
                                         <th>시간[분]</th>
@@ -711,8 +708,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                                         <td><input type="text" id="wstd_gj24" name="wstd_gj24"></td>
                                         <td><input type="text" id="wstd_gj25" name="wstd_gj25"></td>
                                         <td><input type="text" id="wstd_gj26" name="wstd_gj26"></td>
-                                        <td><input type="text" id="wstd_gj27" name="wstd_gj27"></td>
-                                        <td><input type="text" id="wstd_gj28" name="wstd_gj28"></td>
+                                        <td></td>
                                     </tr>
                                     <tr>
                                         <th>cp%</th>
@@ -721,9 +717,8 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                                         <td><input type="text" id="wstd_gj33" name="wstd_gj33"></td>
                                         <td><input type="text" id="wstd_gj34" name="wstd_gj34"></td>
                                         <td><input type="text" id="wstd_gj35" name="wstd_gj35"></td>
-                                        <td><input type="text" id="wstd_gj36" name="wstd_gj36"></td>
-                                        <td><input type="text" id="wstd_gj37" name="wstd_gj37"></td>
-                                        <td><input type="text" id="wstd_gj38" name="wstd_gj38"></td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                     <!-- <tr>
                                         <th>RX[㎥/Hr]</th>
@@ -1016,14 +1011,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                 
                 <!-- 오른쪽: 이미지 및 단취방법 -->
                 <div class="modal-right">
-                    <!-- 단취사진 -->
+                    <!-- 단취사진 (제품등록에서 관리 - 여기서는 읽기전용 미리보기만) -->
                     <div class="field-section">
                         <h3 class="section-title">단취사진</h3>
                         <div class="img-upload-area">
-                            <input type="file" id="imgInput0" class="imgInputClass" name="wstd_chim_file_url1" accept="image/*" onchange="previewImage(this,'previewId1')">
                             <div class="img-preview img-preview-small">
                                 <img id="prev_previewId1" src="/tkheat/css/image/no_image.png" alt="단취사진">
                             </div>
+                            <div style="margin-top:4px; font-size:12px; color:#718096;">단취사진은 제품등록 화면에서 등록/수정합니다.</div>
                         </div>
                     </div>
                     
@@ -1241,12 +1236,15 @@ $('.insert-button').on('click', function() {
     $('.btn-delete, #btnSaveAs').hide();
     $('.chim-modal').css({ 'left':'50%', 'top':'50%', 'transform':'translate(-50%, -50%)' });
     $('.modal-overlay, .chim-modal').addClass('active');
+    registerModalOpen('chimStandard-main', closeChimModal);
 });
 
 // ========== 모달 닫기 ==========
-$('.modal-close-btn, .btn-cancel').on('click', function() {
+function closeChimModal() {
+    registerModalClose('chimStandard-main');
     $('.modal-overlay, .chim-modal').removeClass('active');
-});
+}
+$('.modal-close-btn, .btn-cancel').on('click', closeChimModal);
 
 // ========== 모달 드래그 ==========
 let isDragging = false;
@@ -1354,9 +1352,9 @@ function getChimStandardDetail(wstd_code){
             $("#prev_previewId1, #prev_previewId3, #prev_previewId7").attr("src", "/tkheat/css/image/no_image.png");
             $("#fileLink").attr("href", "#").text("");
 
-            // 단취사진 (침탄로 직접 업로드)
-            if (d.wstd_chim_file_name1) {
-                $("#prev_previewId1").attr("src", "/tkPrint/사진/침탄로작업표준/" + d.wstd_chim_file_name1);
+            // 단취사진 (제품등록에서 관리 - 여기서는 읽기전용 표시만)
+            if (d.prod_heat_file_name) {
+                $("#prev_previewId1").attr("src", "/tkPrint/사진/제품등록/" + d.prod_heat_file_name);
             }
             // 사진-3 (침탄로 직접 업로드)
             if (d.wstd_chim_file_name2) {
@@ -1378,6 +1376,7 @@ function getChimStandardDetail(wstd_code){
             }
 
             $('.modal-overlay, .chim-modal').addClass('active');
+            registerModalOpen('chimStandard-main', closeChimModal);
         },
         error: function(xhr, status, error) {
             console.error("❌ 상세 조회 오류:", error);
@@ -1389,6 +1388,7 @@ function getChimStandardDetail(wstd_code){
 // ========== 제품 검색 모달 ==========
 function openProductListModal() {
     document.getElementById('productListModal').style.display = 'flex';
+    registerModalOpen('chimStandard-productPicker', closeProductListModal);
 
     if (productListTable) { productListTable.destroy(); productListTable = null; }
     $('#productListTabulator').empty();
@@ -1457,12 +1457,20 @@ function openProductListModal() {
                 $('#fileLink').attr('href', '#').text('');
             }
 
-            document.getElementById('productListModal').style.display = 'none';
+            // ★ 단취사진 연동 (제품등록에서 가져옴 - 제품사진과 동일한 소스)
+            if (data.heat_file_name && data.heat_file_name !== 'no_image.png') {
+                $('#prev_previewId1').attr('src', '/tkPrint/사진/제품등록/' + data.heat_file_name);
+            } else {
+                $('#prev_previewId1').attr('src', '/tkheat/css/image/no_image.png');
+            }
+
+            closeProductListModal();
         }
     });
 }
 
 function closeProductListModal() {
+    registerModalClose('chimStandard-productPicker');
     document.getElementById('productListModal').style.display = 'none';
 }
 
@@ -1511,7 +1519,7 @@ function save() {
         success: function(result) {
             $('.btn-save').prop('disabled', false);
             alert("저장 되었습니다.");
-            $('.modal-overlay, .chim-modal').removeClass('active');
+            closeChimModal();
             $('.chim-modal').css({ 'left':'50%', 'top':'50%', 'transform':'translate(-50%, -50%)' });
             $('#chimStandardForm')[0].reset();
             isEditMode = false; selectedRowData = null;
@@ -1543,7 +1551,7 @@ function saveAs() {
         contentType: false, processData: false, dataType: "json",
         success: function(result) {
             alert("다른 이름으로 저장되었습니다.");
-            $('.modal-overlay, .chim-modal').removeClass('active');
+            closeChimModal();
             $('.chim-modal').css({ 'left':'50%', 'top':'50%', 'transform':'translate(-50%, -50%)' });
             $('#chimStandardForm')[0].reset();
             isEditMode = false; selectedRowData = null;
@@ -1569,7 +1577,7 @@ function deleteChim() {
         success: function(result) {
             if (result.status === "success") {
                 alert("삭제되었습니다.");
-                $('.modal-overlay, .chim-modal').removeClass('active');
+                closeChimModal();
                 $('.chim-modal').css({ 'left':'50%', 'top':'50%', 'transform':'translate(-50%, -50%)' });
                 $('#chimStandardForm')[0].reset();
                 isEditMode = false; selectedRowData = null;
@@ -1670,8 +1678,10 @@ function openDrawingModal(event) {
     $("#drawingFileName").text(fileName);
     $("#pdfViewer").attr("src", filePath);
     $('#drawingFileModal').css('display', 'flex');
+    registerModalOpen('chimStandard-drawingPreview', closeDrawingModal);
 }
 function closeDrawingModal() {
+    registerModalClose('chimStandard-drawingPreview');
     $('#drawingFileModal').css('display', 'none');
     $("#pdfViewer").attr("src", "");
 }

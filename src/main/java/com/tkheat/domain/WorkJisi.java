@@ -256,6 +256,7 @@ public class WorkJisi {
 	private String prod_bangch;
 	private String prod_note;
 	private String prod_img;
+	private String product_file_name;	//prod_img(URL 문자열)를 자바에서 제대로 URL인코딩해서 재구성하기 위한 원본 파일명
 	private String danch_img;
 	private String jisi_h_bigo;
 	private String fac1;
@@ -1469,6 +1470,12 @@ public class WorkJisi {
 	}
 	public void setProd_img(String prod_img) {
 		this.prod_img = prod_img;
+	}
+	public String getProduct_file_name() {
+		return product_file_name;
+	}
+	public void setProduct_file_name(String product_file_name) {
+		this.product_file_name = product_file_name;
 	}
 	public String getJisi_h_bigo() {
 		return jisi_h_bigo;

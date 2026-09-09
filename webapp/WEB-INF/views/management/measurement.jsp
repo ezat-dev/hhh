@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>측정기기등록</title>
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
-    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %>     
     <style>
 /* ========== 기존 스타일 유지 ========== */
@@ -655,12 +654,15 @@ $('.insert-button').on('click', function() {
     });
     
     $('.modal-overlay, .measurement-modal').addClass('active');
+    registerModalOpen('measurement-main', closeMeasurementModal);
 });
 
 // ========== 모달 닫기 ==========
-$('.modal-close-btn, .btn-cancel').on('click', function() {
+function closeMeasurementModal() {
+    registerModalClose('measurement-main');
     $('.modal-overlay, .measurement-modal').removeClass('active');
-});
+}
+$('.modal-close-btn, .btn-cancel').on('click', closeMeasurementModal);
 
 // ========== 모달 드래그 ==========
 let isDragging = false;
@@ -817,6 +819,7 @@ function measureDetail(ter_code){
 
             // 모달 열기
             $('.modal-overlay, .measurement-modal').addClass('active');
+            registerModalOpen('measurement-main', closeMeasurementModal);
         },
         error: function(xhr, status, error) {
             console.error("❌ 상세 조회 오류:", error);
@@ -875,10 +878,10 @@ function save() {
         success: function(result) {
             console.log("💾 저장 완료:", result);
             alert("저장 되었습니다.");
-            
+
             // 모달 닫기
-            $('.modal-overlay, .measurement-modal').removeClass('active');
-            
+            closeMeasurementModal();
+
             // 모달 위치 초기화
             $('.measurement-modal').css({
                 'left': '50%',
@@ -930,8 +933,8 @@ function deleteMea() {
         success: function(result) {
             if (result.status === "success") {
                 alert("삭제되었습니다.");
-                $('.modal-overlay, .measurement-modal').removeClass('active');
-                
+                closeMeasurementModal();
+
                 setTimeout(function() {
                     getMeasureList();
                 }, 300);

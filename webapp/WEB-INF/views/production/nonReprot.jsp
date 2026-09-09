@@ -780,7 +780,7 @@ th{
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		getNonReportList();
 	});
@@ -899,6 +899,7 @@ th{
 				}
 
 				$('.nonReportModal').css('display', 'flex').addClass('show');
+				registerModalOpen('nonReprot-main', closeNonReportModal);
 			}
 		});
 	}
@@ -940,12 +941,18 @@ th{
 		isEditMode = false;  // 추가 모드
 	    $('#nonReportForm')[0].reset(); // 폼 초기화
 	    nonReportModal.style.display = 'flex'; // 모달 표시
+	    registerModalOpen('nonReprot-main', closeNonReportModal);
 
 		$('.delete').hide();
 	});
 
-	closeButton.addEventListener('click', function() {
+	function closeNonReportModal() {
+		registerModalClose('nonReprot-main');
 		nonReportModal.style.display = 'none'; // 모달 숨김
+	}
+
+	closeButton.addEventListener('click', function() {
+		closeNonReportModal();
 	});
 
 
@@ -953,8 +960,9 @@ th{
 	//설비검색버튼 리스트 모달
     function ipgoListModal() {
         document.getElementById('ipgoListModal').style.display = 'flex';
+        registerModalOpen('nonReprot-ipgoList', closeIpgoListModal);
 
-        
+
         let ipgoListTable = new Tabulator("#ipgoListTabulator", {
             height:"450px",
             layout:"fitColumns",
@@ -1027,13 +1035,14 @@ th{
                 document.getElementById('prod_cd').value = data.prod_cd;
                 document.getElementById('ord_date').value = data.ord_date;
                 document.getElementById('ord_lot').value = data.ord_lot;
-                
-                document.getElementById('ipgoListModal').style.display = 'none';
+
+                closeIpgoListModal();
             }
         });
     }
 
     function closeIpgoListModal() {
+        registerModalClose('nonReprot-ipgoList');
         document.getElementById('ipgoListModal').style.display = 'none';
     }
 
@@ -1067,6 +1076,7 @@ th{
 	        dataType: "json",
 	        success: function(result) {
 	        	alert("저장 되었습니다.");
+                registerModalClose('nonReprot-main');
                 $(".nonReportModal").hide();
                 getNonReportList();
 	        },
@@ -1097,6 +1107,7 @@ th{
 	        success: function(result) {
 	            if (result.status === "success") {
 	                alert("삭제되었습니다.");
+	                registerModalClose('nonReprot-main');
 	                $(".nonReportModal").hide();
 	                getNonReportList();
 	            } else {
@@ -1110,11 +1121,12 @@ th{
 	    });
 	}
 
-
-
-
-
-				    
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "부적합보고서_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "부적합보고서" });
+	});
 
     </script>
 

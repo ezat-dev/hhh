@@ -317,7 +317,7 @@ var tab1;
 $(function(){
     var tdate = todayDate();
     var ydate = yesterDate();
-    $("#sdate").val(ydate);
+    $("#sdate").val(tdate);
     $("#edate").val(tdate);
 
     getCuIpgoStatusList();
@@ -365,8 +365,8 @@ function getCuIpgoStatusList(){
             {title:"입고일", field:"ord_date", sorter:"string", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
             {title:"거래처명", field:"corp_name", sorter:"string", width:200, hozAlign:"center", headerFilter:"input", headerSort:false},
             {title:"수주금액", field:"ord_mon", sorter:"number", width:150, hozAlign:"center", headerFilter:"input",
-                formatter:"money", formatterParams:{decimal:".", thousand:",", precision:0},
-                bottomCalc:"sum", bottomCalcFormatter:"money", bottomCalcFormatterParams:{decimal:".", thousand:",", precision:0}}
+                formatter:"money", formatterParams:{decimal:".", thousand:",", precision:1},
+                bottomCalc:"sum", bottomCalcFormatter:"money", bottomCalcFormatterParams:{decimal:".", thousand:",", precision:1}}
         ],
         
         rowFormatter:function(row){

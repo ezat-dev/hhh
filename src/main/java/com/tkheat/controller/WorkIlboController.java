@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.tkheat.domain.Standard;
 import com.tkheat.domain.WorkJisiTk;
+import com.tkheat.service.ManagementService;
 import com.tkheat.service.WorkIlboService;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -40,7 +42,10 @@ public class WorkIlboController {
 
 	@Autowired
 	private WorkIlboService workIlboService;
-	
+
+	@Autowired
+	private ManagementService managementService;
+
 	//00.공통
 	private final Logger logger = LoggerFactory.getLogger(WorkIlboController.class);
 	
@@ -1096,6 +1101,7 @@ public class WorkIlboController {
 			@RequestParam(required=false) String s_corp_name,
 			@RequestParam(required=false) String s_prod_name,
 			@RequestParam(required=false) String s_prod_no,
+			@RequestParam(required=false, defaultValue="0") int s_fac_code,
 			@RequestParam(required=false, defaultValue="0") int s_ilbo_code,
 			@RequestParam(required=false, defaultValue="0") int s_ord_code){
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
@@ -1106,6 +1112,7 @@ public class WorkIlboController {
 		w.setCorp_name(s_corp_name);
 		w.setProd_name(s_prod_name);
 		w.setProd_no(s_prod_no);
+		w.setFac_code(s_fac_code);
 		w.setIlbo_code(s_ilbo_code);
 		w.setOrd_code(s_ord_code);
 
@@ -1315,20 +1322,20 @@ public class WorkIlboController {
 						listJsonObject = (JSONObject)lObj;
 						//listJsonObject.get("ord_code").toString()
 	                    WorkJisiTk wSave = new WorkJisiTk();
-	                    String ilbo_lot = ifNullStringReturn(listJsonObject.get("ilbo_lot"));                 
-	                    String ilbo_cm = ifNullStringReturn(listJsonObject.get("ilbo_cm"));                 
-	                    //ilbo_lot_yn_chk의 값이 1인지 0인지로 구분
-	                    int ilbo_lot_yn_chk = Integer.parseInt(listJsonObject.get("ilbo_lot_yn_chk").toString());
+	                    String ilbo_lot = ifNullStringReturn(listJsonObject.get("ilbo_lot"));
+	                    String ilbo_cm = ifNullStringReturn(listJsonObject.get("ilbo_cm"));
 
+	                    //ilbo_pc의 값이 있는지 없는지로 구분(열처리 저장 로직과 동일한 방식)
+	                    int ilbo_pc = Integer.parseInt(listJsonObject.get("ilbo_pc").toString());
 
-	                    if("".equals(ilbo_cm)) {
+	                    if(ilbo_pc == 0) {
+	                    	ilbo_pc = Integer.parseInt(listJsonObject.get("ilbo_code").toString());
 	                    	ilbo_code = ilbo_code_search;
 	                    }else {
+	                    	ilbo_pc = Integer.parseInt(listJsonObject.get("ilbo_pc").toString());
 	                    	ilbo_code = Integer.parseInt(listJsonObject.get("ilbo_code").toString());
 	                    }
-	                    
-	                    int ilbo_pc = Integer.parseInt(listJsonObject.get("ilbo_pc").toString());
-	                    
+
 	                    wSave.setIlbo_code(ilbo_code);	   
 	                    wSave.setIlbo_pc(ilbo_pc);
 	                    wSave.setIlbo_pn(ilbo_no);
@@ -1512,10 +1519,26 @@ public class WorkIlboController {
 			JasperCompileManager compileManager = JasperCompileManager.getInstance(jasperReportsContext);
 			JasperReport report = JasperCompileManager.compileReport(abPath);
 			
+			//체크시트 출력시에는 침탄 시작일시만 표시하고 나머지 3칸(침탄 종료/템퍼링 시작/템퍼링 종료)은
+			//작업자가 수기로 기입하도록 공란으로 비움 - DB 데이터는 그대로 유지, 인쇄용 빈 값만 여기서 override
+			wStd.setIlbo_end_bcf("");
+			wStd.setIlbo_strt_tf("");
+			wStd.setIlbo_end_tf("");
+
+			//공정곡선(예열~냉각+템퍼링) - 실적치(WORKILBO)가 아닌 침탄로작업표준(WORKSTD) 등록값을 기준으로 표시
+			Standard stdParam = new Standard();
+			stdParam.setProd_code(String.valueOf(wStd.getProd_code()));
+			stdParam.setFac_code(wStd.getFac_code_bcf());
+			Standard stdChart = managementService.getProcessStandardForChart(stdParam);
+			if (stdChart == null) {
+				stdChart = new Standard();
+			}
+
 			Map<String, Object> reportMap = new HashMap<String, Object>();
 			reportMap.put("workJisiTk", wStd);
 			reportMap.put("workJisiTkList", wData);
-			
+			reportMap.put("stdChart", stdChart);
+
 			
 			JasperFillManager fillManager = JasperFillManager.getInstance(jasperReportsContext);
 			

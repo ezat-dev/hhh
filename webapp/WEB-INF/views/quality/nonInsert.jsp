@@ -761,6 +761,13 @@ var nonTable;
 var isEditMode = false;
 var selectedRowData = null;
 
+// ========== 메인 모달 닫기 (ESC 스택 등록용 전역 함수) ==========
+function closeNonModal() {
+    registerModalClose('nonInsert-main');
+    $('.modal-overlay').removeClass('active');
+    $('.non-modal').removeClass('active');
+}
+
 // ========== 페이지 로드 ==========
 $(function(){
     if (typeof userInfoList === 'function') {
@@ -771,7 +778,7 @@ $(function(){
     var ydate = yesterDate();
     var beforeMonth = beforeMonthDate();
     
-    $("#sdate").val(ydate);
+    $("#sdate").val(tdate);
     $("#edate").val(tdate);
     $("#subsdate").val(beforeMonth);
     $("#subedate").val(tdate);
@@ -815,19 +822,14 @@ $(function(){
         
         modalOverlay.classList.add('active');
         nonModal.classList.add('active');
-        
+        registerModalOpen('nonInsert-main', closeNonModal);
+
         $('.btn-delete').hide();
     });
 
-    closeButton.addEventListener('click', function() {
-        modalOverlay.classList.remove('active');
-        nonModal.classList.remove('active');
-    });
+    closeButton.addEventListener('click', closeNonModal);
 
-    headerCloseBtn.addEventListener('click', function() {
-        modalOverlay.classList.remove('active');
-        nonModal.classList.remove('active');
-    });
+    headerCloseBtn.addEventListener('click', closeNonModal);
 
     // ★ 저장 버튼 중복 방지
     $('.save').off('click').on('click', function() {
@@ -961,6 +963,7 @@ function nonInsertDetail(werr_code){
             
             $('.modal-overlay').addClass('active');
             $('.non-modal').addClass('active');
+            registerModalOpen('nonInsert-main', closeNonModal);
         },
         error: function(xhr, status, error) {
             console.error("❌ 상세 조회 오류:", error);
@@ -1047,7 +1050,8 @@ function save() {
             console.log("💾 저장 완료:", result);
             $('.save').prop('disabled', false);  // ★ 완료 후 활성화
             alert("저장 되었습니다.");
-            
+
+            registerModalClose('nonInsert-main');
             $('.modal-overlay').removeClass('active');
             $('.non-modal').removeClass('active');
             $('.non-modal').css({ 'left':'50%', 'top':'50%', 'transform':'translate(-50%, -50%)' });
@@ -1094,6 +1098,7 @@ function deleteNon() {
         success: function(result) {
             if (result.status === "success") {
                 alert("삭제되었습니다.");
+                registerModalClose('nonInsert-main');
                 $('.modal-overlay').removeClass('active');
                 $('.non-modal').removeClass('active');
                 setTimeout(function() { getNonInsertList(); }, 300);
@@ -1112,9 +1117,11 @@ function deleteNon() {
 function openCorpListModal(){
     document.getElementById('corpListModal').style.display = 'flex';
     openCorpListModalData();
+    registerModalOpen('nonInsert-corpList', closeCorpListModal);
 }
 
 function closeCorpListModal() {
+    registerModalClose('nonInsert-corpList');
     document.getElementById('corpListModal').style.display = 'none';
 }
 

@@ -314,7 +314,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		getProdWaitingStatusList();
 	});
@@ -335,7 +335,6 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		    ajaxConfig:"POST",
 		    ajaxLoader:false,
 		    ajaxURL:"/tkheat/production/prodWaitingStatus/getProdWaitingStatusList",
-		    ajaxProgressiveLoad:"scroll",
 		    ajaxParams:{
 		    	"sdate": $("#sdate").val(),
 		    	"edate": $("#edate").val(),
@@ -369,25 +368,25 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		        		 hozAlign:"center", headerFilter:"input",
 		        		 bottomCalc:"sum",
 		        		 formatter:"money",
-		        		 formatterParams: {thousand:",", precision:0},
+		        		 formatterParams: {thousand:",", precision:1},
 				         bottomCalcFormatter: "money",
-						 bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+						 bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
 		        		},
 		        		{title:"적재수량", field:"ilbo_su", sorter:"int", width:100,
 		        		 hozAlign:"center", headerFilter:"input",
 		        		 bottomCalc:"sum",
 		        		 formatter:"money",
-		        		 formatterParams: {thousand:",", precision:0},
+		        		 formatterParams: {thousand:",", precision:1},
 		        		 bottomCalcFormatter: "money",
-						 bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+						 bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
 		        		},
 		        		{title:"잔량", field:"jan", sorter:"int", width:100,
 		        		 hozAlign:"center", headerFilter:"input",
 		        		 bottomCalc:"sum",
 		        		 formatter:"money",
-		        		 formatterParams: {thousand:",", precision:0},
+		        		 formatterParams: {thousand:",", precision:1},
 		        		 bottomCalcFormatter: "money",
-						 bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+						 bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
 		        		},
 				    
 		    ],
@@ -408,11 +407,17 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				});
 
 				var rowData = row.getData();
-				
+
 			},
-		});		
+		});
 	}
-	
+
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "생산대기현황_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "생산대기현황" });
+	});
 
     </script>
 

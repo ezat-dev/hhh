@@ -53,9 +53,29 @@ public class OperationServiceImpl implements OperationService {
 	public List<Users> getNoticeList(){
 		return operationDao.getNoticeList();
 	}
-	
-	
-	
+
+	@Override
+	public void noticeSave(Users users) {
+		operationDao.noticeSave(users);
+	}
+
+	@Override
+	public void noticeUpdateSave(Users users) {
+		operationDao.noticeUpdateSave(users);
+	}
+
+	@Override
+	public Users noticeDetail(Users users) {
+		return operationDao.noticeDetail(users);
+	}
+
+	@Override
+	public void noticeDelete(int notice_code) {
+		operationDao.noticeDelete(notice_code);
+	}
+
+
+
 	
 	@Override
 	public List<Chulgo> getYearSaleList(Chulgo chulgo){

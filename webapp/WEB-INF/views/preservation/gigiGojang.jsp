@@ -588,7 +588,7 @@ $(function(){
     }
     var tdate = todayDate();
     var ydate = yesterDate();
-    $("#sdate").val(ydate);
+    $("#sdate").val(tdate);
     $("#edate").val(tdate);
     getGigiGojangList();
 });
@@ -689,6 +689,7 @@ function gigiGojangtDetail(terr_code){
             }
 
             $('.gojangModal').show();
+            registerModalOpen('gigiGojang-main', closeGojangModal);
         },
         error: function(xhr, status, error){
             console.error("상세 조회 오류:", error);
@@ -731,7 +732,7 @@ function save(){
         contentType: false, processData: false, dataType: "json",
         success: function(result){
             alert("저장 되었습니다.");
-            $('.gojangModal').hide();
+            closeGojangModal();
             isEditMode = false; selectedRowData = null;
             getGigiGojangList();
         },
@@ -755,7 +756,7 @@ function deleteGigiGojang(){
         success: function(result){
             if (result.status === "success") {
                 alert("삭제되었습니다.");
-                $('.gojangModal').hide();
+                closeGojangModal();
                 isEditMode = false; selectedRowData = null;
                 getGigiGojangList();
             } else {
@@ -815,13 +816,19 @@ document.querySelector('.insert-button').addEventListener('click', function() {
     gojangModalEl.style.top  = '50%';
     gojangModalEl.style.transform = 'translate(-50%, -50%)';
     $('.gojangModal').show();
+    registerModalOpen('gigiGojang-main', closeGojangModal);
 });
 
-document.querySelector('.gojangModal .close').addEventListener('click', function() {
+function closeGojangModal() {
+    registerModalClose('gigiGojang-main');
     $('.gojangModal').hide();
+}
+
+document.querySelector('.gojangModal .close').addEventListener('click', function() {
+    closeGojangModal();
 });
 document.querySelector('.header-close').addEventListener('click', function() {
-    $('.gojangModal').hide();
+    closeGojangModal();
 });
 
 // ========== PDF 미리보기 ==========
@@ -837,6 +844,13 @@ function closeDrawingModal() {
     $('#drawingFileModal').css('display', 'none');
     $("#pdfViewer").attr("src", "");
 }
+
+// ========== 엑셀 다운로드 ==========
+$(".excel-button").click(function () {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const filename = "측정기기고장이력_" + today + ".xlsx";
+    userTable.download("xlsx", filename, { sheetName: "측정기기고장이력" });
+});
 </script>
 
 </body>

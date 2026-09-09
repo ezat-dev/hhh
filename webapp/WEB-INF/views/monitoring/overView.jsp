@@ -43,6 +43,30 @@ body{
 .label_bcf5 { left: 1224px; }
 .label_tf   { left: 1500px; }
 
+/* 설비별 현재 진행중인 제품명 (실시간) */
+.product_label {
+    position: absolute;
+    top: 26px;
+    z-index: 500; /* 뒤에 그려지는 설비 작화 이미지들에 가려지지 않도록 최상단 고정 */
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    background: rgba(11, 99, 206, 0.85);
+    border-radius: 4px;
+    padding: 2px 10px;
+    text-align: center;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.product_bcf1 { left: 138px; }
+.product_bcf2 { left: 407px; }
+.product_bcf3 { left: 679px; }
+.product_bcf4 { left: 952px; }
+.product_bcf5 { left: 1224px; }
+
 .bcf_tables_container {
     position: absolute;
     left: 32px;
@@ -149,6 +173,11 @@ body{
 		<div class="equipment_label label_bcf4">BCF 4</div>
 		<div class="equipment_label label_bcf5">BCF 5</div>
 		<div class="equipment_label label_tf">TF</div>
+		<div class="product_label product_bcf1" id="product_bcf1"></div>
+		<div class="product_label product_bcf2" id="product_bcf2"></div>
+		<div class="product_label product_bcf3" id="product_bcf3"></div>
+		<div class="product_label product_bcf4" id="product_bcf4"></div>
+		<div class="product_label product_bcf5" id="product_bcf5"></div>
       <!-- <img class="background" src="/tkheat/image/tkimg/background0.png" /> -->
       <img class="bcf_1_back" src="/tkheat/image/tkimg/bcf-back.png" />
       <img class="bcf_2_back" src="/tkheat/image/tkimg/bcf-back.png" />
@@ -860,10 +889,47 @@ body{
 	
 	
 <script>
+//설비현황 화면은 전역 조회중 오버레이(pluginpage.jsp)를 끔
+window.disableGlobalLoadingOverlay = true;
+
 $(function(){
     updateOverview();
     setInterval(updateOverview, 30000);
+
+    updateFacilityProducts();
+    setInterval(updateFacilityProducts, 2000);
 });
+
+//설비별(BCF1~5) 현재 진행중인 제품명 실시간 표시 (생산모니터링 화면과 동일한 데이터 소스)
+function updateFacilityProducts(){
+    $.ajax({
+        url: '/tkheat/monitoring/monitoringDataList',
+        type: 'POST',
+        dataType: 'json',
+        success: function(result){
+            var list = result.data ? result.data : [];
+
+            //열처리 설비코드(hogi_code) -> BCF 호기 번호
+            var hogiCodeToBcf = { "1":1, "2":2, "3":3, "4":4, "18":5 };
+
+            for(var bcfNo = 1; bcfNo <= 5; bcfNo++){
+                $("#product_bcf" + bcfNo).text("");
+            }
+
+            list.forEach(function(row){
+                var bcfNo = hogiCodeToBcf[String(row.hogi_code)];
+                if(!bcfNo) return;
+                if(Number(row.hogi_proc) !== 1) return; // 1=진행중인 것만 표시
+
+                var prodName = (row.prod_name || "").split(";").filter(function(v){ return v !== ""; }).join(", ");
+                $("#product_bcf" + bcfNo).text(prodName ? prodName : "-");
+            });
+        },
+        error: function(xhr, status, error){
+            console.error("설비별 진행제품 조회 실패:", error);
+        }
+    });
+}
 
 function updateOverview() {
 

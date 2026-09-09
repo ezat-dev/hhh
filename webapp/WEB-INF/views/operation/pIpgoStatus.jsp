@@ -317,7 +317,7 @@ var tab1;
 $(function(){
     var tdate = todayDate();
     var ydate = yesterDate();
-    $("#sdate").val(ydate);
+    $("#sdate").val(tdate);
     $("#edate").val(tdate);
 
     getPIpgoStatusList();
@@ -367,13 +367,13 @@ function getPIpgoStatusList(){
             {title:"품명", field:"prod_name", width:200, hozAlign:"center", headerFilter:"input", headerSort:false},
             {title:"품번", field:"prod_no", width:150, hozAlign:"center", headerFilter:"input", headerSort:false},
             {title:"수량", field:"ord_su", hozAlign:"center", 
-                formatter:"money", formatterParams:{thousand:",", precision:0},
-                bottomCalc:"sum", bottomCalcFormatter:"money", bottomCalcFormatterParams:{thousand:",", precision:0}},
+                formatter:"money", formatterParams:{thousand:",", precision:1},
+                bottomCalc:"sum", bottomCalcFormatter:"money", bottomCalcFormatterParams:{thousand:",", precision:1}},
             {title:"단가", field:"prod_dang", hozAlign:"center", 
-                formatter:"money", formatterParams:{thousand:",", precision:0}},
+                formatter:"money", formatterParams:{thousand:",", precision:1}},
             {title:"금액", field:"ord_mon", hozAlign:"center", 
-                formatter:"money", formatterParams:{thousand:",", precision:0},
-                bottomCalc:"sum", bottomCalcFormatter:"money", bottomCalcFormatterParams:{thousand:",", precision:0}},
+                formatter:"money", formatterParams:{thousand:",", precision:1},
+                bottomCalc:"sum", bottomCalcFormatter:"money", bottomCalcFormatterParams:{thousand:",", precision:1}},
         ],
         
         rowFormatter:function(row){

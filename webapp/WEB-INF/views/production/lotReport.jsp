@@ -57,6 +57,23 @@
 		    border-color: #BEE3F8;
 		}
 
+		/* 보고서 구분(전체/침탄로/템퍼링) 선택 버튼 - 활성/비활성 배경은 selectReportTypeBtn() JS에서 동적으로 지정 */
+		.select-hogi-button.select-button {
+			height: 34px;
+			padding: 0 16px;
+			border: 1px solid #E2E8F0;
+			border-radius: 8px;
+			background: #F0F4F8;
+			font-size: 12px;
+			font-weight: 600;
+			color: #2D3748;
+			transition: background-color .13s, border-color .13s;
+		}
+		.select-hogi-button.select-button:hover {
+			background: #EBF8FF;
+			border-color: #BEE3F8;
+		}
+
         /* ========== 리스트 카드 영역 (.view 가 실제 리스트 래퍼) ========== */
         .view {
             display: flex;
@@ -265,6 +282,19 @@
             </button>
         </div>
     </div>
+    <div class="tab">
+        <div class="button-container" style="margin-left:20px;">
+            <button class="select-hogi-button select-button" type="button" onclick="selectReportTypeBtn('ALL');" id="selectReportALL">
+                전체보고서
+            </button>
+            <button class="select-hogi-button select-button" type="button" onclick="selectReportTypeBtn('HEAT');" id="selectReportHEAT">
+                침탄로보고서
+            </button>
+            <button class="select-hogi-button select-button" type="button" onclick="selectReportTypeBtn('TF');" id="selectReportTF">
+                템퍼링보고서
+            </button>
+        </div>
+    </div>
 
     <main class="main">
         <div class="view">
@@ -278,18 +308,35 @@ var dataTable;
 var selectedRowData = null;
 var lotno_date;
 var date = new Date();
+var reportType = "ALL"; // "ALL"(전체보고서, 기본) / "HEAT"(침탄로보고서) / "TF"(템퍼링보고서)
 
 $(function() {
     var year = date.getFullYear();
     var month = ('0' + (date.getMonth() + 1)).slice(-2);
     var thisMonthFormatted = year + '-' + month;
     $('#lotno_date').val(thisMonthFormatted);
-    
-    getList();
+
+    selectReportTypeBtn('ALL');
 });
 
+function selectReportTypeBtn(type) {
+    var types = ["ALL", "HEAT", "TF"];
+
+    for (var i = 0; i < types.length; i++) {
+        if (types[i] === type) {
+            $("#selectReport" + type).css({"background-color": "#BEE3F8", "border-color": "#3182CE", "color": "#1A365D"});
+        } else {
+            $("#selectReport" + types[i]).css({"background-color": "#F0F4F8", "border-color": "#E2E8F0", "color": "#2D3748"});
+        }
+    }
+
+    reportType = type;
+    getList();
+}
+
 // 이벤트
-$('.select-button').click(function() {
+// (전체/침탄로/템퍼링 탭 버튼도 select-button 클래스를 같이 쓰고 있어, 여기서는 제외 - 탭 버튼은 selectReportTypeBtn()이 자체적으로 getList() 호출함)
+$('.select-button:not(.select-hogi-button)').click(function() {
     getList();
 });
 
@@ -304,21 +351,81 @@ $('.excel-button').click(function() {
 });
 
 	// 함수
+
+	// 프린트 버튼 컬럼(전체/침탄로/템퍼링 공통)
+	var printColumn = {
+	    title: "LOT보고서 저장",
+	    field: "print",
+	    width: 150,
+	    hozAlign: "center",
+	    headerSort: false,
+	    formatter: function(cell, formatterParams, onRendered) {
+	        return "<button class='btn-print'>💾</button>";
+	    },
+	    cellClick: function(e, cell) {
+	        var rowData = cell.getRow().getData();
+	        printLotReport(rowData);
+	    }
+	};
+
+	// 전체보고서: LOT 하나에 침탄로/템퍼링 설비가 각각 컬럼으로, 시작=침탄로 시작/종료=템퍼링 종료
+	function buildAllReportColumns() {
+	    return [
+	        { title: "LOT 번호", field: "ilbo_lot", width: 200, hozAlign: "center" },
+	        { title: "침탄로 시작", field: "ilbo_strt", width: 160, hozAlign: "center" },
+	        { title: "템퍼링 종료", field: "ilbo_end", width: 160, hozAlign: "center" },
+	        { title: "침탄로설비", field: "heat_fac_name", width: 120, hozAlign: "center" },
+	        { title: "템퍼링설비", field: "tf_fac_name", width: 120, hozAlign: "center" },
+	        { title: "거래처", field: "corp_name", width: 150, hozAlign: "center" },
+	        { title: "품명", field: "prod_name", width: 220, hozAlign: "center" },
+	        { title: "품번", field: "prod_no", width: 150, hozAlign: "center" },
+	        printColumn
+	    ];
+	}
+
+	// 침탄로/템퍼링 개별보고서: 기존 방식 그대로(설비별로 행 분리, 작업구분 컬럼 유지)
+	function buildStageReportColumns() {
+	    return [
+	        { title: "LOT 번호", field: "ilbo_lot", width: 230, hozAlign: "center" },
+	        { title: "시작 시간", field: "ilbo_strt", width: 200, hozAlign: "center" },
+	        { title: "종료 시간", field: "ilbo_end", width: 200, hozAlign: "center" },
+	        {
+	            title: "작업구분",
+	            field: "ilbo_gubn",
+	            width: 100,
+	            hozAlign: "center",
+	            formatter: function(cell) {
+	                const val = cell.getValue();
+	                if (val === 'J') return '단취';
+	                if (val === 'A') return '열처리';
+	                if (val === 'R') return '템퍼링';
+	                return val;
+	            }
+	        },
+	        { title: "설비", field: "fac_name", width: 150, hozAlign: "center" },
+	        { title: "거래처", field: "corp_name", width: 150, hozAlign: "center" },
+	        { title: "품명", field: "prod_name", width: 250, hozAlign: "center" },
+	        { title: "품번", field: "prod_no", width: 180, hozAlign: "center" },
+	        printColumn
+	    ];
+	}
+
 	function getList() {
     $.ajax({
         url: "/tkheat/production/lotReport/getLotList",
         type: "POST",
         data: {
-            lotno_date: $('#lotno_date').val()
+            lotno_date: $('#lotno_date').val(),
+            report_type: reportType
         },
         success: function(response) {
             console.log("✅ 서버 응답:", response);
-            
-            
+
+
             if (dataTable) {
                 dataTable.destroy();
             }
-            
+
             dataTable = new Tabulator('#dataTable', {
                 height: '100%',
                 layout: 'fitDataFill',
@@ -335,42 +442,7 @@ $('.excel-button').click(function() {
                 rowFormatter: function (row) {
                     row.getElement().style.fontWeight = "600";
                 },
-                columns: [
-                    { title: "LOT 번호", field: "ilbo_lot", width: 230, hozAlign: "center" },
-                    { title: "시작 시간", field: "ilbo_strt", width: 200, hozAlign: "center" },
-                    { title: "종료 시간", field: "ilbo_end", width: 200, hozAlign: "center" },
-                    { 
-                        title: "작업구분", 
-                        field: "ilbo_gubn", 
-                        width: 100, 
-                        hozAlign: "center",
-                        formatter: function(cell) {
-                            const val = cell.getValue();
-                            if (val === 'J') return '단취';
-                            if (val === 'A') return '열처리';
-                            if (val === 'R') return '템퍼링';
-                            return val;
-                        }
-                    },
-                    { title: "설비", field: "fac_name", width: 150, hozAlign: "center" },
-                    { title: "거래처", field: "corp_name", width: 150, hozAlign: "center" },
-                    { title: "품명", field: "prod_name", width: 250, hozAlign: "center" },
-                    { title: "품번", field: "prod_no", width: 180, hozAlign: "center" },
-                    {
-                        title: "LOT보고서 저장",
-                        field: "print",
-                        width: 150,
-                        hozAlign: "center",
-                        headerSort: false,
-                        formatter: function(cell, formatterParams, onRendered) {
-                            return "<button class='btn-print'>💾</button>";
-                        },
-                        cellClick: function(e, cell) {
-                            var rowData = cell.getRow().getData();
-                            printLotReport(rowData);
-                        }
-                    }
-                ]
+                columns: (reportType === "ALL") ? buildAllReportColumns() : buildStageReportColumns()
             });
             
             $("#dataTable .tabulator-col.tabulator-sortable").css("height", "55px");
@@ -383,41 +455,44 @@ $('.excel-button').click(function() {
             alert("데이터 조회 중 오류가 발생했습니다.\n상태: " + xhr.status + "\n내용: " + xhr.responseText);
         }
     });
+}
 
-    function printLotReport(rowData){
-        if(rowData){
-            console.log("저장할 LOT:", rowData.ilbo_lot);
+//printColumn의 cellClick(top-level에 정의됨)에서 참조하므로 getList()에 종속되지 않는 top-level 함수여야 함
+function printLotReport(rowData){
+    if(rowData){
+        console.log("저장할 LOT:", rowData.ilbo_lot);
 
-            $.ajax({
-                url: "/tkheat/production/lotReport/lotPrint",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({ 
-                	ilbo_lot: rowData.ilbo_lot,
-                    ilbo_strt: rowData.ilbo_strt,
-                    fac_no: rowData.fac_no }), 
-                xhrFields: {
-                    responseType: 'blob' // PDF 바이너리 처리
-                },
-                success: function(blob){
-                    // PDF 다운로드
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = rowData.lot_no + ".pdf";
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(link.href);
-                },
-                error: function(xhr, status, error){
-                    console.error("PDF 생성 실패:", error);
-                }
-            });
+        $.ajax({
+            url: "/tkheat/production/lotReport/lotPrint",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+            	ilbo_lot: rowData.ilbo_lot,
+                ilbo_strt: rowData.ilbo_strt,
+                ilbo_end: rowData.ilbo_end,
+                fac_code: rowData.fac_code,
+                report_type: reportType }),
+            xhrFields: {
+                responseType: 'blob' // PDF 바이너리 처리
+            },
+            success: function(blob){
+                // PDF 다운로드
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = rowData.ilbo_lot + ".pdf";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(link.href);
+            },
+            error: function(xhr, status, error){
+                console.error("PDF 생성 실패:", error);
+            }
+        });
 
-        } else {
-            console.log("rowData가 없습니다.");
-        }
-		  };
+    } else {
+        console.log("rowData가 없습니다.");
+    }
 }
 
 </script>

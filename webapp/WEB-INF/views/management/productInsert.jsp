@@ -8,7 +8,6 @@
     <title>제품등록</title>
     <link rel="stylesheet" href="/tkheat/css/management/productInsert.css">
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
-    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
 /* ========== 기존 스타일 유지 ========== */
@@ -1057,11 +1056,11 @@ textarea { resize: vertical; min-height: 32px; font-family: inherit; line-height
                     </div>
                     
                     <div class="field-section">
-                        <h3 class="section-title">열처리공정</h3>
+                        <h3 class="section-title">단취사진</h3>
                         <div class="img-upload-area">
                             <input type="file" id="imgInput2" class="imgInputClass" name="heat_file_url" accept="image/*">
                             <div class="img-preview img-preview-small">
-                                <img id="img2" src="/tkheat/css/image/no_image.png" alt="열처리공정">
+                                <img id="img2" src="/tkheat/css/image/no_image.png" alt="단취사진">
                             </div>
                             <button type="button" class="btn-clear" onclick="$('#img2').attr('src', '/tkheat/css/image/no_image.png'); $('#imgInput2').val('');">X</button>
                         </div>
@@ -1200,12 +1199,15 @@ $('.insert-button').on('click', function() {
     });
     
     $('.modal-overlay, .product-modal').addClass('active');
+    registerModalOpen('productInsert-main', closeProductModal);
 });
 
 // ========== 모달 닫기 ==========
-$('.modal-close-btn, .btn-cancel').on('click', function() {
+function closeProductModal() {
+    registerModalClose('productInsert-main');
     $('.modal-overlay, .product-modal').removeClass('active');
-});
+}
+$('.modal-close-btn, .btn-cancel').on('click', closeProductModal);
 
 // ========== 모달 드래그 ==========
 let isDragging = false;
@@ -1308,8 +1310,7 @@ function getProductList(){
             {title:"공정", field:"tech_te", sorter:"string", width:100, hozAlign:"center", headerFilter:"input", headerSort:false},	
             {title:"단중", field:"prod_danj", sorter:"int", width:70, hozAlign:"center", headerFilter:"input", headerSort:false},  	
             {title:"단위", field:"prod_danw", sorter:"int", width:70, hozAlign:"center", headerFilter:"input", headerSort:false},	
-            {title:"단가(EA)", field:"prod_dang", sorter:"int", width:100, hozAlign:"center", headerFilter:"input", headerSort:false},	
-            {title:"단가(kG)", field:"prod_dang", sorter:"int", width:100, hozAlign:"center", headerFilter:"input", headerSort:false},
+            {title:"단가", field:"prod_dang", sorter:"int", width:100, hozAlign:"center", headerFilter:"input", headerSort:false},
             {title:"표면경도", field:"prod_pg", sorter:"int", width:100, hozAlign:"center", headerFilter:"input", headerSort:false},
             {title:"경화깊이", field:"prod_gd3", sorter:"int", width:100, hozAlign:"center", headerFilter:"input", headerSort:false},
             {title:"심부경도", field:"prod_sg", sorter:"int", width:100, hozAlign:"center", headerFilter:"input", headerSort:false},
@@ -1405,7 +1406,7 @@ function productInsertDetail(prod_code) {
                 $(".bphoto").attr("href", path).text(d.apperance_file_name);
             }
 
-            // 열처리 사진
+            // 단취사진
             if (d.heat_file_name) {
                 const path = "/tkPrint/사진/제품등록/" + d.heat_file_name;
                 $("#img2").attr("src", path);
@@ -1420,6 +1421,7 @@ function productInsertDetail(prod_code) {
 
             // 모달 열기
             $('.modal-overlay, .product-modal').addClass('active');
+            registerModalOpen('productInsert-main', closeProductModal);
         },
         error: function (xhr, status, error) {
             console.error("제품 상세 조회 오류:", error);
@@ -1430,6 +1432,7 @@ function productInsertDetail(prod_code) {
 // ========== 거래처 검색 모달 ==========
 function openCutumModal() {
     document.getElementById('cutumListModal').style.display = 'flex';
+    registerModalOpen('productInsert-cutumPicker', closeCutumListModal);
 
     let cutumListTable = new Tabulator("#cutumListTabulator", {
         height:"450px",
@@ -1463,12 +1466,13 @@ function openCutumModal() {
             let data = row.getData();
             document.getElementById('corp_name').value = data.corp_name;
             document.getElementById('corp_code').value = data.corp_code;
-            document.getElementById('cutumListModal').style.display = 'none';
+            closeCutumListModal();
         }
     });
 }
 
 function closeCutumListModal() {
+    registerModalClose('productInsert-cutumPicker');
     document.getElementById('cutumListModal').style.display = 'none';
 }
 
@@ -1550,10 +1554,10 @@ function save() {
         dataType: "json",
         success: function (result) {
             console.log("💾 저장 완료:", result);
-            
+
             // ✅ 모달 닫기
-            $('.modal-overlay, .product-modal').removeClass('active');
-            
+            closeProductModal();
+
             // ✅ 모달 위치 초기화
             $('.product-modal').css({
                 'left': '50%',
@@ -1630,10 +1634,10 @@ function saveAsNew() {
         dataType: "json",
         success: function (result) {
             console.log("💾 다른이름 저장 완료:", result);
-            
+
             // ✅ 모달 닫기
-            $('.modal-overlay, .product-modal').removeClass('active');
-            
+            closeProductModal();
+
             // ✅ 모달 위치 초기화
             $('.product-modal').css({
                 'left': '50%',
@@ -1693,10 +1697,10 @@ function deleteProduct() {
         success: function(result) {
             if (result.status === "success") {
                 console.log("✅ 삭제 완료");
-                
+
                 // ✅ 모달 닫기
-                $('.modal-overlay, .product-modal').removeClass('active');
-                
+                closeProductModal();
+
                 // ✅ 모달 위치 초기화
                 $('.product-modal').css({
                     'left': '50%',
@@ -1771,11 +1775,13 @@ function openDrawingModal(event) {
     $("#drawingFileName").text(fileName);
     $("#pdfViewer").attr("src", filePath);
     $('#drawingFileModal').css('display', 'flex');
+    registerModalOpen('productInsert-drawingPreview', closeDrawingModal);
 }
 
 function closeDrawingModal() {
+    registerModalClose('productInsert-drawingPreview');
     $('#drawingFileModal').css('display', 'none');
-    $("#pdfViewer").attr("src", ""); 
+    $("#pdfViewer").attr("src", "");
 }
 </script>
 

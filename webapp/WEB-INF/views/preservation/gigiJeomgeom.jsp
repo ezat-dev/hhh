@@ -607,7 +607,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			var tdate = todayDate();
 			var ydate = yesterDate();
 			
-			$("#sdate").val(ydate);
+			$("#sdate").val(tdate);
 			$("#edate").val(tdate);
 			getGigiJeomgeomList();
 		});
@@ -747,6 +747,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 							isEditMode = true;
 							$('#gigiJeomgeomForm')[0].reset();
 							$('.gigiJeomgeomModal').show().addClass('show');
+							registerModalOpen('gigiJeomgeom-main', closeGigiJeomgeomModal);
 
 							Object.keys(data).forEach(function (key) {
 						        const field = $('#gigiJeomgeomForm [name="' + key + '"]');
@@ -801,16 +802,22 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			isEditMode = false;  // 추가 모드
 		    $('#gigiJeomgeomForm')[0].reset(); // 폼 초기화
 		    gigiJeomgeomModal.style.display = 'block'; // 모달 표시
+		    registerModalOpen('gigiJeomgeom-main', closeGigiJeomgeomModal);
 
 			$('.delete').hide();
 		});
 
-		closeButton.addEventListener('click', function() {
+		function closeGigiJeomgeomModal() {
+			registerModalClose('gigiJeomgeom-main');
 			gigiJeomgeomModal.style.display = 'none'; // 모달 숨김
+		}
+
+		closeButton.addEventListener('click', function() {
+			closeGigiJeomgeomModal();
 		});
 
 		headerCloseButton.addEventListener('click', function() {
-			gigiJeomgeomModal.style.display = 'none';
+			closeGigiJeomgeomModal();
 		});
 			
 
@@ -819,8 +826,9 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		//측정기기버튼검색 리스트 모달
 	    function openMeaListModal() {
 	        document.getElementById('meaListModal').style.display = 'flex';
+	        registerModalOpen('gigiJeomgeom-meaPicker', closeMeaListModal);
 
-	        
+
 	        let facListTable = new Tabulator("#meaListTabulator", {
 	            height:"450px",
 	            layout:"fitColumns",
@@ -854,10 +862,16 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	    }
 
 	    function closeMeaListModal() {
+	        registerModalClose('gigiJeomgeom-meaPicker');
 	        document.getElementById('meaListModal').style.display = 'none';
 	    }
-			
 
+		// ========== 엑셀 다운로드 ==========
+		$(".excel-button").click(function () {
+		    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+		    const filename = "측정기기점검관리_" + today + ".xlsx";
+		    userTable.download("xlsx", filename, { sheetName: "측정기기점검관리" });
+		});
 
 	    </script>
 	    
@@ -894,7 +908,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		        dataType: "json",
 		        success: function(result) {
 		            alert("저장 되었습니다.");
-		            $(".gigiJeomgeomModal").hide();
+		            closeGigiJeomgeomModal();
 		            getGigiJeomgeomList();
 		        },
 		        error: function(xhr, status, error) {
@@ -924,7 +938,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		        success: function(result) {
 		            if (result.status === "success") {
 		                alert("삭제되었습니다.");
-		                $(".gigiJeomgeomModal").hide();
+		                closeGigiJeomgeomModal();
 		                getGigiJeomgeomList();
 		            } else {
 		                alert("삭제 중 오류가 발생했습니다: " + result.message);

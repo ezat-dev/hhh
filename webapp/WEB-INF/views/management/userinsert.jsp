@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>작업자등록</title>
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
-    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
     <%@include file="../include/pluginpage.jsp" %>
     
 <style>
@@ -603,6 +602,7 @@ function userInsertDetail(user_code){
             }
 
             $('.modal-overlay, .user-modal').addClass('active');
+            registerModalOpen('userInsert-main', closeUserModal);
         }
     });
 }
@@ -614,6 +614,7 @@ $('.insert-button').on('click', function() {
     $('#userInsertForm')[0].reset();
     $('.btn-delete').hide();
     $('.modal-overlay, .user-modal').addClass('active');
+    registerModalOpen('userInsert-main', closeUserModal);
     const today = new Date();
     const todayStr = today.getFullYear() + '-' +
         String(today.getMonth() + 1).padStart(2, '0') + '-' +
@@ -622,8 +623,12 @@ $('.insert-button').on('click', function() {
 });
 
 // 모달 닫기
-$('.modal-close-btn, .btn-cancel').on('click', function() {
+function closeUserModal() {
+    registerModalClose('userInsert-main');
     $('.modal-overlay, .user-modal').removeClass('active');
+}
+$('.modal-close-btn, .btn-cancel').on('click', function() {
+    closeUserModal();
 });
 
 // 모달 드래그
@@ -740,8 +745,8 @@ function saveUser() {
         dataType: "json",
         success: function(result) {
             alert(result.message || "저장 되었습니다.");
-            $('.modal-overlay, .user-modal').removeClass('active');
-            
+            closeUserModal();
+
             $('.user-modal').css({
                 'left': '50%',
                 'top': '50%',
@@ -784,8 +789,8 @@ function deleteUser() {
         success: function(result) {
             if (result.status === "success") {
                 alert("삭제되었습니다.");
-                $('.modal-overlay, .user-modal').removeClass('active');
-                
+                closeUserModal();
+
                 $('.user-modal').css({
                     'left': '50%',
                     'top': '50%',

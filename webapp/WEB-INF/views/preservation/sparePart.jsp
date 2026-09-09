@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sparePart관리</title>
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
-    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %> 
    <style>
 /* ========== 기본 레이아웃 ========== */
@@ -1106,6 +1105,7 @@ function sparePartDetail(spp_idx){
             // 모달 열기
             $('.modal-overlay').addClass('active');
             $('.spare-modal').addClass('active');
+            registerModalOpen('sparePart-main', closeSpareModalMain);
         },
         error: function(xhr, status, error) {
             console.error("❌ 상세 조회 오류:", error);
@@ -1192,7 +1192,8 @@ function save() {
         success: function(result) {
             console.log("💾 저장 완료 (메인):", result);
             alert("저장 되었습니다.");
-            
+
+            registerModalClose('sparePart-main');
             $('.modal-overlay').removeClass('active');
             $('.spare-modal').removeClass('active');
             
@@ -1253,6 +1254,7 @@ function deleteSparePart() {
         success: function(result) {
             if (result.status === "success") {
                 alert("삭제되었습니다.");
+                registerModalClose('sparePart-main');
                 $('.modal-overlay').removeClass('active');
                 $('.spare-modal').removeClass('active');
                 
@@ -1398,6 +1400,7 @@ function getSpareSubList(spp_idx) {
             
             // ✅ 모달 열기
             $('.spare-his-modal').addClass('active');
+            registerModalOpen('sparePart-his', closeSpareHisModal);
         }
     });
     
@@ -1466,6 +1469,7 @@ function saveSpareSub() {
             alert("저장되었습니다.");
             
             // ✅ 모달 닫기
+            registerModalClose('sparePart-his');
             $('.spare-his-modal').removeClass('active');
 
             const topIdx = $("#spp_idx").val();
@@ -1638,18 +1642,23 @@ insertButtonMain.addEventListener('click', function() {
     
     modalOverlay.classList.add('active');
     spareModal.classList.add('active');
-    
+    registerModalOpen('sparePart-main', closeSpareModalMain);
+
     $('.btn-delete').hide();
 });
 
-closeButton.addEventListener('click', function() {
+function closeSpareModalMain() {
+    registerModalClose('sparePart-main');
     modalOverlay.classList.remove('active');
     spareModal.classList.remove('active');
+}
+
+closeButton.addEventListener('click', function() {
+    closeSpareModalMain();
 });
 
 headerCloseBtn.addEventListener('click', function() {
-    modalOverlay.classList.remove('active');
-    spareModal.classList.remove('active');
+    closeSpareModalMain();
 });
 
 // ========== 모달 열기/닫기 (관리내역) ==========
@@ -1688,14 +1697,20 @@ insertButton2.addEventListener('click', function() {
     $("#sph_user").val($("#login_user").val() || "관리자");
     
     spareHisModal.classList.add('active');
+    registerModalOpen('sparePart-his', closeSpareHisModal);
 });
 
-closeButton2.addEventListener('click', function() {
+function closeSpareHisModal() {
+    registerModalClose('sparePart-his');
     spareHisModal.classList.remove('active');
+}
+
+closeButton2.addEventListener('click', function() {
+    closeSpareHisModal();
 });
 
 headerCloseBtn2.addEventListener('click', function() {
-    spareHisModal.classList.remove('active');
+    closeSpareHisModal();
 });
 
 // ========== 저장 버튼 ==========

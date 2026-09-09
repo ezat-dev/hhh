@@ -24,11 +24,27 @@
             vProduct.PROD_PGS + ' ' + PROD_PGS1 + '~' + PROD_PGS2 AS PROD_PGS,
             WORKSTD.WSTD_READY + 'x' + dbo.WORKSTD.WSTD_WORKTIME + 'x AC' AS TEMPERING,
             (SELECT TOP 1 drawing_file_name  FROM PRODUCT WHERE PROD_CODE = WORKSTD.PROD_CODE) AS prod_drawing_file_name,
-            (SELECT TOP 1 product_file_name  FROM PRODUCT WHERE PROD_CODE = WORKSTD.PROD_CODE) AS prod_product_file_name
+            (SELECT TOP 1 product_file_name  FROM PRODUCT WHERE PROD_CODE = WORKSTD.PROD_CODE) AS prod_product_file_name,
+            (SELECT TOP 1 heat_file_name     FROM PRODUCT WHERE PROD_CODE = WORKSTD.PROD_CODE) AS prod_heat_file_name
         FROM dbo.WORKSTD
         INNER JOIN dbo.vProduct ON dbo.WORKSTD.PROD_CODE = dbo.vProduct.PROD_CODE
         INNER JOIN dbo.FACILITY ON dbo.WORKSTD.FAC_CODE  = dbo.FACILITY.FAC_CODE
         WHERE WSTD_CODE = #{wstd_code}
+    </select>
+
+    <!-- 체크시트 공정곡선용: 특정 제품×설비의 침탄로작업표준 목표값 1건 조회 -->
+    <select id="getProcessStandardForChart" parameterType="standard" resultType="standard">
+        SELECT TOP 1
+            WSTD_GJ11, WSTD_GJ21,
+            WSTD_GJ12, WSTD_GJ22, WSTD_GJ32,
+            WSTD_GJ13, WSTD_GJ23, WSTD_GJ33,
+            WSTD_GJ14, WSTD_GJ24,
+            WSTD_GJ16,
+            WSTD_READY, WSTD_WORKTIME
+        FROM WORKSTD
+        WHERE PROD_CODE = #{prod_code}
+          AND FAC_CODE = #{fac_code}
+        ORDER BY WSTD_CODE DESC
     </select>
 
     <!-- 침탄로작업표준 저장 -->
@@ -155,13 +171,19 @@
             WSTD_TBD = #{wstd_tbd}, WSTD_TTT = #{wstd_ttt}, WSTD_TIG = #{wstd_tig}, WSTD_THJ = #{wstd_thj},
             WSTD_GJ11 = #{wstd_gj11}, WSTD_GJ12 = #{wstd_gj12}, WSTD_GJ13 = #{wstd_gj13},
             WSTD_GJ14 = #{wstd_gj14}, WSTD_GJ15 = #{wstd_gj15}, WSTD_GJ16 = #{wstd_gj16},
-            WSTD_GJ17 = #{wstd_gj17}, WSTD_GJ18 = #{wstd_gj18},
+            WSTD_GJ17 = #{wstd_gj17},
             WSTD_GJ21 = #{wstd_gj21}, WSTD_GJ22 = #{wstd_gj22}, WSTD_GJ23 = #{wstd_gj23},
             WSTD_GJ24 = #{wstd_gj24}, WSTD_GJ25 = #{wstd_gj25}, WSTD_GJ26 = #{wstd_gj26},
-            WSTD_GJ27 = #{wstd_gj27}, WSTD_GJ28 = #{wstd_gj28},
             WSTD_GJ31 = #{wstd_gj31}, WSTD_GJ32 = #{wstd_gj32}, WSTD_GJ33 = #{wstd_gj33},
-            WSTD_GJ34 = #{wstd_gj34}, WSTD_GJ35 = #{wstd_gj35}, WSTD_GJ36 = #{wstd_gj36},
-            WSTD_GJ37 = #{wstd_gj37}, WSTD_GJ38 = #{wstd_gj38},
+            WSTD_GJ34 = #{wstd_gj34}, WSTD_GJ35 = #{wstd_gj35},
+            <!-- 냉각시간(GJ18/28/38)·교반기 시간·cp(GJ27/37)·Oil cp(GJ36)는 등록모달에서 입력칸을 제거해서
+                 폼에서 값이 안 넘어옴 - 기존 이력이 수정 저장할 때마다 NULL로 덮어써지지 않도록 값이 있을 때만 갱신 -->
+            <if test="wstd_gj18 != null">WSTD_GJ18 = #{wstd_gj18},</if>
+            <if test="wstd_gj27 != null">WSTD_GJ27 = #{wstd_gj27},</if>
+            <if test="wstd_gj28 != null">WSTD_GJ28 = #{wstd_gj28},</if>
+            <if test="wstd_gj36 != null">WSTD_GJ36 = #{wstd_gj36},</if>
+            <if test="wstd_gj37 != null">WSTD_GJ37 = #{wstd_gj37},</if>
+            <if test="wstd_gj38 != null">WSTD_GJ38 = #{wstd_gj38},</if>
             WSTD_GJ42 = #{wstd_gj42}, WSTD_GJ43 = #{wstd_gj43},
             WSTD_GJ52 = #{wstd_gj52}, WSTD_GJ53 = #{wstd_gj53},
             WSTD_GJ62 = #{wstd_gj62}, WSTD_GJ63 = #{wstd_gj63},

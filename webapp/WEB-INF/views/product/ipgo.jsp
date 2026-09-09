@@ -109,6 +109,13 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	border-top: 1px solid #E2E8F0;
 	padding: 8px 12px;
 }
+#tab1 .tabulator-footer .tabulator-calcs-holder {
+	background: #EBF8FF !important;
+	border-top: none;
+	border-bottom: 1px solid #BEE3F8;
+	color: #2B6CB0;
+	font-weight: 700;
+}
 #tab1 .tabulator-page {
 	border: 1px solid #E2E8F0;
 	border-radius: 6px;
@@ -752,21 +759,28 @@ input[type="date"] {
 		}
 		
 		var selectArray = ipgoListTable.getSelectedData();
-		
+
 		orderPrintStatusModal.style.display = "block";
-		
+		registerModalOpen('ipgo-printStatus', orderPrintStatusCloseBtn);
+
 		//체크한 데이터만 조회
 		if(ipgoListTable.getSelectedData().length > 0){
-			
+
 			var selectArray = ipgoListTable.getSelectedData();
 			var ordCodeArray = new Array();
-			
+
 			for(var i=0; i<selectArray.length; i++){
 				if(selectArray[i].ord_code != null){
 					//작업번호가 다를경우 alert창
-					ordCodeArray.push(selectArray[i].ord_code);	
+					ordCodeArray.push(selectArray[i].ord_code);
 				}
 
+			}
+
+			//클릭(사용자 제스처) 시점에 바로 빈 창을 열어야 팝업이 차단되지 않음 - 내용은 ajax 응답 후 채움
+			var reportWin = window.open('', '_blank');
+			if(reportWin){
+				reportWin.document.write('<p style="font-family:sans-serif;padding:20px;">보고서 생성중입니다...</p>');
 			}
 
 			$.ajax({
@@ -780,15 +794,18 @@ input[type="date"] {
 				},
 				success:function(result){
     				var fileUrl = "/tkPrint/ipgoPdf/"+result.heatData;
-                    $("#orderReport").attr("src",fileUrl);
-                    orderReportModal.style.display = "flex";
-					
+                    if(reportWin){
+                        reportWin.location.href = fileUrl;
+                    }else{
+                        alert("팝업이 차단되어 새 창을 열 수 없습니다. 브라우저 팝업 차단을 해제해주세요.");
+                    }
+
 					orderPrintStatusCloseBtn();
 					getIpgoList();
 				}
 			});
 
-		}		
+		}
 
 	});
 	
@@ -925,9 +942,66 @@ input[type="date"] {
 	    });
 
 	    return input;
-	};	
-	
-	
+	};
+
+	//클릭(편집 진입) 즉시 기존 텍스트 전체가 선택되는 입력 에디터 (수량류 셀 조정용)
+	//Tabulator 내장 "input" 에디터(tabulator.js의 editors.input)와 동일한 동작을 그대로 유지하면서
+	//onRendered에서 input.select()만 추가함 - 그래야 기존 cellEdited의 "엔터시 다음행 같은열 이동" 로직이 계속 정상 동작함
+	var selectAllInputEditor = function(cell, onRendered, success, cancel, editorParams){
+	    editorParams = editorParams || {};
+
+	    var cellValue = cell.getValue();
+	    var input = document.createElement("input");
+
+	    input.setAttribute("type", editorParams.search ? "search" : "text");
+	    input.style.padding = "4px";
+	    input.style.width = "100%";
+	    input.style.boxSizing = "border-box";
+
+	    input.value = typeof cellValue !== "undefined" ? cellValue : "";
+
+	    onRendered(function(){
+	        input.focus({preventScroll:true});
+	        input.select();
+	        input.style.height = "100%";
+	    });
+
+	    function onChange(e){
+	        if((cellValue === null || typeof cellValue === "undefined") && input.value !== "" || input.value !== cellValue){
+	            if(success(input.value)){
+	                cellValue = input.value;
+	            }
+	        }else{
+	            cancel();
+	        }
+	    }
+
+	    //submit new value on blur or change
+	    input.addEventListener("change", onChange);
+	    input.addEventListener("blur", onChange);
+
+	    //submit new value on enter
+	    input.addEventListener("keydown", function(e){
+	        switch(e.keyCode){
+	            case 13:
+	                onChange(e);
+	                break;
+
+	            case 27:
+	                cancel();
+	                break;
+
+	            case 35:
+	            case 36:
+	                e.stopPropagation();
+	                break;
+	        }
+	    });
+
+	    return input;
+	};
+
+
 	function getIpgoList(){
 		var searchForm = new FormData($("#searchForm")[0]);
 
@@ -1069,31 +1143,37 @@ input[type="date"] {
 				    hozAlign:"center",  headerSort:false},	
 				{title:"박스수량", field:"ord_boxsu", sorter:"int", width:70,
 				    hozAlign:"center",  headerSort:false,
-				    editor:"input"
+				    editor:selectAllInputEditor
 				},
 				{title:"단중", field:"ord_danj", sorter:"int", width:60,
 				    hozAlign:"center",  headerSort:false,
-				    editor:"input"
+				    editor:selectAllInputEditor
 				},
 				{title:"수량", field:"ord_su", sorter:"int", width:40,
 					hozAlign:"center",  headerSort:false,
-					editor:"input"
+					editor:selectAllInputEditor,
+					bottomCalc:"sum",
+					bottomCalcFormatter:"money",
+					bottomCalcFormatterParams:{decimal:".", thousand:",", precision:1}
 				},
 				{title:"중량", field:"ord_amnt", sorter:"int", width:50,
-					hozAlign:"center",  headerSort:false
-				},	
+					hozAlign:"center",  headerSort:false,
+					bottomCalc:"sum",
+					bottomCalcFormatter:"money",
+					bottomCalcFormatterParams:{decimal:".", thousand:",", precision:1}
+				},
 				{title:"입고/타각LOT", field:"ord_lot", sorter:"int", width:65,
 					hozAlign:"center",  headerSort:false,
-					editor:"input"
+					editor:selectAllInputEditor
 				},	
 				
 				{title:"수입검사", field:"itst_wp", sorter:"int", width:40,
 					hozAlign:"center",  headerSort:false,
-					editor:"input"
+					editor:selectAllInputEditor
 				},
 				{title:"담당자", field:"ord_name", sorter:"int", width:60,
 					hozAlign:"center",  headerSort:false,
-					editor:"input"
+					editor:selectAllInputEditor
 				},
 				{title:"선입", field:"ord_sunip", sorter:"int", width:45,
 					hozAlign:"center",  headerSort:false,
@@ -1104,7 +1184,7 @@ input[type="date"] {
 				},
 				{title:"비고", field:"ord_bigo", sorter:"int", width:60,
 					hozAlign:"center",  headerSort:false,
-					editor:"input"
+					editor:selectAllInputEditor
 				},
 				{title:"표면경도", field:"prod_pg", sorter:"int", width:70,
 					hozAlign:"center",  headerSort:false},
@@ -1138,27 +1218,49 @@ input[type="date"] {
 			},
 			cellEdited: function(cell) {
 				if(isUpdating) return;
-				
-			    var cell_field = cell.getField(); 
-			    var cell_value = cell.getValue(); 
-			    var rowData = cell.getRow().getData(); 
-			    var cell_code = rowData.ord_code; 
+
+			    var cell_field = cell.getField();
+			    var cell_value = cell.getValue();
+			    var rowData = cell.getRow().getData();
+			    var cell_code = rowData.ord_code;
+			    var cell_idx = rowData.idx; // reactiveData로 인해 row 객체 참조가 재생성돼도 idx로 다시 찾기 위함
+
+			    // 편집이 끝난 후 아래 행 같은 열로 이동 + 편집 시작 (서버 저장 응답과 무관하게 즉시 진행)
+			    // ※ reactiveData:true 때문에 값이 바뀌면 Tabulator가 행을 다시 만들어서
+			    //   기존 cell.getRow() 참조가 stale해질 수 있어, getRows()로 매번 새로 조회해서 idx로 다음 행을 찾는다.
+			    setTimeout(function() {
+			        var field = cell_field;
+			        var rows = ipgoListTable.getRows();
+			        var nextRow = rows.find(function(r){
+			            var d = r.getData();
+			            return d.idx == (cell_idx + 1);
+			        });
+			        console.log("[다음행이동] cell_idx=", cell_idx, "field=", field, "총행수=", rows.length, "nextRow찾음=", !!nextRow);
+			        if (nextRow) {
+			            var nextCell = nextRow.getCell(field);
+			            console.log("[다음행이동] nextCell찾음=", !!nextCell);
+			            if(nextCell){
+			            	nextCell.edit(true); // true = 즉시 편집모드 진입
+			            	console.log("[다음행이동] edit(true) 호출완료, currentCell=", ipgoListTable.modules.edit.getCurrentCell());
+			            }
+			        }
+			    }, 100); // setTimeout으로 현재 편집 완료 후 실행
 
 			    $.ajax({
 			        url: "/tkheat/product/ipgo/getIpgoList/update",
 			        type: "POST",
-			        dataType:"json",			        
+			        dataType:"json",
 			        data: {
 			        	"cell_field":cell_field,
 			        	"cell_value":cell_value,
 			        	"cell_code":cell_code
 			        },
 			        success: function(result) {
-		        		
+
 			        	var latestData = cell.getRow().getData(); // ★ success 시점 최신값
 		        		var ord_su = latestData.ord_su;
 		        		var ord_danj = latestData.ord_danj;
-		        		
+
 		        		var ord_amnt = 0;
 		        		if(ord_su != 0){
 		        			ord_amnt = ord_su * ord_danj;
@@ -1166,20 +1268,13 @@ input[type="date"] {
 		        		isUpdating = true;
 		        		cell.getRow().getCell("ord_amnt").setValue(ord_amnt.toFixed(2));
 		        		isUpdating = false;
-
-				        // 편집이 끝난 후 아래 행 같은 열로 이동 + 편집 시작
-				        setTimeout(function() {
-				            var nextRow = cell.getRow().getNextRow();
-				            if (nextRow) {
-				                var field = cell.getField(); // 현재 열 field명
-				                var nextCell = nextRow.getCell(field);
-				                nextCell.edit(true); // true = 즉시 편집모드 진입
-				            }
-				        }, 100); // setTimeout으로 현재 편집 완료 후 실행
 //			        	getIpgoList();
+			        },
+			        error: function(xhr, status, error) {
+			        	console.error("입고 리스트 셀 저장 실패:", cell_field, error);
 			        }
 			    });
-			    
+
 
 			    
 			}
@@ -1227,7 +1322,7 @@ input[type="date"] {
 		    rowSelectionChanged:function(data, rows){
 		        
 		        // 전체 초기화
-		        ipgoAddTable.getRows().forEach(function(row){
+		        this.getRows().forEach(function(row){
 		            row.getElement().style.backgroundColor = "";
 		        });
 
@@ -1267,19 +1362,19 @@ input[type="date"] {
 				{title:"단위", field:"prod_danw", sorter:"int", width:60,
 					hozAlign:"center", headerSort:false},	
 				{title:"박스수량", field:"prod_boxsu", sorter:"int", width:70,
-					hozAlign:"center", headerSort:false,editor:true,
+					hozAlign:"center", headerSort:false,editor:selectAllInputEditor,
 		            mutatorData: function(value, data) {
 		                return 1; // 값이 없으면 1
 		            }
 				},
 				{title:"수량", field:"ord_su", sorter:"int", width:60,
-					hozAlign:"center", headerSort:false,editor:true,
+					hozAlign:"center", headerSort:false,editor:selectAllInputEditor,
 		            mutatorData: function(value, data) {
 		                return 1; // 값이 없으면 1
 		            }
 				},
 				{title:"ROWS*", field:"ord_row", sorter:"int", width:60,
-					hozAlign:"center", headerSort:false,editor:true,
+					hozAlign:"center", headerSort:false,editor:selectAllInputEditor,
 		            mutatorData: function(value, data) {
 		                return 1; // 값이 없으면 1
 		            }
@@ -1354,10 +1449,12 @@ input[type="date"] {
 	}
 
 	function orderPrintStatusCloseBtn(){
+		registerModalClose('ipgo-printStatus');
 		orderPrintStatusModal.style.display = 'none'; // 모달 숨김
 	}
 
 	function orderReportCloseBtn(){
+		registerModalClose('ipgo-report');
 		orderReportModal.style.display = 'none'; // 모달 숨김
 	}
 	
@@ -1399,14 +1496,20 @@ input[type="date"] {
 		getIpgoAddData();
 		getIpgoAddDataList();
 		ipgoModal.style.display = 'flex'; // 모달 표시
+		registerModalOpen('ipgo-main', closeBtn);
 	});
 
 	function closeBtn(){
+		registerModalClose('ipgo-main');
 		ipgoModal.style.display = 'none'; // 모달 숨김
 	}
 
-
-	
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "입고관리_" + today + ".xlsx";
+	    ipgoListTable.download("xlsx", filename, { sheetName: "입고관리" });
+	});
 
     </script>
 

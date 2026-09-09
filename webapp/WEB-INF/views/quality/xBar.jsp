@@ -420,11 +420,11 @@ $(function() {
   
 
   $(".closePumbunModal, .closePumbun").click(function(){
-	  $('#pumbunModal').removeClass('show').hide();
+	  closePumbunModal();
   });
 
 //엑셀 다운로드
- $('.excel-download-button').click(function() {
+ $('.excel-button').click(function() {
 	    dataTable.download("xlsx", "스페어부품 관리.xlsx", {sheetName:"스페어부품 관리",
 	    	 visibleColumnsOnly: false //숨겨진 데이터도 출력
 	    	 });
@@ -693,8 +693,14 @@ function getCpkCalcList(){
 function pumbunSelect(){
 
 	$("#pumbunModal").show().addClass('show');
+	registerModalOpen('xbar-pumbun', closePumbunModal);
 	getPumbunList();
 	getPumbunData();
+}
+
+function closePumbunModal(){
+	registerModalClose('xbar-pumbun');
+	$('#pumbunModal').removeClass('show').hide();
 }
 var pumbunTabu;
 
@@ -760,7 +766,7 @@ function getPumbunList(){
 		    rowDblClick: function(e, row) {
 		  	  var d = row.getData();
 		  	  $("input[name='w_pnum']").val(d.prod_no);
-		  		$('#pumbunModal').removeClass('show').hide();
+		  		closePumbunModal();
 		  			  
 		  	}
 
@@ -1030,12 +1036,18 @@ function getRbar(){
 	const xbarModal = document.querySelector('.xbarModal');
 	const closeButton = document.querySelector('.close');
 
+	function closeXbarModal() {
+		registerModalClose('xbar-main');
+		xbarModal.style.display = 'none'; // 모달 숨김
+	}
+
 	insertButton.addEventListener('click', function() {
 		xbarModal.style.display = 'block'; // 모달 표시
+		registerModalOpen('xbar-main', closeXbarModal);
 	});
 
 	closeButton.addEventListener('click', function() {
-		xbarModal.style.display = 'none'; // 모달 숨김
+		closeXbarModal();
 	});
 		
 

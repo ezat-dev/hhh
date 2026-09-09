@@ -8,7 +8,6 @@
     <title>설비등록</title>
     <link rel="stylesheet" href="/tkheat/css/management/facInsert.css">
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
-    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 	<%@include file="../include/pluginpage.jsp" %>
 <style>
 /* ========== 기본 스타일 ========== */
@@ -705,12 +704,15 @@ $('.insert-button').on('click', function() {
     $('#img0').attr('src', '/tkheat/css/image/no_image.png');
     $('.btn-delete').hide();
     $('.modal-overlay, .fac-modal').addClass('active');
+    registerModalOpen('facInsert-main', closeFacModal);
 });
 
 // 모달 닫기
-$('.modal-close-btn, .btn-cancel').on('click', function() {
+function closeFacModal() {
+    registerModalClose('facInsert-main');
     $('.modal-overlay, .fac-modal').removeClass('active');
-});
+}
+$('.modal-close-btn, .btn-cancel').on('click', closeFacModal);
 
 // 모달 드래그
 let isDragging = false;
@@ -851,6 +853,7 @@ function facInsertDetail(fac_code){
             }
 
             $('.modal-overlay, .fac-modal').addClass('active');
+            registerModalOpen('facInsert-main', closeFacModal);
         }
     });
 }
@@ -914,8 +917,8 @@ function save() {
         success: function(result) {
             console.log("✅ 저장 성공:", result);
             alert("저장 되었습니다.");
-            $('.modal-overlay, .fac-modal').removeClass('active');
-            
+            closeFacModal();
+
             // 모달 중앙 정렬 복원
             $('.fac-modal').css({
                 'left': '50%',
@@ -959,7 +962,7 @@ function deleteFac() {
         success: function(result) {
             if (result.status === "success") {
                 alert("삭제되었습니다.");
-                $('.modal-overlay, .fac-modal').removeClass('active');
+                closeFacModal();
                 getFacList();
             } else {
                 alert("삭제 중 오류가 발생했습니다: " + result.message);

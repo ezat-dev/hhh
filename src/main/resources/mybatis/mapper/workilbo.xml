@@ -123,7 +123,7 @@
 		CONVERT(VARCHAR(10),ord_input,120) AS ord_input_view,
 		CASE WHEN WSTD_T43 IS NULL THEN '0' ELSE WSTD_T43 END AS wstd_t43,
 		ISNULL(product_file_name,'no_image.png') AS product_file_name,
-		ISNULL(wstd_chim_file_name1,'no_image.png') AS wstd_chim_file_name1,
+		ISNULL(heat_file_name,'no_image.png') AS heat_file_name,
 		CONCAT(prod_si,' ', prod_si1,' ~ ',prod_si2) AS prod_si,
 		CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr
 		FROM ORDERT A
@@ -154,8 +154,7 @@
 			MAX(wstd_t52) AS WSTD_T52,
 			MAX(wstd_t53) AS WSTD_T53,
 			MAX(wstd_t54) AS WSTD_T54,
-			MAX(wstd_t30) AS WSTD_T30,
-			MAX(wstd_chim_file_name1) AS WSTD_CHIM_FILE_NAME1		
+			MAX(wstd_t30) AS WSTD_T30
 			FROM WORKSTD
 			GROUP BY PROD_CODE		
 		) E
@@ -192,7 +191,7 @@
 		CONVERT(VARCHAR(10),ord_input,120) AS ord_input_view,
 		CASE WHEN WSTD_T43 IS NULL THEN '0' ELSE WSTD_T43 END AS wstd_t43,
 		ISNULL(product_file_name,'no_image.png') AS product_file_name,
-		ISNULL(wstd_chim_file_name1,'no_image.png') AS wstd_chim_file_name1,
+		ISNULL(heat_file_name,'no_image.png') AS heat_file_name,
 		CONCAT(prod_si,' ', prod_si1,' ~ ',prod_si2) AS prod_si,
 		CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr
 		FROM ORDERT A
@@ -223,8 +222,7 @@
 			MAX(wstd_t52) AS WSTD_T52,
 			MAX(wstd_t53) AS WSTD_T53,
 			MAX(wstd_t54) AS WSTD_T54,
-			MAX(wstd_t30) AS WSTD_T30,
-			MAX(wstd_chim_file_name1) AS WSTD_CHIM_FILE_NAME1			
+			MAX(wstd_t30) AS WSTD_T30
 			FROM WORKSTD
 			GROUP BY PROD_CODE		
 		) E
@@ -282,14 +280,15 @@
 		WHERE (A.ord_su > B.danch_su OR B.danch_su IS NULL)
 		AND A.prod_code = #{prod_code}
 <!-- 	AND B.ilbo_end = '1900-01-01 00:00:00' -->
-		AND A.ord_code <![CDATA[<]]> #{ord_code}
+		<!-- 선입선출은 등록순번(ord_code)이 아닌 실제 입고일자(ord_input) 기준으로 판단해야 함 -->
+		AND A.ord_input <![CDATA[<]]> (SELECT ord_input FROM ORDERT WHERE ord_code = #{ord_code})
 		<if test="sunipOrdList != null and !sunipOrdList.isEmpty()">
 			AND A.ord_code IN
 			<foreach collection="sunipOrdList" item="ord_code" index="ord_code" open="(" separator="," close=")">
 				#{ord_code}
 			</foreach>
 		</if>
-		ORDER BY A.ord_code
+		ORDER BY A.ord_input
 	</select>
 
 	<select id="getWorkIlboCodeSearch" resultType="int">
@@ -410,15 +409,15 @@
 	<select id="workIlboHeatIlboLotRtn" parameterType="workJisiTk" resultType="string">
 		SELECT CONCAT('TK',RIGHT(REPLACE(#{ilbo_lot_date},'-',''),6),'-',#{fac_code}, (COUNT(*)+1),
 			(
-				SELECT CASE WHEN COUNT(*) = 1 THEN '0'
-				            WHEN COUNT(*) = 2 THEN 'A'
-				            WHEN COUNT(*) = 3 THEN 'B'
+				SELECT CASE WHEN COUNT(DISTINCT ord_code) = 1 THEN '0'
+				            WHEN COUNT(DISTINCT ord_code) = 2 THEN 'A'
+				            WHEN COUNT(DISTINCT ord_code) = 3 THEN 'B'
 				            ELSE 'B'
 				        END AS ilbo_lot_count
 				FROM workilbo
 				WHERE 1=1
 				AND ilbo_code = #{ilbo_code}
-				GROUP BY ilbo_code			
+				GROUP BY ilbo_code
 			)
 		)
 		FROM (
@@ -627,6 +626,9 @@
 		<if test="prod_no != '' and prod_no != null">
 			AND PRODUCT.PROD_NO LIKE CONCAT('%',#{prod_no},'%')
 		</if>
+		<if test="fac_code != 0">
+			AND FACILITY.FAC_CODE = #{fac_code}
+		</if>
 		<if test="ilbo_code != 0 and ilbo_code != null">
 			AND WORKILBO.ILBO_CODE = #{ilbo_code}
 		</if>
@@ -790,7 +792,7 @@
 			MAX(wstd_gj34) AS WSTD_GJ34,
 			MAX(wstd_gj42) AS WSTD_GJ42,
 			MAX(WSTD_READY) AS WSTD_READY,
-			MAX(WSTD_WORKTIME) AS WSTD_WORKTIME	
+			MAX(WSTD_WORKTIME) AS WSTD_WORKTIME
 			FROM WORKSTD
 			GROUP BY PROD_CODE		
 		) WORKSTD
@@ -1179,6 +1181,8 @@
 		ilbo_lot
 		, MAX(ilbo_pc) AS ilbo_pc
 		, CONCAT('J',FORMAT(MAX(ilbo_pc),'000000000')) AS danch_barcode
+		, MAX(product.prod_code) AS prod_code
+		, ISNULL(MAX(CASE WHEN workilbo.ilbo_gubn = 'A' THEN workilbo.fac_code END),0) AS fac_code_bcf
 		, ISNULL(MAX(CASE WHEN workilbo.ilbo_gubn = 'A' THEN facility.fac_name END),'') AS fac_name_bcf
 		, ISNULL(MAX(CASE WHEN workilbo.ilbo_gubn = 'R' THEN facility.fac_name END),'') AS fac_name_tf
 		, ISNULL(MAX(ilbo_g43),'') AS ilbo_g43 --예열(온도)
@@ -1275,7 +1279,7 @@
 			,techin.tech_te, product.prod_jai, product.prod_danj, product.prod_dang
 			,product.prod_upjong, ROUND(ordert.ord_amnt,3) AS ord_amnt
 			,FORMAT(ROUND(product.prod_dang,0),'N0') AS cost_ea
-			,FORMAT(ROUND((ord_su * prod_dang) / ord_amnt,0),'N0') AS cost_kg
+			,FORMAT(ROUND((ord_su * prod_dang) / NULLIF(ord_amnt,0),0),'N0') AS cost_kg
 			,FORMAT(ROUND((ord_su * prod_dang),0),'N0') AS ord_mon
 			,ordert.ord_su, ord_dang
 			,CASE WHEN product.prod_fac1 = '1' THEN 'O' ELSE 'X' END fac1
@@ -1290,7 +1294,7 @@
 			,FORMAT(ROUND((ord_su - ilbo_su_sum),0),'N0') AS ilbo_su_diff
 			,FORMAT(ROUND((ord_su - ilbo_su_sum) * prod_danj,0),'N0') AS ilbo_jung_diff
 			,FORMAT(ROUND((ord_su - ilbo_su_sum) * ord_dang,0),'N0') AS ilbo_cost_diff
-			,CONCAT('http://127.0.0.1:8082/tkPrint/productImg/',CASE WHEN product_file_name IS NULL OR product_file_name = '' THEN 'no_image.png' ELSE product_file_name END) AS prod_img
+			,CONCAT('http://127.0.0.1:8082/tkPrint/사진/제품등록/',CASE WHEN product_file_name IS NULL OR product_file_name = '' THEN 'no_image.png' ELSE product_file_name END) AS prod_img
 		 FROM workilbo
 		 INNER JOIN
 		 	ordert

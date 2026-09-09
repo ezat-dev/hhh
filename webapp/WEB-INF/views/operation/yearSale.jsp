@@ -8,7 +8,6 @@
     <title>년간매출현황</title>
     <link rel="stylesheet" href="/tkheat/css/management/productInsert.css">
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
-    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
     
@@ -289,6 +288,7 @@
     var sdate = $("#sdate").val();
 	//로드
 	$(function(){
+		$("#sdate").val(thisYear());
 		//전체 거래처목록 조회
 		getYearSaleList();
 	});
@@ -353,46 +353,46 @@
 
             // 1월 ~ 12월
             { title: "1월", field: "mm1", sorter: "int", width: 100, hozAlign: "center", 
-              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
-              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
+              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 1 }, 
+              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 } },
             { title: "2월", field: "mm2", sorter: "int", width: 100, hozAlign: "center", 
-              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
-              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
+              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 1 }, 
+              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 } },
             { title: "3월", field: "mm3", sorter: "int", width: 100, hozAlign: "center", 
-              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
-              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
+              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 1 }, 
+              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 } },
             { title: "4월", field: "mm4", sorter: "int", width: 100, hozAlign: "center", 
-              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
-              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
+              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 1 }, 
+              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 } },
             { title: "5월", field: "mm5", sorter: "int", width: 100, hozAlign: "center", 
-              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
-              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
+              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 1 }, 
+              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 } },
             { title: "6월", field: "mm6", sorter: "int", width: 100, hozAlign: "center", 
-              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
-              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
+              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 1 }, 
+              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 } },
             { title: "7월", field: "mm7", sorter: "int", width: 100, hozAlign: "center", 
-              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
-              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
+              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 1 }, 
+              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 } },
             { title: "8월", field: "mm8", sorter: "int", width: 100, hozAlign: "center", 
-              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
-              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
+              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 1 }, 
+              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 } },
             { title: "9월", field: "mm9", sorter: "int", width: 100, hozAlign: "center", 
-              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
-              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
+              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 1 }, 
+              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 } },
             { title: "10월", field: "mm10", sorter: "int", width: 100, hozAlign: "center", 
-              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
-              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
+              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 1 }, 
+              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 } },
             { title: "11월", field: "mm11", sorter: "int", width: 100, hozAlign: "center", 
-              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
-              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
+              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 1 }, 
+              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 } },
             { title: "12월", field: "mm12", sorter: "int", width: 100, hozAlign: "center", 
-              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
-              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
+              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 1 }, 
+              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 } },
 
        
             { title: "합계", field: "mm_total", sorter: "int", width: 180, hozAlign: "center", 
-              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 0 }, 
-              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 } },
+              formatter: "money", formatterParams: { decimal: ".", thousand: ",", precision: 1 }, 
+              bottomCalc: "sum", bottomCalcFormatter: "money", bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 } },
         ],
         rowFormatter: function (row) {
             row.getElement().style.fontWeight = "600";

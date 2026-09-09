@@ -192,7 +192,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	justify-content: right;
 	align-items: center;
 	width: 1500px;
-	margin-left: -1240px;
+	margin-left: -380px;
 }
 .box1 input{
 	width: 5%
@@ -223,14 +223,21 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     
     
     <body>
-    
+
     <div class="tab">
     <div class="box1">
          <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>
-		<label class="daylabel">일자 : </label>
-		<input type="month" class="sdate" id="sdate" style="font-size: 16px;" autocomplete="off">
+		<label class="daylabel">입고일 : </label>
+		<input type="date" id="dan_ipgo_sdate" style="font-size: 16px;" autocomplete="off"> ~
+		<input type="date" id="dan_ipgo_edate" style="font-size: 16px;" autocomplete="off">
+		<label class="daylabel margin_left">거래처</label>
+		<input type="text" id="dan_ipgo_cname" style="font-size: 16px;" autocomplete="off">
+		<label class="daylabel margin_left">품명</label>
+		<input type="text" id="dan_ipgo_pname" style="font-size: 16px;" autocomplete="off">
+		<label class="daylabel margin_left">품번</label>
+		<input type="text" id="dan_ipgo_pno" style="font-size: 16px;" autocomplete="off">
 	</div>
-    
+
     <div class="button-container">
         <button class="select-button" onclick="getPJaegoStatusList();">
             <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
@@ -238,15 +245,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
         </button>
         <button class="insert-button" style="pointer-events: none; opacity: 0.5; cursor: not-allowed; filter: grayscale(100%); ">
             <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
-         입력 
+         입력
         </button>
         <button class="excel-button">
             <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
-        엑셀    
+        엑셀
         </button>
         <button class="printer-button">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
-       보고서출력     
+       보고서출력
         </button>
     </div>
 </div>
@@ -264,17 +271,20 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 
 	//전역변수
 	let now_page_code = "a03";
-    var cutumTable;	
-    var sdate = $("#sdate").val();
+    var userTable;
+
 	//로드
 	$(function(){
+		//단취(적재) 모달의 "입고이력조회"와 동일하게, 아직 소진 안 된 입고 LOT 기준 최근 1주일치를 기본으로 조회
+		$("#dan_ipgo_sdate").val(beforeWeekDate());
+		$("#dan_ipgo_edate").val(todayDate());
 		getPJaegoStatusList();
 	});
 
 	//이벤트
 	//함수
 	function getPJaegoStatusList(){
-		
+
 		userTable = new Tabulator("#tab1", {
 		    tableBuilt:function(){ this.redraw(true); },
 		    height:"100%",
@@ -285,73 +295,30 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		    reactiveData:true,
 		    headerHozAlign:"center",
 		    headerSort:false,
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/product/pjaegoStatus/getPJaegoStatusList",
-		    ajaxProgressiveLoad:"scroll",
-		    ajaxParams:{
-		    	"sdate": $("#sdate").val(),
-			    },
 		    placeholder:"조회된 데이터가 없습니다.",
 		    pagination:"local",
 	        paginationSize:20,
 	        paginationSizeSelector:[20,50,100,500,1000],
 	        paginationCounter:"rows",
-	        headerFilterPlaceholder: "",
-		    ajaxResponse:function(url, params, response){
-				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-				return response.data ? response.data : []; 
-		    },
 		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:40,
-		        	hozAlign:"center"},
-		        {title:"거래처", field:"corp_name", sorter:"string", width:120,
-			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"품명", field:"prod_name", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"},     
-				{title:"규격", field:"prod_gyu", sorter:"string", width:120,
-				    hozAlign:"center", headerFilter:"input"}, 
-				{title:"품번", field:"prod_no", sorter:"string", width:150,
-				    hozAlign:"center", headerFilter:"input"}, 
-		        {title:"재질", field:"prod_jai", sorter:"string", width:120,
-		        	hozAlign:"center", headerFilter:"input"},		        
-		        {title:"공정", field:"tech_te", sorter:"string", width:50,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"단위", field:"prod_danw", sorter:"string", width:50,
-		        	hozAlign:"center", headerFilter:"input"},
-		        {title:"단가", field:"prod_dang", sorter:"string", width:50,
-			        hozAlign:"center", headerFilter:"input"},	
-		        {title:"단중", field:"prod_danj", sorter:"string", width:50,
-		        	hozAlign:"center", headerFilter:"input"},  	
-		        {title:"전월재고", field:"pjai_pre", sorter:"int", width:50,
-			        hozAlign:"center", headerFilter:"input"},	
-			    {title:"당월입고", field:"pjai_ip", sorter:"int", width:50,
-				    hozAlign:"center", headerFilter:"input"},	
-				{title:"당월출고수", field:"pjai_ch", sorter:"int", width:65,
-				    hozAlign:"center", headerFilter:"input"},
-				{title:"전산재고수", field:"pjai_jai", sorter:"int", width:65,
-					hozAlign:"center", headerFilter:"input"},
-			    {title:"전산재고중량", field:"pjai_jai_j", sorter:"int", width:65,
-					hozAlign:"center", headerFilter:"input"},
- 			    {title:"전산금액", field:"pjai_jai_mon", sorter:"int", width:50,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"조정수량", field:"pjai_jo", sorter:"int", width:50,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"조정중량", field:"pjai_jo_j", sorter:"int", width:50,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"실재고수", field:"pjai_real", sorter:"int", width:50,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"실재고중량", field:"pjai_real_j", sorter:"int", width:50,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"실재고금액", field:"pjai_real_mon", sorter:"int", width:50,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"비고", field:"och_bigo", sorter:"int", width:50,
-					hozAlign:"center", headerFilter:"input"},
-				{title:"영업담당자", field:"corp_business", sorter:"int", width:50,
-					hozAlign:"center", headerFilter:"input"},	
-					{title:"날짜", field:"pjai_mnth", sorter:"String", width:50,
-						hozAlign:"center", headerFilter:"input"},					
-				    
+		        {title:"NO", formatter:"rownum", width:40, hozAlign:"center", headerSort:false},
+		        {title:"수주번호", field:"ord_code", sorter:"string", width:100, hozAlign:"center"},
+		        {title:"입고일", field:"ord_input_view", sorter:"string", width:100, hozAlign:"center"},
+		        {title:"거래처", field:"corp_name", sorter:"string", width:140, hozAlign:"left"},
+		        {title:"품명", field:"prod_name", sorter:"string", width:240, hozAlign:"left"},
+		        {title:"품번", field:"prod_no", sorter:"string", width:140, hozAlign:"left"},
+		        {title:"입고수량", field:"ord_su", sorter:"string", width:80, hozAlign:"center"},
+		        {title:"단취기준수량", field:"wstd_t43", sorter:"string", width:100, hozAlign:"center",
+			        formatter:function(cell){
+			        	var value = cell.getValue();
+			        	if(value == 0){
+			        		return "<span style='color:#ff0000; font-weight:bold;'>" + value + "</span>";
+			        	}else{
+			        		return value;
+			        	}
+			        }},
+		        {title:"단취완료수량", field:"danch_su", sorter:"string", width:100, hozAlign:"center"},
+		        {title:"잔량", field:"danch_remain_su", sorter:"string", width:80, hozAlign:"center"},
 		    ],
 		    rowFormatter:function(row){
 			    row.getElement().style.fontWeight = "600";
@@ -359,36 +326,49 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			rowClick:function(e, row){
 
 				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
+
+					if($(this).hasClass("row_select")){
 						$(this).removeClass('row_select');
 						row.getElement().className += " row_select";
 					}else{
 						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
+						row.getElement().className += " row_select";
 					}
 				});
 
-				var rowData = row.getData();
-				
 			},
-		});		
-	}
-	
-
-    </script>
-    <script>
-	    window.addEventListener('DOMContentLoaded', () => {
-		    const today = new Date();
-		    const year = today.getFullYear();
-		    const month = String(today.getMonth() + 1).padStart(2, '0');
-		    const day = String(today.getDate()).padStart(2, '0');
-		    const formattedToday = `${year}-${month}-${day}`;
-		
-		   
-		    document.getElementById('sdate').value = formattedToday;
-		    document.getElementById('edate').value = formattedToday;
 		});
+
+		var searchObj = {
+			"dan_ipgo_cname":$("#dan_ipgo_cname").val(),
+			"dan_ipgo_pname":$("#dan_ipgo_pname").val(),
+			"dan_ipgo_pno":$("#dan_ipgo_pno").val(),
+			"dan_ipgo_sdate":$("#dan_ipgo_sdate").val(),
+			"dan_ipgo_edate":$("#dan_ipgo_edate").val()
+		};
+
+		$.ajax({
+			url:"/tkheat/workilbo/danch/ipgoList",
+			type:"post",
+			dataType:"json",
+			traditional: true,
+			data:{
+				"danchSettingDataList":"[]",
+				"searchObjParam":JSON.stringify(searchObj)
+			},
+			success:function(result){
+				userTable.setData(result.data);
+			}
+		});
+	}
+
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "제품별재고현황_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "제품별재고현황" });
+	});
+
     </script>
 
 	</body>

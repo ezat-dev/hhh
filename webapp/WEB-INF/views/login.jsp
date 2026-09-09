@@ -66,14 +66,25 @@
   
   <script>
 
+//로그인 화면은 전역 조회중 오버레이(pluginpage.jsp)를 끔
+window.disableGlobalLoadingOverlay = true;
+
 	$(function(){
 		$.ajax({
-			url:"https://api.ip.pe.kr/json" 
+			url:"https://api.ip.pe.kr/json"
 		}).done(function(val){
 			console.log(val);
 			console.log(val.ip);
 			console.log(val.contry_code);
 			$("#n_ip").val(val.ip);
+		});
+
+		//아이디/비밀번호 입력 후 엔터키로 로그인
+		$("#n_id, #n_pw").on("keydown", function(e){
+			if(e.key === "Enter" || e.keyCode === 13){
+				e.preventDefault();
+				login();
+			}
 		});
 	});
   

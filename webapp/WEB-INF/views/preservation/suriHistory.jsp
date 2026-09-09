@@ -8,7 +8,6 @@
     <title>설비수리이력관리</title>
     <link rel="stylesheet" href="/tkheat/css/management/productInsert.css">
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
-    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 <%@include file="../include/pluginpage.jsp" %> 
     <style>
 /* ========== 기본 스타일 ========== */
@@ -554,7 +553,7 @@ $(function() {
     var tdate = todayDate();
     var ydate = yesterDate();
     
-    $("#sdate").val(ydate);
+    $("#sdate").val(tdate);
     $("#edate").val(tdate);
     getSuriHistoryList();
     
@@ -756,6 +755,7 @@ function suriHistoryDetail(ffx_no){
             // 모달 열기
             $('.modal-overlay').addClass('active');
             $('.suri-modal').addClass('active');
+            registerModalOpen('suriHistory-main', closeSuriModal);
         },
         error: function(xhr, status, error) {
             console.error("❌ 상세 조회 오류:", error);
@@ -849,7 +849,8 @@ function save() {
         success: function(result) {
             console.log("💾 저장 완료:", result);
             alert("저장 되었습니다.");
-            
+
+            registerModalClose('suriHistory-main');
             $('.modal-overlay').removeClass('active');
             $('.suri-modal').removeClass('active');
             
@@ -916,6 +917,7 @@ function deleteSuri() {
         success: function(result) {
             if (result.status === "success") {
                 alert("삭제되었습니다.");
+                registerModalClose('suriHistory-main');
                 $('.modal-overlay').removeClass('active');
                 $('.suri-modal').removeClass('active');
                 
@@ -1002,18 +1004,23 @@ insertButton.addEventListener('click', function() {
     
     modalOverlay.classList.add('active');
     suriModal.classList.add('active');
-    
+    registerModalOpen('suriHistory-main', closeSuriModal);
+
     $('.btn-delete').hide();
 });
 
-closeButton.addEventListener('click', function() {
+function closeSuriModal() {
+    registerModalClose('suriHistory-main');
     modalOverlay.classList.remove('active');
     suriModal.classList.remove('active');
+}
+
+closeButton.addEventListener('click', function() {
+    closeSuriModal();
 });
 
 headerCloseBtn.addEventListener('click', function() {
-    modalOverlay.classList.remove('active');
-    suriModal.classList.remove('active');
+    closeSuriModal();
 });
 
 // ========== 저장 버튼 ==========

@@ -744,7 +744,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		getJajuStatusList();
 	});
@@ -895,6 +895,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	        dataType: "json",
 	        success: function(result) {
 	            alert("저장 되었습니다.");
+	            registerModalClose('jajuStatus-main');
 	            $(".nonModal").hide();
 	            getNonInsertList();
 	        },
@@ -925,6 +926,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	        success: function(result) {
 	            if (result.status === "success") {
 	                alert("삭제되었습니다.");
+	                registerModalClose('jajuStatus-main');
 	                $(".nonModal").hide();
 	                getNonInsertList();
 	            } else {
@@ -956,6 +958,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				}
 
 				$('.nonModal').show().addClass('show');
+				registerModalOpen('jajuStatus-main', closeNonModal);
 			}
 		});
 	}
@@ -964,6 +967,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	//설비검색버튼 리스트 모달
     function openCorpListModal() {
         document.getElementById('corpListModal').style.display = 'flex';
+        registerModalOpen('jajuStatus-corpList', closeCorpListModal);
 
         
         let facListTable = new Tabulator("#corpListTabulator", {
@@ -1018,15 +1022,22 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                 document.getElementById('prod_no').value = data.prod_no;
                 document.getElementById('fac_name').value = data.fac_name;
                 document.getElementById('ilbo_lot').value = data.ilbo_lot;
+                registerModalClose('jajuStatus-corpList');
                 document.getElementById('corpListModal').style.display = 'none';
             }
         });
     }
 
     function closeCorpListModal() {
+        registerModalClose('jajuStatus-corpList');
         document.getElementById('corpListModal').style.display = 'none';
     }
-	
+
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "자주검사불량현황_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "자주검사불량현황" });
+	});
 
     </script>
     
@@ -1069,15 +1080,17 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 
 	insertButton.addEventListener('click', function() {
 		nonModal.style.display = 'block'; // 모달 표시
+		registerModalOpen('jajuStatus-main', closeNonModal);
 	});
 
-	closeButton.addEventListener('click', function() {
-		nonModal.style.display = 'none'; // 모달 숨김
-	});
-
-	headerCloseButton.addEventListener('click', function() {
+	function closeNonModal() {
+		registerModalClose('jajuStatus-main');
 		nonModal.style.display = 'none';
-	});
+	}
+
+	closeButton.addEventListener('click', closeNonModal);
+
+	headerCloseButton.addEventListener('click', closeNonModal);
 
     </script>
 

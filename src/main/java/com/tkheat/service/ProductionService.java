@@ -77,10 +77,12 @@ public interface ProductionService {
 	
 	
 	List<WorkJisiTk> getLotList(WorkJisiTk workJisiTk);
-	
+
 	List<WorkJisiTk> getLotListReport(WorkJisiTk workJisiTk);
-	
-	
+
+	List<WorkJisiTk> getLotAlarmList(WorkJisiTk workJisiTk);
+
+
 	
 
 }

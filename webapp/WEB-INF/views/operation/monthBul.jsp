@@ -434,6 +434,7 @@ textarea {
     var cutumTable;	
     var sdate = $("#sdate").val();
     $(function() {
+    	 $("#sdate").val(thisYear());
     	 var sdate = $("#sdate").val();
 		getMonthBulList();
 		getMonthBulSubList();
@@ -542,69 +543,69 @@ function getMonthBulSubList(){
 	        {title:"항목", field:"quantityItem", sorter:"string", width:120, hozAlign:"center",headerSort: false, headerFilter:"input"},
 	        
 	        {title:"1월", field:"m1", sorter:"number", width:100, hozAlign:"right", headerSort: false,
-				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 1},
 				bottomCalc:"sum", bottomCalcFormatter:"money",
-				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 			},
 	        {title:"2월", field:"m2", sorter:"number", width:100, hozAlign:"right",headerSort: false,
-				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 1},
 				bottomCalc:"sum", bottomCalcFormatter:"money",
-				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 			},
 	        {title:"3월", field:"m3", sorter:"number", width:100, hozAlign:"right",headerSort: false,
-				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 1},
 				bottomCalc:"sum", bottomCalcFormatter:"money",
-				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 			},
 	        {title:"4월", field:"m4", sorter:"number", width:100, hozAlign:"right",headerSort: false,
-				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 1},
 				bottomCalc:"sum", bottomCalcFormatter:"money",
-				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 			},
 	        {title:"5월", field:"m5", sorter:"number", width:100, hozAlign:"right",headerSort: false,
-				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 1},
 				bottomCalc:"sum", bottomCalcFormatter:"money",
-				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 			},
 	        {title:"6월", field:"m6", sorter:"number", width:100, hozAlign:"right",headerSort: false,
-				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 1},
 				bottomCalc:"sum", bottomCalcFormatter:"money",
-				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 			},
 	        {title:"7월", field:"m7", sorter:"number", width:100, hozAlign:"right",headerSort: false,
-				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 1},
 				bottomCalc:"sum", bottomCalcFormatter:"money",
-				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 			},
 	        {title:"8월", field:"m8", sorter:"number", width:100, hozAlign:"right",headerSort: false,
-				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 1},
 				bottomCalc:"sum", bottomCalcFormatter:"money",
-				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 			},
 	        {title:"9월", field:"m9", sorter:"number", width:100, hozAlign:"right",headerSort: false,
-				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 1},
 				bottomCalc:"sum", bottomCalcFormatter:"money",
-				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 			},
 	        {title:"10월", field:"m10", sorter:"number", width:100, hozAlign:"right",headerSort: false,
-				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 1},
 				bottomCalc:"sum", bottomCalcFormatter:"money",
-				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 			},
 	        {title:"11월", field:"m11", sorter:"number", width:100, hozAlign:"right",headerSort: false,
-				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 1},
 				bottomCalc:"sum", bottomCalcFormatter:"money",
-				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 			},
 	        {title:"12월", field:"m12", sorter:"number", width:100, hozAlign:"right",headerSort: false,
-				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 1},
 				bottomCalc:"sum", bottomCalcFormatter:"money",
-				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 			},
 	        {title:"평균", field:"average_SUM", sorter:"number", width:100, hozAlign:"right",headerSort: false,
-				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 0},
+				formatter:"money", formatterParams:{decimal: ".", thousand: ",", precision: 1},
 				bottomCalc:"sum", bottomCalcFormatter:"money",
-				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+				bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 			},
 	    ],
 	    rowFormatter:function(row){
@@ -798,7 +799,12 @@ function getMonthBulSubList(){
 	    }
 	}); */
 
-	
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "월별불량현황_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "월별불량현황" });
+	});
 
     </script>
     

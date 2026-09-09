@@ -781,9 +781,15 @@
 				var rowData = row.getData();
 				
 			},
-		});		
+		});
 	}
-	
+
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "고주파로작업표준_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "고주파로작업표준" });
+	});
 
     </script>
     
@@ -824,12 +830,18 @@
 	const goStandardModal = document.querySelector('.goStandardModal');
 	const closeButton = document.querySelector('.close');
 
+	function closeGoStandardModal() {
+		registerModalClose('goStandard-main');
+		goStandardModal.style.display = 'none'; // 모달 숨김
+	}
+
 	insertButton.addEventListener('click', function() {
 		goStandardModal.style.display = 'block'; // 모달 표시
+		registerModalOpen('goStandard-main', closeGoStandardModal);
 	});
 
 	closeButton.addEventListener('click', function() {
-		goStandardModal.style.display = 'none'; // 모달 숨김
+		closeGoStandardModal();
 	});
 		
 

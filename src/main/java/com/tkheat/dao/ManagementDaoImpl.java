@@ -191,7 +191,12 @@ public class ManagementDaoImpl implements ManagementDao {
 	public Standard getChimStandardDetail(Standard standard) {
 		return sqlSession.selectOne("standard.getChimStandardDetail",standard);
 	}
-	
+
+	@Override
+	public Standard getProcessStandardForChart(Standard standard) {
+		return sqlSession.selectOne("standard.getProcessStandardForChart",standard);
+	}
+
 	@Override
 	public void chimStandardInsertSave(Standard standard) {
 		sqlSession.insert("standard.chimStandardInsertSave", standard);

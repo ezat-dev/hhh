@@ -17,6 +17,7 @@
 	<field name="och_lot" class="java.lang.String"/>
 	<field name="ord_lot" class="java.lang.String"/>
 	<field name="och_amnt_report" class="java.lang.Double"/>
+	<field name="och_bigo" class="java.lang.String"/>
 	<variable name="Tax" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -187,7 +188,7 @@
 					<font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 					<paragraph rightIndent="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{och_bigo}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

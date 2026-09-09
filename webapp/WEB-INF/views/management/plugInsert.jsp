@@ -252,12 +252,25 @@
 	const coilModal = document.querySelector('.coilModal');
 	const closeButton = document.querySelector('.close');
 
+	function closePlugModal() {
+		registerModalClose('plugInsert-main');
+		coilModal.style.display = 'none'; // 모달 숨김
+	}
+
 	insertButton.addEventListener('click', function() {
 		coilModal.style.display = 'block'; // 모달 표시
+		registerModalOpen('plugInsert-main', closePlugModal);
 	});
 
 	closeButton.addEventListener('click', function() {
-	    coilModal.style.display = 'none'; // 모달 숨김
+	    closePlugModal();
+	});
+
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "금형등록_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "금형등록" });
 	});
 
     </script>

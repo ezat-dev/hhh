@@ -309,6 +309,8 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 
 	//로드
 	$(function(){
+		$("#sdate").val(todayDate());
+		$("#edate").val(todayDate());
 		//전체 거래처목록 조회
 		getCleanSiljukList();
 	});
@@ -403,9 +405,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				var rowData = row.getData();
 				
 			},
-		});		
+		});
 	}
-	
+
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "전세정작업실적_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "전세정작업실적" });
+	});
 
     </script>
 

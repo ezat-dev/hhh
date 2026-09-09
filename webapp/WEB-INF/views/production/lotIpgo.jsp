@@ -298,7 +298,7 @@
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		//전체 거래처목록 조회
 		getLotIpgoList();
@@ -711,10 +711,17 @@
 				});
 
 				var rowData = row.getData();
-				
+
 			},
-		});		
+		});
 	}
+
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "LOT추적관리_입고_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "LOT추적관리_입고" });
+	});
     </script>
 
 	</body>

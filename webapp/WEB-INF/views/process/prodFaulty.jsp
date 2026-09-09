@@ -311,9 +311,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				var rowData = row.getData();
 				
 			},
-		});		
+		});
 	}
-	
+
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "제품별불량현황_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "제품별불량현황" });
+	});
 
     </script>
 

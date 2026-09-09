@@ -285,7 +285,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		getTemHardList();
 	});
@@ -416,9 +416,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				var rowData = row.getData();
 				
 			},
-		});		
+		});
 	}
-	
+
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "템퍼링경도확인_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "템퍼링경도확인" });
+	});
 
     </script>
 

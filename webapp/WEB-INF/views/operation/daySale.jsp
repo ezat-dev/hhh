@@ -288,7 +288,7 @@ var dayTable;
 $(function(){
  var tdate = todayDate();       // 오늘
  var ydate = yesterDate();      // 어제
- $("#sdate").val(ydate);
+ $("#sdate").val(tdate);
  $("#edate").val(tdate);
 
  getDaySaleList();
@@ -338,17 +338,17 @@ function getDaySaleList(){
          {title:"품번", field:"prod_no", sorter:"string", width:160, hozAlign:"center", headerFilter:"input"},
          {title:"수량", field:"och_su", sorter:"int", width:110, hozAlign:"center",
              formatter: "money",
-             formatterParams: { decimal: ".", thousand: ",", precision: 0 },
-             bottomCalc:"sum", bottomCalcFormatter:"money", bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+             formatterParams: { decimal: ".", thousand: ",", precision: 1 },
+             bottomCalc:"sum", bottomCalcFormatter:"money", bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
          },
          {title:"단가", field:"och_dang", sorter:"int", width:110, hozAlign:"center",
              formatter: "money",
-             formatterParams: { decimal: ".", thousand: ",", precision: 0 }
+             formatterParams: { decimal: ".", thousand: ",", precision: 1 }
          },
          {title:"합계금액", field:"och_mon_total", sorter:"int", width:130, hozAlign:"center",
              formatter: "money",
-             formatterParams: { decimal: ".", thousand: ",", precision: 0 },
-             bottomCalc:"sum", bottomCalcFormatter:"money", bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+             formatterParams: { decimal: ".", thousand: ",", precision: 1 },
+             bottomCalc:"sum", bottomCalcFormatter:"money", bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
          }
      ],
      rowFormatter:function(row){
@@ -360,6 +360,13 @@ function getDaySaleList(){
      },
  });
 }
+
+// ========== 엑셀 다운로드 ==========
+$(".excel-button").click(function () {
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const filename = "일일매출현황_" + today + ".xlsx";
+    dayTable.download("xlsx", filename, { sheetName: "일일매출현황" });
+});
 
 </script>
 

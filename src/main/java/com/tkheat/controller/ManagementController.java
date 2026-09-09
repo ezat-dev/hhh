@@ -644,9 +644,9 @@ public class ManagementController {
 
 		rtnMap.put("data",chimStandardList);
 
-		return rtnMap; 
+		return rtnMap;
 	}
-	
+
 	//모달창에 침탄로 이미지 출력
 	@RequestMapping(value = "/management/image/chim/{filename:.+}", method = RequestMethod.GET)
     public void serveeeProductImage(@PathVariable String filename, HttpServletResponse response) throws IOException {

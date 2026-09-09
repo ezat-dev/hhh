@@ -681,7 +681,11 @@ body { display: flex; flex-direction: column; overflow: hidden; }
             <img src="/tkheat/css/image/delete-icon.png" alt="delete" class="button-image">
             삭제
         </button>
-        
+        <button class="excel-button">
+            <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
+            엑셀
+        </button>
+
         <button class="printer-button" id="processPrintBtn">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
 			 공정이동표            
@@ -841,7 +845,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				
 				<div class="j_div">
 					<!-- 제품사진, 단취사진 img -->
-					<img src="" alt="" name="wstd_chim_file_name1" style="width:150px; height:150px;"/>
+					<img src="" alt="" name="heat_file_name" style="width:150px; height:150px;"/>
 				</div>
 			</div>
 
@@ -1026,6 +1030,13 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		}
 		
 		processOrderStatusModal.style.display = "block";
+		registerModalOpen('danch-process-status', processOrderStatusCloseBtn);
+
+		//클릭(사용자 제스처) 시점에 바로 빈 창을 열어야 팝업이 차단되지 않음 - 내용은 ajax 응답 후 채움
+		var reportWin = window.open('', '_blank');
+		if(reportWin){
+			reportWin.document.write('<p style="font-family:sans-serif;padding:20px;">공정이동표 생성중입니다...</p>');
+		}
 
 		var sendObj = {
 				"processOrderData": selectedData
@@ -1037,12 +1048,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			type:"post",
 			dataType:"json",
 			contentType: false,
-			processData: false,			
+			processData: false,
 			data:JSON.stringify(sendObj),
 			success:function(result){
    				var fileUrl = "/tkPrint/workilboProcessOrder/"+result.fileName;
-                $("#processOrderReport").attr("src",fileUrl);
-                processOrderReportModal.style.display = "flex"; // flex-direction:column 레이아웃 적용을 위해 flex로 표시
+                if(reportWin){
+                    reportWin.location.href = fileUrl;
+                }else{
+                    alert("팝업이 차단되어 새 창을 열 수 없습니다. 브라우저 팝업 차단을 해제해주세요.");
+                }
 
                 processOrderStatusCloseBtn();
 //				getChulgoData();
@@ -1060,7 +1074,13 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	$(".select-button").on("click", function(){
 		getWorkDataList();
 	});
-	
+
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "단취작업일보_" + today + ".xlsx";
+	    workDataTable.download("xlsx", filename, { sheetName: "단취작업일보" });
+	});
+
 	//작업삭제
 	$("#workDeleteBtn").on("click", function(){
 		
@@ -1139,52 +1159,42 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	//단취작업 모달
 	function workDanModalOpen(){
 		$("#workDanForm")[0].reset();
-		danchPendingUserCode = null;
-		//select에 남아있는 이전(수정모드 등) 선택값을 지워야, 신규등록시 로그인 사용자 기본선택 로직이 정상 동작함
-		$("#workDanForm select[name='user_code']").val('');
-/*
-		var now = new Date();
-		var ye = now.getFullYear();
-		var mo = paddingZero(now.getMonth()+1);
-		var da = paddingZero(now.getDate());
-		
-		var ho = paddingZero(now.getHours());
-		var mi = paddingZero(now.getMinutes());		
-		
-		var setDateTime = ye+"-"+mo+"-"+da+" "+ho+":"+mi;
-		
-		$("#workDanForm input[name='ilbo_strt']").val(setDateTime);
-		$("#workDanForm input[name='ilbo_end']").val(setDateTime);
-*/
+		//select에 이전(수정모드 등) 선택값이 남아있으면 jQuery val('')로는 지워지지 않으므로(일치하는 option이 없으면 무시됨),
+		//신규등록시엔 pending 메커니즘으로 현재 로그인 사용자를 직접 지정
+		danchPendingUserCode = tkheatLoginUserCode || null;
 
 		getWorkDanData();
 		getWorkDanDataUserCode();
-		$("#workDanForm input[name='ilbo_strt']").val("1900-01-01 00:00");
-		$("#workDanForm input[name='ilbo_end']").val("1900-01-01 00:00");
+		//작업시작시간은 모달을 여는 시점의 현재시각으로 자동세팅, 작업종료시간은 종료버튼을 누르기 전까지 공란
+		sdateTimeSetBtn('danchStart');
 		workDanModal.style.display = 'flex'; // 모달 보임 (flex-direction:column 레이아웃 적용을 위해 flex로 표시)
-		
-	}	
-	function workDanModalClose(){		
+		registerModalOpen('danch-main', workDanModalClose);
+
+	}
+	function workDanModalClose(){
+		registerModalClose('danch-main');
 		workDanModal.style.display = 'none'; // 모달 숨김
 	}
-	
+
 	//단취작업 입고이력 모달
 	function workDanIpgoModalOpen(){
 		$("#workDanIpgoForm")[0].reset();
-		
+
 		//1주일전 ~ 오늘
 		var ydate = beforeWeekDate();
 		var tdate = todayDate();
-		
+
 		$("#dan_ipgo_sdate").val(ydate);
 		$("#dan_ipgo_edate").val(tdate);
-		
+
 		getWorkDanIpgoData();
 		getWorkDanIpgoDataList();
-		
+
 		workDanIpgoModal.style.display = 'flex'; // 모달 보임 (flex-direction:column 레이아웃 적용을 위해 flex로 표시)
+		registerModalOpen('danch-ipgo', workDanIpgoModalClose);
 	}
 	function workDanIpgoModalClose(){
+		registerModalClose('danch-ipgo');
 		workDanIpgoModal.style.display = 'none'; // 모달 숨김
 	}
 	
@@ -1305,6 +1315,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 											}
 											$("#workDanForm input[name='"+key+"']").val(stdData[key]);
 											$("#workDanForm select[name='"+key+"']").val(stdData[key]);
+										}
+
+										//제품사진/단취사진 (신규등록 화면과 동일하게 수정화면에서도 복원)
+										if(key == "product_file_name" && stdData[key]){
+											$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/사진/제품등록/"+stdData[key]);
+										}
+										if(key == "heat_file_name" && stdData[key]){
+											$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/사진/제품등록/"+stdData[key]);
 										}
 
 										if(key == "wstd_t43"){
@@ -1801,14 +1819,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 							$("#workDanForm input[name='"+key+"']").val(stdMap[key]);
 						}
 						
-						//제품사진
+						//제품사진 (제품등록/침탄로작업표준과 동일한 실제 저장 경로 사용)
 						if(key == "product_file_name"){
-							$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/productImg/"+stdMap[key]);
+							$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/사진/제품등록/"+stdMap[key]);
 						}
-						
+
 						//단취사진
-						if(key == "wstd_chim_file_name1"){
-							$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/workStdImg/"+stdMap[key]);
+						if(key == "heat_file_name"){
+							$("#workDanForm img[name='"+key+"']").attr("src","/tkPrint/사진/제품등록/"+stdMap[key]);
 						}
 						
 					}
@@ -1865,6 +1883,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	}
 
 	function processOrderStatusCloseBtn(){
+		registerModalClose('danch-process-status');
 		processOrderStatusModal.style.display = 'none'; // 모달 숨김
 	}
 

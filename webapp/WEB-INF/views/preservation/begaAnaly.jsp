@@ -346,7 +346,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var tdate = todayDate();
 		var ydate = yesterDate();
 
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		searchBegaAnaly();
 	});
@@ -366,7 +366,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			return (parseFloat(b.RunRate) || 0) - (parseFloat(a.RunRate) || 0);
 		});
 
-		var categories = sorted.map(function(d){ return d.fac_name; });
+		var categories = sorted.map(function(d){ return "[" + d.gubn + "] " + d.fac_name; });
 		var values = sorted.map(function(d){ return parseFloat(d.RunRate) || 0; });
 
 		Highcharts.chart("runRateChart", {
@@ -424,18 +424,36 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		        return response.data ? response.data : response; //return the response data to tabulator
 		    },
 		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:80,
+		        {title:"NO", field:"idx", sorter:"int", width:70,
 		        	hozAlign:"center"},
-		        {title:"설비", field:"fac_name", sorter:"string", width:120,
-			        hozAlign:"center"},	
-			    {title:"가동시간(분)", field:"fstp_tu", sorter:"int", width:120,
-				    hozAlign:"center"},     
-				{title:"비가동시간(분)", field:"fstp_10", sorter:"int", width:120,
-				    hozAlign:"center"}, 
-				{title:"가동율(%)", field:"RunRate", sorter:"int", width:150,
-				    hozAlign:"center"},  
-					    
-				    
+		        {title:"구분", field:"gubn", sorter:"string", width:80,
+			        hozAlign:"center"},
+		        {title:"설비", field:"fac_name", sorter:"string", width:110,
+			        hozAlign:"center"},
+			    {title:"전체시간", field:"total_time", sorter:"int", width:100,
+				    hozAlign:"center", formatter:function(cell){
+						return formatWorkTime(cell.getValue());
+					}},
+			    {title:"가동시간", field:"run_time", sorter:"int", width:100,
+				    hozAlign:"center", formatter:function(cell){
+						return formatWorkTime(cell.getValue());
+					}},
+				{title:"가동율(%)", field:"RunRate", sorter:"number", width:90,
+				    hozAlign:"center"},
+				{title:"자연비가동", field:"idle_natural", sorter:"int", width:100,
+				    hozAlign:"center", formatter:function(cell){
+						return formatWorkTime(cell.getValue());
+					}},
+				{title:"등록비가동", field:"idle_registered", sorter:"int", width:100,
+				    hozAlign:"center", formatter:function(cell){
+						return formatWorkTime(cell.getValue());
+					}},
+				{title:"총비가동", field:"idle_total", sorter:"int", width:100,
+				    hozAlign:"center", formatter:function(cell){
+						return formatWorkTime(cell.getValue());
+					}},
+				{title:"비가동율(%)", field:"idle_rate", sorter:"number", width:100,
+				    hozAlign:"center"},
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
@@ -514,14 +532,17 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			        hozAlign:"center"},
 			    {title:"작업수", field:"work_cnt", sorter:"int", width:90,
 				    hozAlign:"center"},
-				{title:"작업중량", field:"work_jung", sorter:"int", width:100,
-				    hozAlign:"center"},
-				{title:"작업시작시간", field:"work_strt", sorter:"string", width:150,
+				{title:"작업중량", field:"work_jung", sorter:"number", width:100,
 				    hozAlign:"center", formatter:function(cell){
+						var v = parseFloat(cell.getValue());
+						return isNaN(v) ? "-" : Math.round(v);
+					}},
+				{title:"작업시작시간", field:"work_strt", sorter:"string", width:150,
+				    hozAlign:"center", visible:false, formatter:function(cell){
 						return formatDateTimeShort(cell.getValue());
 					}},
 				{title:"종료시간", field:"work_end", sorter:"string", width:150,
-				    hozAlign:"center", formatter:function(cell){
+				    hozAlign:"center", visible:false, formatter:function(cell){
 						return formatDateTimeShort(cell.getValue());
 					}},
 				{title:"총작업시간", field:"work_time", sorter:"int", width:130,
@@ -546,6 +567,12 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		});
 	}
 
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "설비가동율분석_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "설비가동율분석" });
+	});
 
     </script>
 

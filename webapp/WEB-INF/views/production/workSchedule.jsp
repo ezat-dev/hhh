@@ -306,7 +306,6 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		    ajaxConfig:"POST",
 		    ajaxLoader:false,
 		    ajaxURL:"/tkheat/production/workSchedule/getWorkScheduleList",
-		    ajaxProgressiveLoad:"scroll",
 		    ajaxParams:{
 		    	"plnp_date": $("#plnp_date").val(),
                 "corp_name": $("#corp_name").val(),
@@ -379,9 +378,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				var rowData = row.getData();
 				
 			},
-		});		
+		});
 	}
-	
+
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "작업계획현황_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "작업계획현황" });
+	});
 
     </script>
 

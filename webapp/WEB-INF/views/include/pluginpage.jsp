@@ -21,6 +21,20 @@ function tkheatTruncateSeconds(text){
 	return text.replace(/(\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}):\d{2}(\.\d+)?(Z|[+-]\d{2}:?\d{2})?/g, '$1');
 }
 
+//전체 앱 소숫점 자리수 통일: "단중"(prod_danj/ord_danj 등 _danj로 끝나는 필드)은 둘째자리까지,
+//그 외 수량/중량/단가/금액류(_su/_jung/_amnt/_dang/_mon으로 끝나는 필드)는 첫째자리까지만 표시.
+//필드명이 이 패턴에 안 맞거나 값이 숫자로 해석 안 되면(코드/문자열 컬럼 등) 원본 그대로 반환해서
+//주문코드/LOT 등 숫자처럼 보이는 코드성 컬럼을 실수로 건드리지 않게 함.
+function tkheatFormatNumberByField(fieldName, value){
+	if(value === null || typeof value === 'undefined' || value === ''){ return value; }
+	var isDanjung = /_danj$/i.test(fieldName || '');
+	var isOtherNumeric = /_(su|jung|amnt|dang|mon)$/i.test(fieldName || '');
+	if(!isDanjung && !isOtherNumeric){ return value; }
+	var num = Number(String(value).replace(/,/g, ''));
+	if(isNaN(num)){ return value; }
+	return num.toFixed(isDanjung ? 2 : 1);
+}
+
 function tkheatWrapColumnsForDateTruncation(columns){
 	if(!columns){ return; }
 	columns.forEach(function(col){
@@ -33,7 +47,8 @@ function tkheatWrapColumnsForDateTruncation(columns){
 		//여기서 formatter를 넣어버리면 클릭해도 편집모드가 전혀 시작되지 않게 됨 -> 이런 컬럼은 건드리지 않음
 		if(typeof col.formatter === 'undefined' && col.editor !== true){
 			col.formatter = function(cell){
-				return tkheatTruncateSeconds(cell.getValue());
+				var text = tkheatTruncateSeconds(cell.getValue());
+				return tkheatFormatNumberByField(cell.getColumn().getField(), text);
 			};
 		}
 	});
@@ -71,8 +86,55 @@ function tkheatWrapColumnsForDateTruncation(columns){
 })();
 </script>
 
+<!-- 30분간 사용자 조작이 없으면 자동 로그아웃 -->
+<script>
+(function(){
+	var TKHEAT_IDLE_LIMIT_MS = 30 * 60 * 1000;
+	var isTopWindow = (window.top === window.self);
+
+	//사이드바 쉘(최상위 창)에서만 실제 타이머를 돌림. 개별 메뉴 페이지는 iframe 안에서 로드되므로
+	//거기서 발생하는 이벤트는 최상위 창의 타이머를 리셋시키기만 함(각자 따로 타이머를 돌리면,
+	//iframe 안에서만 계속 작업 중이어도 사이드바 쉘 자체엔 이벤트가 안 잡혀 30분 후 오작동 로그아웃됨)
+	if(isTopWindow){
+		var tkheatIdleTimer = null;
+		window.tkheatResetIdleTimer = function(){
+			if(tkheatIdleTimer){ clearTimeout(tkheatIdleTimer); }
+			tkheatIdleTimer = setTimeout(function(){
+				try{
+					localStorage.removeItem("currentPageUrl");
+					localStorage.removeItem("currentPageName");
+				}catch(e){}
+				$.ajax({
+					url:"/tkheat/user/logout",
+					type:"get",
+					complete:function(){
+						window.top.location.href = "/tkheat";
+					}
+				});
+			}, TKHEAT_IDLE_LIMIT_MS);
+		};
+		window.tkheatResetIdleTimer();
+	}
+
+	var tkheatOnUserActivity = function(){
+		if(isTopWindow){
+			window.tkheatResetIdleTimer();
+		}else if(window.top && typeof window.top.tkheatResetIdleTimer === 'function'){
+			window.top.tkheatResetIdleTimer();
+		}
+	};
+	['mousemove','mousedown','keydown','scroll','touchstart','click'].forEach(function(evt){
+		document.addEventListener(evt, tkheatOnUserActivity, {passive:true});
+	});
+})();
+</script>
+
 <!-- moment -->
 <script type="text/javascript" src="/tkheat/js/moment/moment.min.js"></script>
+
+<!-- 엑셀 export(SheetJS) - Tabulator의 .download("xlsx",...)가 사용. 일부 페이지만 개별 로드하던 것을
+     전체 페이지 공통으로 이동해서, 엑셀 버튼은 있는데 이 라이브러리가 없어 조용히 실패하던 페이지들을 해결함 -->
+<script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
 
 <!-- 화면캡쳐용 -->
 <script type="text/javascript" src="/tkheat/js/html2canvas.js"></script>
@@ -146,6 +208,7 @@ $(function(){
 	//전역 ajax 로딩 표시: 어떤 페이지든 조회/등록/수정/삭제 등 ajax 호출 중엔 자동으로 오버레이 표시
 	var globalLoadingTimer = null;
 	$(document).ajaxStart(function(){
+		if(window.disableGlobalLoadingOverlay) return;
 		clearTimeout(globalLoadingTimer);
 		//아주 빠르게 끝나는 요청은 깜빡임만 생기므로 살짝 지연 후 표시
 		globalLoadingTimer = setTimeout(function(){
@@ -156,7 +219,27 @@ $(function(){
 		clearTimeout(globalLoadingTimer);
 		$("#globalLoadingOverlay").css("display","none");
 	});
-	
+
+	// ========== 모달 ESC 닫기 스택 ==========
+	// 모달을 열 때 registerModalOpen(id, 그모달의닫기함수)를 호출해두면,
+	// ESC를 눌렀을 때 가장 마지막에 열린(=가장 위에 뜬) 모달의 닫기함수만 호출한다.
+	window.__modalStack = [];
+	window.registerModalOpen = function(id, closeFn){
+		window.__modalStack = window.__modalStack.filter(function(m){ return m.id !== id; });
+		window.__modalStack.push({ id: id, close: closeFn });
+	};
+	window.registerModalClose = function(id){
+		window.__modalStack = window.__modalStack.filter(function(m){ return m.id !== id; });
+	};
+	$(document).on('keydown', function(e){
+		if((e.key === 'Escape' || e.keyCode === 27) && window.__modalStack.length > 0){
+			var top = window.__modalStack[window.__modalStack.length - 1];
+			window.registerModalClose(top.id);
+			top.close();
+		}
+	});
+
+
 	//airDatePicker 설정
 	//날짜 : 일
 	$(".daySet").datepicker({
@@ -221,10 +304,14 @@ function tkheatFindPairedDateEl(inputEl, direction){
 	return null;
 }
 
-//짝을 이루는 날짜입력칸에 제약을 건다 - 네이티브 <input type="date">의 min/max 속성과
-//xdsoft 위젯이 붙어있다면 그 내부 옵션(minDate/minTime, maxDate/maxTime)을 동시에 갱신함.
-//(일부 페이지는 <input type="date">에 xdsoft 클래스도 같이 붙어있어 실제로 어느 쪽 달력 UI가
-// 뜨는지 확실치 않으므로, 두 메커니즘을 전부 갱신해서 어느 쪽이든 항상 정확히 막히도록 함)
+//짝을 이루는 날짜입력칸에 제약을 건다 - 네이티브 <input type="date">의 min/max 속성만 갱신함.
+//(xdsoft 위젯의 setOptions는 일부러 사용하지 않음 - xdsoft/datetimepicker.js를 직접 확인해보니
+// $.fn.datetimepicker 호출 1회(예: datePickerDate()의 $(".datetimepicker_date").datetimepicker({...}))로
+// 만들어진 모든 인스턴스가 같은 클로저의 options 변수 하나를 공유하고, setOptions는 그 변수 자체를
+// $.extend로 통째로 재할당하는 구조라(1152번째줄 부근) minDate를 종료일 인스턴스에만 걸어도
+// 같은 클래스로 묶여 생성된 시작일 인스턴스까지 그 값을 그대로 읽어서 과거 날짜가 막혀버림 -
+// 실제로 겪은 버그. 네이티브 <input type="date">의 min/max는 DOM 엘리먼트별로 완전히 분리되어
+// 안전하므로 그쪽만 사용)
 //Date 객체나 문자열 어느 쪽이 들어와도 네이티브 <input type="date">의 min/max 속성에 쓸 수 있는
 //"YYYY-MM-DD" 문자열로 정규화
 function tkheatToDateAttrString(val){
@@ -244,7 +331,6 @@ function tkheatConstrainPairedDate(sourceEl, direction, val){
 
 	var $target = $(targetEl);
 	var isNativeDate = targetEl.type === 'date';
-	var isXdsoft = !!$target.data('xdsoft_datetimepicker');
 	var attrVal = tkheatToDateAttrString(val);
 
 	if(direction === 'next'){
@@ -253,29 +339,16 @@ function tkheatConstrainPairedDate(sourceEl, direction, val){
 			targetEl.min = attrVal;
 			if(targetEl.value && targetEl.value < attrVal){ targetEl.value = attrVal; }
 		}
-		if(isXdsoft){
-			$target.datetimepicker('setOptions', { minDate: val, minTime: val });
-		}
-	}else{
-		//대상은 "시작일" 쪽 -> 이 값보다 이후 날짜를 선택하지 못하게 최대값 제한
-		if(isNativeDate && attrVal){
-			targetEl.max = attrVal;
-			if(targetEl.value && targetEl.value > attrVal){ targetEl.value = attrVal; }
-		}
-		if(isXdsoft){
-			$target.datetimepicker('setOptions', { maxDate: val, maxTime: val });
-		}
 	}
 }
 
 //전체 앱의 <input type="date"> 네이티브 달력 입력칸(및 xdsoft가 겹쳐 붙은 하이브리드 입력칸 포함):
-//시작일 선택시 짝을 이루는 종료일의 최소값을, 종료일 선택시 짝을 이루는 시작일의 최대값을
-//자동으로 걸어서 서로 어긋난 날짜를 아예 선택 못하게 막음
+//시작일(앞쪽) 선택시 짝을 이루는 종료일(뒤쪽)의 최소값만 걸어서, 종료일이 시작일보다 이전 날짜로
+//선택되는 것만 막음(반대로 종료일을 바꿔서 시작일을 제한하지는 않음)
 $(document).on('change', 'input[type="date"]', function(){
 	var val = this.value;
 	if(!val){ return; }
 	tkheatConstrainPairedDate(this, 'next', val);
-	tkheatConstrainPairedDate(this, 'prev', val);
 });
 
 function datePickerDate(){

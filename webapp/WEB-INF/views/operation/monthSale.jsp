@@ -370,6 +370,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     var sdate = $("#sdate").val();
 	//로드
 	$(function(){
+		$("#sdate").val(todayDate().substring(0,7));
 		//전체 거래처목록 조회
 		getMonthSaleList();
 	});
@@ -459,39 +460,39 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		        
 		        {title:"수량", field:"och_su", sorter:"int", width:110, hozAlign:"center",
 		            formatter: "money", 
-		            formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+		            formatterParams: { decimal: ".", thousand: ",", precision: 1 },
 		            bottomCalc:"sum", 
 		            bottomCalcFormatter:"money", 
-		            bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+		            bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 		        },
 
 		        {title:"단가", field:"och_dang", sorter:"int", width:110, hozAlign:"center",
 		            formatter: "money", 
-		            formatterParams: { decimal: ".", thousand: ",", precision: 0 }
+		            formatterParams: { decimal: ".", thousand: ",", precision: 1 }
 		        },
 
 		        {title:"공급가액", field:"och_mon", sorter:"int", width:130, hozAlign:"center",
 		            formatter: "money", 
-		            formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+		            formatterParams: { decimal: ".", thousand: ",", precision: 1 },
 		            bottomCalc:"sum", 
 		            bottomCalcFormatter:"money", 
-		            bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+		            bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 		        },  	
 
 		        {title:"부가세", field:"och_mon_tax", sorter:"int", width:130, hozAlign:"center",
 		            formatter: "money", 
-		            formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+		            formatterParams: { decimal: ".", thousand: ",", precision: 1 },
 		            bottomCalc:"sum", 
 		            bottomCalcFormatter:"money", 
-		            bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+		            bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 		        },
 
 		        {title:"합계금액", field:"och_mon_total", sorter:"int", width:130, hozAlign:"center",
 		            formatter: "money", 
-		            formatterParams: { decimal: ".", thousand: ",", precision: 0 },
+		            formatterParams: { decimal: ".", thousand: ",", precision: 1 },
 		            bottomCalc:"sum", 
 		            bottomCalcFormatter:"money", 
-		            bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 0}
+		            bottomCalcFormatterParams:{decimal: ".", thousand: ",", precision: 1}
 		        },
 				
 				    
@@ -517,9 +518,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				var rowData = row.getData();
 				
 			},
-		});		
+		});
 	}
-	
+
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "월매출현황_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "월매출현황" });
+	});
 
     </script>
 

@@ -309,7 +309,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var tdate = todayDate();
 		var ydate = yesterDate();
 		
-		$("#sdate").val(ydate);
+		$("#sdate").val(tdate);
 		$("#edate").val(tdate);
 		getWorkStatusList();
 	});
@@ -330,7 +330,6 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		    ajaxConfig:"POST",
 		    ajaxLoader:false,
 		    ajaxURL:"/tkheat/production/workStatus/getWorkStatusList",
-		    ajaxProgressiveLoad:"scroll",
 		    ajaxParams:{
 		    	"sdate": $("#sdate").val(),
 		    	"edate": $("#edate").val(),
@@ -379,11 +378,11 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			        	  formatter: "money",
 			        	  formatterParams: {
 			        	    thousand: ",",
-			        	    precision: 0
+			        	    precision: 1
 			        	    
 			        	  },
 			        	  bottomCalcFormatter: "money",
-							bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 0 }
+							bottomCalcFormatterParams: { decimal: ".", thousand: ",", precision: 1 }
 			        	}
 
 				    
@@ -407,9 +406,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				var rowData = row.getData();
 				
 			},
-		});		
+		});
 	}
-	
+
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "작업현황_" + today + ".xlsx";
+	    userTable.download("xlsx", filename, { sheetName: "작업현황" });
+	});
 
     </script>
 

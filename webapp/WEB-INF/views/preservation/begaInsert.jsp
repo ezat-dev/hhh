@@ -610,7 +610,7 @@ textarea {
 	    var tdate = todayDate();
 	    var ydate = yesterDate();
 	    
-	    $("#sdate").val(ydate);
+	    $("#sdate").val(tdate);
 	    $("#edate").val(tdate);
 	    getBegaInsertList();
 	    
@@ -766,6 +766,7 @@ textarea {
 	            // 모달 열기
 	            $('.modal-overlay').addClass('active');
 	            $('.bega-modal').addClass('active');
+	            registerModalOpen('begaInsert-main', closeBegaModal);
 	        },
 	        error: function(xhr, status, error) {
 	            console.error("❌ 상세 조회 오류:", error);
@@ -855,10 +856,9 @@ textarea {
 	        success: function(result) {
 	            console.log("💾 저장 완료:", result);
 	            alert("저장 되었습니다.");
-	            
-	            $('.modal-overlay').removeClass('active');
-	            $('.bega-modal').removeClass('active');
-	            
+
+	            closeBegaModal();
+
 	            // 모달 위치 초기화
 	            $('.bega-modal').css({
 	                'left': '50%',
@@ -914,9 +914,8 @@ textarea {
 	        success: function(result) {
 	            if (result.status === "success") {
 	                alert("삭제되었습니다.");
-	                $('.modal-overlay').removeClass('active');
-	                $('.bega-modal').removeClass('active');
-	                
+	                closeBegaModal();
+
 	                setTimeout(function() {
 	                    getBegaInsertList();
 	                }, 300);
@@ -934,7 +933,8 @@ textarea {
 	// ========== 설비검색 모달 ==========
 	function openFacListModal() {
 	    document.getElementById('facListModal').style.display = 'flex';
-	    
+	    registerModalOpen('begaInsert-facPicker', closeFacListModal);
+
 	    // 기존 테이블 제거
 	    if (window.facListTable) {
 	        window.facListTable.destroy();
@@ -983,6 +983,7 @@ textarea {
 	}
 
 	function closeFacListModal() {
+	    registerModalClose('begaInsert-facPicker');
 	    document.getElementById('facListModal').style.display = 'none';
 	}
 
@@ -1088,18 +1089,23 @@ textarea {
 	    
 	    modalOverlay.classList.add('active');
 	    begaModal.classList.add('active');
-	    
+	    registerModalOpen('begaInsert-main', closeBegaModal);
+
 	    $('.btn-delete').hide();
 	});
 
-	closeButton.addEventListener('click', function() {
+	function closeBegaModal() {
+	    registerModalClose('begaInsert-main');
 	    modalOverlay.classList.remove('active');
 	    begaModal.classList.remove('active');
+	}
+
+	closeButton.addEventListener('click', function() {
+	    closeBegaModal();
 	});
 
 	headerCloseBtn.addEventListener('click', function() {
-	    modalOverlay.classList.remove('active');
-	    begaModal.classList.remove('active');
+	    closeBegaModal();
 	});
 
 	// ========== 저장 버튼 ==========

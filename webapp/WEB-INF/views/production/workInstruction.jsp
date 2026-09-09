@@ -1465,9 +1465,10 @@ input[type="date"] {
 	
 	//공정이동식별표 파일저장
 	$("#jPrintBtn").on("click",function(){
-		
+
 		workPrintStatusModal.style.display = "block";
-		
+		registerModalOpen('workInstruction-printStatus', workPrintStatusCloseBtn);
+
 		//체크한 데이터만 조회
 		if(workAllDataTable.getSelectedData().length > 0){
 			
@@ -1485,7 +1486,13 @@ input[type="date"] {
 				}
 
 			}
-			
+
+			//클릭(사용자 제스처) 시점에 바로 빈 창을 열어야 팝업이 차단되지 않음 - 내용은 ajax 응답 후 채움
+			var reportWin = window.open('', '_blank');
+			if(reportWin){
+				reportWin.document.write('<p style="font-family:sans-serif;padding:20px;">공정이동식별표 생성중입니다...</p>');
+			}
+
 			$.ajax({
 				url:"/tkheat/production/workjisi/heat/workHeatListProcPrint",
 				type:"post",
@@ -1495,42 +1502,52 @@ input[type="date"] {
 					"jisi_lot_array":jisiLotArray
 				},
 				success:function(result){
-					
+
 					workPrintStatusCloseBtn();
 					getWorkJisiAllListData();
     				var fileUrl = "/tkPrint/workProc/"+result.heatData;
-                    $("#workJisi").attr("src",fileUrl);
-                    workJisiReportModal.style.display = "flex";
-					
+                    if(reportWin){
+                        reportWin.location.href = fileUrl;
+                    }else{
+                        alert("팝업이 차단되어 새 창을 열 수 없습니다. 브라우저 팝업 차단을 해제해주세요.");
+                    }
+
 				}
 			});
-		}		
-		
+		}
+
 	});
-	
+
 	//작업지시서 파일저장
 	$("#hPrintBtn").on("click",function(){
-		
+
 		workPrintStatusModal.style.display = "block";
-		
+		registerModalOpen('workInstruction-printStatus', workPrintStatusCloseBtn);
+
 		//체크한 데이터만 조회
 		if(workAllDataTable.getSelectedData().length > 0){
-			
+
 			var selectArray = workAllDataTable.getSelectedData();
 			var jisiLotArray = new Array();
-			
+
 			for(var i=0; i<selectArray.length; i++){
-				
+
 				if(selectArray[i].jisi_lot != null){
 					//작업번호가 다를경우 alert창
-					jisiLotArray.push(selectArray[i].jisi_lot);	
+					jisiLotArray.push(selectArray[i].jisi_lot);
 				}else{
 					alert("작업지시 등록진행 후 파일을 저장해주십시오!");
 					return false;
 				}
 
 			}
-			
+
+			//클릭(사용자 제스처) 시점에 바로 빈 창을 열어야 팝업이 차단되지 않음 - 내용은 ajax 응답 후 채움
+			var reportWin = window.open('', '_blank');
+			if(reportWin){
+				reportWin.document.write('<p style="font-family:sans-serif;padding:20px;">작업지시서 생성중입니다...</p>');
+			}
+
 			$.ajax({
 				url:"/tkheat/production/workjisi/heat/workHeatListWorkPrint",
 				type:"post",
@@ -1540,16 +1557,19 @@ input[type="date"] {
 					"jisi_lot_array":jisiLotArray
 				},
 				success:function(result){
-					
+
 					workPrintStatusCloseBtn();
 					getWorkJisiAllListData();
     				var fileUrl = "/tkPrint/workJisi/"+result.heatData;
-                    $("#workJisi").attr("src",fileUrl);
-                    workJisiReportModal.style.display = "flex";
-					
+                    if(reportWin){
+                        reportWin.location.href = fileUrl;
+                    }else{
+                        alert("팝업이 차단되어 새 창을 열 수 없습니다. 브라우저 팝업 차단을 해제해주세요.");
+                    }
+
 				}
 			});
-		}		
+		}
 	});
 	
 	
@@ -1761,6 +1781,7 @@ input[type="date"] {
 		});
 */
 		workJHModal.style.display = 'flex'; // 모달 표시
+		registerModalOpen('workInstruction-jh', workJHCloseBtn);
 	}
 
 	function nullValueRtn(value){
@@ -1783,6 +1804,7 @@ input[type="date"] {
 			
 			getWorkHList();
 			workHModal.style.display = 'flex'; // 모달 표시
+			registerModalOpen('workInstruction-h', workHCloseBtn);
 		}else if(wGubun = 'R'){
 			//모달 오픈
 			
@@ -1817,6 +1839,7 @@ input[type="date"] {
 		getWorkHIpgoDataList();
 		workHIpgoDataList();
 		workHIpgoModal.style.display = 'flex';
+		registerModalOpen('workInstruction-hIpgo', workHIpgoCloseBtn);
 	}
 	
 	function workHIpgoDataList(){
@@ -2223,20 +2246,25 @@ input[type="date"] {
 	}
 	
 	function workHCloseBtn(){
+		registerModalClose('workInstruction-h');
 		$("#workHForm")[0].reset();
 		workHIpgoSelectOrdCodeArray = new Array();
 		workHModal.style.display = 'none'; // 모달 숨김
 	}
 	function workJisiReportCloseBtn(){
+		registerModalClose('workInstruction-jisiReport');
 		workJisiReportModal.style.display = 'none'; // 모달 숨김
 	}
 	function workJHCloseBtn(){
+		registerModalClose('workInstruction-jh');
 		workJHModal.style.display = 'none'; // 모달 숨김
 	}
 	function workPrintStatusCloseBtn(){
+		registerModalClose('workInstruction-printStatus');
 		workPrintStatusModal.style.display = 'none'; // 모달 숨김
 	}
-	function workHIpgoCloseBtn(){		
+	function workHIpgoCloseBtn(){
+		registerModalClose('workInstruction-hIpgo');
 		workHIpgoModal.style.display = 'none'; // 모달 숨김
 	}
 	
@@ -2295,9 +2323,17 @@ input[type="date"] {
 
 		getWorkHList();
 		workHModal.style.display = 'flex'; // 모달 표시
+		registerModalOpen('workInstruction-h', workHCloseBtn);
 
 	});
-	
+
+	// ========== 엑셀 다운로드 ==========
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "작업지시_" + today + ".xlsx";
+	    workAllDataTable.download("xlsx", filename, { sheetName: "작업지시" });
+	});
+
     </script>
 
 	</body>

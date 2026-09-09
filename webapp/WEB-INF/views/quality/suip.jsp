@@ -833,6 +833,7 @@ function suipDetail(itst_code){
 
             $('.modal-overlay').addClass('active');
             $('.suip-modal').addClass('active');
+            registerModalOpen('suip-main', suipModalClose);
         },
         error: function(xhr, status, error) {
             console.error("❌ 상세 조회 오류:", error);
@@ -893,9 +894,8 @@ function save() {
             alert("저장 되었습니다.");
             
             // ✅ 수정: .suipModal → .suip-modal
-            $('.modal-overlay').removeClass('active');
-            $('.suip-modal').removeClass('active');
-            
+            suipModalClose();
+
             // 모달 위치 초기화
             $('.suip-modal').css({
                 'left': '50%',
@@ -948,9 +948,8 @@ function deleteSuip() {
         success: function(result) {
             if (result.status === "success") {
                 alert("삭제되었습니다.");
-                $('.modal-overlay').removeClass('active');
-                $('.suip-modal').removeClass('active');
-                
+                suipModalClose();
+
                 setTimeout(function() {
                     getSuipList();
                 }, 300);
@@ -1082,6 +1081,12 @@ const modalOverlay = document.querySelector('.modal-overlay');
 const closeButton = document.querySelector('.close');
 const headerCloseBtn = document.querySelector('.header-close-btn');
 
+function suipModalClose() {
+    registerModalClose('suip-main');
+    modalOverlay.classList.remove('active');
+    suipModal.classList.remove('active');
+}
+
 insertButton.addEventListener('click', function() {
     isEditMode = false;
     $('#suipForm')[0].reset();
@@ -1092,21 +1097,20 @@ insertButton.addEventListener('click', function() {
     suipModal.style.left = '50%';
     suipModal.style.top = '50%';
     suipModal.style.transform = 'translate(-50%, -50%)';
-    
+
     modalOverlay.classList.add('active');
     suipModal.classList.add('active');
-    
+    registerModalOpen('suip-main', suipModalClose);
+
     $('.btn-delete').hide();
 });
 
 closeButton.addEventListener('click', function() {
-    modalOverlay.classList.remove('active');
-    suipModal.classList.remove('active');
+    suipModalClose();
 });
 
 headerCloseBtn.addEventListener('click', function() {
-    modalOverlay.classList.remove('active');
-    suipModal.classList.remove('active');
+    suipModalClose();
 });
 
 // ========== 저장 버튼 ==========

@@ -24,6 +24,14 @@ public interface OperationDao {
 	
 	List<Users> getNoticeList();
 
+	void noticeSave(Users users);
+
+	void noticeUpdateSave(Users users);
+
+	Users noticeDetail(Users users);
+
+	void noticeDelete(int notice_code);
+
 	List<Chulgo> getYearSaleList(Chulgo chulgo);
 	
 	List<Chulgo> getYearData(Chulgo chulgo);

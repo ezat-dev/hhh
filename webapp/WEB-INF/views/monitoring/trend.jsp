@@ -26,8 +26,8 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            gap: 15px;
-            padding: 2px 20px;
+            gap: 10px;
+            padding: 2px 16px;
             background: #f4f4f4;
             border-radius: 8px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -101,9 +101,10 @@
         }
         
         .datetimeSet {
-            height: 38px;
-            font-size: 15px;
-            padding: 0 12px;
+            width: 128px;
+            height: 34px;
+            font-size: 13px;
+            padding: 0 6px;
             border-radius: 6px;
             border: 1px solid #ccc;
             background: white;
@@ -122,7 +123,42 @@
             font-weight: bold;
             color: #555;
         }
-        
+
+        /* 빠른 시간범위 버튼 */
+        .quick-range-selector {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding-left: 6px;
+            border-left: 1px solid #ccc;
+        }
+
+        .range-btn {
+            min-width: 44px;
+            height: 34px;
+            padding: 0 8px;
+            border: 1px solid #007bff;
+            background: white;
+            color: #007bff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .range-btn:hover {
+            background: #e3f2fd;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+        }
+
+        .range-btn.active {
+            background: #007bff;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.4);
+        }
+
         /* 조회 버튼 */
         .select-button {
             display: flex;
@@ -235,7 +271,15 @@
             <span class="mid"> ~ </span>
             <input type="text" autocomplete="off" class="datetimeSet datetimepicker_datetime" id="endDate">
         </div>
-        
+
+        <div class="quick-range-selector" id="quickRangeArea">
+            <button class="range-btn" data-hours="12">12시간</button>
+            <button class="range-btn" data-hours="6">6시간</button>
+            <button class="range-btn" data-hours="24">24시간</button>
+            <button class="range-btn" data-hours="7">7시간</button>
+            <button class="range-btn" data-hours="5">5시간</button>
+        </div>
+
         <button class="select-button" id="btnSearch">
             <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
             조회
@@ -275,6 +319,9 @@
 </div>
 
 <script>
+//트렌드 화면은 전역 조회중 오버레이(pluginpage.jsp)를 끔
+window.disableGlobalLoadingOverlay = true;
+
 let now_page_code = "d03";
 
 /* 전역 변수 */
@@ -299,6 +346,30 @@ function before12Hours(){
     d.setHours(d.getHours()-12);
     return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "
          + pad(d.getHours())+":"+pad(d.getMinutes());
+}
+
+/* "YYYY-MM-DD HH:mm" 문자열에 시간(hours)을 더한 동일 형식 문자열 반환 */
+function addHoursToDateStr(dateStr, hours){
+    const parts = dateStr.split(" ");
+    const dateParts = parts[0].split("-").map(Number);
+    const timeParts = parts[1].split(":").map(Number);
+    const d = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1]);
+    d.setHours(d.getHours() + hours);
+    return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "
+         + pad(d.getHours())+":"+pad(d.getMinutes());
+}
+
+/* 빠른 시간범위 선택: 현재 시각부터 N시간 전까지의 데이터 조회 */
+function selectQuickRange(hours){
+    const nowStr = now();
+
+    $("#startDate").val(addHoursToDateStr(nowStr, -hours));
+    $("#endDate").val(nowStr);
+
+    $(".range-btn").removeClass("active");
+    $('.range-btn[data-hours="' + hours + '"]').addClass("active");
+
+    loadHistory();
 }
 
 /* 범례 상태 저장/복원 */
@@ -791,6 +862,12 @@ function switchViewMode(mode, selectedHogi){
 
 /* 이벤트 핸들러 */
 $("#btnSearch").on("click", loadHistory);
+
+/* 빠른 시간범위 버튼 클릭 */
+$(".range-btn").on("click", function(){
+    const hours = parseInt($(this).data("hours"), 10);
+    selectQuickRange(hours);
+});
 
 $("#toggleMarker").on("change",function(){
     markerEnabled = this.checked;

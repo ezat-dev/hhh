@@ -140,7 +140,34 @@ public class WorkJisiTk {
 	private String wstd_gj35;
 	private String wstd_gj38;
 	private String wstd_gj42;
-	
+
+	//LOT 보고서 - 존 투입시간(열처리 예열/침탄/확산/강온) / 템퍼링 온도·시간
+	private String zone_time_preheat;
+	private String zone_time_carburize;
+	private String zone_time_diffuse;
+	private String zone_time_cooldown;
+	private String tf_temp;
+	private String tf_time;
+
+	//LOT 보고서 - 두 단계(열처리/템퍼링)가 한 LOT에 모두 있을 수 있어, 단계별 설비/작업기간을 각각 따로 보관
+	private String heat_fac_name;
+	private int heat_fac_code;
+	private String heat_strt;
+	private String heat_end;
+	private String tf_fac_name;
+	private int tf_fac_code;
+	private String tf_strt;
+	private String tf_end;
+
+	//LOT 보고서 - 리스트/출력 구분: "ALL"(전체, 기본값)/"HEAT"(침탄로만)/"TF"(템퍼링만)
+	private String report_type;
+
+	//LOT 보고서 - 작업기간중 알람이력(tb_alarmlist)
+	private String a_hogi;
+	private String regtime;
+	private String a_value;
+	private String a_comment;
+
 	//CORP 테이블(거래처)
 	private int corp_code;
 	private String corp_name;		//거래처명
@@ -406,7 +433,8 @@ public class WorkJisiTk {
 	
 	private String fac_name_bcf;
 	private String fac_name_tf;
-	
+	private int fac_code_bcf; //체크시트 - 실제 처리한 열처리 설비코드(공정표준 조회용)
+
 	private String ilbo_cost;
 	private float ilbo_amnt;
 	private String ilbo_su_diff;
@@ -1905,6 +1933,120 @@ public class WorkJisiTk {
 	public void setWstd_gj42(String wstd_gj42) {
 		this.wstd_gj42 = wstd_gj42;
 	}
+	public String getZone_time_preheat() {
+		return zone_time_preheat;
+	}
+	public void setZone_time_preheat(String zone_time_preheat) {
+		this.zone_time_preheat = zone_time_preheat;
+	}
+	public String getZone_time_carburize() {
+		return zone_time_carburize;
+	}
+	public void setZone_time_carburize(String zone_time_carburize) {
+		this.zone_time_carburize = zone_time_carburize;
+	}
+	public String getZone_time_diffuse() {
+		return zone_time_diffuse;
+	}
+	public void setZone_time_diffuse(String zone_time_diffuse) {
+		this.zone_time_diffuse = zone_time_diffuse;
+	}
+	public String getZone_time_cooldown() {
+		return zone_time_cooldown;
+	}
+	public void setZone_time_cooldown(String zone_time_cooldown) {
+		this.zone_time_cooldown = zone_time_cooldown;
+	}
+	public String getTf_temp() {
+		return tf_temp;
+	}
+	public void setTf_temp(String tf_temp) {
+		this.tf_temp = tf_temp;
+	}
+	public String getTf_time() {
+		return tf_time;
+	}
+	public void setTf_time(String tf_time) {
+		this.tf_time = tf_time;
+	}
+	public String getHeat_fac_name() {
+		return heat_fac_name;
+	}
+	public void setHeat_fac_name(String heat_fac_name) {
+		this.heat_fac_name = heat_fac_name;
+	}
+	public int getHeat_fac_code() {
+		return heat_fac_code;
+	}
+	public void setHeat_fac_code(int heat_fac_code) {
+		this.heat_fac_code = heat_fac_code;
+	}
+	public String getHeat_strt() {
+		return heat_strt;
+	}
+	public void setHeat_strt(String heat_strt) {
+		this.heat_strt = heat_strt;
+	}
+	public String getHeat_end() {
+		return heat_end;
+	}
+	public void setHeat_end(String heat_end) {
+		this.heat_end = heat_end;
+	}
+	public String getTf_fac_name() {
+		return tf_fac_name;
+	}
+	public void setTf_fac_name(String tf_fac_name) {
+		this.tf_fac_name = tf_fac_name;
+	}
+	public int getTf_fac_code() {
+		return tf_fac_code;
+	}
+	public void setTf_fac_code(int tf_fac_code) {
+		this.tf_fac_code = tf_fac_code;
+	}
+	public String getTf_strt() {
+		return tf_strt;
+	}
+	public void setTf_strt(String tf_strt) {
+		this.tf_strt = tf_strt;
+	}
+	public String getTf_end() {
+		return tf_end;
+	}
+	public void setTf_end(String tf_end) {
+		this.tf_end = tf_end;
+	}
+	public String getReport_type() {
+		return report_type;
+	}
+	public void setReport_type(String report_type) {
+		this.report_type = report_type;
+	}
+	public String getA_hogi() {
+		return a_hogi;
+	}
+	public void setA_hogi(String a_hogi) {
+		this.a_hogi = a_hogi;
+	}
+	public String getRegtime() {
+		return regtime;
+	}
+	public void setRegtime(String regtime) {
+		this.regtime = regtime;
+	}
+	public String getA_value() {
+		return a_value;
+	}
+	public void setA_value(String a_value) {
+		this.a_value = a_value;
+	}
+	public String getA_comment() {
+		return a_comment;
+	}
+	public void setA_comment(String a_comment) {
+		this.a_comment = a_comment;
+	}
 	public String getIlbo_lot_date() {
 		return ilbo_lot_date;
 	}
@@ -2432,6 +2574,12 @@ public class WorkJisiTk {
 	}
 	public void setFac_name_bcf(String fac_name_bcf) {
 		this.fac_name_bcf = fac_name_bcf;
+	}
+	public int getFac_code_bcf() {
+		return fac_code_bcf;
+	}
+	public void setFac_code_bcf(int fac_code_bcf) {
+		this.fac_code_bcf = fac_code_bcf;
 	}
 	public String getFac_name_tf() {
 		return fac_name_tf;

@@ -172,7 +172,10 @@ public class ProductionServiceImpl implements ProductionService{
   	public List<WorkJisiTk> getLotListReport(WorkJisiTk workJisiTk){
   		return productionDao.getLotListReport(workJisiTk);
   	}
-	
-	
-	
+
+	@Override
+	public List<WorkJisiTk> getLotAlarmList(WorkJisiTk workJisiTk){
+		return productionDao.getLotAlarmList(workJisiTk);
+	}
+
 }

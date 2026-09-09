@@ -639,6 +639,13 @@ let now_page_code = "e07";
       },
     });
   }
+
+  // ========== 엑셀 다운로드 ==========
+  $(".excel-button").click(function () {
+      const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+      const filename = "설비점검현황_월별_" + today + ".xlsx";
+      userTable.download("xlsx", filename, { sheetName: "설비점검현황(월별)" });
+  });
 </script>
 	
 

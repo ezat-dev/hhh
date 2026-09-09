@@ -62,7 +62,9 @@ public interface ManagementService {
 	List<Standard> getChimStandardList(Standard standard);
 	
 	Standard getChimStandardDetail(Standard standard);
-	
+
+	Standard getProcessStandardForChart(Standard standard);
+
 	void chimStandardInsertSave(Standard standard);
 	
 	void chimStandardUpdateSave(Standard standard);

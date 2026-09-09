@@ -201,5 +201,10 @@ public class ProductionDaoImpl implements ProductionDao{
 	public List<WorkJisiTk> getLotListReport(WorkJisiTk workJisiTk){
 		return sqlSession.selectList("workjisitk.getLotListReport", workJisiTk);
 	}
-	
+
+	@Override
+	public List<WorkJisiTk> getLotAlarmList(WorkJisiTk workJisiTk){
+		return sqlSession.selectList("workjisitk.getLotAlarmList", workJisiTk);
+	}
+
 }

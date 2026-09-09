@@ -312,7 +312,7 @@ $(function(){
     var tdate = todayDate();
     var ydate = yesterDate();
     
-    $("#sdate").val(ydate);
+    $("#sdate").val(tdate);
     $("#edate").val(tdate);
     
     getChimSiljukList();

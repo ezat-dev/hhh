@@ -43,8 +43,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 import com.tkheat.domain.Ipgo;
+import com.tkheat.domain.Monitoring;
 import com.tkheat.domain.Work;
 import com.tkheat.domain.WorkJisiTk;
+import com.tkheat.service.MonitoringService;
 import com.tkheat.service.ProductionService;
 
 import net.sf.jasperreports.engine.JRException;
@@ -52,11 +54,30 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.SimpleJasperReportsContext;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.time.Second;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+
+import java.awt.Font;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import javax.imageio.ImageIO;
+
 @Controller
 public class ProductionController {
 
 	@Autowired
 	private ProductionService productionService;
+
+	@Autowired
+	private MonitoringService monitoringService;
 
 
 	//작업스케줄 - 화면로드
@@ -804,23 +825,25 @@ public class ProductionController {
 	// LOT 보고서 리스트 조회
 	@RequestMapping(value = "/production/lotReport/getLotList", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> getLotList(@RequestParam(value = "lotno_date", required = false) String lotno_date) {
+	public Map<String, Object> getLotList(@RequestParam(value = "lotno_date", required = false) String lotno_date,
+	        @RequestParam(value = "report_type", required = false, defaultValue = "ALL") String reportType) {
 	    Map<String, Object> rtnMap = new HashMap<String, Object>();
-	    
+
 	    try {
 	        WorkJisiTk workJisiTk = new WorkJisiTk();
-	        
+	        workJisiTk.setReport_type(reportType);
+
 	        if (lotno_date != null && !lotno_date.isEmpty()) {
 	            String date = lotno_date.replace("-", ""); // 2025-01 -> 202501
 	            workJisiTk.setLotno_date(date);
 	        }
-	        
+
 	        List<WorkJisiTk> lotList = productionService.getLotList(workJisiTk);
 	        List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
-	        
+
 	        for (int i = 0; i < lotList.size(); i++) {
 	            HashMap<String, Object> rowMap = new HashMap<String, Object>();
-	            
+
 	            rowMap.put("ilbo_lot", lotList.get(i).getIlbo_lot());
 	            rowMap.put("ilbo_strt", lotList.get(i).getIlbo_strt());
 	            rowMap.put("ilbo_end", lotList.get(i).getIlbo_end());
@@ -828,8 +851,11 @@ public class ProductionController {
 	            rowMap.put("corp_name", lotList.get(i).getCorp_name());
 	            rowMap.put("prod_name", lotList.get(i).getProd_name());
 	            rowMap.put("prod_no", lotList.get(i).getProd_no());
+	            rowMap.put("fac_code", lotList.get(i).getFac_code());
 	            rowMap.put("fac_name", lotList.get(i).getFac_name());
-	            
+	            rowMap.put("heat_fac_name", lotList.get(i).getHeat_fac_name());
+	            rowMap.put("tf_fac_name", lotList.get(i).getTf_fac_name());
+
 	            rtnList.add(rowMap);
 	        }
 	        
@@ -881,10 +907,52 @@ public class ProductionController {
 	        for (WorkJisiTk v : lotInfoList) {
 	            System.out.println("v.getIlbo_strt() = " + v.getIlbo_strt());
 	        }
-	        
-	        Map<String, Object> reportMap = new HashMap<>();
-	        reportMap.put("lotno", lotno);
-	        
+
+        // 2) 한 LOT이 열처리->템퍼링 두 단계(각각 다른 설비/작업기간)를 거칠 수 있으므로,
+        //    여러 행(단계별로 1개씩)을 한 행으로 병합해서 리포트에는 항상 1건만 넘김.
+        //    단, 침탄로/템퍼링 개별 보고서 요청이면 해당 단계 행만 남기고 병합(다른 단계 정보가 섞여 나오지 않게)
+        String reportType = workJisiTk.getReport_type();
+        List<WorkJisiTk> mergeSourceList = lotInfoList;
+        if ("HEAT".equals(reportType)) {
+            mergeSourceList = new ArrayList<>();
+            for (WorkJisiTk v : lotInfoList) {
+                if ("A".equals(v.getIlbo_gubn())) {
+                    mergeSourceList.add(v);
+                }
+            }
+        } else if ("TF".equals(reportType)) {
+            mergeSourceList = new ArrayList<>();
+            for (WorkJisiTk v : lotInfoList) {
+                if ("R".equals(v.getIlbo_gubn())) {
+                    mergeSourceList.add(v);
+                }
+            }
+        }
+        if (mergeSourceList.isEmpty()) {
+            mergeSourceList = lotInfoList;
+        }
+
+        WorkJisiTk merged = mergeLotReportRows(mergeSourceList);
+        List<WorkJisiTk> reportDataList = new ArrayList<>();
+        reportDataList.add(merged);
+
+        Map<String, Object> reportMap = new HashMap<>();
+        reportMap.put("lotno", lotno);
+
+        // 3) 단계별 작업기간중 알람이력 (해당 단계가 존재할 때만)
+        StringBuilder alarmText = new StringBuilder();
+        appendStageAlarmText(alarmText, "열처리(" + nullToDash(merged.getHeat_fac_name()) + ")",
+                merged.getHeat_fac_code(), merged.getHeat_strt(), merged.getHeat_end());
+        appendStageAlarmText(alarmText, "템퍼링(" + nullToDash(merged.getTf_fac_name()) + ")",
+                merged.getTf_fac_code(), merged.getTf_strt(), merged.getTf_end());
+        reportMap.put("alarmListText", alarmText.length() > 0 ? alarmText.toString() : "해당 작업기간 중 발생한 알람이 없습니다.");
+
+        // 4) 단계별 온도트렌드 차트 (해당 단계가 존재할 때만 각각 별도 이미지로)
+        reportMap.put("heatTrendChartImage", buildStageTrendChartImage("열처리 - " + nullToDash(merged.getHeat_fac_name()),
+                merged.getHeat_fac_code(), merged.getHeat_strt(), merged.getHeat_end()));
+        reportMap.put("tfTrendChartImage", buildStageTrendChartImage("템퍼링 - " + nullToDash(merged.getTf_fac_name()),
+                merged.getTf_fac_code(), merged.getTf_strt(), merged.getTf_end()));
+
 	        // Report - lot보고서
 	        String reportPath = request.getServletContext()
 	                .getRealPath("/WEB-INF/resources/reports/lotReport.jrxml");
@@ -895,7 +963,7 @@ public class ProductionController {
 	        JasperPrint jasperPrint = JasperFillManager.fillReport(
 	                report,
 	                reportMap,
-	                new JRBeanCollectionDataSource(lotInfoList)
+	                new JRBeanCollectionDataSource(reportDataList)
 	        );
 	        
 	        System.out.println("▶ jasperPrint 생성 완료");
@@ -941,5 +1009,271 @@ public class ProductionController {
 	
 	
 	
+
+
+	//LOT 보고서 - 설비코드 -> tb_alarmlist.a_hogi 태그 매핑 (침탄로 BCF1~5, 템퍼링은 1/2호기 구분없이 TF 하나로 수집됨)
+	private String mapFacCodeToAlarmHogi(int facCode) {
+		switch (facCode) {
+			case 1: return "BCF1";
+			case 2: return "BCF2";
+			case 3: return "BCF3";
+			case 4: return "BCF4";
+			case 18: return "BCF5";
+			case 16:
+			case 17: return "TF";
+			default: return null;
+		}
+	}
+
+	//LOT 보고서 - 알람이력 목록을 리포트에 한 번에 넣을 텍스트 블록으로 가공
+	private String buildAlarmListText(List<WorkJisiTk> alarmList) {
+		if (alarmList == null || alarmList.isEmpty()) {
+			return "해당 작업기간 중 발생한 알람이 없습니다.";
+		}
+
+		StringBuilder sb = new StringBuilder();
+		for (WorkJisiTk a : alarmList) {
+			String time = a.getRegtime();
+			if (time != null && time.length() >= 16) {
+				time = time.substring(5, 16); // "yyyy-MM-dd HH:mm:ss" -> "MM-dd HH:mm"
+			}
+			String state = "1".equals(a.getA_value()) ? "발생" : "해제";
+			sb.append(time).append("  ").append(a.getA_comment()).append(" (").append(state).append(")\n");
+		}
+		return sb.toString();
+	}
+
+	//LOT 보고서 - 온도트렌드 차트 이미지 생성 (TrendSnapshotScheduler.savePng()와 동일한 방식, 파일 대신 byte[] 반환)
+	//LOT 보고서 - 여러 WORKILBO 행(단계별)을 한 행으로 병합. 작업시작/종료는 전체 단계 중 최소/최대로 재계산
+	private WorkJisiTk mergeLotReportRows(List<WorkJisiTk> rows) {
+		WorkJisiTk merged = new WorkJisiTk();
+		String earliestStrt = null;
+		String latestEnd = null;
+
+		for (WorkJisiTk row : rows) {
+			mergeStringFields(merged, row);
+
+			if ("A".equals(row.getIlbo_gubn())) {
+				merged.setHeat_fac_name(row.getFac_name());
+				merged.setHeat_fac_code(row.getFac_code());
+				merged.setHeat_strt(row.getIlbo_strt());
+				merged.setHeat_end(row.getIlbo_end());
+			} else if ("R".equals(row.getIlbo_gubn())) {
+				merged.setTf_fac_name(row.getFac_name());
+				merged.setTf_fac_code(row.getFac_code());
+				merged.setTf_strt(row.getIlbo_strt());
+				merged.setTf_end(row.getIlbo_end());
+			}
+
+			if (isValidDateTime(row.getIlbo_strt()) && (earliestStrt == null || row.getIlbo_strt().compareTo(earliestStrt) < 0)) {
+				earliestStrt = row.getIlbo_strt();
+			}
+			if (isValidDateTime(row.getIlbo_end()) && (latestEnd == null || row.getIlbo_end().compareTo(latestEnd) > 0)) {
+				latestEnd = row.getIlbo_end();
+			}
+		}
+
+		merged.setIlbo_strt(earliestStrt);
+		merged.setIlbo_end(latestEnd);
+		return merged;
+	}
+
+	//target에 값이 비어있는 String 필드만 source의 값으로 채움 (여러 단계 행에 나뉘어 있는 정보를 한 행으로 합치기 위함)
+	private void mergeStringFields(WorkJisiTk target, WorkJisiTk source) {
+		for (Method getter : WorkJisiTk.class.getMethods()) {
+			if (!getter.getName().startsWith("get") || getter.getParameterCount() != 0 || getter.getReturnType() != String.class) {
+				continue;
+			}
+			try {
+				String currentVal = (String) getter.invoke(target);
+				if (currentVal != null && !currentVal.isEmpty()) {
+					continue;
+				}
+				String newVal = (String) getter.invoke(source);
+				if (newVal == null || newVal.isEmpty()) {
+					continue;
+				}
+				Method setter = WorkJisiTk.class.getMethod("set" + getter.getName().substring(3), String.class);
+				setter.invoke(target, newVal);
+			} catch (Exception e) {
+				//필드 하나 실패해도 나머지는 계속 진행
+			}
+		}
+	}
+
+	private boolean isValidDateTime(String s) {
+		return s != null && !s.isEmpty() && !s.startsWith("1900");
+	}
+
+	private String nullToDash(String s) {
+		return (s == null || s.isEmpty()) ? "-" : s;
+	}
+
+	//LOT 보고서 - 단계 하나(열처리 또는 템퍼링)의 알람이력을 텍스트로 뽑아 sb에 이어붙임. 단계가 없으면 아무것도 추가하지 않음
+	private void appendStageAlarmText(StringBuilder sb, String stageLabel, int facCode, String strt, String end) {
+		String hogi = mapFacCodeToAlarmHogi(facCode);
+		if (hogi == null || !isValidDateTime(strt) || !isValidDateTime(end)) {
+			return;
+		}
+
+		WorkJisiTk alarmParam = new WorkJisiTk();
+		alarmParam.setSdate(strt);
+		alarmParam.setEdate(end);
+		alarmParam.setA_hogi(hogi);
+		List<WorkJisiTk> alarmList = productionService.getLotAlarmList(alarmParam);
+		if (alarmList == null || alarmList.isEmpty()) {
+			return;
+		}
+
+		sb.append("[").append(stageLabel).append("]\n");
+		sb.append(buildAlarmListText(alarmList));
+		sb.append("\n");
+	}
+
+	//jrxml에서 쓰는 굴림 폰트(한글 깨짐 방지용, 차트는 PDF 폰트임베딩이 아니라 이미지라 별도 로딩 필요)
+	private Font loadKoreanFont(float size, int style) {
+		try (InputStream is = getClass().getClassLoader().getResourceAsStream("fonts/gulim.ttf")) {
+			if (is == null) {
+				return new Font("SansSerif", style, (int) size);
+			}
+			Font base = Font.createFont(Font.TRUETYPE_FONT, is);
+			return base.deriveFont(style, size);
+		} catch (Exception e) {
+			return new Font("SansSerif", style, (int) size);
+		}
+	}
+
+	//LOT 보고서 - 단계 하나(열처리 또는 템퍼링)의 온도트렌드 차트 이미지 생성. 단계가 없으면(설비코드 0 등) null 반환
+	private byte[] buildStageTrendChartImage(String stageTitle, int facCode, String sdate, String edate) {
+		if (facCode == 0 || !isValidDateTime(sdate) || !isValidDateTime(edate)) {
+			return null;
+		}
+
+		try {
+			Monitoring param = new Monitoring();
+			param.setStartDate(sdate);
+			param.setEndDate(edate);
+
+			List<Monitoring> list = monitoringService.gettrend(param);
+
+			if (list == null || list.isEmpty()) {
+				return null;
+			}
+
+			boolean isTempering = (facCode == 16 || facCode == 17);
+
+			TimeSeries series1 = new TimeSeries(isTempering ? "존1 온도" : "CF(PV)");
+			TimeSeries series2 = new TimeSeries(isTempering ? "존2 온도" : "OIL(PV)");
+
+			SimpleDateFormat parseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			for (Monitoring m : list) {
+				String raw = m.getTdatetime();
+				if (raw == null) {
+					continue;
+				}
+				if (raw.length() > 19) {
+					raw = raw.substring(0, 19);
+				}
+
+				Date t;
+				try {
+					t = parseFormat.parse(raw);
+				} catch (Exception ex) {
+					continue;
+				}
+
+				Second second = new Second(t);
+
+				if (isTempering) {
+					if (m.getTf1_zone1() != null) {
+						series1.addOrUpdate(second, m.getTf1_zone1());
+					}
+					if (m.getTf1_zone2() != null) {
+						series2.addOrUpdate(second, m.getTf1_zone2());
+					}
+				} else {
+					Integer cf = getBcfCfByFacCode(m, facCode);
+					Integer oil = getBcfOilByFacCode(m, facCode);
+					if (cf != null) {
+						series1.addOrUpdate(second, cf);
+					}
+					if (oil != null) {
+						series2.addOrUpdate(second, oil);
+					}
+				}
+			}
+
+			if (series1.isEmpty() && series2.isEmpty()) {
+				return null;
+			}
+
+			TimeSeriesCollection dataset = new TimeSeriesCollection();
+			dataset.addSeries(series1);
+			dataset.addSeries(series2);
+
+			JFreeChart chart = ChartFactory.createTimeSeriesChart(
+					stageTitle,
+					"시간",
+					"온도(℃)",
+					dataset,
+					true,
+					true,
+					false
+			);
+
+			//한글 폰트를 명시적으로 지정하지 않으면 서버 환경에 따라 제목/범례/축 한글이 네모(tofu)로 깨져 나옴
+			Font titleFont = loadKoreanFont(14f, Font.BOLD);
+			Font labelFont = loadKoreanFont(11f, Font.PLAIN);
+			Font tickFont = loadKoreanFont(9f, Font.PLAIN);
+
+			chart.getTitle().setFont(titleFont);
+			if (chart.getLegend() != null) {
+				chart.getLegend().setItemFont(labelFont);
+			}
+
+			XYPlot plot = chart.getXYPlot();
+			plot.getDomainAxis().setLabelFont(labelFont);
+			plot.getDomainAxis().setTickLabelFont(tickFont);
+
+			NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+			rangeAxis.setLabelFont(labelFont);
+			rangeAxis.setTickLabelFont(tickFont);
+			//웹 트렌드 화면(monitoring/trend.jsp)과 같은 스케일로 고정 - 안 그러면 LOT마다 데이터 범위가 달라 그래프 축척이 제각각으로 보임
+			rangeAxis.setRange(0, 1200);
+			rangeAxis.setTickUnit(new NumberTickUnit(100));
+
+			BufferedImage bufferedImage = chart.createBufferedImage(900, 400);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(bufferedImage, "png", baos);
+			return baos.toByteArray();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private Integer getBcfCfByFacCode(Monitoring m, int facCode) {
+		switch (facCode) {
+			case 1: return m.getBcf1_cf_pv();
+			case 2: return m.getBcf2_cf_pv();
+			case 3: return m.getBcf3_cf_pv();
+			case 4: return m.getBcf4_cf_pv();
+			case 18: return m.getBcf5_cf_pv();
+			default: return null;
+		}
+	}
+
+	private Integer getBcfOilByFacCode(Monitoring m, int facCode) {
+		switch (facCode) {
+			case 1: return m.getBcf1_oil_pv();
+			case 2: return m.getBcf2_oil_pv();
+			case 3: return m.getBcf3_oil_pv();
+			case 4: return m.getBcf4_oil_pv();
+			case 18: return m.getBcf5_oil_pv();
+			default: return null;
+		}
+	}
 
 }

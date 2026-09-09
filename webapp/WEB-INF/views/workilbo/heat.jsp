@@ -662,7 +662,11 @@ body { display: flex; flex-direction: column; overflow: hidden; }
             <img src="/tkheat/css/image/delete-icon.png" alt="delete" class="button-image">
             삭제
         </button>
-        
+        <button class="excel-button">
+            <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
+            엑셀
+        </button>
+
         <button class="printer-button" id="printBtn">
             <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
 			 체크시트            
@@ -1157,11 +1161,17 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		$("#s_all_edate").val(tdate);
 		
 		getWorkData();
-		
+
 		selectHogiBtn(0);
 //		getWorkDataList();
 
 
+	});
+
+	$(".excel-button").click(function () {
+	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	    const filename = "열처리작업일보_" + today + ".xlsx";
+	    workDataTable.download("xlsx", filename, { sheetName: "열처리작업일보" });
 	});
 
 	//이벤트
@@ -1176,6 +1186,13 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		}
 		
 		checkSheetStatusModal.style.display = "block";
+		registerModalOpen('heat-checksheet-status', checkSheetStatusCloseBtn);
+
+		//클릭(사용자 제스처) 시점에 바로 빈 창을 열어야 팝업이 차단되지 않음 - 내용은 ajax 응답 후 채움
+		var reportWin = window.open('', '_blank');
+		if(reportWin){
+			reportWin.document.write('<p style="font-family:sans-serif;padding:20px;">체크시트 생성중입니다...</p>');
+		}
 
 		var sendObj = {
 				"checkSheetData": selectedData
@@ -1187,18 +1204,21 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			type:"post",
 			dataType:"json",
 			contentType: false,
-			processData: false,			
+			processData: false,
 			data:JSON.stringify(sendObj),
 			success:function(result){
    				var fileUrl = "/tkPrint/workilboCheckSheet/"+result.fileName;
-                $("#checkSheetReport").attr("src",fileUrl);
-                checkSheetReportModal.style.display = "flex";
-				
+                if(reportWin){
+                    reportWin.location.href = fileUrl;
+                }else{
+                    alert("팝업이 차단되어 새 창을 열 수 없습니다. 브라우저 팝업 차단을 해제해주세요.");
+                }
+
                 checkSheetStatusCloseBtn();
 //				getChulgoData();
 			}
 		});
-		
+
 	});
 	
 	$(".bcf_danch_input").on("keydown", function(e){
@@ -1544,9 +1564,9 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 
 		$("#workBcfForm")[0].reset();
 		bcfPendingFacCode = null;
-		bcfPendingUserCode = null;
-		//select에 남아있는 이전(수정모드 등) 선택값을 지워야, 신규등록시 로그인 사용자 기본선택 로직이 정상 동작함
-		$("#workBcfForm select[name='user_code']").val('');
+		//select에 이전(수정모드 등) 선택값이 남아있으면 jQuery val('')로는 지워지지 않으므로(일치하는 option이 없으면 무시됨),
+		//신규등록시엔 pending 메커니즘으로 현재 로그인 사용자를 직접 지정
+		bcfPendingUserCode = tkheatLoginUserCode || null;
 
 		getWorkBcfData();
 		getWorkBcfDataFacCode();
@@ -1554,37 +1574,41 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		ilboLotRtn(1);
 		
 		workBcfModal.style.display = 'flex'; // 모달 보임
-		$("#workBcfForm input[name='ilbo_strt']").val("1900-01-01 00:00");
-		$("#workBcfForm input[name='ilbo_end']").val("1900-01-01 00:00");
+		//작업시작시간은 모달을 여는 시점의 현재시각으로 자동세팅, 작업종료시간은 종료버튼을 누르기 전까지 공란
+		sdateTimeSetBtn('bcfStart');
+		registerModalOpen('heat-bcf', workBcfModalClose);
 	}
-	
-	function workBcfModalClose(){		
+
+	function workBcfModalClose(){
+		registerModalClose('heat-bcf');
 		bcfHardInputReset();
 		workBcfModal.style.display = 'none'; // 모달 숨김
 	}
-	
+
 	//열처리작업 단취완료 이력
 	function workBcfDanchModalOpen(){
 		$("#workBcfDanchForm")[0].reset();
-		
+
 		if(workBcfDataTable.getData().length > 0){
 			alert("이미 선택된 작업이력이 있습니다!");
 			return false;
 		}
-		
+
 		//1주일전 ~ 오늘
 		var ydate = beforeWeekDate();
 		var tdate = todayDate();
-		
+
 		$("#bcf_danch_sdate").val(ydate);
 		$("#bcf_danch_edate").val(tdate);
-		
+
 		getWorkBcfDanchData();
 		getWorkBcfDanchDataList();
-		
+
 		workBcfDanchModal.style.display = 'flex'; // 모달 보임
+		registerModalOpen('heat-bcf-danch', workBcfDanchModalClose);
 	}
 	function workBcfDanchModalClose(){
+		registerModalClose('heat-bcf-danch');
 		workBcfDanchModal.style.display = 'none'; // 모달 숨김
 	}
 
@@ -2271,6 +2295,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	}
 
 	function checkSheetStatusCloseBtn(){
+		registerModalClose('heat-checksheet-status');
 		checkSheetStatusModal.style.display = 'none'; // 모달 숨김
 	}
 
