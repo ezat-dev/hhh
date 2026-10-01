@@ -159,6 +159,15 @@ function tkheatWrapColumnsForDateTruncation(columns){
 		font-size: 10px;
 	}
 
+	/* 전체 Tabulator 리스트의 글자 굵기를 통일(적재/침탄/템퍼링작업실적 페이지 기준 - 일반 굵기).
+	   페이지마다 개별적으로 .tabulator{font-weight:700}을 걸거나, rowFormatter에서 각 행에
+	   인라인 style로 굵게(600~700) 만들던 곳이 많아 여기서 최우선순위로 무효화함.
+	   헤더(.tabulator-col-title)는 가독성을 위해 굵게 유지. */
+	.tabulator .tabulator-row,
+	.tabulator .tabulator-cell {
+		font-weight: 400 !important;
+	}
+
 
 .xdsoft_datetimepicker {
     z-index: 30020 !important;
@@ -614,9 +623,10 @@ function pageObject(paramKey){
 		"b06":["/tkheat/production/workInstructionTk","작업지시NEW"],
 		"b07":["/tkheat/production/lotReport","LOT보고서"],
 		
-		"c01":["/tkheat/process/cleanSiljuk","전세정작업실적"],
+		"c08":["/tkheat/process/danchSiljuk","적재작업실적"],
 		"c02":["/tkheat/process/chimSiljuk","침탄작업실적"],
 		"c03":["/tkheat/process/temSiljuk","템퍼링작업실적"],
+		"c01":["/tkheat/process/cleanSiljuk","전세정작업실적"],
 		"c04":["/tkheat/process/cleanRwSiljuk","후세정작업실적"],
 		"c05":["/tkheat/process/shortSiljuk","쇼트/샌딩작업실적"],
 		"c06":["/tkheat/process/facSiljuk","설비별작업실적"],
@@ -627,7 +637,8 @@ function pageObject(paramKey){
 		"d03":["/tkheat/monitoring/trend","트렌드"],
 		"d04":["/tkheat/monitoring/alarmHistory","알람내역"],
 		"d05":["/tkheat/monitoring/alarmRanking","알람랭킹"],
-		
+		"d06":["/tkheat/monitoring/trend2","트렌드(V2)"],
+
 		"e01":["/tkheat/preservation/sparePart","SparePart관리"],
 		"e02":["/tkheat/preservation/begaInsert","설비비가동등록"],
 		"e03":["/tkheat/preservation/begaAnaly","설비가동율분석"],
@@ -636,13 +647,15 @@ function pageObject(paramKey){
 		"e06":["/tkheat/preservation/dayJeomgeom","설비별점검현황(일별)"],
 		"e07":["/tkheat/preservation/monthJeomgeom","설비별점검현황(월별)"],
 		"e08":["/tkheat/preservation/gigiGojang","측정기기고장이력"],
-		
+		"e09":["/tkheat/preservation/sparePart2","SparePart관리(V2)"],
+
 		"f01":["/tkheat/quality/suip","수입검사"],
 		"f02":["/tkheat/quality/nonInsert","부적합등록"],
 		"f03":["/tkheat/quality/xBar","Xbar-R관리도"],
 		"f04":["/tkheat/quality/jajuStatus","자주검사불량현황"],
 		"f05":["/tkheat/quality/queHard","소입경도현황"],
 		"f06":["/tkheat/quality/temHard","템퍼링경도현황"],
+		"f07":["/tkheat/quality/kpiStatus","KPI관리현황"],
 		
 		"g01":["/tkheat/operation/pIpgoStatus","제품별입고현황"],
 		"g02":["/tkheat/operation/pChulgoStatus","제품별출고현황"],

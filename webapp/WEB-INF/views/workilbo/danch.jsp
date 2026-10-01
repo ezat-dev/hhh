@@ -310,7 +310,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 /*단취작업 등록 모달*/
 .workDanModal{
 	width:1500px;
-	height:680px;
+	height:820px;
 	flex-direction: column;
 	overflow: hidden;
 }
@@ -647,7 +647,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     
     <div class="tab">
     <div class="box1">
-		<form action="" autocomplete="off">
+		<form action="" autocomplete="off" onsubmit="return false;">
 			<div class="j_container">
 				<label class="daylabel">작업일 :</label>
 				<input type="text" id="s_all_sdate" class="datetimepicker_date">
@@ -738,49 +738,49 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			</div>
 			<hr />
 		<div class="j_container" style="justify-content:center; font-size:14pt;">
-			<div class="j_row1">*등록정보*</div>						
+			<div class="j_row1">*등록정보*</div>
 		</div>
 		<hr />
-		<div class="j_container">				
+		<div class="j_container">
 			<div class="j_row1">
 				<div class="j_div">
 					<label for="user_code" class="iRowLabel">작업자</label>
-					<select name="user_code" class="iRowInput" style="height:30px;"></select>						
+					<select name="user_code" class="iRowInput" style="height:30px;"></select>
 				</div>
-				
-				
+
+
 				<div class="j_div">
 					<label for="wstd_t32" class="iRowLabel margin_left" style="width:240px;">작업시작</label>
 					<input type="text" name="ilbo_strt" class="iRowInput margin_left datetimepicker_datetime" style="width:240px !important; height:25px;"/>
 				</div>
-				
+
 				<div class="j_div" style="width:80px;">
 					<label for="" class="iRowLabel margin_left"></label>
-					<button class="iRowBtn margin_left" type="button" 
+					<button class="iRowBtn margin_left" type="button"
 					onclick="sdateTimeSetBtn('danchStart');"
 					style="display:inline-block;">시작</button>
 				</div>
-				
+
 				<div class="j_div">
 					<label for="wstd_t32" class="iRowLabel margin_left" style="width:240px;">작업종료</label>
 					<input type="text" name="ilbo_end" class="iRowInput margin_left datetimepicker_datetime" style="width:240px !important; height:25px;"/>
 				</div>
-				
+
 				<div class="j_div" style="width:80px;">
 					<label for="" class="iRowLabel margin_left"></label>
 					<button class="iRowBtn margin_left" type="button" onclick="sdateTimeSetBtn('danchEnd');"
-					style="display:inline-block;">종료</button>						
+					style="display:inline-block;">종료</button>
 				</div>
-				
+
 			</div>
-		</div>		
-		<hr />
-		<div class="j_container" style="justify-content:center; font-size:14pt;">
-			<div class="j_row1">*적재방법*</div>			
 		</div>
 		<hr />
-		
-		
+		<div class="j_container" style="justify-content:center; font-size:14pt;">
+			<div class="j_row1">*적재방법*</div>
+		</div>
+		<hr />
+
+
 		<div class="j_container">
 			<div class="j_row1">
 				<div class="j_div">
@@ -791,14 +791,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 					<label for="wstd_t43" class="iRowLabel2">적재수량</label>
 				</div>
 				<div class="j_div">
-					<input type="text" name="wstd_t32" class="iRowInput2"/>					
+					<input type="text" name="wstd_t32" class="iRowInput2"/>
 					<input type="text" name="wstd_t33" class="iRowInput2"/>
 					<input type="text" name="wstd_t41" class="iRowInput2"/>
-					<input type="text" name="wstd_t87" class="iRowInput2"/>	
-					<input type="text" name="wstd_t43" class="iRowInput2"/>					
+					<input type="text" name="wstd_t87" class="iRowInput2"/>
+					<input type="text" name="wstd_t43" class="iRowInput2"/>
 				</div>
 			</div>
-			
+
 			<div class="j_row1">
 				<div class="j_div">
 					<label for="wstd_t44" class="iRowLabel2">Jig중량(kg)</label>
@@ -808,10 +808,10 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				<div class="j_div">
 					<input type="text" name="wstd_t44" class="iRowInput2"/>
 					<input type="text" name="wstd_t51" class="iRowInput2"/>
-					<input type="text" name="wstd_t52" class="iRowInput2"/>	
+					<input type="text" name="wstd_t52" class="iRowInput2"/>
 				</div>
 			</div>
-			
+
 			<div class="j_row1">
 				<div class="j_div">
 					<label for="wstd_t53" class="iRowLabel2">적재주의사항-1</label>
@@ -821,20 +821,20 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 					<label for="" class="iRowLabel2">비고</label>
 				</div>
 				<div class="j_div">
-					<input type="text" name="wstd_t53" class="iRowInput2"/>				
-					<input type="text" name="wstd_t54" class="iRowInput2"/>	
+					<input type="text" name="wstd_t53" class="iRowInput2"/>
+					<input type="text" name="wstd_t54" class="iRowInput2"/>
 					<input type="text" class="iRowInput2"/>
 					<input type="text" name="wstd_t30" class="iRowInput2"/>
 					<input type="text" class="iRowInput2"/>
 				</div>
 			</div>
-			
-			
+
+
 			<div class="j_row1">
 				<div class="j_div">
 					<label for="wstd_t53" class="iRowLabel2">제품사진</label>
 				</div>
-				
+
 				<div class="j_div">
 					<!-- 제품사진, 단취사진 img -->
 					<img src="" alt="" name="product_file_name" style="width:150px; height:150px;"/>
@@ -842,19 +842,19 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				<div class="j_div">
 					<label for="wstd_t53" class="iRowLabel2">단취사진</label>
 				</div>
-				
+
 				<div class="j_div">
 					<!-- 제품사진, 단취사진 img -->
 					<img src="" alt="" name="heat_file_name" style="width:150px; height:150px;"/>
 				</div>
 			</div>
 
-			
-			
+
+
 		</div>
-		
+
 	</form>
-	
+
 	<hr />
 
     <div class="btnSaveClose">
@@ -1014,8 +1014,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 
 		$("#s_all_sdate").val(tdate);
 		$("#s_all_edate").val(tdate);
-		
-		
+
+		//검색어 입력칸에서 엔터키를 누르면 검색버튼을 누른 것과 동일하게 바로 조회되게 함
+		$("#s_all_corp_name, #s_all_prod_name, #s_all_prod_no").on("keydown", function(e){
+			if(e.key === "Enter"){
+				e.preventDefault();
+				getWorkDataList();
+			}
+		});
+
 		getWorkData();
 		getWorkDataList();
 	});
@@ -1218,8 +1225,8 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var s_sdate = $("#s_all_sdate").val();
 		var s_edate = $("#s_all_edate").val();
 		var s_corp_name = $("#s_all_corp_name").val();
-		var s_prod_name = $("#s_prod_name").val();
-		var s_prod_no = $("#s_prod_no").val();
+		var s_prod_name = $("#s_all_prod_name").val();
+		var s_prod_no = $("#s_all_prod_no").val();
 		
 		$.ajax({
 			url:"/tkheat/workilbo/danch/allList",
@@ -1421,9 +1428,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	}
 	
 	//작업지시(단취) - 선택한 입고이력
-	var workDanDataTable;	
+	var workDanDataTable;
 	function getWorkDanData(){
-		
+
+		//모달을 열 때마다 같은 #workDanTabu에 새 Tabulator를 계속 생성만 하면 이전 인스턴스가
+		//정리되지 않고 쌓여 반복해서 열고 닫을수록 브라우저가 느려지다 멈추는 원인이 됨
+		if(workDanDataTable){
+			workDanDataTable.destroy();
+		}
+
 		workDanDataTable = new Tabulator("#workDanTabu", {
 			index:"id",
 		    height:"100%",
@@ -1594,7 +1607,11 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	//작업지시(단취) - 입고이력
 	var workDanIpgoDataTable;
 	function getWorkDanIpgoData(){
-		
+
+		if(workDanIpgoDataTable){
+			workDanIpgoDataTable.destroy();
+		}
+
 		workDanIpgoDataTable = new Tabulator("#workDanIpgoTabu", {
 			index:"id",
 		    height:"100%",
@@ -1710,6 +1727,13 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	}
 	
 	//단취작업 저장
+	//datetime-local input값을 서버로 보낼 문자열로 변환. 종료시간처럼 아직 작업이 끝나지 않아
+	//값이 비어있는 경우 ":00"같은 잘못된 문자열을 만들지 않고 null을 그대로 보냄(ILBO_END는 NULL 허용 컬럼)
+	function dateTimeValOrNull(val){
+		if(!val){ return null; }
+		return val.replace("T"," ")+":00";
+	}
+
 	function workDanModalSave(){
 		if(!$("#workDanForm select[name='user_code']").val()){
 			alert("작업자를 선택해주세요.");
@@ -1721,8 +1745,8 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 
 		var formObj = {
 				"user_code":$("#workDanForm select[name='user_code']").val(),
-				"ilbo_strt":$("#workDanForm input[name='ilbo_strt']").val().replace("T"," ")+":00",
-				"ilbo_end":$("#workDanForm input[name='ilbo_end']").val().replace("T"," ")+":00",
+				"ilbo_strt":dateTimeValOrNull($("#workDanForm input[name='ilbo_strt']").val()),
+				"ilbo_end":dateTimeValOrNull($("#workDanForm input[name='ilbo_end']").val()),
 				"wstd_t32":$("#workDanForm input[name='wstd_t32']").val(),
 				"wstd_t33":$("#workDanForm input[name='wstd_t33']").val(),
 				"wstd_t41":$("#workDanForm input[name='wstd_t41']").val(),

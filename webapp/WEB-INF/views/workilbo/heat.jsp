@@ -422,7 +422,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 /*침탄로작업 등록 모달*/
 .workBcfModal{
 	width:1400px;
-	height:760px;
+	height:800px;
 	flex-direction: column;
 }
 .workBcfModal .j_container{
@@ -634,7 +634,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     
     <div class="tab">
     <div class="box1">
-		<form action="" autocomplete="off">
+		<form action="" autocomplete="off" onsubmit="return false;">
 			<div class="j_container">
 				<label class="daylabel">작업일 :</label>
 				<input type="text" id="s_all_sdate" class="datetimepicker_date">
@@ -787,7 +787,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		<div class="bcfInfo0">
 			
 			<div class="j_container" style="justify-content:center; font-size:14pt;">
-				<div class="j_row1">*열처리조건*</div>			
+				<div class="j_row1">*열처리조건*</div>
 			</div>
 			<hr />
 		
@@ -886,7 +886,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		</div>
 		<div class="bcfInfo1">
 			<div class="j_container" style="justify-content:center; font-size:14pt;">
-				<div class="j_row1">*자주검사*</div>			
+				<div class="j_row1">*자주검사*</div>
 			</div>
 			<hr />
 			<div class="j_container">
@@ -974,8 +974,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 					<div class="j_div">
 						<label class="iRowLabel2">전달사항</label>
 					</div>
-					<div class="j_div">					
+					<div class="j_div">
 						<input type="text" name="ilbo_bigo" class="iRowInput2" style="width:650px !important;"/>
+					</div>
+					<div class="j_div">
+						<label class="iRowLabel2 margin_left">최종검사</label>
+					</div>
+					<div class="j_div">
+						<input type="checkbox" id="ilbo_final_chk" name="ilbo_final_chk" class="iRowInput"
+							style="width:40px !important;"/>
 					</div>
 				</div>
 			</div>
@@ -1151,6 +1158,13 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	
     var danchSdateTime, danchEdateTime;
     var setIlboCode = 0;
+    //현재 열려있는 열처리 등록모달이 신규("J")인지 기존행 수정("A")인지 - 설비(fac_code) select의
+    //change 핸들러가 신규등록일 때만 생산LOT를 재채번하도록 구분하는 데 사용
+    var bcfModalMode = null;
+    //한 배치(ilbo_code)에 서로 다른 제품이 여러 개 묶여있을 수 있는데, "자주검사" 패널(규격/X1~X5/
+    //최종검사)은 폼 하나뿐이라 지금 화면에 표시된 값이 어느 제품(workBcfDataTable의 어느 행)의
+    //것인지 추적해야 함 - 이게 없으면 여러 제품 중 마지막 것의 값이 나머지 전부에 덮어써짐
+    var currentBcfRow = null;
     
 	//로드
 	$(function(){
@@ -1159,7 +1173,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 
 		$("#s_all_sdate").val(tdate);
 		$("#s_all_edate").val(tdate);
-		
+
+		//검색어 입력칸에서 엔터키를 누르면 검색버튼을 누른 것과 동일하게 바로 조회되게 함
+		$("#s_all_corp_name, #s_all_prod_name, #s_all_prod_no").on("keydown", function(e){
+			if(e.key === "Enter"){
+				e.preventDefault();
+				getWorkDataList();
+			}
+		});
+
 		getWorkData();
 
 		selectHogiBtn(0);
@@ -1267,11 +1289,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 						ilboLotRtn(facCode);
 						
 						var rowDatas = result.data;
-						
+
+						//소입경도 규격/측정값/최종검사는 제품별로 다를 수 있어 이 루프에서 공통으로
+						//덮어쓰지 않음 - workBcfDataTable에 채워진 뒤 첫 행 기준으로 패널에 표시함
+						var perProductFields = ["prod_si","prod_si1","prod_si2","prod_si1_msg","prod_si2_msg",
+							"ilbo_pg1","ilbo_pg2","ilbo_pg3","ilbo_pg4","ilbo_pg5","ilbo_final_chk","ilbo_okng"];
 						for(var keys in rowDatas){
 							var rowData = rowDatas[keys];
 							for(var key in rowData){
-								if(key != "ilbo_strt" && key != "ilbo_end"){
+								if(key != "ilbo_strt" && key != "ilbo_end" && perProductFields.indexOf(key) === -1){
 									if(key == "ilbo_su"){
 										bcf_total_cnt += rowData[key];
 									}
@@ -1282,13 +1308,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 								}
 							}
 						}
-						
+
 						$("#workBcfForm input[name='bcf_total_cnt']").val(bcf_total_cnt);
 						$("#workBcfForm input[name='bcf_total_weight']").val(bcf_total_weight.toFixed(2));
 
+						currentBcfRow = workBcfDataTable.getRows()[0] || null;
+						syncBcfPanelFromRow(currentBcfRow);
 					}
 				});
-	
+
 			}
 		}, 200);
 	});
@@ -1328,6 +1356,10 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	});
 	
 	$("#workBcfForm select[name='fac_code']").change(function(){
+		//getWorkBcfDataFacCode()는 .val()로만 옵션을 세팅하므로(트리거 없음) 여기는 사용자가 직접
+		//설비를 바꿀 때만 실행됨 - 수정모드에서 설비를 바꾸면 그 설비 기준으로 로트를 다시 채번해서
+		//보여주고(저장 전까지는 화면표시일 뿐), 실제로 다른 설비로 저장되면 기존 로트는 자동으로
+		//비워지므로(그 로트를 쓰던 행이 사라짐) 다음 신규등록시 그 번호부터 다시 이어짐
 		ilboLotRtn(facNumberRtn(this.value));
 	});
 	
@@ -1416,7 +1448,80 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			bcfHardInputCalc("ilbo_pg"+i, "", "", "");
 		}
 	}
-	
+
+	//"자주검사" 패널에 현재 화면에 입력/표시된 값을 그 판을 보여주고 있던 행(row) 자신에게
+	//되돌려 저장 - 다른 제품(행)으로 포커스를 옮기기 전이나 저장 직전에 호출해서 방금 보고 있던
+	//제품의 값이 유실되지 않게 함
+	function syncBcfRowFromPanel(row){
+		if(!row) return;
+
+		//측정값을 타이핑하는 시점엔 아직 이 제품의 규격(prod_si1/prod_si1_msg 등)이 비동기로
+		//도착하기 전이라 합/불 판정이 조용히 계산 안 되고 넘어가는 경우가 있었음(그래서 값은
+		//규격을 만족하는데도 판정이 계속 "대기"로 남아있던 원인). 행에 최종 반영하기 직전에
+		//지금 패널에 있는 값 그대로 판정을 한 번 더 확실하게 재계산해둠
+		var stdVal1 = $("#workBcfForm input[name='prod_si1']").val();
+		var stdVal2 = $("#workBcfForm input[name='prod_si2']").val();
+		["ilbo_pg1","ilbo_pg2","ilbo_pg3","ilbo_pg4","ilbo_pg5"].forEach(function(key){
+			bcfHardInputCalc(key, $("#workBcfForm input[name='"+key+"']").val(), stdVal1, stdVal2);
+		});
+
+		var finalChk = $("#workBcfForm input[name='ilbo_final_chk']").is(":checked") ? "Y" : "N";
+
+		row.update({
+			prod_si: $("#workBcfForm input[name='prod_si']").val(),
+			prod_si1: $("#workBcfForm input[name='prod_si1']").val(),
+			prod_si2: $("#workBcfForm input[name='prod_si2']").val(),
+			prod_si1_msg: $("#workBcfForm input[name='prod_si1_msg']").val(),
+			prod_si2_msg: $("#workBcfForm input[name='prod_si2_msg']").val(),
+			ilbo_pg1: $("#workBcfForm input[name='ilbo_pg1']").val(),
+			ilbo_pg2: $("#workBcfForm input[name='ilbo_pg2']").val(),
+			ilbo_pg3: $("#workBcfForm input[name='ilbo_pg3']").val(),
+			ilbo_pg4: $("#workBcfForm input[name='ilbo_pg4']").val(),
+			ilbo_pg5: $("#workBcfForm input[name='ilbo_pg5']").val(),
+			ilbo_okng: $("#workBcfForm select[name='ilbo_okng']").val(),
+			ilbo_final_chk: finalChk
+		});
+
+		//같은 배치(ilbo_code) 안에 같은 제품(prod_code) · 같은 거래처(corp_name)인 행이
+		//또 있는 경우(같은 제품을 서로 다른 수주로 나눠 같은 로트에 함께 작업한 사례) -
+		//최종검사는 개별 수주 단위가 아니라 그 제품 단위로 공유되어야 하므로 같이 반영
+		var syncedData = row.getData();
+		workBcfDataTable.getRows().forEach(function(r){
+			if(r === row) return;
+			var rd = r.getData();
+			if(rd.prod_code === syncedData.prod_code && rd.corp_name === syncedData.corp_name){
+				r.update({ilbo_final_chk: finalChk});
+			}
+		});
+	}
+
+	//반대로, 클릭해서 새로 포커스를 옮긴 행(row) 자신의 값을 "자주검사" 패널에 채워 보여줌
+	//(제품마다 소입경도 규격이 다를 수 있어 그 제품 고유의 규격/측정값/최종검사 상태를 표시해야 함)
+	function syncBcfPanelFromRow(row){
+		if(!row) return;
+		var d = row.getData();
+		$("#workBcfForm input[name='prod_si']").val(d.prod_si);
+		$("#workBcfForm input[name='prod_si1']").val(d.prod_si1);
+		$("#workBcfForm input[name='prod_si2']").val(d.prod_si2);
+		$("#workBcfForm input[name='prod_si1_msg']").val(d.prod_si1_msg);
+		$("#workBcfForm input[name='prod_si2_msg']").val(d.prod_si2_msg);
+		$("#workBcfForm input[name='ilbo_final_chk']").prop("checked", d.ilbo_final_chk == "Y");
+
+		var stdVal1 = (d.prod_si1 != null) ? d.prod_si1 : "";
+		var stdVal2 = (d.prod_si2 != null) ? d.prod_si2 : "";
+		["ilbo_pg1","ilbo_pg2","ilbo_pg3","ilbo_pg4","ilbo_pg5"].forEach(function(key){
+			var val = (d[key] != null) ? d[key] : "";
+			$("#workBcfForm input[name='"+key+"']").val(val);
+			bcfHardInputCalc(key, val, stdVal1, stdVal2);
+		});
+
+		//측정값이 전부 비어있는 새 제품이면 위 bcfHardInputCalc가 판정을 "대기"로 맞춰주지만,
+		//기존에 저장되어 있던 "구분" 값이 있으면(예: 수동으로 재판정한 경우) 그 값을 우선함
+		if(d.ilbo_okng){
+			$("#workBcfForm select[name='ilbo_okng']").val(d.ilbo_okng);
+		}
+	}
+
 	//함수
 	function selectHogiBtn(hogi){
 
@@ -1559,8 +1664,11 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	var bcfPendingUserCode = null;
 	var tkheatLoginUserCode = "${loginUser.user_code}"; //신규 등록시 작업자 기본값용(현재 로그인 사용자)
 
-	function workBcfModalOpen(){
+	function workBcfModalOpen(isEdit){
 		bcfModalSet(0);
+		bcfModalMode = isEdit ? "A" : "J";
+		//새로 여는 모달이므로 "자주검사" 패널이 어느 제품(행)의 값을 보여주고 있었는지도 초기화
+		currentBcfRow = null;
 
 		$("#workBcfForm")[0].reset();
 		bcfPendingFacCode = null;
@@ -1571,8 +1679,13 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		getWorkBcfData();
 		getWorkBcfDataFacCode();
 		getWorkBcfDataUserCode();
-		ilboLotRtn(1);
-		
+		//신규등록일 때만 새로 채번. 기존 행을 더블클릭해 수정하는 경우(isEdit)엔 호출부(rowClick의
+		//dataUpdateList 응답 처리)가 이미 그 행의 실제 생산LOT로 채워주므로, 여기서 또 채번하면
+		//그 응답이 처리되는 사이(비동기라 순서가 뒤섞임) 방금 채운 정확한 값을 덮어써버림
+		if(!isEdit){
+			ilboLotRtn(1);
+		}
+
 		workBcfModal.style.display = 'flex'; // 모달 보임
 		//작업시작시간은 모달을 여는 시점의 현재시각으로 자동세팅, 작업종료시간은 종료버튼을 누르기 전까지 공란
 		sdateTimeSetBtn('bcfStart');
@@ -1625,8 +1738,8 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var s_sdate = $("#s_all_sdate").val();
 		var s_edate = $("#s_all_edate").val();
 		var s_corp_name = $("#s_all_corp_name").val();
-		var s_prod_name = $("#s_prod_name").val();
-		var s_prod_no = $("#s_prod_no").val();
+		var s_prod_name = $("#s_all_prod_name").val();
+		var s_prod_no = $("#s_all_prod_no").val();
 		var s_fac_code = $("#s_fac_code").val();
 		
 		$.ajax({
@@ -1680,13 +1793,19 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				if(e.detail === 2){
 					var rowData = row.getData();
 					//일보구분에 따라 각각 표기
-					
+
 					var ilbo_code = rowData.ilbo_code;
 					var ilbo_gubn = rowData.ilbo_gubn;
 					var ilbo_lot = rowData.ilbo_lot;
 					var ilbo_pc = rowData.ilbo_pc;
-					
-					
+					//더블클릭한 바로 그 제품(수주번호)의 자주검사 값을 처음부터 보여주기 위해 기억해둠
+					//(한 배치에 여러 제품이 묶여있으면 아래에서 이 수주번호와 일치하는 행을 찾아 포커스함)
+					var clickedOrdCode = rowData.ord_code;
+
+					//수정 중 설비를 바꿔 ilboLotRtn이 다시 호출될 경우, 그 로트채번 로직이 참조하는
+					//ilbo_code(다중수주 묶음 여부 판단용)가 이 행 자신의 것이 되도록 미리 설정
+					setIlboCode = ilbo_code;
+
 					$.ajax({
 						url:"/tkheat/workilbo/heat/dataUpdateList",
 						type:"post",
@@ -1699,41 +1818,42 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 						},
 						success:function(result){
 							//열처리작업 수정
-							workBcfModalOpen();
-							
+							workBcfModalOpen(true);
+
 							workBcfDataTable.setData(result.data);
 							var stdDatas = result.data;
-							
+
 							var ilbo_su = 0;
 							var ilbo_jung = 0;
 							var ilbo_lot = "";
-							
-							var stdVal1 = 0;
-							var stdVal2 = 0;
-							
+
+							//소입경도 규격/측정값(X1~X5)/최종검사/구분은 한 배치 안에서도 제품마다
+							//다를 수 있어(서로 다른 제품이 한 LOT로 묶인 경우) 이 루프에서 공통으로
+							//덮어쓰지 않음 - workBcfDataTable에 각 행 고유값으로 채워진 채로 남겨두고,
+							//아래에서 첫 번째 행 기준으로 "자주검사" 패널에 표시함(행을 클릭하면 그
+							//제품 값으로 전환됨 - workBcfDataTable의 rowClick 참고)
+							var perProductFields = ["prod_si","prod_si1","prod_si2","prod_si1_msg","prod_si2_msg",
+								"ilbo_pg1","ilbo_pg2","ilbo_pg3","ilbo_pg4","ilbo_pg5","ilbo_final_chk","ilbo_okng"];
+
 							for(let keys in stdDatas){
 								var stdData = stdDatas[keys];
-								
-								stdVal1 = stdDatas[keys].prod_si1;
-								stdVal2 = stdDatas[keys].prod_si2;
-								
+
 								for(let key in stdData){
-									
+
 									if(key == "ilbo_su"){
 										ilbo_su += stdData[key];
 									}
-									
+
 									if(key == "ilbo_jung"){
 										ilbo_jung += stdData[key];
 									}
-									
+
 									if(key == "ilbo_lot"){
 										ilbo_lot = stdData[key];
 									}
-									
-									if(key == "ilbo_pg1" || key == "ilbo_pg2" || key == "ilbo_pg3" ||
-											key == "ilbo_pg4" || key == "ilbo_pg5"){
-										bcfHardInputCalc(key,stdData[key],stdVal1,stdVal2);
+
+									if(perProductFields.indexOf(key) !== -1){
+										continue;
 									}
 
 									if(key == "fac_code"){
@@ -1747,16 +1867,23 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 									$("#workBcfForm select[name='"+key+"']").val(stdData[key]);
 								}
 							}
-							
+
 							$("#workBcfForm input[name='bcf_total_cnt']").val(ilbo_su);
 							$("#workBcfForm input[name='bcf_total_weight']").val(ilbo_jung.toFixed(2));
 							$("#workBcfForm input[name='bcf_ilbo_lot']").val(ilbo_lot);
-							bcfHardInputOKNG();
+
+							//한 배치에 여러 제품이 묶여있을 때, 무조건 첫 번째 행이 아니라 실제로
+							//더블클릭했던 그 제품(수주번호)의 행을 찾아 포커스함 - 안 그러면 배치 안
+							//어느 제품을 더블클릭해도 항상 같은(첫 번째) 제품 값만 보이던 문제가 있었음
+							var bcfRows = workBcfDataTable.getRows();
+							var matchedRow = bcfRows.find(function(r){ return r.getData().ord_code === clickedOrdCode; });
+							currentBcfRow = matchedRow || bcfRows[0] || null;
+							syncBcfPanelFromRow(currentBcfRow);
 						}
-					});				
+					});
 
 		        }
-		    },	    
+		    },
 	    	columns:[
 		        {title:"NO", formatter:"rownum", width:40, hozAlign:"center", headerSort:false},
 		        {
@@ -1780,9 +1907,9 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			        	return value.substring(5,10);
 			        }
 		       	},	
-		        {title:"수주NO", field:"ord_code", sorter:"string", width:100,
+		        {title:"수주NO", field:"ord_code", sorter:"string", width:90,
 			        hozAlign:"center"},	        
-		        {title:"적재코드", field:"danch_barcode", sorter:"string", width:100,
+		        {title:"적재코드", field:"danch_barcode", sorter:"string", width:90,
 		        	hozAlign:"center"},
 		        {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:120,
 		        	hozAlign:"center"},
@@ -1794,9 +1921,9 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		        	hozAlign:"center"},
 		        {title:"입고LOT", field:"ord_lot", sorter:"string", width:80,
 			        hozAlign:"center"},	
-		        {title:"거래처", field:"corp_name", sorter:"string", width:140,
+		        {title:"거래처", field:"corp_name", sorter:"string", width:120,
 			        hozAlign:"left"},	
-		        {title:"품명", field:"prod_name", sorter:"string", width:240,
+		        {title:"품명", field:"prod_name", sorter:"string", width:230,
 			        hozAlign:"left"},	
 		        {title:"품번", field:"prod_no", sorter:"string", width:140,
 			        hozAlign:"left"},
@@ -1810,8 +1937,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		        	hozAlign:"right", visible:false},
 		        {title:"공정", field:"tech_te", sorter:"string", width:50,
 		        	hozAlign:"center"},
-		        {title:"비고", field:"tech_in", sorter:"string", width:80,
+		        {title:"비고", field:"tech_in", sorter:"string", width:70,
 		        	hozAlign:"center"},
+		        {title:"최종검사", field:"ilbo_final_chk", sorter:"string", width:80,
+		        	hozAlign:"center",
+		        	formatter:function(cell){
+		        		return cell.getValue() == "Y" ? "O" : "";
+		        	}
+		        },
 		        {title:"소입경도", field:"prod_si", sorter:"string", width:120,
 			        hozAlign:"center", visible:false},
 			    {title:"경화깊이", field:"prod_gd", sorter:"string", width:120, visible:false},
@@ -1839,9 +1972,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 
 	/*열처리 작업*/
 	//작업지시(열처리) - 등록된 단취작업 리스트
-	var workBcfDataTable;	
+	var workBcfDataTable;
 	function getWorkBcfData(){
-		
+
+		//모달을 열 때마다 같은 #workBcfTabu에 새 Tabulator를 계속 생성만 하면 이전 인스턴스가
+		//정리되지 않고 쌓여 반복해서 열고 닫을수록 브라우저가 느려지다 멈추는 원인이 됨
+		if(workBcfDataTable){
+			workBcfDataTable.destroy();
+		}
+
 		workBcfDataTable = new Tabulator("#workBcfTabu", {
 			index:"id",
 		    height:"100%",
@@ -1868,6 +2007,16 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		        if(!row.isSelected()){
 		            row.select();   // 다른 행 누르면 기존 자동 해제
 		        }
+
+		        //한 배치에 여러 제품이 묶여있을 수 있어, 클릭한 행이 바뀌면 그 행 고유의
+		        //규격/측정값/최종검사를 "자주검사" 패널에 보여주기 전에 방금까지 보고 있던
+		        //행의 값을 먼저 그 행 자신에게 저장해둠(안 하면 마지막에 클릭한 행의 값으로
+		        //덮어써져서 다른 제품들의 최종검사/측정값이 뒤섞이던 문제의 원인이었음)
+		        if(currentBcfRow !== row){
+		        	syncBcfRowFromPanel(currentBcfRow);
+		        	currentBcfRow = row;
+		        	syncBcfPanelFromRow(row);
+		        }
 		    },
 		    columns:[
 		        {
@@ -1884,18 +2033,18 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		            }
 		        },
 		        {title:"수주번호", field:"ord_code", sorter:"string", width:100,
-			        hozAlign:"center"},	
+			        hozAlign:"center"},
 		        {title:"입고일", field:"ord_input_view", sorter:"string", width:60,
 			        hozAlign:"center",
 			        formatter:function(cell){
 			        	var value = cell.getValue();
 			        	if(!value) return "";
 			        	return value.substring(5,10);
-			        }},	
+			        }},
 		        {title:"거래처", field:"corp_name", sorter:"string", width:120,
 		        	hozAlign:"left"},
 		        {title:"품명", field:"prod_name", sorter:"string", width:240,
-			        hozAlign:"left"},	
+			        hozAlign:"left"},
 		        {title:"품번", field:"prod_no", sorter:"string", width:140,
 			        hozAlign:"left"},
 		        {title:"규격", field:"prod_gyu", sorter:"string", width:100,
@@ -1903,12 +2052,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		        {title:"재질", field:"prod_jai", sorter:"string", width:100,
 			        hozAlign:"left"},
 		        {title:"수량", field:"ilbo_su", sorter:"string", width:80,
-		        	hozAlign:"right"},		        
+		        	hozAlign:"right"},
 		        {title:"중량", field:"ilbo_jung", sorter:"string", width:80,
 		        	hozAlign:"right"},
 		        {title:"소입경도", field:"prod_si", sorter:"string", width:120,
 			        hozAlign:"center"},
 			    {title:"경화깊이", field:"prod_gd", width:120},
+			    {title:"최종검사", field:"ilbo_final_chk", width:70, hozAlign:"center",
+			    	formatter:function(cell){ return cell.getValue() == "Y" ? "O" : ""; }
+			    },
 			    {title:"제품코드", field:"prod_code", visible:false},
 			    {title:"작업코드", field:"ilbo_code", visible:false},
 			    {title:"작업코드", field:"ilbo_pc", visible:false},
@@ -1926,7 +2078,11 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	
 	var workBcfDanchDataTable;
 	function getWorkBcfDanchData(){
-		
+
+		if(workBcfDanchDataTable){
+			workBcfDanchDataTable.destroy();
+		}
+
 		workBcfDanchDataTable = new Tabulator("#workBcfDanchTabu", {
 			index:"id",
 		    height:"100%",
@@ -2070,9 +2226,18 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				"workBcfDanchSelectDataParam":workBcfDanchSelectDataParam
 			},
 			success:function(result){
-				
+
 				workBcfDataTable.addData(result.data);
-				
+
+				//추가된 항목을 작업대기 리스트(후보)에서 제거 - 안 지우면 같은 행을 실수로 다시
+				//더블클릭했을 때 같은 수주번호 제품이 등록 리스트에 중복으로 들어감
+				var addedIlboCode = workBcfDanchSelectData.ilbo_code;
+				workBcfDanchDataTable.getRows().forEach(function(row){
+					if(row.getData().ilbo_code === addedIlboCode){
+						row.delete();
+					}
+				});
+
 				var facCode = $("#workBcfForm select[name='fac_code']").val();
 				
 				setIlboCode = result.data[0].ilbo_code;
@@ -2080,38 +2245,48 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				ilboLotRtn(facCode);
 				
 				var stdDatas = result.data;
-				
+
 				var ilbo_su = 0;
 				var ilbo_jung = 0;
 				var ilbo_lot = "";
-				
+
+				//소입경도 규격/측정값/최종검사/구분은 제품마다 다를 수 있어 공통으로 덮어쓰지 않음
+				var perProductFields = ["prod_si","prod_si1","prod_si2","prod_si1_msg","prod_si2_msg",
+					"ilbo_pg1","ilbo_pg2","ilbo_pg3","ilbo_pg4","ilbo_pg5","ilbo_final_chk","ilbo_okng"];
+
 				for(let keys in stdDatas){
 					var stdData = stdDatas[keys];
-					
+
 					for(let key in stdData){
-						
-						if(key != "ilbo_strt" && key != "ilbo_end" && key != "fac_code"){
+
+						if(key != "ilbo_strt" && key != "ilbo_end" && key != "fac_code" && perProductFields.indexOf(key) === -1){
 							if(key == "ilbo_su"){
 								ilbo_su += stdData[key];
 							}
-							
+
 							if(key == "ilbo_jung"){
 								ilbo_jung += stdData[key];
 							}
-							
+
 							if(key == "ilbo_lot"){
 								ilbo_lot = stdData[key];
 							}
-							
+
 							$("#workBcfForm input[name='"+key+"']").val(stdData[key]);
 						}
 					}
 				}
-				
+
 				$("#workBcfForm input[name='bcf_total_cnt']").val(ilbo_su);
 				$("#workBcfForm input[name='bcf_total_weight']").val(ilbo_jung.toFixed(2));
 				$("#workBcfForm input[name='bcf_ilbo_lot']").val(ilbo_lot);
-				
+
+				//방금 추가한(포커스가 없던 상태이니 굳이 이전 값을 되돌려 저장할 필요 없음) 마지막 행을
+				//"자주검사" 패널에 표시 - 여러 건이 한 번에 추가됐다면 그 중 마지막 것을 기본 포커스로
+				var allRows = workBcfDataTable.getRows();
+				currentBcfRow = allRows.length ? allRows[allRows.length - 1] : null;
+				syncBcfPanelFromRow(currentBcfRow);
+
 				sdateTimeSetBtn("bcfStart");
 
 				workBcfDanchModalClose();
@@ -2220,6 +2395,14 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		})
 	}
 
+	//datetime-local input값을 서버로 보낼 문자열로 변환. 종료시간처럼 아직 작업이 끝나지 않아
+	//값이 비어있는 경우 ":00"같은 잘못된 문자열을 만들지 않고 null을 그대로 보냄(ILBO_END는 NULL 허용 컬럼이라
+	//빈 문자열로 넘어가면 SQL Server가 1900-01-01로 자동 처리하고, ":00" 같은 문자열은 변환 오류가 남)
+	function dateTimeValOrNull(val){
+		if(!val){ return null; }
+		return val.replace("T"," ")+":00";
+	}
+
 	//열처리작업 저장
 	function workBcfModalSave(){
 
@@ -2232,14 +2415,20 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			return;
 		}
 
-		//단취모달 리스트 데이터 조회
+		//지금 "자주검사" 패널에 표시된 값을 그 값을 보여주고 있던 행 자신에게 먼저 반영 -
+		//안 하면 마지막으로 클릭했던 제품 말고 다른 제품들은 방금 입력한 측정값/최종검사가
+		//반영 안 된 채(직전 상태 그대로) 저장됨
+		syncBcfRowFromPanel(currentBcfRow);
+
+		//단취모달 리스트 데이터 조회 - 소입경도 측정값(ilbo_pg1~5)/최종검사(ilbo_final_chk)/구분(ilbo_okng)은
+		//이제 각 행(제품)마다 고유값으로 들어있으므로(아래 formObj에는 배치 전체 공통값만 남김) 그대로 전송
 		var bcfSettingDataList = JSON.stringify(workBcfDataTable.getData());
 
 		var formObj = {
 				"fac_code":$("#workBcfForm select[name='fac_code']").val(),
 				"user_code":$("#workBcfForm select[name='user_code']").val(),
-				"ilbo_strt":$("#workBcfForm input[name='ilbo_strt']").val().replace("T"," ")+":00",
-				"ilbo_end":$("#workBcfForm input[name='ilbo_end']").val().replace("T"," ")+":00",
+				"ilbo_strt":dateTimeValOrNull($("#workBcfForm input[name='ilbo_strt']").val()),
+				"ilbo_end":dateTimeValOrNull($("#workBcfForm input[name='ilbo_end']").val()),
 				"ilbo_lot":$("#workBcfForm input[name='bcf_ilbo_lot']").val(),
 				"wstd_gj11":$("#workBcfForm input[name='wstd_gj11']").val(),
 				"wstd_gj21":$("#workBcfForm input[name='wstd_gj21']").val(),
@@ -2256,17 +2445,11 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				"wstd_gj17":$("#workBcfForm input[name='wstd_gj17']").val(),
 				"wstd_gj16":$("#workBcfForm input[name='wstd_gj16']").val(),
 				"ilbo_bigo":$("#workBcfForm input[name='ilbo_bigo']").val(),
-				"ilbo_pg1":$("#workBcfForm input[name='ilbo_pg1']").val(),
-				"ilbo_pg2":$("#workBcfForm input[name='ilbo_pg2']").val(),
-				"ilbo_pg3":$("#workBcfForm input[name='ilbo_pg3']").val(),
-				"ilbo_pg4":$("#workBcfForm input[name='ilbo_pg4']").val(),
-				"ilbo_pg5":$("#workBcfForm input[name='ilbo_pg5']").val(),
 				"ilbo_ck01":$("#workBcfForm select[name='ilbo_ck01']").val(),
 				"ilbo_ck02":$("#workBcfForm select[name='ilbo_ck02']").val(),
 				"ilbo_ck03":$("#workBcfForm select[name='ilbo_ck03']").val(),
 				"ilbo_ck04":$("#workBcfForm select[name='ilbo_ck04']").val(),
-				"ilbo_ck05":$("#workBcfForm select[name='ilbo_ck05']").val(),
-				"ilbo_okng":$("#workBcfForm select[name='ilbo_okng']").val()
+				"ilbo_ck05":$("#workBcfForm select[name='ilbo_ck05']").val()
 		}
 		
 		var formObjParam = JSON.stringify(formObj);

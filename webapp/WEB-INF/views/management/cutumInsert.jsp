@@ -570,7 +570,19 @@ $(function(){
         userInfoList(now_page_code);
     }
     getCutumList();
+
+    //"매월 말일"이 체크되어있으면 마감일은 의미가 없으므로(달력상 월 전체가 기준) 입력 못하게 막고
+    //값도 비워둠 - 체크 해제하면 그때 마감일을 직접 입력할 수 있게 다시 활성화
+    $('#corp_gyul1').on('change', toggleCorpGyul2Disabled);
 });
+
+function toggleCorpGyul2Disabled(){
+    if($('#corp_gyul1').is(':checked')){
+        $('#corp_gyul2').val('').prop('disabled', true);
+    }else{
+        $('#corp_gyul2').prop('disabled', false);
+    }
+}
 
 // ========== 모달 열기 (입력) ==========
 $('.insert-button').on('click', function() {
@@ -581,6 +593,7 @@ $('.insert-button').on('click', function() {
     // 기본값 설정
     $('#corp_jan').val('0');
     $('#corp_gyul1').prop('checked', true);
+    toggleCorpGyul2Disabled();
 
     const today = new Date();
     const todayStr = today.getFullYear() + '-' +
@@ -765,6 +778,12 @@ function cutumInsertDetail(corp_code){
             for(let key in d){
                 $("[name='"+key+"']").val(d[key]);
             }
+
+            //체크박스는 .val()로는 체크 상태가 반영되지 않으므로("매월 말일"이 항상 체크된 채로
+            //보이던 원인) 저장된 corp_gyul1 값으로 직접 체크 상태를 맞추고, 그에 맞춰 마감일
+            //입력칸의 활성/비활성 상태도 같이 갱신
+            $('#corp_gyul1').prop('checked', String(d.corp_gyul1) === '1');
+            toggleCorpGyul2Disabled();
 
             // 모달 열기
             $('.modal-overlay, .cutum-modal').addClass('active');

@@ -953,20 +953,16 @@ public class WorkIlboController {
 				String ilbo_end = ifNullStringReturn(formViewObj.get("ilbo_end"));
 				
 				String ilbo_bigo = ifNullStringReturn(formViewObj.get("ilbo_bigo"));
-				String ilbo_pg1 = ifNullStringReturn(formViewObj.get("ilbo_pg1"));
-				String ilbo_pg2 = ifNullStringReturn(formViewObj.get("ilbo_pg2"));
-				String ilbo_pg3 = ifNullStringReturn(formViewObj.get("ilbo_pg3"));
-				String ilbo_pg4 = ifNullStringReturn(formViewObj.get("ilbo_pg4"));
-				String ilbo_pg5 = ifNullStringReturn(formViewObj.get("ilbo_pg5"));
-				String ilbo_okng = ifNullStringReturn(formViewObj.get("ilbo_okng"));
-				
-				
+				//소입경도 측정값(ilbo_pg1~5)/최종검사/구분은 배치 전체 공통값이 아니라 제품(행)마다
+				//다를 수 있어(한 LOT에 서로 다른 제품이 묶인 경우) formObj가 아닌 각 행 자신의
+				//데이터(listJsonObject)에서 읽어옴 - 아래 for문 내부 참고
+
 				String ilbo_ck01 = ifNullStringReturn(formViewObj.get("ilbo_ck01"));
 				String ilbo_ck02 = ifNullStringReturn(formViewObj.get("ilbo_ck02"));
 				String ilbo_ck03 = ifNullStringReturn(formViewObj.get("ilbo_ck03"));
 				String ilbo_ck04 = ifNullStringReturn(formViewObj.get("ilbo_ck04"));
 				String ilbo_ck05 = ifNullStringReturn(formViewObj.get("ilbo_ck05"));
-				
+
 				int ilbo_no = 0;
 				
 				for(Object lObj : listJsonArray) {
@@ -1028,13 +1024,15 @@ public class WorkIlboController {
 	                    wSave.setIlbo_ck03(ilbo_ck03);
 	                    wSave.setIlbo_ck04(ilbo_ck04);
 	                    wSave.setIlbo_ck05(ilbo_ck05);
-	                    wSave.setIlbo_pg1(ilbo_pg1);
-	                    wSave.setIlbo_pg2(ilbo_pg2);
-	                    wSave.setIlbo_pg3(ilbo_pg3);
-	                    wSave.setIlbo_pg4(ilbo_pg4);
-	                    wSave.setIlbo_pg5(ilbo_pg5);
-	                    wSave.setIlbo_okng(ilbo_okng);
-	                    
+	                    //제품(행)마다 다를 수 있는 값이라 이 행 자신의 데이터에서 읽음
+	                    wSave.setIlbo_pg1(ifNullStringReturn(listJsonObject.get("ilbo_pg1")));
+	                    wSave.setIlbo_pg2(ifNullStringReturn(listJsonObject.get("ilbo_pg2")));
+	                    wSave.setIlbo_pg3(ifNullStringReturn(listJsonObject.get("ilbo_pg3")));
+	                    wSave.setIlbo_pg4(ifNullStringReturn(listJsonObject.get("ilbo_pg4")));
+	                    wSave.setIlbo_pg5(ifNullStringReturn(listJsonObject.get("ilbo_pg5")));
+	                    wSave.setIlbo_okng(ifNullStringReturn(listJsonObject.get("ilbo_okng")));
+	                    wSave.setIlbo_final_chk(ifNullStringReturn(listJsonObject.get("ilbo_final_chk")));
+
 	                    workIlboService.workIlboHeatDataSave(wSave);
 	                    ilbo_no++;
 	                }					

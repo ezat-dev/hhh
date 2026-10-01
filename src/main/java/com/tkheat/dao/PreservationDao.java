@@ -7,6 +7,7 @@ import com.tkheat.domain.Bega;
 import com.tkheat.domain.Jeomgeom;
 import com.tkheat.domain.Measure;
 import com.tkheat.domain.SparePart;
+import com.tkheat.domain.SparePart2;
 import com.tkheat.domain.Suri;
 
 
@@ -109,5 +110,21 @@ public interface PreservationDao {
 	void gigiJeomgeomUpdateSave(Measure measure);
 	
 	void gigiJeomgeomDelete(int ter_code);
+
+
+
+	List<SparePart2> getSparePart2List(SparePart2 sparePart2);
+
+	void sparePart2InsertSave(SparePart2 sparePart2);
+
+	void sparePart2UpdateSave(SparePart2 sparePart2);
+
+	void sparePart2Delete(String spp2_no);
+
+	List<SparePart2> getSparePart2HisList(SparePart2 sparePart2);
+
+	void sparePart2HisSave(SparePart2 sparePart2);
+
+	void sparePart2HisDelete(int sph2_idx);
 
 }

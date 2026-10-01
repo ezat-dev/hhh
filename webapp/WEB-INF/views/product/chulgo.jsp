@@ -591,19 +591,23 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		$(function() {
 			var tdate = todayDate();
 
-			var bforeWeek = beforeWeekDate();
+			//출고등록 모달의 입고일 기본값 - 조회범위가 넓을수록 느려지므로 처음엔 최근 10일만
+			var tenDaysAgo = new Date();
+			tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+			var tenDaysAgoStr = tenDaysAgo.getFullYear()+"-"+paddingZero(tenDaysAgo.getMonth()+1)+"-"+paddingZero(tenDaysAgo.getDate());
 
 			$("#sdate").val(tdate);
 			$("#edate").val(tdate);
-			
-			
-			$("#ord_sdate").val(bforeWeek);
+
+
+			$("#ord_sdate").val(tenDaysAgoStr);
 			$("#ord_edate").val(tdate);
 			$("#och_date").val(tdate);
 			
 			
 			getChulgoData();
 			getChulgoList();
+			initChulgoAddTable();
 		});
 
 		//이벤트
@@ -752,6 +756,9 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var userEditing = false;
 		var chulgoRowCalcState = new Map();
 		var chulgoTable;
+		//출고등록 모달의 Tabulator 인스턴스 - 모달을 다시 열 때 이전 인스턴스를 destroy()하기 위해
+		//(선언 없이 대입만 하면 최초 호출 시 아직 한 번도 대입된 적이 없어 참조 시 ReferenceError가 남)
+		var chulgoAddTable;
 		//출고등록 모달에서 마지막으로 조회했던 조건/결과 - 페이지를 벗어나지 않는 한(새로고침 전까지)
 		//모달을 닫았다 다시 열어도 재조회 없이 그대로 복원해주기 위함
 		var chulgoAddCache = null;
@@ -846,7 +853,28 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			    	}
 			    },
 				columns : [
-			    	{formatter:"rowSelection", titleFormatter:"rowSelection", width:40, headerSort:false,
+			    	{formatter:"rowSelection",
+			    		//Tabulator 기본 titleFormatter:"rowSelection"은 헤더필터로 화면에 안 보이는
+			    		//행까지 포함해 "전체" 행을 선택해버려서, 거래처 등으로 필터링해 1건만 보이는
+			    		//상태에서 헤더 체크박스를 눌러도 실제로는 필터에 걸러진 다른 거래처/제품까지
+			    		//전부 선택되고, 그 상태로 거래명세서를 출력하면 엉뚱한 데이터까지 같이 출력되던
+			    		//원인이었음 - 현재 필터를 통과해 화면에 보이는(active) 행만 선택하도록 직접 구현
+			    		titleFormatter:function(cell, formatterParams, onRendered){
+			    			var el = document.createElement("input");
+			    			el.type = "checkbox";
+			    			el.addEventListener("click", function(e){
+			    				e.stopPropagation();
+			    				var activeRows = chulgoTable.getRows("active");
+			    				var allSelected = activeRows.length > 0 && activeRows.every(function(r){ return r.isSelected(); });
+			    				if(allSelected){
+			    					activeRows.forEach(function(r){ r.deselect(); });
+			    				}else{
+			    					activeRows.forEach(function(r){ r.select(); });
+			    				}
+			    			});
+			    			return el;
+			    		},
+			    		width:40, headerSort:false,
 			    		cellClick:function(e, cell){
 			    			cell.getRow().toggleSelect();
 			    		}
@@ -963,9 +991,9 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		function getChulgoAddData(){
 			var sdate = $("#ord_sdate").val();
 			var edate = $("#ord_edate").val();
-			
+
 			$("#och_calc").prop("checked",true);
-			
+
 			$.ajax({
 				url:"/tkheat/product/chulgo/getChulgoAddList",
 				type:"post",
@@ -976,7 +1004,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				},
 				success:function(result){
 					chulgoAddTable.setData(result.data);
-					chulgoAddCache = {sdate:sdate, edate:edate, data:result.data};
+
+					//헤더필터(거래처/품명 등)는 새로 조회해도 기존에 입력해둔 값을 그대로 유지
+					var prevFilters = chulgoAddCache ? chulgoAddCache.filters : null;
+					chulgoAddCache = {sdate:sdate, edate:edate, data:result.data, filters:prevFilters};
+					if(prevFilters){
+						prevFilters.forEach(function(f){
+							chulgoAddTable.setHeaderFilterValue(f.field, f.value);
+						});
+					}
 				}
 			});
 		}
@@ -988,12 +1024,28 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			$("#och_jan").val(0);
 			chulgoRowCalcState = new Map();
 
-			//다른 페이지로 이동하지 않은 이상(새로고침 전까지), 마지막으로 조회했던 입고일 조건을 복원
+			//마지막으로 조회했던 입고일 조건 복원(같은 화면에 머무는 동안만 - 새로고침/다른 페이지 이동 시 초기화됨)
 			if(chulgoAddCache){
 				$("#ord_sdate").val(chulgoAddCache.sdate);
 				$("#ord_edate").val(chulgoAddCache.edate);
 			}
 
+			//마지막으로 조회했던 결과가 같은 화면 내에 남아있으면 재조회 없이 그대로 복원
+			if(chulgoAddCache){
+				chulgoAddTable.setData(chulgoAddCache.data);
+
+				if(chulgoAddCache.filters){
+					chulgoAddCache.filters.forEach(function(f){
+						chulgoAddTable.setHeaderFilterValue(f.field, f.value);
+					});
+				}
+			}
+		}
+
+		//출고등록 모달의 Tabulator - 모달을 열 때마다 새로 만들었다 지우기를 반복하면(특히 이제
+		//조회 결과를 계속 들고 있으면서) 브라우저가 느려지다 멈추는 문제가 있어, 페이지 로드 시
+		//딱 한 번만 만들어두고 이후로는 setData()로만 내용을 갱신함
+		function initChulgoAddTable(){
 			chulgoAddTable = new Tabulator("#tabuData",{
 				//전역 페이징기억 기능(pluginpage.jsp)이 pagination:"local" 테이블에 자동으로 페이지 번호를
 				//localStorage에서 복원시키는데, 방금 캐시된 데이터로 다시 채울 때 예전 페이지 번호가
@@ -1223,12 +1275,6 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 					row.getElement().style.fontWeight = "600";
 				},
 			});
-
-			//마지막으로 조회했던 결과가 있으면 재조회 없이 그대로 복원(tableBuilt 콜백 안에서 호출하면
-			//반영이 안 되는 경우가 있어, 이 파일의 다른 테이블들처럼 생성자 호출 직후 직접 호출)
-			if(chulgoAddCache){
-				chulgoAddTable.setData(chulgoAddCache.data);
-			}
 		}
 
 
@@ -1252,6 +1298,11 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 					success:function(result){
 						closeBtn();
 						getChulgoData();
+
+						//출고등록으로 재고수/출고대기잔량 등이 바뀌었으므로, 모달에 남아있던
+						//캐시(chulgoAddCache)도 같은 조건으로 다시 조회해서 최신값으로 갱신
+						//(안 하면 다음에 모달을 열었을 때 방금 출고처리 전의 값이 그대로 보임)
+						getChulgoAddData();
 					},error: function(xhr, status, status) {
 						console.log(xhr);
 						console.log(status);
@@ -1263,9 +1314,25 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			}
 		}
 		
+	    //체크박스로 선택했던 행이라도 이후 검색/필터가 바뀌어 화면에서 사라지면(active가 아니게 되면)
+	    //그 선택은 더 이상 지금 화면에서 사용자가 의도한 선택이 아니므로 제외함 - 안 그러면 예전에
+	    //다른 거래처를 조회하며 체크해뒀던 행이 필터 밖으로 숨겨진 채 선택 상태로 남아있다가, 나중에
+	    //전혀 다른 거래처를 인쇄/삭제할 때 같이 섞여 들어가는 원인이 됨(거래명세서에 엉뚱한 거래처/
+	    //제품이 같이 찍히던 사례)
+	    function getActiveSelectedData(table){
+	    	var activeOchNo = {};
+	    	table.getRows("active").forEach(function(r){
+	    		activeOchNo[r.getData().och_no] = true;
+	    	});
+	    	return table.getSelectedData().filter(function(d){
+	    		return activeOchNo[d.och_no];
+	    	});
+	    }
+
 	    function report(){
-	    	
-	    	if(chulgoTable.getSelectedData().length <= 0){
+
+	    	var reportSelectedData = getActiveSelectedData(chulgoTable);
+	    	if(reportSelectedData.length <= 0){
 	    		alert("거래명세서를 출력할 제품을 선택하세요.");
 	    		return false;
 	    	}
@@ -1291,7 +1358,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 
 		var sendObj = {
 			"chulgo_print_gb":chulgo_print_gb,
-			"chulgoData": chulgoTable.getSelectedData()
+			"chulgoData": reportSelectedData
 		}
 
 		$.ajax({
@@ -1304,7 +1371,12 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			success:function(result){
    				var fileUrl = result.fileName;
                 if(reportWin){
-                    reportWin.location.href = fileUrl;
+                    //출력파일명이 출고일+거래처명으로만 고정돼있어(예: _20260923_두현분말야금(주).pdf)
+                    //같은 날짜/거래처를 다시 출력하면 항상 같은 URL이 됨. 그 URL을 브라우저가
+                    //예전에 캐시해둔 적이 있으면, 서버는 새 내용으로 파일을 새로 만들었어도
+                    //브라우저가 캐시된 예전 PDF를 그대로 보여줄 수 있어 매번 새로 받아오도록 강제
+                    var cacheBustedUrl = fileUrl + (fileUrl.indexOf("?") === -1 ? "?" : "&") + "_ts=" + Date.now();
+                    reportWin.location.href = cacheBustedUrl;
                 }else{
                     alert("팝업이 차단되어 새 창을 열 수 없습니다. 브라우저 팝업 차단을 해제해주세요.");
                 }
@@ -1327,7 +1399,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	    		return false;
 	    	}
 	    	
-	    	var deleteData = chulgoTable.getSelectedData();
+	    	var deleteData = getActiveSelectedData(chulgoTable);
 	    	
 			if(deleteData.length <= 0){
 				alert("삭제할 항목을 선택하세요.");
@@ -1357,6 +1429,12 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	    }
 		
 		function closeBtn(){
+			//모달을 닫기 직전, 사용자가 입력해둔 헤더필터(거래처/품명 등) 조건을 기억해뒀다가
+			//다음에 모달을 다시 열 때(getChulgoAddList) 그대로 복원함
+			if(chulgoAddTable){
+				if(!chulgoAddCache){ chulgoAddCache = {}; }
+				chulgoAddCache.filters = chulgoAddTable.getHeaderFilters();
+			}
 			registerModalClose('chulgo-main');
 			chulgoModal.style.display = 'none'; // 모달 숨김
 		}

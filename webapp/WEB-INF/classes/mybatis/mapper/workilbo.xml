@@ -581,7 +581,7 @@
 							 #{wstd_gj32}, #{wstd_gj33}, #{wstd_gj34}, #{wstd_gj42},
 							 #{ilbo_bigo}, #{ilbo_ck01}, #{ilbo_ck02}, #{ilbo_ck03},
 							 #{ilbo_ck04}, #{ilbo_ck05}, #{ilbo_okng},
-							 #{ilbo_pg1}, #{ilbo_pg2}, #{ilbo_pg3}, #{ilbo_pg4}, #{ilbo_pg5}
+							 #{ilbo_pg1}, #{ilbo_pg2}, #{ilbo_pg3}, #{ilbo_pg4}, #{ilbo_pg5}, #{ilbo_final_chk}
 	</insert>
 
 	<!-- 템퍼링 -->
@@ -654,7 +654,7 @@
 		CONCAT(prod_si,' ', prod_si1,' ~ ',prod_si2) AS prod_si,
 		CONCAT(prod_sr,' ', prod_sr1,' ~ ',prod_sr2) AS prod_sr
 		FROM WORKILBO
-		LEFT OUTER JOIN
+		INNER JOIN
 			ORDERT
 		ON WORKILBO.ORD_CODE = ORDERT.ORD_CODE
 		LEFT OUTER JOIN
@@ -799,6 +799,7 @@
 		ON PRODUCT.PROD_CODE = WORKSTD.PROD_CODE
 		WHERE 1=1
 		AND ILBO_CODE = #{ilbo_code}
+		AND ILBO_GUBN = 'J'
 	</select>
 
 	<select id="workIlboHeatDataUpdateList" parameterType="workJisitk" resultType="workJisiTk">
@@ -887,6 +888,7 @@
 		ON PRODUCT.PROD_CODE = WORKSTD.PROD_CODE
 		WHERE 1=1
 		AND ILBO_CODE = #{ilbo_code}
+		AND ILBO_GUBN = 'A'
 	</select>
 
 	<select id="workIlboTfDataUpdateList" parameterType="workJisitk" resultType="workJisiTk">

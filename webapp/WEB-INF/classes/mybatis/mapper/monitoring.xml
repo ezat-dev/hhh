@@ -258,6 +258,18 @@
 	</select>   
 
    
+   <!-- 설비모니터링 - 특정 설비에서 현재 진행중인(미종료) 배치의 제품코드 1건 조회 -->
+   <!-- (스카다가 못 주는 설정값을, 그 설비/제품의 침탄로작업표준값으로 대신 보여주기 위한 용도) -->
+   <select id="getCurrentProdCodeByFacility" parameterType="int" resultType="string">
+        SELECT TOP 1 O.PROD_CODE
+        FROM WORKILBO W
+        INNER JOIN ORDERT O ON O.ORD_CODE = W.ORD_CODE
+        WHERE W.FAC_CODE = #{fac_code}
+          AND W.ILBO_GUBN = 'A'
+          AND W.ILBO_END = '1900-01-01 00:00:00'
+        ORDER BY W.ILBO_CODE DESC, W.ILBO_PN ASC
+   </select>
+
    <select id="getOverviewData" resultType="java.util.HashMap">
     SELECT *        
     FROM [dbo].[tb_overview_new]

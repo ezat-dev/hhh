@@ -241,6 +241,7 @@ public class WorkJisiTk {
 	private String ilbo_pg5;
 	private String ilbo_pg6;
 	private String ilbo_bigo;
+	private String ilbo_final_chk;	//최종검사 체크박스('Y'/'N')
 //	private int jisi_code;
 	private int ilbo_pc;
 	private int ilbo_pn;
@@ -1380,6 +1381,12 @@ public class WorkJisiTk {
 	}
 	public void setIlbo_bigo(String ilbo_bigo) {
 		this.ilbo_bigo = ilbo_bigo;
+	}
+	public String getIlbo_final_chk() {
+		return ilbo_final_chk;
+	}
+	public void setIlbo_final_chk(String ilbo_final_chk) {
+		this.ilbo_final_chk = ilbo_final_chk;
 	}
 	public int getIlbo_pc() {
 		return ilbo_pc;

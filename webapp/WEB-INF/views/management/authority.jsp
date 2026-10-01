@@ -431,8 +431,8 @@ body {
                 <div class="category-section">
                     <h3>생산공정관리</h3>
                     <div class="permission-control">
-                        <label>전세정작업실적</label>
-                        <select id="c01" name="c01">
+                        <label>적재작업실적</label>
+                        <select id="c08" name="c08">
                             <option value="N">없음</option>
                             <option value="R">조회</option>
                         </select>
@@ -447,6 +447,13 @@ body {
                     <div class="permission-control">
                         <label>템퍼링작업실적</label>
                         <select id="c03" name="c03">
+                            <option value="N">없음</option>
+                            <option value="R">조회</option>
+                        </select>
+                    </div>
+                    <div class="permission-control">
+                        <label>전세정작업실적</label>
+                        <select id="c01" name="c01">
                             <option value="N">없음</option>
                             <option value="R">조회</option>
                         </select>
@@ -515,6 +522,13 @@ body {
                     <div class="permission-control">
                         <label>알람랭킹</label>
                         <select id="d05" name="d05">
+                            <option value="N">없음</option>
+                            <option value="R">조회</option>
+                        </select>
+                    </div>
+                    <div class="permission-control">
+                        <label>트렌드(V2)</label>
+                        <select id="d06" name="d06">
                             <option value="N">없음</option>
                             <option value="R">조회</option>
                         </select>
@@ -598,6 +612,16 @@ body {
                             <option value="D">삭제</option>
                         </select>
                     </div>
+                    <div class="permission-control">
+                        <label>SparePart관리(V2)</label>
+                        <select id="e09" name="e09">
+                            <option value="N">없음</option>
+                            <option value="R">조회</option>
+                            <option value="I">저장</option>
+                            <option value="U">수정</option>
+                            <option value="D">삭제</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- 품질관리 -->
@@ -648,6 +672,15 @@ body {
                         <select id="f06" name="f06">
                             <option value="N">없음</option>
                             <option value="R">조회</option>
+                        </select>
+                    </div>
+                    <div class="permission-control">
+                        <label>KPI관리현황</label>
+                        <select id="f07" name="f07">
+                            <option value="N">없음</option>
+                            <option value="R">조회</option>
+                            <option value="I">저장</option>
+                            <option value="U">수정</option>
                         </select>
                     </div>
                 </div>

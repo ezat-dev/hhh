@@ -156,7 +156,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="8" isUnderline="false" isStrikeThrough="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{tech_te} +"/ "+$F{prod_gyu}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(($F{tech_te} == null) ? "" : $F{tech_te}) + (($F{prod_gyu} == null || $F{prod_gyu}.equals("")) ? "" : " / " + $F{prod_gyu})]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="474" y="0" width="50" height="29" uuid="0d0710bc-444f-4a83-b3d8-0583b871f1b3">

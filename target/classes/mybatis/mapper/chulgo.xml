@@ -311,8 +311,26 @@
 	<!-- 월매출현황(마감) 조회 -->
 	<select id="getMonthSaleList" parameterType="chulgo"
 	resultType="chulgo">
-		SELECT OCHULGO.OCH_MA, 
-	       CORP.CORP_NAME, 
+		<!-- OCH_MA는 저장된 값을 그대로 보여주지 않고 지금 이 화면과 같은 마감일 기준으로
+			 매번 새로 계산해서 보여줌 - 예전 입력화면의 계산 로직이 "그 출고건 자체의 날짜"가
+			 아니라 "저장 당시의 오늘 날짜" 기준으로 마감월을 잘못 계산해서 찍어놓은 과거 데이터가
+			 섞여있어(예: 실제 출고일은 1월인데 마감월이 7월로 찍힌 경우), 그 틀어진 값을 그대로
+			 보여주면 지금 검색한 월과 화면에 보이는 마감월 라벨이 서로 안 맞아보일 수 있음 -->
+		SELECT
+			CASE WHEN ISNULL(CORP.CORP_GYUL1,'1') = '1' THEN
+				CONVERT(VARCHAR(7), OCHULGO.OCH_DATE, 120)
+			ELSE
+				CASE WHEN DAY(OCHULGO.OCH_DATE) &lt;=
+					CASE WHEN TRY_CAST(CORP.CORP_GYUL2 AS INT) IS NULL
+							OR TRY_CAST(CORP.CORP_GYUL2 AS INT) &lt;= 0
+							OR TRY_CAST(CORP.CORP_GYUL2 AS INT) > DAY(EOMONTH(OCHULGO.OCH_DATE))
+						 THEN DAY(EOMONTH(OCHULGO.OCH_DATE))
+						 ELSE TRY_CAST(CORP.CORP_GYUL2 AS INT) END
+					THEN CONVERT(VARCHAR(7), OCHULGO.OCH_DATE, 120)
+					ELSE CONVERT(VARCHAR(7), DATEADD(MONTH,1,OCHULGO.OCH_DATE), 120)
+				END
+			END AS OCH_MA,
+	       CORP.CORP_NAME,
 	       LEFT(CONVERT(NVARCHAR, OCHULGO.OCH_DATE, 120), 10) AS OCH_DATE, 
 	       PRODUCT.PROD_NAME, 
 	       PRODUCT.PROD_NO, 
@@ -323,20 +341,58 @@
 	       FLOOR(OCHULGO.OCH_MON * 0.1) AS OCH_MON_TAX,
 	       (OCHULGO.OCH_MON + FLOOR(OCHULGO.OCH_MON * 0.1)) AS OCH_MON_TOTAL,
 	       OCHULGO.OCH_AMNT 
-	FROM OCHULGO 
-	INNER JOIN ORDERT 
-		ON OCHULGO.ORD_CODE = ORDERT.ORD_CODE 
-	INNER JOIN PRODUCT 
-		ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE 
-	INNER JOIN CORP 
-		ON PRODUCT.CORP_CODE = CORP.CORP_CODE  
+	FROM OCHULGO
+	INNER JOIN ORDERT
+		ON OCHULGO.ORD_CODE = ORDERT.ORD_CODE
+	INNER JOIN PRODUCT
+		ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+	INNER JOIN CORP
+		ON PRODUCT.CORP_CODE = CORP.CORP_CODE
+	<if test="sdate != null and sdate != ''">
+	CROSS JOIN (SELECT CONVERT(DATE, #{sdate} + '-01') AS M1) AS PERIOD
+	</if>
 	<where>
+		<!--
+			거래처마다 마감 기준이 다름(거래처등록 화면의 "매월 말일" 체크/마감일):
+			- CORP_GYUL1 = '1' (매월 말일, NULL도 동일하게 취급): 그냥 달력상 그 달 1일~말일
+			- CORP_GYUL1 = '0' (마감일 직접 지정, CORP_GYUL2=예:25): (전달 26일)~(이번달 25일)
+			  마감일이 그 달에 없는 날짜(예:31일인데 그 달이 30일까지)면 그 달의 마지막 날로 대체.
+			  EOMONTH()가 월별 일수/윤년을 알아서 처리해주므로 별도 분기 없이 안전하게 계산됨.
+		-->
 		<if test="sdate != null and sdate != ''">
-			AND CONVERT(VARCHAR(7), OCHULGO.OCH_DATE, 120) = #{sdate}
+			AND (
+				(ISNULL(CORP.CORP_GYUL1,'1') = '1'
+					AND OCHULGO.OCH_DATE >= PERIOD.M1
+					AND OCHULGO.OCH_DATE &lt; DATEADD(MONTH,1,PERIOD.M1)
+				)
+				OR
+				(ISNULL(CORP.CORP_GYUL1,'1') = '0'
+					<!--
+						TRY_CAST('' AS INT)은 NULL이 아니라 0을 반환함(빈 문자열이 공란으로
+						저장된 거래처가 많음) - IS NULL만 체크하면 이 경우를 못 걸러서 마감일이
+						0으로 취급되어 모든 행이 다음달로 한 달씩 밀리는 버그가 있었음. <= 0 조건을
+						추가해서 빈 문자열/0/음수 전부 "마감일 미지정"으로 안전하게 처리함.
+					-->
+					AND OCHULGO.OCH_DATE >= DATEADD(DAY,
+						CASE WHEN TRY_CAST(CORP.CORP_GYUL2 AS INT) IS NULL
+								OR TRY_CAST(CORP.CORP_GYUL2 AS INT) &lt;= 0
+								OR TRY_CAST(CORP.CORP_GYUL2 AS INT) > DAY(EOMONTH(DATEADD(MONTH,-1,PERIOD.M1)))
+							 THEN DAY(EOMONTH(DATEADD(MONTH,-1,PERIOD.M1)))
+							 ELSE TRY_CAST(CORP.CORP_GYUL2 AS INT) END,
+						DATEADD(MONTH,-1,PERIOD.M1))
+					AND OCHULGO.OCH_DATE &lt; DATEADD(DAY,
+						CASE WHEN TRY_CAST(CORP.CORP_GYUL2 AS INT) IS NULL
+								OR TRY_CAST(CORP.CORP_GYUL2 AS INT) &lt;= 0
+								OR TRY_CAST(CORP.CORP_GYUL2 AS INT) > DAY(EOMONTH(PERIOD.M1))
+							 THEN DAY(EOMONTH(PERIOD.M1))
+							 ELSE TRY_CAST(CORP.CORP_GYUL2 AS INT) END,
+						PERIOD.M1)
+				)
+			)
 		</if>
 		<if test="corp_name != null and corp_name != ''">
 			AND CORP.CORP_NAME LIKE '%' + #{corp_name} + '%'
-		</if>		
+		</if>
 	</where>
 	ORDER BY CORP.CORP_NAME, OCHULGO.OCH_DATE
 	</select>

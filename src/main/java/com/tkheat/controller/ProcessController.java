@@ -203,6 +203,12 @@ public class ProcessController {
 			return rtnMap; 
 		}
 
+	//적재작업실적 - 화면로드 (작업지시-적재 메뉴와 동일한 리스트를 조회전용으로 재사용)
+	@RequestMapping(value = "/process/danchSiljuk", method = RequestMethod.GET)
+	public String danchSiljuk() {
+		return "/process/danchSiljuk.jsp";
+	}
+
 	//침탄작업실적 - 화면로드
 	@RequestMapping(value = "/process/chimSiljuk", method = RequestMethod.GET)
 	public String chimSiljuk() {

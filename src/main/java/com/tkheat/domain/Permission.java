@@ -35,14 +35,17 @@ public class Permission {
 	private String b13;
 	private String b14;
 	
-	private String c01;
-	private String c02;
-	private String c03;
-	private String c04;
-	private String c05;
-	private String c06;
-	private String c07;
-	private String c08;
+	//생산공정관리 메뉴 표시순서(적재,침탄,템퍼링,전세정,후세정,쇼트,설비별,준비)에 맞춰
+	//필드 선언순서를 재배치함(Jackson 직렬화 순서가 이 선언순서를 따라 메뉴가 그 순서로 표시됨) -
+	//DB 컬럼명(C01~C08)은 기존 권한 데이터 호환을 위해 그대로 유지
+	private String c08;	//적재작업실적
+	private String c02;	//침탄작업실적
+	private String c03;	//템퍼링작업실적
+	private String c01;	//전세정작업실적
+	private String c04;	//후세정작업실적
+	private String c05;	//쇼트/샌딩작업실적
+	private String c06;	//설비별작업실적
+	private String c07;	//준비작업실적
 	private String c09;
 	private String c10;
 	private String c11;
@@ -334,11 +337,11 @@ public class Permission {
 	public void setB14(String b14) {
 		this.b14 = b14;
 	}
-	public String getC01() {
-		return c01;
+	public String getC08() {
+		return c08;
 	}
-	public void setC01(String c01) {
-		this.c01 = c01;
+	public void setC08(String c08) {
+		this.c08 = c08;
 	}
 	public String getC02() {
 		return c02;
@@ -351,6 +354,12 @@ public class Permission {
 	}
 	public void setC03(String c03) {
 		this.c03 = c03;
+	}
+	public String getC01() {
+		return c01;
+	}
+	public void setC01(String c01) {
+		this.c01 = c01;
 	}
 	public String getC04() {
 		return c04;
@@ -375,12 +384,6 @@ public class Permission {
 	}
 	public void setC07(String c07) {
 		this.c07 = c07;
-	}
-	public String getC08() {
-		return c08;
-	}
-	public void setC08(String c08) {
-		this.c08 = c08;
 	}
 	public String getC09() {
 		return c09;

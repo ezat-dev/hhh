@@ -27,8 +27,9 @@ public interface MonitoringService {
 	
 	
 	Map<String, Object> getOverviewData();
-	
+
 	Map<String, Object> getCurrentAlarms();
-	
-	
+
+	String getCurrentProdCodeByFacility(int fac_code);
+
 }

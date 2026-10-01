@@ -8,9 +8,9 @@
     <title>침탄작업실적</title>
     <link rel="stylesheet" href="/tkheat/css/management/productInsert.css">
     <link rel="stylesheet" href="/tkheat/css/tabBar/tabBar.css">
-<%@include file="../include/pluginpage.jsp" %> 
+<%@include file="../include/pluginpage.jsp" %>
     <style>
-    
+
 .main{
 	width:98%;
 }
@@ -24,58 +24,65 @@
 	max-height: 900px;
 	overflow-x: hidden !important;
 }
-/* 헤더 컬럼 높이 고정 */
 .tabulator .tabulator-col {
     height: 55px !important;
 }
-
-/* 헤더 필터 input 위치 고정 */
 .tabulator .tabulator-col .tabulator-col-content {
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
-
 .tabulator .tabulator-cell {
 	white-space: normal !important;
-	word-break: break-word; 
+	word-break: break-word;
 	text-align: center;
 }
-        
 .row_select{
 	background-color:#9ABCEA !important;
 }
 .box1 {
 	display: flex;
-	justify-content: right;
 	align-items: center;
-	width: 1500px;
-	margin-left: -1050px;
+	flex-wrap: wrap;
+	gap: 8px;
 }
-
-.box1 select{
-	width: 5%
-}  
-.box1 input[type="date"] {
-	width: 150px;
-	padding: 5px 10px;
-	font-size: 16px;
+.daylabel {
+	font-size: 12px;
+	font-weight: 600;
+	color: #495057;
+	white-space: nowrap;
+}
+/* 작업지시(적재/열처리/템퍼링) 메뉴의 검색줄과 동일한 크기/톤으로 통일 */
+.datetimepicker_date,
+.search_input,
+.box1 select,
+.box1 input[type="text"],
+.box1 input[type="number"] {
+	height: 30px;
+	padding: 0 8px;
+	font-size: 12px !important;
 	border: 1px solid #ccc;
 	border-radius: 6px;
 	background-color: #f9f9f9;
 	color: #333;
 	outline: none;
-	transition: border 0.3s ease;
+	box-sizing: border-box;
+	transition: border-color .2s ease, background-color .2s ease;
 }
-
-.box1 input[type="date"]:focus {
-	border: 1px solid #007bff;
+.datetimepicker_date:focus,
+.search_input:focus,
+.box1 select:focus,
+.box1 input:focus {
+	border-color: #3182CE;
 	background-color: #fff;
-}  
-.box1 label,
-.box1 input {
-	margin-right: 10px; /* 요소 사이 간격 */
+}
+.datetimepicker_date {
+	width: 140px !important;
+	text-align: center;
+}
+.search_input {
+	width: 140px !important;
 }
 
 /* ========== 레이아웃 (세로 스크롤 방지, 여백 축소) ========== */
@@ -96,12 +103,13 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     border: 1px solid #E2E8F0;
     border-radius: 10px;
     box-shadow: 0 1px 4px rgba(0,0,0,.06);
-    padding: 0 14px;
+    padding: 8px 14px;
 }
 .button-container .select-button,
 .button-container .insert-button,
 .button-container .excel-button,
 .button-container .printer-button,
+.button-container .select-hogi-button,
 .button-container .delete {
     height: 34px;
     border: 1px solid #E2E8F0;
@@ -113,6 +121,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 .button-container .insert-button:hover,
 .button-container .excel-button:hover,
 .button-container .printer-button:hover,
+.button-container .select-hogi-button:hover,
 .button-container .delete:hover {
     background: #EBF8FF;
     border-color: #BEE3F8;
@@ -154,19 +163,6 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     color: #ffffff;
     font-weight: 700;
 }
-#tab1 .tabulator-col .tabulator-header-filter input {
-    border: none;
-    border-radius: 5px;
-    padding: 4px 6px;
-    font-size: 11px;
-    background: rgba(255,255,255,.92);
-    box-sizing: border-box;
-}
-#tab1 .tabulator-col .tabulator-header-filter input:focus {
-    outline: none;
-    background: #ffffff;
-    box-shadow: 0 0 0 2px rgba(255,255,255,.6);
-}
 #tab1 .tabulator-row {
     border-bottom: 1px solid #EDF2F7;
     transition: background-color .12s;
@@ -187,43 +183,10 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     border: 1px solid #E2E8F0;
     color: #2D3748;
 }
-
-/* ========== 페이지네이션 (직관적으로 개선) ========== */
 #tab1 .tabulator-footer {
     background: #F7FAFC;
     border-top: 1px solid #E2E8F0;
     padding: 8px 12px;
-}
-#tab1 .tabulator-footer .tabulator-calcs-holder {
-    background: #EBF8FF !important;
-    border-top: none;
-    border-bottom: 1px solid #BEE3F8;
-    color: #2B6CB0;
-    font-weight: 700;
-}
-#tab1 .tabulator-paginator {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-#tab1 .tabulator-page-size {
-    border: 1px solid #E2E8F0;
-    border-radius: 6px;
-    padding: 4px 8px;
-    font-size: 12px;
-    background: #ffffff;
-    color: #2D3748;
-    cursor: pointer;
-    margin: 0;
-}
-#tab1 .tabulator-page-size:focus {
-    outline: none;
-    border-color: #3182CE;
-}
-#tab1 .tabulator-pages {
-    display: flex;
-    gap: 4px;
-    margin: 0;
 }
 #tab1 .tabulator-page {
     display: inline-flex;
@@ -239,7 +202,6 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     font-size: 12px;
     font-weight: 600;
     margin: 0;
-    transition: background-color .13s, border-color .13s, color .13s;
 }
 #tab1 .tabulator-page.active {
     background: #3182CE;
@@ -252,100 +214,113 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     color: #2B6CB0;
     cursor: pointer;
 }
-#tab1 .tabulator-page:disabled {
-    opacity: .4;
-    cursor: not-allowed;
-}
     </style>
-    
-    
+
+
     <body>
-    
+
     <div class="tab">
     <div class="box1">
-         <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>
-        
-		<label class="daylabel">기간 : </label>
-		<input type="date" class="sdate" id="sdate" style="font-size: 16px;" autocomplete="off"> ~ 
-		<input type="date" class="edate" id="edate" style="font-size: 16px;" autocomplete="off">
-			
+		<label class="daylabel">작업일 :</label>
+		<input type="text" id="s_all_sdate" class="datetimepicker_date">
+		~
+		<input type="text" id="s_all_edate" class="datetimepicker_date">
+		<label class="daylabel">거래처 :</label>
+		<input type="text" id="s_all_corp_name" class="search_input">
+		<label class="daylabel">품명 :</label>
+		<input type="text" id="s_all_prod_name" class="search_input">
+		<label class="daylabel">품번 :</label>
+		<input type="text" id="s_all_prod_no" class="search_input">
 	</div>
-    
+
     <div class="button-container">
         <button class="select-button" onclick="getChimSiljukList();">
             <img src="/tkheat/css/image/search-icon.png" alt="select" class="button-image">
            조회
         </button>
-        <button class="insert-button" style="pointer-events: none; opacity: 0.5; cursor: not-allowed; filter: grayscale(100%); ">
-            <img src="/tkheat/css/image/insert-icon.png" alt="insert" class="button-image">
-         입력 
-        </button>
         <button class="excel-button">
             <img src="/tkheat/css/image/excel-icon.png" alt="excel" class="button-image">
-        엑셀    
-        </button>
-        <button class="printer-button">
-            <img src="/tkheat/css/image/printer-icon.png" alt="printer" class="button-image">
-       보고서출력     
+        엑셀
         </button>
     </div>
+</div>
+    <div class="tab">
+    <div class="button-container" style="margin-left:0;">
+        <button class="select-hogi-button select-button" type="button" onclick="selectHogiBtn(0);" id="selectHogi0">
+            전체호기
+        </button>
+        <button class="select-hogi-button select-button" type="button" onclick="selectHogiBtn(1);" id="selectHogi1">
+            침탄로 1호기
+        </button>
+        <button class="select-hogi-button select-button" type="button" onclick="selectHogiBtn(2);" id="selectHogi2">
+            침탄로 2호기
+        </button>
+        <button class="select-hogi-button select-button" type="button" onclick="selectHogiBtn(3);" id="selectHogi3">
+            침탄로 3호기
+        </button>
+        <button class="select-hogi-button select-button" type="button" onclick="selectHogiBtn(4);" id="selectHogi4">
+            침탄로 4호기
+        </button>
+        <button class="select-hogi-button select-button" type="button" onclick="selectHogiBtn(18);" id="selectHogi18">
+            침탄로 5호기
+        </button>
+	</div>
 </div>
     <main class="main">
 		<div class="container">
 			<div id="tab1" class="tabulator"></div>
 		</div>
 	</main>
-	    
-	    
+	<input type="number" id="s_fac_code" value="0" style="display:none;" />
+
+
 <script>
 //========== 전역변수 ==========
-let now_page_code = "c02";  // ✅ 페이지 코드 (조회 전용)
+let now_page_code = "c08";
 var chimSiljukTable;
 
 //========== 페이지 로드 ==========
 $(function(){
-    // ✅ 권한 체크 실행 (조회 전용이므로 now_page_code만 선언)
     if (typeof userInfoList === 'function') {
         userInfoList(now_page_code);
     }
-    
+
     var tdate = todayDate();
     var ydate = yesterDate();
-    
-    $("#sdate").val(tdate);
-    $("#edate").val(tdate);
-    
+
+    $("#s_all_sdate").val(ydate);
+    $("#s_all_edate").val(tdate);
+
     getChimSiljukList();
 });
 
-//========== 침탄작업실적 조회 ==========
+//========== 침탄작업실적 조회 (작업지시-열처리 메뉴와 동일한 리스트를 조회전용으로 표시) ==========
 function getChimSiljukList(){
-    console.log("🔄 getChimSiljukList 시작");
-    
-    // 기존 테이블 완전히 제거
+
     if (chimSiljukTable) {
         chimSiljukTable.destroy();
         chimSiljukTable = null;
     }
-    
-    // DOM 초기화
-    $('#tab1').empty();
-    
+
     chimSiljukTable = new Tabulator("#tab1", {
         height:"100%",
         layout:"fitColumns",
         selectable:true,
         tooltips:true,
         selectableRangeMode:"click",
-        reactiveData:true,
+        reactiveData:false,
         headerHozAlign:"center",
         headerSort:false,
         ajaxConfig:"POST",
         ajaxLoader:false,
-        ajaxURL:"/tkheat/process/chimSiljuk/getChimSiljukList",
+        ajaxURL:"/tkheat/workilbo/heat/allList",
         ajaxParams:{
-            "sdate": $("#sdate").val(),
-            "edate": $("#edate").val(),
+            "s_sdate": $("#s_all_sdate").val(),
+            "s_edate": $("#s_all_edate").val(),
+            "s_corp_name": $("#s_all_corp_name").val(),
+            "s_prod_name": $("#s_all_prod_name").val(),
+            "s_prod_no": $("#s_all_prod_no").val(),
+            "s_fac_code": $("#s_fac_code").val()
         },
         placeholder:"조회된 데이터가 없습니다.",
         pagination:"local",
@@ -353,81 +328,78 @@ function getChimSiljukList(){
         paginationSizeSelector:[20,50,100,500,1000],
         paginationCounter:"rows",
         headerFilterPlaceholder: "",
-        
-        // ✅ 핵심 수정: ajaxResponse에서 데이터 배열 추출
         ajaxResponse:function(url, params, response){
             $("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
-            console.log("📊 서버 응답:", response);
-            console.log("📊 응답 타입:", typeof response);
-            console.log("📊 response.data 존재:", !!response.data);
-            
-            // ✅ 데이터 추출 로직 개선
-            let data;
-            
-            if (Array.isArray(response)) {
-                // 응답이 이미 배열인 경우
-                data = response;
-            } else if (response.data && Array.isArray(response.data)) {
-                // response.data가 배열인 경우
-                data = response.data;
-            } else if (typeof response === 'object') {
-                // 응답이 객체인데 data 속성이 없는 경우
-                console.warn("⚠️ 응답이 객체이지만 data 속성이 없습니다. 빈 배열 반환");
-                data = [];
-            } else {
-                // 그 외의 경우
-                console.error("❌ 예상치 못한 응답 형식:", response);
-                data = [];
-            }
-            
-            console.log("📊 추출된 데이터:", data);
-            console.log("📊 데이터 개수:", data.length);
-            
-            return data;
+            return response.data ? response.data : response;
         },
-        
         columns:[
-            {title:"NO", field:"idx", sorter:"number", width:40, hozAlign:"center"},
-            {title:"작업일", field:"ilbo_strt", sorter:"string", width:60, hozAlign:"center", headerFilter:"input"},	
-            {title:"준비코드", field:"ilbo_code", sorter:"string", width:80, hozAlign:"center", headerFilter:"input"},     
-            {title:"수주NO", field:"ord_code", sorter:"number", width:80, hozAlign:"center", headerFilter:"input"}, 
-            {title:"설비", field:"fac_name", sorter:"string", width:80, hozAlign:"center", headerFilter:"input"}, 
-            {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:80, hozAlign:"center", headerFilter:"input"},		        
-            {title:"시작", field:"ilbo_strt", sorter:"string", width:80, hozAlign:"center", headerFilter:"input"},
-            {title:"완료", field:"ilbo_end", sorter:"string", width:80, hozAlign:"center", headerFilter:"input"},
-            {title:"입고LOT", field:"ord_lot", sorter:"string", width:80, hozAlign:"center", headerFilter:"input"},	
-            {title:"거래처", field:"corp_name", sorter:"string", width:130, hozAlign:"center", headerFilter:"input"},  	
-            {title:"품명", field:"prod_name", sorter:"string", width:130, hozAlign:"center", headerFilter:"input"},	
-            {title:"품번", field:"prod_no", sorter:"string", width:130, hozAlign:"center", headerFilter:"input"},	
-            {title:"규격", field:"prod_gyu", sorter:"string", width:130, hozAlign:"center", headerFilter:"input"},
-            {title:"재질", field:"prod_jai", sorter:"string", width:130, hozAlign:"center", headerFilter:"input"},
-            {title:"작업량", field:"ilbo_su", sorter:"string", width:80, hozAlign:"center", headerFilter:"input"},
-            {title:"작업자", field:"user_name", sorter:"string", width:80, hozAlign:"center", headerFilter:"input"},
-            {title:"담당자", field:"ord_name", sorter:"string", width:80, hozAlign:"center", headerFilter:"input"},		
+            {title:"NO", formatter:"rownum", width:40, hozAlign:"center", headerSort:false},
+            {title:"작업일", field:"ilbo_strt_date", sorter:"string", width:60,
+	            hozAlign:"center",
+	            formatter:function(cell){
+	            	var value = cell.getValue();
+	            	if(!value) return "";
+	            	return value.substring(5,10);
+	            }
+           	},
+            {title:"수주NO", field:"ord_code", sorter:"string", width:85, hozAlign:"center"},
+            {title:"적재코드", field:"danch_barcode", sorter:"string", width:85, hozAlign:"center"},
+            {title:"생산LOT", field:"ilbo_lot", sorter:"string", width:120, hozAlign:"center"},
+            {title:"설비", field:"fac_name", sorter:"string", width:100, hozAlign:"center"},
+            {title:"시작", field:"ilbo_strt_time", sorter:"string", width:60, hozAlign:"center"},
+            {title:"종료", field:"ilbo_end_time", sorter:"string", width:60, hozAlign:"center"},
+            {title:"입고LOT", field:"ord_lot", sorter:"string", width:80, hozAlign:"center"},
+            {title:"거래처", field:"corp_name", sorter:"string", width:120, hozAlign:"left"},
+            {title:"품명", field:"prod_name", sorter:"string", width:230, hozAlign:"left"},
+            {title:"품번", field:"prod_no", sorter:"string", width:140, hozAlign:"left"},
+            {title:"규격", field:"prod_gyu", sorter:"string", width:100, hozAlign:"left"},
+            {title:"재질", field:"prod_jai", sorter:"string", width:100, hozAlign:"left"},
+            {title:"수량", field:"ilbo_su", sorter:"string", width:60, hozAlign:"right"},
+            {title:"공정", field:"tech_te", sorter:"string", width:50, hozAlign:"center"},
+            {title:"비고", field:"tech_in", sorter:"string", width:70, hozAlign:"center"},
+            {title:"최종검사", field:"ilbo_final_chk", sorter:"string", width:80,
+            	hozAlign:"center",
+            	formatter:function(cell){
+            		return cell.getValue() == "Y" ? "O" : "";
+            	}
+            },
         ],
-        
         rowFormatter:function(row){
-            row.getElement().style.fontWeight = "600";
-        },
-        
+		    var data = row.getData();
+		    var ilbo_end = data.ilbo_end;
+		    if(ilbo_end == "1900-01-01 00:00"){
+		    	row.getElement().style.backgroundColor = "#FAED7D";
+		    }else{
+		    	row.getElement().style.backgroundColor = "#FFFFFF";
+		    }
+		},
         rowClick:function(e, row){
-            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").removeClass('row_select');
-            row.getElement().classList.add("row_select");
-            
-            var rowData = row.getData();
-            console.log("선택된 행:", rowData);
+            $("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
+                if($(this).hasClass("row_select")){
+                    $(this).removeClass('row_select');
+                    row.getElement().className += " row_select";
+                }else{
+                    $("#tab1 div.row_select").removeClass("row_select");
+                    row.getElement().className += " row_select";
+                }
+            });
         },
     });
-    
-    console.log("✅ Tabulator 생성 완료");
 }
 
-// ✅ 조회 버튼 클릭 시 테이블 리로드
-function reloadTable() {
-    chimSiljukTable.setData("/tkheat/process/chimSiljuk/getChimSiljukList", {
-        sdate: $("#sdate").val(),
-        edate: $("#edate").val()
-    });
+function selectHogiBtn(hogi){
+	var hogiArray = [0,1,2,3,4,18];
+
+	for(var i=0; i<hogiArray.length; i++){
+		if(hogiArray[i] == hogi){
+			$("#selectHogi"+hogi).css({"background-color":"#BEE3F8","border-color":"#3182CE","color":"#1A365D"});
+		}else{
+			$("#selectHogi"+hogiArray[i]).css({"background-color":"#F0F4F8","border-color":"#E2E8F0","color":"#2D3748"});
+		}
+	}
+
+	$("#s_fac_code").val(hogi);
+	getChimSiljukList();
 }
 
 // ✅ 엑셀 다운로드

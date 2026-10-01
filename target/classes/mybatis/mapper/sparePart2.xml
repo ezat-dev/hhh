@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sparePart2">
+
+	<!-- 재고 현황 목록 (마스터 + 계산 재고) -->
+	<select id="getSparePart2List" parameterType="sparePart2" resultType="sparePart2">
+		SET LOCK_TIMEOUT 10000;
+
+		WITH INH AS (
+			SELECT SPP2_NO,
+				SUM(CASE WHEN SPH2_TYPE = 'IN'  THEN SPH2_QTY ELSE 0 END) AS TOTAL_IN,
+				SUM(CASE WHEN SPH2_TYPE = 'OUT' THEN SPH2_QTY ELSE 0 END) AS TOTAL_OUT
+			FROM SPAREHISTORY2 WITH(NOLOCK)
+			GROUP BY SPP2_NO
+		)
+		SELECT
+			P.SPP2_IDX          AS spp2_idx,
+			P.SPP2_NO           AS spp2_no,
+			P.SPP2_NAME         AS spp2_name,
+			P.SPP2_CATEGORY     AS spp2_category,
+			P.SPP2_EQUIPMENT    AS spp2_equipment,
+			P.SPP2_UNIT         AS spp2_unit,
+			P.SPP2_MIN_STOCK    AS spp2_min_stock,
+			P.SPP2_REPLACE_CYCLE AS spp2_replace_cycle,
+			ISNULL(H.TOTAL_IN,0)  AS total_in,
+			ISNULL(H.TOTAL_OUT,0) AS total_out,
+			ISNULL(H.TOTAL_IN,0) - ISNULL(H.TOTAL_OUT,0) AS current_stock,
+			CASE
+				WHEN ISNULL(H.TOTAL_IN,0) - ISNULL(H.TOTAL_OUT,0) &lt;= 0 THEN N'재고없음'
+				WHEN ISNULL(H.TOTAL_IN,0) - ISNULL(H.TOTAL_OUT,0) &lt; ISNULL(P.SPP2_MIN_STOCK,0) THEN N'부족'
+				ELSE N'정상'
+			END AS stock_status
+		FROM SPAREPART2 P WITH(NOLOCK)
+		LEFT JOIN INH H ON H.SPP2_NO = P.SPP2_NO
+		<where>
+			<if test="category != null and category != ''">
+				AND P.SPP2_CATEGORY = #{category}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				AND (P.SPP2_NO LIKE '%'+#{keyword}+'%' OR P.SPP2_NAME LIKE '%'+#{keyword}+'%')
+			</if>
+		</where>
+		ORDER BY P.SPP2_NO ASC
+	</select>
+
+	<insert id="sparePart2InsertSave" parameterType="sparePart2">
+		INSERT INTO SPAREPART2
+			(SPP2_NO, SPP2_NAME, SPP2_CATEGORY, SPP2_EQUIPMENT, SPP2_UNIT, SPP2_MIN_STOCK, SPP2_REPLACE_CYCLE)
+		VALUES
+			(#{spp2_no}, #{spp2_name}, #{spp2_category}, #{spp2_equipment}, #{spp2_unit}, #{spp2_min_stock}, #{spp2_replace_cycle})
+	</insert>
+
+	<update id="sparePart2UpdateSave" parameterType="sparePart2">
+		UPDATE SPAREPART2 SET
+			SPP2_NAME          = #{spp2_name},
+			SPP2_CATEGORY      = #{spp2_category},
+			SPP2_EQUIPMENT     = #{spp2_equipment},
+			SPP2_UNIT          = #{spp2_unit},
+			SPP2_MIN_STOCK     = #{spp2_min_stock},
+			SPP2_REPLACE_CYCLE = #{spp2_replace_cycle}
+		WHERE SPP2_NO = #{spp2_no}
+	</update>
+
+	<delete id="sparePart2Delete" parameterType="string">
+		SET LOCK_TIMEOUT 10000;
+		DELETE FROM SPAREHISTORY2 WHERE SPP2_NO = #{spp2_no};
+		DELETE FROM SPAREPART2 WHERE SPP2_NO = #{spp2_no};
+	</delete>
+
+	<!-- 입출고 이력 (전체, 부품 마스터와 조인해 품명/카테고리 표시) -->
+	<select id="getSparePart2HisList" parameterType="sparePart2" resultType="sparePart2">
+		SELECT
+			H.SPH2_IDX      AS sph2_idx,
+			H.SPP2_NO       AS spp2_no,
+			P.SPP2_NAME     AS spp2_name,
+			P.SPP2_CATEGORY AS spp2_category,
+			H.SPH2_TYPE     AS sph2_type,
+			H.SPH2_QTY      AS sph2_qty,
+			H.SPH2_EQUIPMENT AS sph2_equipment,
+			H.SPH2_WORKDESC AS sph2_workdesc,
+			H.SPH2_USERNAME AS sph2_username,
+			CONVERT(VARCHAR(19), H.SPH2_REG_DATE, 120) AS sph2_reg_date
+		FROM SPAREHISTORY2 H WITH(NOLOCK)
+		LEFT JOIN SPAREPART2 P WITH(NOLOCK) ON P.SPP2_NO = H.SPP2_NO
+		<where>
+			<if test="type != null and type != ''">
+				AND H.SPH2_TYPE = #{type}
+			</if>
+			<if test="fromDt != null and fromDt != ''">
+				AND H.SPH2_REG_DATE &gt;= #{fromDt}
+			</if>
+			<if test="toDt != null and toDt != ''">
+				AND H.SPH2_REG_DATE &lt; DATEADD(DAY, 1, #{toDt})
+			</if>
+		</where>
+		ORDER BY H.SPH2_REG_DATE DESC
+	</select>
+
+	<insert id="sparePart2HisSave" parameterType="sparePart2">
+		INSERT INTO SPAREHISTORY2
+			(SPP2_NO, SPH2_TYPE, SPH2_QTY, SPH2_EQUIPMENT, SPH2_WORKDESC, SPH2_USERNAME)
+		VALUES
+			(#{spp2_no}, #{sph2_type}, #{sph2_qty}, #{sph2_equipment}, #{sph2_workdesc}, #{sph2_username})
+	</insert>
+
+	<delete id="sparePart2HisDelete" parameterType="int">
+		DELETE FROM SPAREHISTORY2 WHERE SPH2_IDX = #{sph2_idx}
+	</delete>
+
+</mapper>

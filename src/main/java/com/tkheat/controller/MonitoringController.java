@@ -25,7 +25,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.tkheat.domain.AlarmHistory;
 import com.tkheat.domain.AlarmRanking;
 import com.tkheat.domain.Monitoring;
+import com.tkheat.domain.Standard;
 import com.tkheat.domain.WorkJisiTk;
+import com.tkheat.service.ManagementService;
 import com.tkheat.service.MonitoringService;
 import com.tkheat.util.OpcDataMap;
 
@@ -33,10 +35,13 @@ import com.tkheat.util.OpcDataMap;
 
 @Controller
 public class MonitoringController {
-	
+
 	@Autowired
 	private MonitoringService monitoringService;
-	
+
+	@Autowired
+	private ManagementService managementService;
+
 
 	 //통합모니터링 - 화면로드
 	 @RequestMapping(value = "/monitoring/pumMonitoring", method = RequestMethod.GET)
@@ -73,8 +78,13 @@ public class MonitoringController {
 	 public String trend() {
 		 return "/monitoring/trend.jsp";
 	 }
-	 
-	 
+
+	 @RequestMapping(value = "/monitoring/trend2", method = RequestMethod.GET)
+	 public String trend2() {
+		 return "/monitoring/trend2.jsp";
+	 }
+
+
 	 
 	 @RequestMapping(value = "/monitoring/currentAlarmList", method = RequestMethod.POST)
 	 @ResponseBody
@@ -171,29 +181,41 @@ public class MonitoringController {
 			 r.setFac_name_view(result.get(i).getFac_name_view());
 			 r.setProc_gb_view(result.get(i).getProc_gb_view());
 			 r.setIlbo_lot(result.get(i).getIlbo_lot());
-			 
+			 //설비모니터링(overView.jsp)이 BCF1~5 설비명 박스 밑에 현재 생산중인 제품명을 표시할 때
+			 //hogi_code/hogi_proc로 어느 설비의 "진행중" 행인지 매칭하는데, 이 두 값을 새 객체(r)에
+			 //옮겨담지 않아서 응답에 항상 빠져있었음 - 그래서 그 매칭이 전부 실패해 제품명이 하나도
+			 //안 뜨고 있었음
+			 r.setHogi_code(result.get(i).getHogi_code());
+			 r.setHogi_proc(result.get(i).getHogi_proc());
+
+			 r.setBcf_up_view("");
 			 r.setBcf_pre_view("");
 			 r.setBcf_chim_view("");
 			 r.setBcf_diff_view("");
 			 r.setBcf_gang_view("");
 			 r.setBcf_cold_view("");
-			 r.setTemp_view("");
-			 
+			 //설비온도(temp_view)는 tb_temp(SCADA 실시간 센서값)에서 오는 값이라 tb_monitoring의
+			 //공정단계 플래그(bcf_up/pre/...)와는 무관하게 항상 표시되어야 함 - 예전엔 switch 안에서만
+			 //채워져서, 어떤 단계에도 안 걸리면(예: "승온" 단계처럼 case가 아예 없거나, PLC 태그 이슈로
+			 //단계 플래그가 전부 0으로 굳어있는 경우) 실제로는 센서값이 살아있는데도 화면엔 설비온도까지
+			 //덩달아 빈칸으로 나오던 원인이었음
+			 r.setTemp_view(result.get(i).getTemp_view());
+
 			 switch (result.get(i).getCol_name_view()) {
-				 case "pre": r.setBcf_pre_view(result.get(i).getBcf_pre_view()); 
-				 			 r.setTemp_view(result.get(i).getTemp_view());
+				 //"up"(승온) 단계가 switch에서 아예 빠져있었음 - v_monitoring의 col_name이 'up'으로
+				 //오는 경우(현재 승온 중인 설비) bcf_up_view가 전혀 채워지지 않아 해당 설비는 승온
+				 //단계인데도 "승온" 칸이 항상 빈칸으로 보였음
+				 case "up": r.setBcf_up_view(result.get(i).getBcf_up_view());
+				 break;
+				 case "pre": r.setBcf_pre_view(result.get(i).getBcf_pre_view());
 				 break;
 				 case "chim": r.setBcf_chim_view(result.get(i).getBcf_chim_view());
-				 			  r.setTemp_view(result.get(i).getTemp_view());
 				 break;
 				 case "diff": r.setBcf_diff_view(result.get(i).getBcf_diff_view());
-				 			  r.setTemp_view(result.get(i).getTemp_view());
 				 break;
 				 case "gang": r.setBcf_gang_view(result.get(i).getBcf_gang_view());
-				 			  r.setTemp_view(result.get(i).getTemp_view());
 				 break;
 				 case "cold": r.setBcf_cold_view(result.get(i).getBcf_cold_view());
-				 			  r.setTemp_view(result.get(i).getTemp_view());
 				 break;
 			 }
 /*			 
@@ -324,11 +346,58 @@ public class MonitoringController {
 	 
 	 
 	 
+	 //5호기(BCF5, FAC_CODE=18)는 스카다가 침탄/냉각/CP 설정값(SV) 3개를 못 주고 있어서(tb_overview_new에
+	 //해당 컬럼 자체가 없음) - 차선책으로 5호기에서 지금 진행중인 제품의 침탄로작업표준(WORKSTD)에 등록된
+	 //침탄온도/유조(냉각)온도/침탄CP 값을 대신 채워 넣음. 설정값 텍스트에 공차가 섞여 있을 수 있어(예:
+	 //"900±5") 화면에 숫자로 바로 표시할 수 있도록 선행 숫자만 추출해서 내려줌
+	 private static final int BCF5_FAC_CODE = 18;
+
 	 @RequestMapping(value = "/monitoring/getOverviewData", method = RequestMethod.POST)
 	    @ResponseBody
 	    public Map<String, Object> getOverviewData() {
-	        return monitoringService.getOverviewData();
+	        Map<String, Object> data = monitoringService.getOverviewData();
+	        fillBcf5StdFallbackSv(data);
+	        return data;
 	    }
+
+	 private void fillBcf5StdFallbackSv(Map<String, Object> data) {
+		 if (data == null) {
+			 return;
+		 }
+		 try {
+			 String prodCode = monitoringService.getCurrentProdCodeByFacility(BCF5_FAC_CODE);
+			 if (prodCode == null || prodCode.trim().isEmpty()) {
+				 return;
+			 }
+
+			 Standard stdParam = new Standard();
+			 stdParam.setProd_code(prodCode);
+			 stdParam.setFac_code(BCF5_FAC_CODE);
+			 Standard std = managementService.getProcessStandardForChart(stdParam);
+			 if (std == null) {
+				 return;
+			 }
+
+			 putLeadingNumberIfAbsent(data, "bcf_5_cf_sv", std.getWstd_gj12()); //침탄온도
+			 putLeadingNumberIfAbsent(data, "bcf_5_qt_sv", std.getWstd_gj16()); //유조(냉각)온도
+			 putLeadingNumberIfAbsent(data, "bcf_5_cp_sv", std.getWstd_gj32()); //침탄CP
+		 } catch (Exception e) {
+			 e.printStackTrace();
+		 }
+	 }
+
+	 private void putLeadingNumberIfAbsent(Map<String, Object> data, String key, String rawValue) {
+		 if (data.containsKey(key)) {
+			 return; //스카다가 이미 값을 주고 있으면 그 값을 그대로 우선 사용
+		 }
+		 if (rawValue == null) {
+			 return;
+		 }
+		 java.util.regex.Matcher m = java.util.regex.Pattern.compile("-?\\d+(\\.\\d+)?").matcher(rawValue);
+		 if (m.find()) {
+			 data.put(key, m.group());
+		 }
+	 }
 	 
 	 
 	 @RequestMapping(value = "/monitoring/alarm/currentAlarms", method = RequestMethod.POST)

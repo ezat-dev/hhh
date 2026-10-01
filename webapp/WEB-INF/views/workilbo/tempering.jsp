@@ -316,7 +316,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 /*템퍼링작업 등록 모달*/
 .workTfModal{
 	width:1400px;
-	height:750px;
+	height:800px;
 	flex-direction: column;
 }
 
@@ -675,7 +675,7 @@ select[readonly] {
 
     <div class="tab">
     <div class="box1">
-		<form action="" autocomplete="off">
+		<form action="" autocomplete="off" onsubmit="return false;">
 			<div class="j_container">
 				<label class="daylabel">작업일 :</label>
 				<input type="text" id="s_all_sdate" class="datetimepicker_date">
@@ -1002,6 +1002,14 @@ select[readonly] {
 		$("#s_all_sdate").val(tdate);
 		$("#s_all_edate").val(tdate);
 
+		//검색어 입력칸에서 엔터키를 누르면 검색버튼을 누른 것과 동일하게 바로 조회되게 함
+		$("#s_all_corp_name, #s_all_prod_name, #s_all_prod_no, #s_all_ilbo_code, #s_all_ord_code").on("keydown", function(e){
+			if(e.key === "Enter"){
+				e.preventDefault();
+				getWorkDataList();
+			}
+		});
+
 		getWorkData();
 		selectHogiBtn(0);
 	});
@@ -1162,10 +1170,12 @@ select[readonly] {
 	$(".tf_hard_input").on("input", function(e){
 		var name = $(this).attr("name");
 		var value = $(this).val();
-		var std1 = $("#workTfForm input[name='prod_sr1_msg']").val();
-		var std2 = $("#workTfForm input[name='prod_sr2_msg']").val();
-		var stdVal1 = $("#workTfForm input[name='prod_sr1']").val();
-		var stdVal2 = $("#workTfForm input[name='prod_sr2']").val();
+		//소입(_si)측정과 소려(_sr)측정은 규격(상하한)이 서로 다르므로, 이름에 따라 각자의
+		//규격을 써야 함 (예전엔 소려 규격만 써서 소입 필드를 입력해도 소려 규격으로 판정되던 버그가 있었음)
+		var isSr = name.indexOf("_sr") !== -1;
+		var std1 = isSr ? $("#workTfForm input[name='prod_sr1_msg']").val() : $("#workTfForm input[name='prod_si1_msg']").val();
+		var stdVal1 = isSr ? $("#workTfForm input[name='prod_sr1']").val() : $("#workTfForm input[name='prod_si1']").val();
+		var stdVal2 = isSr ? $("#workTfForm input[name='prod_sr2']").val() : $("#workTfForm input[name='prod_si2']").val();
 
 		if(std1 == "정상(순수숫자)"){
 			//stdVal1로만 계산
@@ -1186,20 +1196,31 @@ select[readonly] {
 			"ilbo_pg5_sr":"0"
 	}
 
-	function tfHardInputCalc(name, value, stdVal1, stdVal2){
+	//updateOkng(기본 true) - 기존 데이터를 불러올 때(수정화면 열기)는 false로 호출해서, 저장되어
+	//있던 "구분"(합격/불합격) 값을 건드리지 않고 그대로 유지함(작업자가 수치는 그대로 두고 구분만
+	//수동으로 바꿔서 저장한 경우, 다시 열었을 때 자동판정으로 덮어써버리던 문제를 막기 위함).
+	//측정값을 실제로 입력/수정할 때(사용자가 직접 타이핑)는 true로 호출되어 그때는 자동 재판정됨
+	function tfHardInputCalc(name, value, stdVal1, stdVal2, updateOkng){
+		if(updateOkng === undefined){ updateOkng = true; }
 
 		var inputColor = 0;
 		if(value != "" && value != null){
 			if(stdVal1 != ""){
+				//문자열끼리 비교하면 사전식 비교가 되어버려 숫자 비교가 아닌 경우가 생기므로 숫자로 변환
+				var numValue = parseFloat(value);
+				var numVal1 = parseFloat(stdVal1);
+				var numVal2 = parseFloat(stdVal2);
+
 				if(stdVal2 == ""){
-					//경도규격이 하한만 있을 경우
-					if(value >= stdVal1){
+					//경도규격이 하한만 있을 경우("58 이상"과 같은 표현이라 58 포함)
+					if(numValue >= numVal1){
 						inputColor = 1;
 					}else{
 						inputColor = 2;
 					}
 				}else{
-					if(value >= stdVal1 && value <= stdVal2){
+					//경도규격은 초과/미만 기준이라 상하한(예: 50~55일 때 50, 55)은 불합격 처리
+					if(numValue > numVal1 && numValue < numVal2){
 						inputColor = 1;
 					}else{
 						inputColor = 2;
@@ -1212,8 +1233,10 @@ select[readonly] {
 
 		tfHardInputOKNGObj[name] = inputColor;
 
-		tfHardInputSiOKNG();
-		tfHardInputSrOKNG();
+		if(updateOkng){
+			tfHardInputSiOKNG();
+			tfHardInputSrOKNG();
+		}
 		switch (inputColor){
 			case 0 : $("#workTfForm input[name='"+name+"']").css("background-color","#FFFFFF");
 					break;
@@ -1268,10 +1291,13 @@ select[readonly] {
 
 	}
 
+	//측정1~5(소입/소려) 판정상태 초기화 - 이 함수가 호출되는 곳이 없어서 모달을 새로 열 때마다
+	//이전에 열었던 다른 제품의 판정값(tfHardInputOKNGObj)이 그대로 남아있던 문제가 있었음
+	//(필드명도 실제와 달라 "ilbo_pg_si1" 등 존재하지 않는 이름으로 되어있던 버그도 같이 수정)
 	function tfHardInputReset(){
 		for(var i=1; i<=5; i++){
-			tfHardInputCalc("ilbo_pg_si"+i, "", "", "");
-			tfHardInputCalc("ilbo_pg_sr"+i, "", "", "");
+			tfHardInputCalc("ilbo_pg"+i+"_si", "", "", "");
+			tfHardInputCalc("ilbo_pg"+i+"_sr", "", "", "");
 		}
 	}
 
@@ -1341,6 +1367,8 @@ select[readonly] {
 		//select에 이전(수정모드 등) 선택값이 남아있으면 jQuery val('')로는 지워지지 않으므로(일치하는 option이 없으면 무시됨),
 		//신규등록시엔 pending 메커니즘으로 현재 로그인 사용자를 직접 지정
 		tfPendingUserCode = tkheatLoginUserCode || null;
+		//이전에 열었던 다른 제품의 소입/소려 판정상태가 남아있지 않도록 초기화
+		tfHardInputReset();
 
 		getWorkTfData();
 		getWorkTfDataFacCode();
@@ -1504,12 +1532,16 @@ select[readonly] {
 
 							var stdVal1 = 0;
 							var stdVal2 = 0;
+							var stdVal1Sr = 0;
+							var stdVal2Sr = 0;
 
 							for(let keys in stdDatas){
 								var stdData = stdDatas[keys];
 
 								stdVal1 = stdDatas[keys].prod_si1;
 								stdVal2 = stdDatas[keys].prod_si2;
+								stdVal1Sr = stdDatas[keys].prod_sr1;
+								stdVal2Sr = stdDatas[keys].prod_sr2;
 
 								for(let key in stdData){
 
@@ -1525,13 +1557,20 @@ select[readonly] {
 										ilbo_lot = stdData[key];
 									}
 
+									//소입(_si)/소려(_sr)는 규격(상하한)이 서로 다르므로 각자의 규격으로 판정
+									//(예전엔 소입 규격만 써서 소려 측정값도 소입 규격과 비교되던 버그가 있었음).
+									//단, 여기서는 updateOkng=false로 호출 - "구분" select는 아래에서
+									//저장된 값 그대로 복원되므로, 여기서 자동판정으로 덮어쓰면 안 됨
+									//(작업자가 수치는 그대로 두고 구분만 수동으로 바꿔 저장한 경우를 위함)
 									if(key == "ilbo_pg1_si" || key == "ilbo_pg2_si" ||
 									   key == "ilbo_pg3_si" || key == "ilbo_pg4_si" ||
-									   key == "ilbo_pg5_si" ||
-									   key == "ilbo_pg1_sr" || key == "ilbo_pg2_sr" ||
+									   key == "ilbo_pg5_si"){
+										tfHardInputCalc(key,stdData[key],stdVal1,stdVal2,false);
+									}
+									if(key == "ilbo_pg1_sr" || key == "ilbo_pg2_sr" ||
 									   key == "ilbo_pg3_sr" || key == "ilbo_pg4_sr" ||
 									   key == "ilbo_pg5_sr"){
-										tfHardInputCalc(key,stdData[key],stdVal1,stdVal2);
+										tfHardInputCalc(key,stdData[key],stdVal1Sr,stdVal2Sr,false);
 									}
 
 									if(key == "fac_code"){
@@ -1548,8 +1587,8 @@ select[readonly] {
 
 							$("#workTfForm input[name='tf_total_cnt']").val(ilbo_su);
 							$("#workTfForm input[name='tf_total_weight']").val(ilbo_jung.toFixed(2));
-							tfHardInputSiOKNG();
-							tfHardInputSrOKNG();
+							//구분(합격/불합격) select는 위 루프에서 이미 저장된 값 그대로 복원됨 -
+							//여기서 다시 자동판정을 돌리면 방금 복원한 값을 덮어쓰게 되므로 호출하지 않음
 						}
 					});
 
@@ -1635,6 +1674,12 @@ select[readonly] {
 	/*템퍼링작업*/
 	var workTfDataTable;
 	function getWorkTfData(){
+
+		//모달을 열 때마다 같은 #workTfTabu에 새 Tabulator를 계속 생성만 하면 이전 인스턴스가
+		//정리되지 않고 쌓여 반복해서 열고 닫을수록 브라우저가 느려지다 멈추는 원인이 됨
+		if(workTfDataTable){
+			workTfDataTable.destroy();
+		}
 
 		workTfDataTable = new Tabulator("#workTfTabu", {
 			index:"id",
@@ -1773,6 +1818,10 @@ select[readonly] {
 
 	var workTfBcfDataTable;
 	function getWorkTfBcfData(){
+
+		if(workTfBcfDataTable){
+			workTfBcfDataTable.destroy();
+		}
 
 		workTfBcfDataTable = new Tabulator("#workTfBcfTabu", {
 			index:"id",
@@ -2033,6 +2082,13 @@ select[readonly] {
 	}
 
 
+	//datetime-local input값을 서버로 보낼 문자열로 변환. 종료시간처럼 아직 작업이 끝나지 않아
+	//값이 비어있는 경우 ":00"같은 잘못된 문자열을 만들지 않고 null을 그대로 보냄(ILBO_END는 NULL 허용 컬럼)
+	function dateTimeValOrNull(val){
+		if(!val){ return null; }
+		return val.replace("T"," ")+":00";
+	}
+
 	//열처리작업 저장
 	function workTfModalSave(){
 
@@ -2051,8 +2107,8 @@ select[readonly] {
 		var formObj = {
 				"fac_code":$("#workTfForm select[name='fac_code']").val(),
 				"user_code":$("#workTfForm select[name='user_code']").val(),
-				"ilbo_strt":$("#workTfForm input[name='ilbo_strt']").val().replace("T"," ")+":00",
-				"ilbo_end":$("#workTfForm input[name='ilbo_end']").val().replace("T"," ")+":00",
+				"ilbo_strt":dateTimeValOrNull($("#workTfForm input[name='ilbo_strt']").val()),
+				"ilbo_end":dateTimeValOrNull($("#workTfForm input[name='ilbo_end']").val()),
 				"ilbo_lot":$("#workTfForm input[name='Tf_ilbo_lot']").val(),
 				"ilbo_g11":$("#workTfForm input[name='wstd_ready']").val(),
 				"ilbo_g12":$("#workTfForm input[name='wstd_worktime']").val(),

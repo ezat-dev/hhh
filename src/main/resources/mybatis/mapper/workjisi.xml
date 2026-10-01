@@ -1014,9 +1014,9 @@
 	
 	<!-- 출고관리 - 등록(입고데이터 조회) -->
 	<select id="getChulgoAddList" parameterType="workjisi" resultType="workjisi">
-SELECT 
-		(SELECT TOP 1 SUM(ILBO_SU) FROM WORKILBO WHERE ORD_CODE = ORDERT.ORD_CODE and ILBO_GUBN='A') AS ILBO_SU,
-		(SELECT TOP 1 SUM(ILBO_JUNG) FROM WORKILBO WHERE ORD_CODE = ORDERT.ORD_CODE and ILBO_GUBN='A') AS ILBO_JUNG,
+SELECT
+		WORKILBO_SUM.ILBO_SU_SUM AS ILBO_SU,
+		WORKILBO_SUM.ILBO_JUNG_SUM AS ILBO_JUNG,
 		ORDERT.ORD_CODE, CONVERT(char(10), ORD_DATE, 23) as ORD_DATE,
 		ORD_SU, ROUND(ORD_AMNT,2) as ORD_AMNT, ORD_NAME, ORD_BIGO, ORD_LOT,
 		PROD_GUBN, PROD_NAME, PROD_NO, PROD_JAI, PROD_GYU, ORD_DANW,
@@ -1043,8 +1043,19 @@ SELECT
 		FROM OCHULGO
 		GROUP BY ORD_CODE
 		) OCHULGO_SUM ON OCHULGO_SUM.ORD_CODE = ORDERT.ORD_CODE
+		<!-- 결과행마다 WORKILBO를 상관 서브쿼리로 2번씩(수량/중량) 찾아가던 방식을, OCHULGO_SUM과 같은 방식으로
+		     미리 한 번만 GROUP BY 집계한 파생테이블에 조인하는 방식으로 변경(같은 값을 반환하되 WORKILBO를
+		     결과행 수와 무관하게 딱 1번만 스캔하도록 함) -->
+		LEFT OUTER JOIN (
+		SELECT ORD_CODE,
+			SUM(ILBO_SU) AS ILBO_SU_SUM,
+			SUM(ILBO_JUNG) AS ILBO_JUNG_SUM
+		FROM WORKILBO
+		WHERE ILBO_GUBN = 'A'
+		GROUP BY ORD_CODE
+		) WORKILBO_SUM ON WORKILBO_SUM.ORD_CODE = ORDERT.ORD_CODE
 		WHERE 0 <![CDATA[<]]> ORD_SU - ISNULL(OCH_SU_SUM,0)
-			AND ORDERT.ORD_DATE between #{sdate} + ' 00:00' and #{edate} + ' 23:59'		
+			AND ORDERT.ORD_DATE between #{sdate} + ' 00:00' and #{edate} + ' 23:59'
 	</select>
 	
 	<!-- 출고등록 : 데이터 저장 -->

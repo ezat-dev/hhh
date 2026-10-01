@@ -15,7 +15,7 @@
 	<field name="prod_gyu" class="java.lang.String"/>
 	<field name="och_lot" class="java.lang.String"/>
 	<field name="ord_lot" class="java.lang.String"/>
-	<field name="och_amnt" class="java.lang.Double"/>
+	<field name="och_amnt" class="java.lang.Float"/>
 	<field name="och_bigo" class="java.lang.String"/>
 	<variable name="Tax" class="java.lang.String"/>
 	<background>
@@ -155,7 +155,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{tech_te} + (($F{prod_gyu} == null || $F{prod_gyu}.equals("")) ? "" : " / ") +$F{prod_gyu} + (($F{och_lot} == null || $F{och_lot}.equals(""))  ? "" : " / ") +$F{och_lot}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(($F{tech_te} == null) ? "" : $F{tech_te}) + (($F{prod_gyu} == null || $F{prod_gyu}.equals("")) ? "" : " / " + $F{prod_gyu}) + (($F{och_lot} == null || $F{och_lot}.equals(""))  ? "" : " / " + $F{och_lot})]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0" isBlankWhenNull="true">
 				<reportElement x="474" y="0" width="50" height="29" uuid="0d0710bc-444f-4a83-b3d8-0583b871f1b3">

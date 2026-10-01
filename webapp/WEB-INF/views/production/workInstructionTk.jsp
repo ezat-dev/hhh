@@ -1364,8 +1364,9 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var setDateTime = ye+"-"+mo+"-"+da+" "+ho+":"+mi;
 		
 		$("#workDanForm input[name='ilbo_strt']").val(setDateTime);
-		$("#workDanForm input[name='ilbo_end']").val(setDateTime);
-		
+		//종료시간은 작업이 실제로 끝난 시점에 작업자가 직접 "종료시간 찍기" 버튼(sdateTimeSetBtn)으로
+		//입력해야 하므로 등록 시점엔 비워둠(자동으로 지금 시각을 채우면 안 됨)
+
 		workSelectModalClose();
 		getWorkDanData();
 		getWorkDanDataUserCode();
@@ -1420,8 +1421,10 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				var setDateTime = ye+"-"+mo+"-"+da+" "+ho+":"+mi;
 				
 				$("#workBcfForm input[name='ilbo_strt']").val(setDateTime);
-				$("#workBcfForm input[name='ilbo_end']").val(setDateTime);
-				
+				//종료시간은 작업이 실제로 끝난 시점에 작업자가 직접 "종료시간 찍기" 버튼(sdateTimeSetBtn)으로
+				//입력해야 하므로 등록/수정 모달을 열 때 자동으로 지금 시각을 채우면 안 됨(수정모드는 바로 아래
+				//bcfDataSearch 응답에서 실제 DB값(미완료면 빈값)으로 다시 채워짐)
+
 				workSelectModalClose();
 				getWorkBcfDataUserCode();
 				workBcfModal.style.display = 'flex'; // 모달 표시
@@ -1509,8 +1512,9 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				var setDateTime = ye+"-"+mo+"-"+da+" "+ho+":"+mi;
 				
 				$("#workTfForm input[name='ilbo_strt']").val(setDateTime);
-				$("#workTfForm input[name='ilbo_end']").val(setDateTime);
-				
+				//종료시간은 작업이 실제로 끝난 시점에 작업자가 직접 "종료시간 찍기" 버튼(sdateTimeSetBtn)으로
+				//입력해야 하므로 등록/수정 모달을 열 때 자동으로 지금 시각을 채우면 안 됨
+
 				var selectedDataParam = JSON.stringify(selectedData);
 				//템퍼링작업할 제품선택 후 리스트와 기준정보 조회
 				$.ajax({
@@ -1993,15 +1997,22 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		});		
 	}
 	
+	//datetime-local input값을 서버로 보낼 문자열로 변환. 종료시간처럼 아직 작업이 끝나지 않아
+	//값이 비어있는 경우 "":00"같은 잘못된 문자열을 만들지 않고 null을 그대로 보냄(ILBO_END는 NULL 허용 컬럼)
+	function dateTimeValOrNull(val){
+		if(!val){ return null; }
+		return val.replace("T"," ")+":00";
+	}
+
 	//단취작업 저장
 	function workDanModalSave(){
 		//단취모달 리스트 데이터 조회
 		var danchSettingDataList = JSON.stringify(workDanDataTable.getData());
-		
+
 		var formObj = {
 				"user_code":$("#workDanForm select[name='user_code']").val(),
-				"ilbo_strt":$("#workDanForm input[name='ilbo_strt']").val().replace("T"," ")+":00",
-				"ilbo_end":$("#workDanForm input[name='ilbo_end']").val().replace("T"," ")+":00"
+				"ilbo_strt":dateTimeValOrNull($("#workDanForm input[name='ilbo_strt']").val()),
+				"ilbo_end":dateTimeValOrNull($("#workDanForm input[name='ilbo_end']").val())
 		}
 		
 		var formObjParam = JSON.stringify(formObj);
@@ -2266,8 +2277,8 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var formObj = {
 				"fac_code":$("#workBcfForm select[name='fac_code']").val(),
 				"user_code":$("#workBcfForm select[name='user_code']").val(),
-				"ilbo_strt":$("#workBcfForm input[name='ilbo_strt']").val().replace("T"," ")+":00",
-				"ilbo_end":$("#workBcfForm input[name='ilbo_end']").val().replace("T"," ")+":00",
+				"ilbo_strt":dateTimeValOrNull($("#workBcfForm input[name='ilbo_strt']").val()),
+				"ilbo_end":dateTimeValOrNull($("#workBcfForm input[name='ilbo_end']").val()),
 				"ilbo_lot":$("#workBcfForm input[name='bcf_ilbo_lot']").val(),
 				"wstd_gj11":$("#workBcfForm input[name='wstd_gj11']").val(),
 				"wstd_gj21":$("#workBcfForm input[name='wstd_gj21']").val(),
@@ -2457,8 +2468,8 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		var formObj = {
 				"fac_code":$("#workTfForm select[name='fac_code']").val(),
 				"user_code":$("#workTfForm select[name='user_code']").val(),
-				"ilbo_strt":$("#workTfForm input[name='ilbo_strt']").val().replace("T"," ")+":00",
-				"ilbo_end":$("#workTfForm input[name='ilbo_end']").val().replace("T"," ")+":00",
+				"ilbo_strt":dateTimeValOrNull($("#workTfForm input[name='ilbo_strt']").val()),
+				"ilbo_end":dateTimeValOrNull($("#workTfForm input[name='ilbo_end']").val()),
 				"ilbo_lot":$("#workTfForm input[name='Tf_ilbo_lot']").val(),
 				"ilbo_g11":$("#workTfForm input[name='wstd_ready']").val(),
 				"ilbo_g12":$("#workTfForm input[name='wstd_worktime']").val(),

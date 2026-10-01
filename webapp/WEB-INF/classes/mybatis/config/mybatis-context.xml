@@ -20,6 +20,8 @@
   	<mapper resource="mybatis/mapper/work.xml"/>
   	<mapper resource="mybatis/mapper/siljuk.xml"/>
   	<mapper resource="mybatis/mapper/sparePart.xml"/>
+  	<mapper resource="mybatis/mapper/sparePart2.xml"/>
+  	<mapper resource="mybatis/mapper/kpi.xml"/>
   	<mapper resource="mybatis/mapper/suip.xml"/>
   	<mapper resource="mybatis/mapper/bega.xml"/>
   	<mapper resource="mybatis/mapper/suri.xml"/>

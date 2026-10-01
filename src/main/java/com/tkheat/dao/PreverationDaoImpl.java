@@ -13,6 +13,7 @@ import com.tkheat.domain.Bega;
 import com.tkheat.domain.Jeomgeom;
 import com.tkheat.domain.Measure;
 import com.tkheat.domain.SparePart;
+import com.tkheat.domain.SparePart2;
 import com.tkheat.domain.Suri;
 @Repository
 public class PreverationDaoImpl implements PreservationDao {
@@ -237,7 +238,42 @@ public class PreverationDaoImpl implements PreservationDao {
 	 public void gigiJeomgeomDelete(int ter_code) {
 		 sqlSession.delete("measure.gigiJeomgeomDelete", ter_code);
 	 }
-	
-	
+
+
+	@Override
+	public List<SparePart2> getSparePart2List(SparePart2 sparePart2) {
+		return sqlSession.selectList("sparePart2.getSparePart2List", sparePart2);
+	}
+
+	@Override
+	public void sparePart2InsertSave(SparePart2 sparePart2) {
+		sqlSession.insert("sparePart2.sparePart2InsertSave", sparePart2);
+	}
+
+	@Override
+	public void sparePart2UpdateSave(SparePart2 sparePart2) {
+		sqlSession.update("sparePart2.sparePart2UpdateSave", sparePart2);
+	}
+
+	@Override
+	public void sparePart2Delete(String spp2_no) {
+		sqlSession.delete("sparePart2.sparePart2Delete", spp2_no);
+	}
+
+	@Override
+	public List<SparePart2> getSparePart2HisList(SparePart2 sparePart2) {
+		return sqlSession.selectList("sparePart2.getSparePart2HisList", sparePart2);
+	}
+
+	@Override
+	public void sparePart2HisSave(SparePart2 sparePart2) {
+		sqlSession.insert("sparePart2.sparePart2HisSave", sparePart2);
+	}
+
+	@Override
+	public void sparePart2HisDelete(int sph2_idx) {
+		sqlSession.delete("sparePart2.sparePart2HisDelete", sph2_idx);
+	}
+
 }
 

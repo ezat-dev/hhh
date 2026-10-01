@@ -90,5 +90,10 @@ public class MonitoringDaoImpl implements MonitoringDao {
 	public Map<String, Object> getCurrentAlarms() {
 		return sqlSession.selectOne("monitoring.getCurrentAlarms");
 	}
-    
+
+	@Override
+	public String getCurrentProdCodeByFacility(int fac_code) {
+		return sqlSession.selectOne("monitoring.getCurrentProdCodeByFacility", fac_code);
+	}
+
 }

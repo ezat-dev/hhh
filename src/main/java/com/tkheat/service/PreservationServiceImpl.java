@@ -11,6 +11,7 @@ import com.tkheat.domain.Bega;
 import com.tkheat.domain.Jeomgeom;
 import com.tkheat.domain.Measure;
 import com.tkheat.domain.SparePart;
+import com.tkheat.domain.SparePart2;
 import com.tkheat.domain.Suri;
 
 
@@ -251,6 +252,41 @@ public class PreservationServiceImpl implements PreservationService{
 	public void gigiJeomgeomDelete(int ter_code) {
 		preservationDao.gigiJeomgeomDelete(ter_code);
 	}
-	
+
+
+	@Override
+	public List<SparePart2> getSparePart2List(SparePart2 sparePart2) {
+		return preservationDao.getSparePart2List(sparePart2);
+	}
+
+	@Override
+	public void sparePart2InsertSave(SparePart2 sparePart2) {
+		preservationDao.sparePart2InsertSave(sparePart2);
+	}
+
+	@Override
+	public void sparePart2UpdateSave(SparePart2 sparePart2) {
+		preservationDao.sparePart2UpdateSave(sparePart2);
+	}
+
+	@Override
+	public void sparePart2Delete(String spp2_no) {
+		preservationDao.sparePart2Delete(spp2_no);
+	}
+
+	@Override
+	public List<SparePart2> getSparePart2HisList(SparePart2 sparePart2) {
+		return preservationDao.getSparePart2HisList(sparePart2);
+	}
+
+	@Override
+	public void sparePart2HisSave(SparePart2 sparePart2) {
+		preservationDao.sparePart2HisSave(sparePart2);
+	}
+
+	@Override
+	public void sparePart2HisDelete(int sph2_idx) {
+		preservationDao.sparePart2HisDelete(sph2_idx);
+	}
 
 }

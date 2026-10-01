@@ -46,7 +46,7 @@ body{
 /* 설비별 현재 진행중인 제품명 (실시간) */
 .product_label {
     position: absolute;
-    top: 26px;
+    top: 46px;
     z-index: 500; /* 뒤에 그려지는 설비 작화 이미지들에 가려지지 않도록 최상단 고정 */
     font-size: 14px;
     font-weight: bold;

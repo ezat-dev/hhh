@@ -250,6 +250,19 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     border: 1px solid #E2E8F0;
     color: #2D3748;
 }
+/* 거래처 그룹 헤더/소계(그룹 footer) 줄 구분이 잘 보이게 */
+#tab1 .tabulator-group {
+    background: #EDF2F7;
+    border-bottom: 1px solid #CBD5E0;
+    font-weight: 700;
+    color: #2B6CB0;
+    padding: 4px 8px;
+}
+#tab1 .tabulator-group-footer {
+    background: #FFFAF0;
+    border-top: 1px solid #FBD38D;
+    border-bottom: 2px solid #E2E8F0;
+}
 
 /* ========== 페이지네이션 (직관적으로 개선) ========== */
 #tab1 .tabulator-footer {
@@ -377,6 +390,16 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 
 	//이벤트
 	//함수
+
+	//거래처별 소계 행에 쓸 합계 문자열(천단위 콤마) 계산
+	function groupSumMoney(data, field){
+		var sum = data.reduce(function(acc, row){
+			var v = Number(row[field]);
+			return acc + (isNaN(v) ? 0 : v);
+		}, 0);
+		return "<b>" + sum.toLocaleString(undefined, {maximumFractionDigits:1}) + "</b>";
+	}
+
 	function getMonthSaleList(){
 		if (!document.getElementById('progress-styles')) {
     	    const style = document.createElement('style');
@@ -434,12 +457,30 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		    	"prod_gubn": $("#prod_gubn").val(),
 			    },
 		    placeholder:"조회된 데이터가 없습니다.",
-		    pagination:"local",
-	        paginationSize:20,
-	        paginationSizeSelector:[20,50,100,500,1000],
-	        paginationCounter:"rows",
-	        
+		    //거래처별 소계를 한 화면에서 쭉 스크롤하며 보여줘야 해서, 중간에 소계가 다른 페이지로
+		    //끊겨 보이지 않게 페이지네이션 없이 전체를 한 번에 스크롤로 보여줌
 	        headerFilterPlaceholder: "",
+	        //거래처(가나다순 정렬은 서버 쿼리에서 이미 되어 있음) 단위로 묶어서, 그 거래처 리스트가
+	        //끝나는 바로 아랫줄에 수량/공급가액/부가세/합계금액 소계를 보여줌
+	        groupBy:"corp_name",
+	        groupStartOpen:true,
+	        groupHeader:function(value, count, data, group){
+	        	return "<b>" + value + "</b> <span style='color:#718096;font-weight:400'>(" + count + "건)</span>";
+	        },
+	        groupFooter:[
+	        	function(data){ return ""; },
+	        	function(data){ return ""; },
+	        	function(data){ return ""; },
+	        	function(data){ return "<b>소계</b>"; },
+	        	function(data){ return ""; },
+	        	function(data){ return ""; },
+	        	function(data){ return ""; },
+	        	function(data){ return groupSumMoney(data,"och_su"); },
+	        	function(data){ return ""; },
+	        	function(data){ return groupSumMoney(data,"och_mon"); },
+	        	function(data){ return groupSumMoney(data,"och_mon_tax"); },
+	        	function(data){ return groupSumMoney(data,"och_mon_total"); }
+	        ],
 		    ajaxResponse:function(url, params, response){
 				$("#tab1 .tabulator-col.tabulator-sortable").css("height","55px");
 				 console.log("📊 서버 응답:", response);

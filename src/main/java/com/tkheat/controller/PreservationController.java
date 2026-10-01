@@ -22,6 +22,7 @@ import com.tkheat.domain.Bega;
 import com.tkheat.domain.Jeomgeom;
 import com.tkheat.domain.Measure;
 import com.tkheat.domain.SparePart;
+import com.tkheat.domain.SparePart2;
 import com.tkheat.domain.Suri;
 import com.tkheat.service.PreservationService;
 
@@ -1212,6 +1213,136 @@ public class PreservationController {
 			System.out.println(result.get("message"));
 
 			return result;
-		}	
+		}
+
+
+		//========== SparePart관리(V2) ==========
+
+		//SparePart2 - 화면로드
+		@RequestMapping(value = "/preservation/sparePart2", method = RequestMethod.GET)
+		public String sparePart2() {
+			return "/preservation/sparePart2.jsp";
+		}
+
+		//SparePart2 - 재고 현황 목록(마스터 + 계산 재고) 조회
+		@RequestMapping(value = "/preservation/sparePart2/getSparePart2List", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> getSparePart2List(
+				@RequestParam(value = "category", required = false) String category,
+				@RequestParam(value = "keyword", required = false) String keyword) {
+			Map<String, Object> result = new HashMap<>();
+
+			SparePart2 param = new SparePart2();
+			param.setCategory(category);
+			param.setKeyword(keyword);
+
+			List<SparePart2> list = preservationService.getSparePart2List(param);
+			result.put("status", "success");
+			result.put("data", list);
+			return result;
+		}
+
+		//SparePart2 - 부품 마스터 저장(추가/수정)
+		@RequestMapping(value = "/preservation/sparePart2/sparePart2Save", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> sparePart2Save(
+				@ModelAttribute SparePart2 sparePart2,
+				@RequestParam("mode") String mode) {
+			Map<String, Object> result = new HashMap<>();
+
+			try {
+				if ("insert".equalsIgnoreCase(mode)) {
+					preservationService.sparePart2InsertSave(sparePart2);
+				} else if ("update".equalsIgnoreCase(mode)) {
+					preservationService.sparePart2UpdateSave(sparePart2);
+				} else {
+					throw new IllegalArgumentException("Invalid mode: " + mode);
+				}
+				result.put("status", "success");
+				result.put("message", "OK");
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
+			}
+
+			return result;
+		}
+
+		//SparePart2 - 부품 마스터 삭제(이력 포함)
+		@RequestMapping(value = "/preservation/sparePart2/sparePart2Delete", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> sparePart2Delete(@RequestParam("spp2_no") String spp2_no) {
+			Map<String, Object> result = new HashMap<>();
+
+			try {
+				preservationService.sparePart2Delete(spp2_no);
+				result.put("status", "success");
+				result.put("message", "삭제 완료");
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
+			}
+
+			return result;
+		}
+
+		//SparePart2 - 입출고 이력 조회
+		@RequestMapping(value = "/preservation/sparePart2/getSparePart2HisList", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> getSparePart2HisList(
+				@RequestParam(value = "type", required = false) String type,
+				@RequestParam(value = "fromDt", required = false) String fromDt,
+				@RequestParam(value = "toDt", required = false) String toDt) {
+			Map<String, Object> result = new HashMap<>();
+
+			SparePart2 param = new SparePart2();
+			param.setType(type);
+			param.setFromDt(fromDt);
+			param.setToDt(toDt);
+
+			List<SparePart2> list = preservationService.getSparePart2HisList(param);
+			result.put("status", "success");
+			result.put("data", list);
+			return result;
+		}
+
+		//SparePart2 - 입출고 이력 저장(입고/사용)
+		@RequestMapping(value = "/preservation/sparePart2/sparePart2HisSave", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> sparePart2HisSave(@ModelAttribute SparePart2 sparePart2) {
+			Map<String, Object> result = new HashMap<>();
+
+			try {
+				if (sparePart2.getSph2_qty() == null || sparePart2.getSph2_qty() < 1) {
+					throw new IllegalArgumentException("수량을 1 이상 입력해주세요.");
+				}
+				preservationService.sparePart2HisSave(sparePart2);
+				result.put("status", "success");
+				result.put("message", "OK");
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
+			}
+
+			return result;
+		}
+
+		//SparePart2 - 입출고 이력 삭제
+		@RequestMapping(value = "/preservation/sparePart2/sparePart2HisDelete", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> sparePart2HisDelete(@RequestParam("sph2_idx") int sph2_idx) {
+			Map<String, Object> result = new HashMap<>();
+
+			try {
+				preservationService.sparePart2HisDelete(sph2_idx);
+				result.put("status", "success");
+				result.put("message", "삭제 완료");
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
+			}
+
+			return result;
+		}
 
 }

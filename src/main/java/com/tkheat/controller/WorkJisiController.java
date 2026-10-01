@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -1310,7 +1311,10 @@ public class WorkJisiController {
 			//거래명세서 발행할 거래처 리스트(출고일 기준)
 			List<WorkJisi> chulgoReportList = workJisiService.getChulgoReportNormal(w);
 			
-			Map<String, List<Integer>> ochMap = new HashMap<String, List<Integer>>();
+			//HashMap은 키(날짜;거래처코드) 순서를 보장 안 해서, 같은 거래처를 여러 날짜로 걸쳐
+			//한꺼번에 출력하면 출고일 순서와 무관하게 뒤섞여서 인쇄되던 원인이었음 - 날짜 문자열이
+			//ISO형식(yyyy-MM-dd)이라 TreeMap으로 바꾸면 키 자체가 자동으로 날짜순 정렬됨
+			Map<String, List<Integer>> ochMap = new TreeMap<String, List<Integer>>();
 			List<Integer> ochList = new ArrayList<Integer>();
 			
 
