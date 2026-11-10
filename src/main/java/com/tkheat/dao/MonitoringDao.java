@@ -6,6 +6,7 @@ import java.util.Map;
 import com.tkheat.domain.AlarmHistory;
 import com.tkheat.domain.AlarmRanking;
 import com.tkheat.domain.Monitoring;
+import com.tkheat.domain.TrendMemo;
 import com.tkheat.domain.WorkJisi;
 import com.tkheat.domain.WorkJisiTk;
 
@@ -40,4 +41,12 @@ public interface MonitoringDao {
 	Map<String, Object> getCurrentAlarms();
 
 	String getCurrentProdCodeByFacility(int fac_code);
+
+	void insertTrendMemo(TrendMemo trendMemo);
+
+	List<TrendMemo> getTrendMemoList(TrendMemo trendMemo);
+
+	void updateTrendMemo(TrendMemo trendMemo);
+
+	void deleteTrendMemo(int memo_code);
 }

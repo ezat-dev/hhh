@@ -2,6 +2,7 @@ package com.tkheat.dao;
 
 import java.util.List;
 
+import com.tkheat.domain.DeliveryRate;
 import com.tkheat.domain.Product;
 import com.tkheat.domain.Suip;
 import com.tkheat.domain.Work;
@@ -30,7 +31,17 @@ public interface QualityDao {
 	void nonUdateSave(Work work);
 	
 	void deleteNon(Integer werr_code);
-	
+
+	List<Work> getDefectStatusCorpList(Work work);
+
+	Work getDefectStatusSummary(Work work);
+
+	List<Work> getDefectStatusGubnList(Work work);
+
+	DeliveryRate getDeliverySummary(DeliveryRate deliveryRate);
+
+	List<DeliveryRate> getDeliveryCorpList(DeliveryRate deliveryRate);
+
 	
 	
 	

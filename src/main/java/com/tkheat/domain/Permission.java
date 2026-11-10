@@ -155,6 +155,13 @@ public class Permission {
 	private String i12;
 	private String i13;
 	private String i14;
+
+	//파일관리(신규 대메뉴)
+	private String j01;
+	private String j02;
+	private String j03;
+	private String j04;
+	private String j05;
 	
 	
 	public int getPerm_code() {
@@ -1004,5 +1011,35 @@ public class Permission {
 		this.i14 = i14;
 	}
 
+	public String getJ01() {
+		return j01;
+	}
+	public void setJ01(String j01) {
+		this.j01 = j01;
+	}
+	public String getJ02() {
+		return j02;
+	}
+	public void setJ02(String j02) {
+		this.j02 = j02;
+	}
+	public String getJ03() {
+		return j03;
+	}
+	public void setJ03(String j03) {
+		this.j03 = j03;
+	}
+	public String getJ04() {
+		return j04;
+	}
+	public void setJ04(String j04) {
+		this.j04 = j04;
+	}
+	public String getJ05() {
+		return j05;
+	}
+	public void setJ05(String j05) {
+		this.j05 = j05;
+	}
 
 }

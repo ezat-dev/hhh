@@ -648,6 +648,9 @@ function pageObject(paramKey){
 		"e07":["/tkheat/preservation/monthJeomgeom","설비별점검현황(월별)"],
 		"e08":["/tkheat/preservation/gigiGojang","측정기기고장이력"],
 		"e09":["/tkheat/preservation/sparePart2","SparePart관리(V2)"],
+		"e10":["/tkheat/preservation/partInven","부품재고관리"],
+		"e11":["/tkheat/change4m","4M 변경관리"],
+		"e12":["/tkheat/vehicleLog","차량 관리 일지"],
 
 		"f01":["/tkheat/quality/suip","수입검사"],
 		"f02":["/tkheat/quality/nonInsert","부적합등록"],
@@ -656,7 +659,9 @@ function pageObject(paramKey){
 		"f05":["/tkheat/quality/queHard","소입경도현황"],
 		"f06":["/tkheat/quality/temHard","템퍼링경도현황"],
 		"f07":["/tkheat/quality/kpiStatus","KPI관리현황"],
-		
+		"f08":["/tkheat/quality/defectStatus","불량현황"],
+		"f09":["/tkheat/quality/deliveryRate","납기준수율"],
+
 		"g01":["/tkheat/operation/pIpgoStatus","제품별입고현황"],
 		"g02":["/tkheat/operation/pChulgoStatus","제품별출고현황"],
 		"g03":["/tkheat/operation/prodSiljuk","제품별작업실적"],
@@ -675,6 +680,8 @@ function pageObject(paramKey){
 		"h05":["/tkheat/management/userinsert","작업자등록"],
 		"h06":["/tkheat/management/authority","사원별권한등록"],
 		"h07":["/tkheat/management/measurement","측정기기관리"],
+		"h08":["/tkheat/payroll","급여관리"],
+		"h09":["/tkheat/reward","포상관리제"],
 		
 		"i01":["/tkheat/workilbo/danch","적재"],
 		"i02":["/tkheat/workilbo/preWash","전세척"],
@@ -685,6 +692,8 @@ function pageObject(paramKey){
 		"i07":["/tkheat/workilbo/final","최종검사"],
 		"i08":["/tkheat/workilbo/bang","방청"],
 		"i09":["/tkheat/workilbo/pojang","포장"],
+
+		"j01":["/tkheat/filemanage/fileManage","파일관리"],
 	};
 	
 	return obj[paramKey];

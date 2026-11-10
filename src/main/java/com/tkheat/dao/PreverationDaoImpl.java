@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.tkheat.domain.Bega;
+import com.tkheat.domain.Corp;
+import com.tkheat.domain.Fac;
 import com.tkheat.domain.Jeomgeom;
 import com.tkheat.domain.Measure;
 import com.tkheat.domain.SparePart;
@@ -103,11 +105,6 @@ public class PreverationDaoImpl implements PreservationDao {
 		 return sqlSession.selectList("bega.getBegaAnalyList", bega);
 	 }
 
-	@Override
-	 public List<Map<String, Object>> getBegaWorkStatusList(Bega bega) {
-		 return sqlSession.selectList("bega.getBegaWorkStatusList", bega);
-	 }
-	
 	
 	
 	
@@ -273,6 +270,87 @@ public class PreverationDaoImpl implements PreservationDao {
 	@Override
 	public void sparePart2HisDelete(int sph2_idx) {
 		sqlSession.delete("sparePart2.sparePart2HisDelete", sph2_idx);
+	}
+
+	//부품재고관리(신규, e10)
+	@Override
+	public List<Corp> getVendorOptionList() {
+		return sqlSession.selectList("sparePart2.getVendorOptionList");
+	}
+
+	@Override
+	public List<Fac> getFacilityOptionList() {
+		return sqlSession.selectList("sparePart2.getFacilityOptionList");
+	}
+
+	@Override
+	public List<SparePart2> getPartInvenList(SparePart2 sparePart2) {
+		return sqlSession.selectList("sparePart2.getPartInvenList", sparePart2);
+	}
+
+	@Override
+	public List<Integer> getPartFacilityCodes(String spp2_no) {
+		return sqlSession.selectList("sparePart2.getPartFacilityCodes", spp2_no);
+	}
+
+	@Override
+	public int getVendorUsageCount(int vendor_code) {
+		return sqlSession.selectOne("sparePart2.getVendorUsageCount", vendor_code);
+	}
+
+	@Override
+	public int getEquipUsageCount(int fac_code) {
+		return sqlSession.selectOne("sparePart2.getEquipUsageCount", fac_code);
+	}
+
+	@Override
+	public void partInvenInsertSave(SparePart2 sparePart2) {
+		sqlSession.insert("sparePart2.partInvenInsertSave", sparePart2);
+	}
+
+	@Override
+	public void partInvenUpdateSave(SparePart2 sparePart2) {
+		sqlSession.update("sparePart2.partInvenUpdateSave", sparePart2);
+	}
+
+	@Override
+	public void partInvenFacilityDeleteAll(String spp2_no) {
+		sqlSession.delete("sparePart2.partInvenFacilityDeleteAll", spp2_no);
+	}
+
+	@Override
+	public void partInvenFacilityInsert(SparePart2 sparePart2) {
+		sqlSession.insert("sparePart2.partInvenFacilityInsert", sparePart2);
+	}
+
+	@Override
+	public void partInvenDelete(String spp2_no) {
+		sqlSession.delete("sparePart2.partInvenDelete", spp2_no);
+	}
+
+	@Override
+	public SparePart2 getPartStockSnapshot(String spp2_no) {
+		return sqlSession.selectOne("sparePart2.getPartStockSnapshot", spp2_no);
+	}
+
+	@Override
+	public void updatePartAvgPrice(SparePart2 sparePart2) {
+		sqlSession.update("sparePart2.updatePartAvgPrice", sparePart2);
+	}
+
+	@Override
+	public List<SparePart2> getPartInvenHisList(SparePart2 sparePart2) {
+		return sqlSession.selectList("sparePart2.getPartInvenHisList", sparePart2);
+	}
+
+	@Override
+	public void partInvenHisSave(SparePart2 sparePart2) {
+		sqlSession.insert("sparePart2.partInvenHisSave", sparePart2);
+	}
+
+	@Override
+	public void partInvenHisDelete(int sph2_idx) {
+		sqlSession.delete("sparePart2.partInvenHisDelete", sph2_idx);
 	}
 
 }

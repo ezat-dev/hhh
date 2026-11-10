@@ -1,5 +1,7 @@
 package com.tkheat.domain;
 
+import java.util.List;
+
 public class SparePart2 {
 
 	// 부품 마스터
@@ -7,17 +9,28 @@ public class SparePart2 {
 	private String spp2_no;			//부품번호
 	private String spp2_name;			//품명
 	private String spp2_category;		//카테고리
-	private String spp2_equipment;		//적용설비
+	private String spp2_equipment;		//적용설비(V2 구버전 자유텍스트, 부품재고관리에서는 미사용)
 	private String spp2_unit;			//단위
-	private Integer spp2_min_stock;	//최소재고
+	private Integer spp2_min_stock;	//최소재고(안전재고)
 	private Integer spp2_replace_cycle;//교체주기(개월)
 	private String spp2_reg_date;
+
+	//부품재고관리(신규) - 업체/단가
+	private Integer spp2_vendor_code;	//매입처(CORP.CORP_CODE, CORP_GUBN='매입처')
+	private String vendor_name;		//매입처명(조인 표시용)
+	private Double spp2_unitprice;		//단가
+	private Double spp2_avg_price;		//평균구입단가(가중평균, 입고시마다 자동 계산)
+
+	//부품재고관리(신규) - 적용설비(다중, SPAREPART2_FACILITY 조인 테이블)
+	private List<Integer> fac_codes;	//저장 시 선택한 설비코드 목록
+	private String equipment_names;	//조회 시 조인된 설비명 목록(쉼표 구분, 표시용)
 
 	// 재고 현황(계산값)
 	private Integer total_in;
 	private Integer total_out;
 	private Integer current_stock;
 	private String stock_status;		//재고없음/부족/정상
+	private Double stock_amount;		//재고금액(현재고 × 평균구입단가 또는 단가)
 
 	// 조회 조건
 	private String category;
@@ -25,12 +38,18 @@ public class SparePart2 {
 
 	// 입출고 이력
 	private Integer sph2_idx;
-	private String sph2_type;			//IN/OUT
-	private Integer sph2_qty;
-	private String sph2_equipment;
+	private String sph2_type;			//IN/OUT/ADJ(실사조정)
+	private Integer sph2_qty;			//IN,OUT은 양수 수량, ADJ는 증감분(음수 가능)
+	private String sph2_equipment;		//V2 구버전 자유텍스트, 부품재고관리에서는 미사용
 	private String sph2_workdesc;
 	private String sph2_username;
 	private String sph2_reg_date;
+
+	//부품재고관리(신규) - 이력 단가/설비
+	private Double sph2_unitprice;		//입고 단가(IN일 때만 의미있음)
+	private Double sph2_amount;			//금액(수량×단가, 조회시 계산)
+	private Integer sph2_fac_code;		//사용설비(FACILITY.FAC_CODE, OUT일 때 어느 설비에 썼는지)
+	private String fac_name;			//사용설비명(조인 표시용)
 
 	// 이력 조회 조건
 	private String type;
@@ -90,6 +109,72 @@ public class SparePart2 {
 	}
 	public void setSpp2_reg_date(String spp2_reg_date) {
 		this.spp2_reg_date = spp2_reg_date;
+	}
+	public Integer getSpp2_vendor_code() {
+		return spp2_vendor_code;
+	}
+	public void setSpp2_vendor_code(Integer spp2_vendor_code) {
+		this.spp2_vendor_code = spp2_vendor_code;
+	}
+	public String getVendor_name() {
+		return vendor_name;
+	}
+	public void setVendor_name(String vendor_name) {
+		this.vendor_name = vendor_name;
+	}
+	public Double getSpp2_unitprice() {
+		return spp2_unitprice;
+	}
+	public void setSpp2_unitprice(Double spp2_unitprice) {
+		this.spp2_unitprice = spp2_unitprice;
+	}
+	public Double getSpp2_avg_price() {
+		return spp2_avg_price;
+	}
+	public void setSpp2_avg_price(Double spp2_avg_price) {
+		this.spp2_avg_price = spp2_avg_price;
+	}
+	public List<Integer> getFac_codes() {
+		return fac_codes;
+	}
+	public void setFac_codes(List<Integer> fac_codes) {
+		this.fac_codes = fac_codes;
+	}
+	public String getEquipment_names() {
+		return equipment_names;
+	}
+	public void setEquipment_names(String equipment_names) {
+		this.equipment_names = equipment_names;
+	}
+	public Double getStock_amount() {
+		return stock_amount;
+	}
+	public void setStock_amount(Double stock_amount) {
+		this.stock_amount = stock_amount;
+	}
+	public Double getSph2_unitprice() {
+		return sph2_unitprice;
+	}
+	public void setSph2_unitprice(Double sph2_unitprice) {
+		this.sph2_unitprice = sph2_unitprice;
+	}
+	public Double getSph2_amount() {
+		return sph2_amount;
+	}
+	public void setSph2_amount(Double sph2_amount) {
+		this.sph2_amount = sph2_amount;
+	}
+	public Integer getSph2_fac_code() {
+		return sph2_fac_code;
+	}
+	public void setSph2_fac_code(Integer sph2_fac_code) {
+		this.sph2_fac_code = sph2_fac_code;
+	}
+	public String getFac_name() {
+		return fac_name;
+	}
+	public void setFac_name(String fac_name) {
+		this.fac_name = fac_name;
 	}
 	public Integer getTotal_in() {
 		return total_in;

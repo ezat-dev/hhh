@@ -1266,8 +1266,6 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 				{title:"금액", field:"och_mon", sorter:"int", width:80,
 				hozAlign:"center", headerFilter:"input", headerSort:false
 				},
-				{title:"비고", field:"och_bigo", sorter:"string", width:80,
-				hozAlign:"center", headerFilter:"input", headerSort:false, editor:"input"},
 				{title:"마감월", field:"och_ma", sorter:"int", width:60,
 				hozAlign:"center", headerFilter:"input", headerSort:false},
 				],
@@ -1369,12 +1367,13 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			dataType:"json",
 			data:JSON.stringify(sendObj),
 			success:function(result){
-   				var fileUrl = result.fileName;
-                if(reportWin){
-                    //출력파일명이 출고일+거래처명으로만 고정돼있어(예: _20260923_두현분말야금(주).pdf)
-                    //같은 날짜/거래처를 다시 출력하면 항상 같은 URL이 됨. 그 URL을 브라우저가
-                    //예전에 캐시해둔 적이 있으면, 서버는 새 내용으로 파일을 새로 만들었어도
-                    //브라우저가 캐시된 예전 PDF를 그대로 보여줄 수 있어 매번 새로 받아오도록 강제
+				var fileUrl = result.fileName;
+                if(!fileUrl){
+                    if(reportWin){ reportWin.close(); }
+                    alert("생성된 거래명세서가 없습니다.");
+                }else if(reportWin){
+                    //출력파일명에 타임스탬프가 포함되어 있어 매번 새 URL이 되지만,
+                    //혹시 모를 캐시를 대비해 매번 새로 받아오도록 강제
                     var cacheBustedUrl = fileUrl + (fileUrl.indexOf("?") === -1 ? "?" : "&") + "_ts=" + Date.now();
                     reportWin.location.href = cacheBustedUrl;
                 }else{

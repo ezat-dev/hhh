@@ -461,26 +461,7 @@ textarea {
                     <div class="suri-row">
                         <div class="suri-col">
                             <label>담당자</label>
-                            <select id="ffx_man" name="ffx_man">
-                                <option value="admin">admin</option>
-                                <option value="정중환">정중환</option>
-                                <option value="김성우">김성우</option>
-                                <option value="조병수">조병수</option>
-                                <option value="이용희">이용희</option>
-                                <option value="이은영">이은영</option>
-                                <option value="산지와">산지와</option>
-                                <option value="이주영">이주영</option>
-                                <option value="가얀">가얀</option>
-                                <option value="두사르">두사르</option>
-                                <option value="피얀타">피얀타</option>
-                                <option value="김영수">김영수</option>
-                                <option value="패툼">패툼</option>
-                                <option value="응웬티하">응웬티하</option>
-                                <option value="양수석">양수석</option>
-                                <option value="최균홍">최균홍</option>
-                                <option value="정희주">정희주</option>
-                                <option value="장무강">장무강</option>
-                            </select>
+                            <input type="text" id="ffx_man" name="ffx_man">
                         </div>
                         <div class="suri-col">
                             <label>차기점검일</label>

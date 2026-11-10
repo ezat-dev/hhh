@@ -135,12 +135,59 @@
 	
 	
 	<!-- 설비가동율분석: 열처리1~5호기(FAC_CODE 1,2,3,4,18), 템퍼링1~2호기(FAC_CODE 16,17) 대상.
-	     가동시간은 WORKILBO 실제 시작~종료시간 기준으로 계산하고, 설비비가동등록(FACSTOP)의
-	     등록비가동시간(FSTP_10)은 자연비가동시간을 대체하지 않고 그 위에 더해진다. -->
+	     가동시간은 WORKILBO 실제 시작~종료시간 기준으로 계산하되, 같은 설비에 여러 LOT이 겹쳐서
+	     동시 투입된 경우(적재/템퍼링 특성상 흔함) 겹치는 구간을 병합해 설비 점유시간 기준으로 한 번만
+	     계산한다(겹치는 구간을 LOT별로 각각 더하면 가동율이 100%를 초과하는 문제가 있었음).
+	     24시간을 초과하는 작업시간(종료시간 오입력 등 비정상 데이터)은 집계에서 제외한다.
+	     설비비가동등록(FACSTOP)의 등록비가동시간(FSTP_10)은 자연비가동시간을 대체하지 않고 그 위에 더해진다.
+	     정렬은 FAC_CODE 순이 아니라 침탄로1~5호기, 템퍼링1~2호기 고정 순서를 사용한다.
+	     작업현황(작업수/작업중량/총작업시간)도 함께 조회해 하나의 리스트에서 보여준다. -->
 	<select id="getBegaAnalyList" parameterType="bega" resultType="bega">
 		SET LOCK_TIMEOUT 10000;
+		WITH valid AS (
+			SELECT FAC_CODE, ILBO_STRT, ILBO_END, ILBO_JUNG
+			FROM WORKILBO
+			WHERE FAC_CODE IN (1,2,3,4,18,16,17)
+			  AND ILBO_STRT &gt;= #{sdate}
+			  AND ILBO_STRT &lt; DATEADD(DAY, 1, #{edate})
+			  AND ILBO_END IS NOT NULL AND ILBO_END &lt;&gt; '1900-01-01 00:00' AND ILBO_END &gt; ILBO_STRT
+			  AND DATEDIFF(MINUTE, ILBO_STRT, ILBO_END) &lt;= 1440
+		),
+		work_agg AS (
+			SELECT FAC_CODE,
+			       COUNT(*) AS work_cnt,
+			       SUM(ISNULL(ILBO_JUNG, 0)) AS work_jung,
+			       SUM(DATEDIFF(MINUTE, ILBO_STRT, ILBO_END)) AS work_time
+			FROM valid
+			GROUP BY FAC_CODE
+		),
+		grp AS (
+			SELECT *,
+			       MAX(ILBO_END) OVER (PARTITION BY FAC_CODE ORDER BY ILBO_STRT, ILBO_END ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS prev_max_end
+			FROM valid
+		),
+		isl AS (
+			SELECT *,
+			       CASE WHEN prev_max_end IS NULL OR ILBO_STRT &gt; prev_max_end THEN 1 ELSE 0 END AS is_new
+			FROM grp
+		),
+		island_id AS (
+			SELECT *,
+			       SUM(is_new) OVER (PARTITION BY FAC_CODE ORDER BY ILBO_STRT, ILBO_END ROWS UNBOUNDED PRECEDING) AS grp_id
+			FROM isl
+		),
+		segs AS (
+			SELECT FAC_CODE, grp_id, MIN(ILBO_STRT) AS seg_start, MAX(ILBO_END) AS seg_end
+			FROM island_id
+			GROUP BY FAC_CODE, grp_id
+		),
+		run_agg AS (
+			SELECT FAC_CODE, SUM(DATEDIFF(MINUTE, seg_start, seg_end)) AS run_time
+			FROM segs
+			GROUP BY FAC_CODE
+		)
 		SELECT
-			ROW_NUMBER() OVER (ORDER BY t.fac_code) AS ROW_NUM,
+			ROW_NUMBER() OVER (ORDER BY t.sort_order) AS ROW_NUM,
 			t.fac_code,
 			t.fac_name,
 			t.gubn,
@@ -150,61 +197,39 @@
 			CASE WHEN t.total_time - t.run_time &lt; 0 THEN 0 ELSE t.total_time - t.run_time END AS idle_natural,
 			(CASE WHEN t.total_time - t.run_time &lt; 0 THEN 0 ELSE t.total_time - t.run_time END) + t.idle_registered AS idle_total,
 			ROUND(t.run_time * 100.0 / NULLIF(t.total_time, 0), 2) AS RunRate,
-			ROUND(((CASE WHEN t.total_time - t.run_time &lt; 0 THEN 0 ELSE t.total_time - t.run_time END) + t.idle_registered) * 100.0 / NULLIF(t.total_time, 0), 2) AS idle_rate
+			ROUND(((CASE WHEN t.total_time - t.run_time &lt; 0 THEN 0 ELSE t.total_time - t.run_time END) + t.idle_registered) * 100.0 / NULLIF(t.total_time, 0), 2) AS idle_rate,
+			t.work_cnt,
+			t.work_jung,
+			t.work_time
 		FROM (
 			SELECT
 				FAC.FAC_CODE AS fac_code,
 				FAC.FAC_NAME AS fac_name,
 				CASE WHEN FAC.FAC_CODE IN (1,2,3,4,18) THEN '열처리' ELSE '템퍼링' END AS gubn,
+				CASE FAC.FAC_CODE
+					WHEN 1 THEN 1 WHEN 2 THEN 2 WHEN 3 THEN 3 WHEN 4 THEN 4
+					WHEN 18 THEN 5 WHEN 16 THEN 6 WHEN 17 THEN 7
+				END AS sort_order,
 				DATEDIFF(MINUTE, #{sdate}, DATEADD(DAY, 1, #{edate})) AS total_time,
-				ISNULL(WI.run_time, 0) AS run_time,
-				ISNULL(FS.idle_registered, 0) AS idle_registered
+				ISNULL(RA.run_time, 0) AS run_time,
+				ISNULL(FS.idle_registered, 0) AS idle_registered,
+				ISNULL(WA.work_cnt, 0) AS work_cnt,
+				ISNULL(WA.work_jung, 0) AS work_jung,
+				ISNULL(WA.work_time, 0) AS work_time
 			FROM FACILITY FAC
-			LEFT JOIN (
-				SELECT FAC_CODE,
-					SUM(
-						CASE WHEN ILBO_END IS NULL OR ILBO_END = '1900-01-01 00:00'
-							 OR ILBO_END &lt;= ILBO_STRT THEN 0
-							 ELSE DATEDIFF(MINUTE, ILBO_STRT, ILBO_END)
-						END
-					) AS run_time
-				FROM WORKILBO
-				WHERE FAC_CODE IN (1,2,3,4,18,16,17)
-				  AND ILBO_STRT BETWEEN #{sdate} AND #{edate}
-				GROUP BY FAC_CODE
-			) WI ON WI.FAC_CODE = FAC.FAC_CODE
+			LEFT JOIN run_agg RA ON RA.FAC_CODE = FAC.FAC_CODE
+			LEFT JOIN work_agg WA ON WA.FAC_CODE = FAC.FAC_CODE
 			LEFT JOIN (
 				SELECT FAC_CODE, SUM(ISNULL(TRY_CONVERT(INT, FSTP_10), 0)) AS idle_registered
 				FROM FACSTOP
 				WHERE FAC_CODE IN (1,2,3,4,18,16,17)
-				  AND FSTP_DATE BETWEEN #{sdate} AND #{edate}
+				  AND FSTP_DATE &gt;= #{sdate}
+				  AND FSTP_DATE &lt; DATEADD(DAY, 1, #{edate})
 				GROUP BY FAC_CODE
 			) FS ON FS.FAC_CODE = FAC.FAC_CODE
 			WHERE FAC.FAC_CODE IN (1,2,3,4,18,16,17)
 		) t
-		ORDER BY t.fac_code
-	</select>
-
-	<!-- 설비별 작업현황 (작업수/작업중량/시작·종료시간/총작업시간) -->
-	<select id="getBegaWorkStatusList" parameterType="bega" resultType="map">
-		SELECT
-			FACILITY.FAC_NAME AS fac_name,
-			COUNT(*) AS work_cnt,
-			SUM(WORKILBO.ILBO_JUNG) AS work_jung,
-			MIN(WORKILBO.ILBO_STRT) AS work_strt,
-			MAX(CASE WHEN WORKILBO.ILBO_END = '1900-01-01 00:00' THEN NULL ELSE WORKILBO.ILBO_END END) AS work_end,
-			SUM(
-				CASE WHEN WORKILBO.ILBO_END IS NULL OR WORKILBO.ILBO_END = '1900-01-01 00:00'
-					 OR WORKILBO.ILBO_END &lt;= WORKILBO.ILBO_STRT THEN 0
-					 ELSE DATEDIFF(MINUTE, WORKILBO.ILBO_STRT, WORKILBO.ILBO_END)
-				END
-			) AS work_time
-		FROM WORKILBO
-		INNER JOIN FACILITY ON FACILITY.FAC_CODE = WORKILBO.FAC_CODE
-		WHERE WORKILBO.ILBO_STRT BETWEEN #{sdate} AND #{edate}
-		  AND FACILITY.FAC_CODE IN (1,2,3,4,18,16,17)
-		GROUP BY FACILITY.FAC_NAME
-		ORDER BY FACILITY.FAC_NAME
+		ORDER BY t.sort_order
 	</select>
 	
 	

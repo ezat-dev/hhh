@@ -401,6 +401,7 @@
 	        WORKERR.WERR_GUBN,
 	        WORKERR.WERR_MON,
 	        WORKERR.WERR_CODE,
+	        WORKERR.WERR_INOUTGUBN,
 	        WI.ILBO_LOT,
 	        CASE WI.ILBO_GUBN
 	            WHEN 'A' THEN '침탄'
@@ -427,8 +428,167 @@
 	    INNER JOIN PRODUCT ON ORDERT.PROD_CODE  = PRODUCT.PROD_CODE
 	    INNER JOIN CORP    ON PRODUCT.CORP_CODE = CORP.CORP_CODE
 	    WHERE WERR_DATE BETWEEN #{sdate} AND #{edate}
+	    <if test="werr_inoutgubn != null and werr_inoutgubn != ''">
+	        AND WORKERR.WERR_INOUTGUBN = #{werr_inoutgubn}
+	    </if>
 	</select>
-	
+
+	<!-- 불량현황(품질관리) - 거래처별 집계(PPM 포함) -->
+	<select id="getDefectStatusCorpList" parameterType="work" resultType="work">
+	    WITH WERR_GUBN_SUM AS (
+	        SELECT PRODUCT.CORP_CODE,
+	               WORKERR.WERR_GUBN,
+	               SUM(WORKERR.WERR_AMNT) AS GUBN_AMNT
+	        FROM WORKERR
+	        INNER JOIN (
+	            SELECT ILBO_CODE, ILBO_NO, MAX(ORD_CODE) AS ORD_CODE
+	            FROM WORKILBO
+	            GROUP BY ILBO_CODE, ILBO_NO
+	        ) WI ON WORKERR.ILBO_CODE = WI.ILBO_CODE AND WORKERR.ILBO_NO = WI.ILBO_NO
+	        INNER JOIN ORDERT  ON WI.ORD_CODE      = ORDERT.ORD_CODE
+	        INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+	        WHERE WORKERR.WERR_DATE BETWEEN #{sdate} AND #{edate}
+	        <if test="werr_inoutgubn != null and werr_inoutgubn != ''">
+	            AND WORKERR.WERR_INOUTGUBN = #{werr_inoutgubn}
+	        </if>
+	        <if test="corp_name != null and corp_name != ''">
+	            AND PRODUCT.CORP_CODE IN (SELECT CORP_CODE FROM CORP WHERE CORP_NAME LIKE '%'+#{corp_name}+'%')
+	        </if>
+	        GROUP BY PRODUCT.CORP_CODE, WORKERR.WERR_GUBN
+	    ),
+	    WERR_SUM AS (
+	        SELECT CORP_CODE,
+	               SUM(GUBN_AMNT) AS WERR_SU,
+	               STUFF((
+	                   SELECT ', ' + G2.WERR_GUBN + ' ' + CAST(G2.GUBN_AMNT AS VARCHAR(20))
+	                   FROM WERR_GUBN_SUM G2
+	                   WHERE G2.CORP_CODE = WERR_GUBN_SUM.CORP_CODE
+	                   ORDER BY G2.GUBN_AMNT DESC
+	                   FOR XML PATH('')
+	               ), 1, 2, '') AS WERR_DETAIL
+	        FROM WERR_GUBN_SUM
+	        GROUP BY CORP_CODE
+	    ),
+	    WERR_MON_AGG AS (
+	        SELECT PRODUCT.CORP_CODE,
+	               SUM(TRY_CAST(WORKERR.WERR_MON AS FLOAT)) AS WERR_MON_SUM
+	        FROM WORKERR
+	        INNER JOIN (
+	            SELECT ILBO_CODE, ILBO_NO, MAX(ORD_CODE) AS ORD_CODE
+	            FROM WORKILBO
+	            GROUP BY ILBO_CODE, ILBO_NO
+	        ) WI ON WORKERR.ILBO_CODE = WI.ILBO_CODE AND WORKERR.ILBO_NO = WI.ILBO_NO
+	        INNER JOIN ORDERT  ON WI.ORD_CODE      = ORDERT.ORD_CODE
+	        INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+	        WHERE WORKERR.WERR_DATE BETWEEN #{sdate} AND #{edate}
+	        <if test="werr_inoutgubn != null and werr_inoutgubn != ''">
+	            AND WORKERR.WERR_INOUTGUBN = #{werr_inoutgubn}
+	        </if>
+	        <if test="corp_name != null and corp_name != ''">
+	            AND PRODUCT.CORP_CODE IN (SELECT CORP_CODE FROM CORP WHERE CORP_NAME LIKE '%'+#{corp_name}+'%')
+	        </if>
+	        GROUP BY PRODUCT.CORP_CODE
+	    ),
+	    OCH_SUM AS (
+	        SELECT PRODUCT.CORP_CODE,
+	               SUM(OCHULGO.OCH_SU)  AS OCH_SU,
+	               SUM(OCHULGO.OCH_MON) AS OCH_MON
+	        FROM OCHULGO
+	        INNER JOIN ORDERT  ON OCHULGO.ORD_CODE = ORDERT.ORD_CODE
+	        INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+	        WHERE OCHULGO.OCH_DATE BETWEEN #{sdate} AND #{edate}
+	        GROUP BY PRODUCT.CORP_CODE
+	    )
+	    SELECT
+	        ROW_NUMBER() OVER(ORDER BY
+	            ROUND(ISNULL(W.WERR_SU,0) * 1.0 / NULLIF(ISNULL(O.OCH_SU,0),0) * 1000000, 0) DESC
+	        ) AS ROW_NUM,
+	        CORP.CORP_NAME,
+	        ISNULL(O.OCH_SU,0)  AS OCH_SU,
+	        ISNULL(O.OCH_MON,0) AS OCH_MON,
+	        ISNULL(W.WERR_SU,0) AS WERR_SU,
+	        CAST(ISNULL(M.WERR_MON_SUM,0) AS INT) AS WERR_MON,
+	        ROUND(ISNULL(W.WERR_SU,0) * 1.0 / NULLIF(ISNULL(O.OCH_SU,0),0) * 1000000, 0) AS PPM,
+	        ROUND(ISNULL(M.WERR_MON_SUM,0) * 1.0 / NULLIF(ISNULL(O.OCH_MON,0),0) * 100, 2) AS PPM_MON,
+	        W.WERR_DETAIL
+	    FROM WERR_SUM W
+	    INNER JOIN CORP ON CORP.CORP_CODE = W.CORP_CODE
+	    LEFT JOIN OCH_SUM O ON O.CORP_CODE = W.CORP_CODE
+	    LEFT JOIN WERR_MON_AGG M ON M.CORP_CODE = W.CORP_CODE
+	    ORDER BY PPM DESC
+	</select>
+
+	<!-- 불량현황(품질관리) - 전체(거래처 합산) 요약 PPM.
+	     거래처별 집계(getDefectStatusCorpList)는 불량이 발생한 거래처만 조인되기 때문에
+	     그 표의 합계로는 회사 전체 PPM을 구할 수 없다(불량 0건 거래처의 출고수량이 빠짐).
+	     이 쿼리는 조회조건(기간·구분·거래처)에 해당하는 모든 출고수량을 분모로 잡아 전체 PPM을 계산한다. -->
+	<select id="getDefectStatusSummary" parameterType="work" resultType="work">
+	    WITH WERR_ALL AS (
+	        SELECT SUM(WORKERR.WERR_AMNT) AS WERR_SU,
+	               SUM(TRY_CAST(WORKERR.WERR_MON AS FLOAT)) AS WERR_MON_SUM
+	        FROM WORKERR
+	        INNER JOIN (
+	            SELECT ILBO_CODE, ILBO_NO, MAX(ORD_CODE) AS ORD_CODE
+	            FROM WORKILBO
+	            GROUP BY ILBO_CODE, ILBO_NO
+	        ) WI ON WORKERR.ILBO_CODE = WI.ILBO_CODE AND WORKERR.ILBO_NO = WI.ILBO_NO
+	        INNER JOIN ORDERT  ON WI.ORD_CODE      = ORDERT.ORD_CODE
+	        INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+	        WHERE WORKERR.WERR_DATE BETWEEN #{sdate} AND #{edate}
+	        <if test="werr_inoutgubn != null and werr_inoutgubn != ''">
+	            AND WORKERR.WERR_INOUTGUBN = #{werr_inoutgubn}
+	        </if>
+	        <if test="corp_name != null and corp_name != ''">
+	            AND PRODUCT.CORP_CODE IN (SELECT CORP_CODE FROM CORP WHERE CORP_NAME LIKE '%'+#{corp_name}+'%')
+	        </if>
+	    ),
+	    OCH_ALL AS (
+	        SELECT SUM(OCHULGO.OCH_SU)  AS OCH_SU,
+	               SUM(OCHULGO.OCH_MON) AS OCH_MON
+	        FROM OCHULGO
+	        INNER JOIN ORDERT  ON OCHULGO.ORD_CODE = ORDERT.ORD_CODE
+	        INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+	        WHERE OCHULGO.OCH_DATE BETWEEN #{sdate} AND #{edate}
+	        <if test="corp_name != null and corp_name != ''">
+	            AND PRODUCT.CORP_CODE IN (SELECT CORP_CODE FROM CORP WHERE CORP_NAME LIKE '%'+#{corp_name}+'%')
+	        </if>
+	    )
+	    SELECT
+	        ISNULL(O.OCH_SU,0)  AS OCH_SU,
+	        ISNULL(O.OCH_MON,0) AS OCH_MON,
+	        ISNULL(W.WERR_SU,0) AS WERR_SU,
+	        CAST(ISNULL(W.WERR_MON_SUM,0) AS INT) AS WERR_MON,
+	        ROUND(ISNULL(W.WERR_SU,0) * 1.0 / NULLIF(ISNULL(O.OCH_SU,0),0) * 1000000, 2) AS PPM_TOTAL,
+	        ROUND(ISNULL(W.WERR_MON_SUM,0) * 1.0 / NULLIF(ISNULL(O.OCH_MON,0),0) * 100, 2) AS PPM_MON
+	    FROM WERR_ALL W CROSS JOIN OCH_ALL O
+	</select>
+
+	<!-- 불량현황(품질관리) - 불량구분별 집계 -->
+	<select id="getDefectStatusGubnList" parameterType="work" resultType="work">
+	    SELECT
+	        ROW_NUMBER() OVER(ORDER BY SUM(WORKERR.WERR_AMNT) DESC) AS ROW_NUM,
+	        WORKERR.WERR_GUBN,
+	        SUM(WORKERR.WERR_AMNT) AS WERR_SU,
+	        CAST(SUM(TRY_CAST(WORKERR.WERR_MON AS FLOAT)) AS INT) AS WERR_MON
+	    FROM WORKERR
+	    INNER JOIN (
+	        SELECT ILBO_CODE, ILBO_NO, MAX(ORD_CODE) AS ORD_CODE
+	        FROM WORKILBO
+	        GROUP BY ILBO_CODE, ILBO_NO
+	    ) WI ON WORKERR.ILBO_CODE = WI.ILBO_CODE AND WORKERR.ILBO_NO = WI.ILBO_NO
+	    INNER JOIN ORDERT  ON WI.ORD_CODE      = ORDERT.ORD_CODE
+	    INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
+	    WHERE WORKERR.WERR_DATE BETWEEN #{sdate} AND #{edate}
+	    <if test="werr_inoutgubn != null and werr_inoutgubn != ''">
+	        AND WORKERR.WERR_INOUTGUBN = #{werr_inoutgubn}
+	    </if>
+	    <if test="corp_name != null and corp_name != ''">
+	        AND PRODUCT.CORP_CODE IN (SELECT CORP_CODE FROM CORP WHERE CORP_NAME LIKE '%'+#{corp_name}+'%')
+	    </if>
+	    GROUP BY WORKERR.WERR_GUBN
+	    ORDER BY WERR_SU DESC
+	</select>
+
 	<select id="getNonCorpList" parameterType="work" resultType="work">
 	    SET LOCK_TIMEOUT 10000;
 	    SELECT ROW_NUMBER() OVER(ORDER BY ILBO_STRT) AS ROW_NUM,
@@ -1015,14 +1175,14 @@
 				group by subString(CONVERT(VARCHAR, twr.ILBO_STRT, 120), 6,2)
 		), getNcmSu as (
 			select
-				isnull( subString(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6,2), '')    as month,
+				isnull( subString(CONVERT(VARCHAR, tn.WERR_DATE, 120), 6,2), '')    as month,
 				isnull(sum(tn.WERR_AMNT), 0)                                         as WERR_AMNT_byMonth,
 				isnull(tn.WERR_GUBN, '')                                             as WERR_GUBN
 			from WORKERR tn
 -- 	inner join PRODUCT tp on tn.PROD_CODE = tp.PROD_CODE
 			where 1 = 1
-			  and LEFT(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 4) = #{sdate}
-				group by subString(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6,2), WERR_GUBN, tn.WERR_WDATE
+			  and LEFT(CONVERT(VARCHAR, tn.WERR_DATE, 120), 4) = #{sdate}
+				group by subString(CONVERT(VARCHAR, tn.WERR_DATE, 120), 6,2), WERR_GUBN, tn.WERR_DATE
 		), getAVG as(
 			select 'AVG'                                                                                                                              as month
 				 , isnull(ROUND(SUM(isnull(getWorkSu.workilbo_amount_byMonth,	0 )) / 12, 0, 1), 0)                                                  as workSu
@@ -1087,13 +1247,13 @@
 	<select id="getMonthBulList" parameterType="work" resultType="work">
 	with getMonthSUM as(
 			select
-				CAST(SUBSTRING(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6, 2) AS INT) AS month,
+				CAST(SUBSTRING(CONVERT(VARCHAR, tn.WERR_DATE, 120), 6, 2) AS INT) AS month,
 				isnull(sum(tn.WERR_AMNT), 0)                                      as WERR_AMNT_byMonth,
 				isnull(tn.WERR_GUBN, '')                                          as WERR_GUBN
 			from WORKERR tn
 			where 1 = 1
-			and LEFT(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 4) = #{sdate}
-				group by WERR_GUBN, tn.WERR_WDATE
+			and LEFT(CONVERT(VARCHAR, tn.WERR_DATE, 120), 4) = #{sdate}
+				group by WERR_GUBN, tn.WERR_DATE
 		)
 		select a.WERR_GUBN
 			/*, WERR_INOUTGUBN*/
@@ -1134,13 +1294,13 @@
 	<select id="getMonthBulChartData" parameterType="work" resultType="work">
 	with getMonthSUM as(
 			select
-				CAST(SUBSTRING(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6, 2) AS INT) AS month,
+				CAST(SUBSTRING(CONVERT(VARCHAR, tn.WERR_DATE, 120), 6, 2) AS INT) AS month,
 				isnull(sum(tn.WERR_AMNT), 0)                                      as WERR_AMNT_byMonth,
 				isnull(tn.WERR_GUBN, '')                                          as WERR_GUBN
 			from WORKERR tn
 			where 1 = 1
-			and LEFT(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 4) = #{sdate}
-				group by WERR_GUBN, tn.WERR_WDATE
+			and LEFT(CONVERT(VARCHAR, tn.WERR_DATE, 120), 4) = #{sdate}
+				group by WERR_GUBN, tn.WERR_DATE
 		)
 		select a.WERR_GUBN
 			/*, WERR_INOUTGUBN*/
@@ -1370,7 +1530,7 @@
 					 INNER JOIN PRODUCT ON ORDERT.PROD_CODE = PRODUCT.PROD_CODE
 					 INNER JOIN CORP ON PRODUCT.CORP_CODE = CORP.CORP_CODE
 			where 1 = 1
-			  and LEFT(CONVERT(VARCHAR, WORKERR.WERR_WDATE, 120), 7) = #{sdate}
+			  and LEFT(CONVERT(VARCHAR, WORKERR.WERR_DATE, 120), 7) = #{sdate}
 			  and WORKERR.WERR_INOUTGUBN = #{werr_inoutgubn}
 				GROUP BY CORP.CORP_CODE
 				, WORKERR.WERR_GUBN
@@ -1426,7 +1586,7 @@
 					 INNER JOIN PRODUCT ON PRODUCT.PROD_CODE = ORDERT.PROD_CODE
 					 INNER JOIN CORP ON CORP.CORP_CODE = PRODUCT.CORP_CODE
 			where 1 = 1
-			  and LEFT(CONVERT(VARCHAR, WORKERR.WERR_WDATE, 120), 7) = #{sdate}
+			  and LEFT(CONVERT(VARCHAR, WORKERR.WERR_DATE, 120), 7) = #{sdate}
 			  and WORKERR.WERR_INOUTGUBN = #{werr_inoutgubn}
 				group by CORP.CORP_CODE
 		)
@@ -1470,14 +1630,14 @@
 			group by subString(CONVERT(VARCHAR, cg.OCH_DATE, 120), 6,2)
 		), getNcmSu as (
 			select
-				isnull( subString(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6,2), '')    as month,
+				isnull( subString(CONVERT(VARCHAR, tn.WERR_DATE, 120), 6,2), '')    as month,
 				isnull(sum(tn.WERR_AMNT), 0)                                         as WERR_AMNT_byMonth,
 				isnull(sum(tn.WERR_MON), 0)                                         as WERR_MON_byMonth
 			from WORKERR tn
 			where 1 = 1
-			  and LEFT(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 4) = #{sdate}
+			  and LEFT(CONVERT(VARCHAR, tn.WERR_DATE, 120), 4) = #{sdate}
 			  and tn.WERR_INOUTGUBN = #{werr_inoutgubn}
-			group by subString(CONVERT(VARCHAR, tn.WERR_WDATE, 120), 6,2)
+			group by subString(CONVERT(VARCHAR, tn.WERR_DATE, 120), 6,2)
 		), getAVG as(
 			select 'AVG'                                                                                                                              as month
 				 , isnull(ROUND(SUM(isnull(getWorkSu.ochulgo_amount_bymonth,	0 )) / 12, 0, 1), 0)                                                  as workSu

@@ -1,12 +1,27 @@
 package com.tkheat.controller;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +36,14 @@ import com.tkheat.domain.Users;
 import com.tkheat.domain.Work;
 import com.tkheat.service.OperationService;
 import com.tkheat.util.UtilClass;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Controller
 public class OperationController {
@@ -719,10 +742,189 @@ public class OperationController {
 		rtnMap.put("last_page",1);
 		rtnMap.put("data",rtnList);
 
-		return rtnMap; 
+		return rtnMap;
 	}
-	
-	
+
+	//월매출현황(마감) - 엑셀 다운로드(거래처별 소계 행 노란색 강조는 SheetJS 무료버전이 셀 스타일
+	//쓰기를 지원하지 않아 클라이언트에서는 불가능 - 서버에서 Apache POI로 직접 생성)
+	@RequestMapping(value = "/operation/monthSale/excelDownload", method = RequestMethod.GET)
+	public void monthSaleExcelDownload(
+			@RequestParam String sdate,
+			@RequestParam(required = false) String corp_name,
+			HttpServletResponse response
+			) throws IOException {
+
+		Chulgo chulgo = new Chulgo();
+		chulgo.setSdate(sdate);
+		chulgo.setCorp_name(corp_name);
+
+		List<Chulgo> list = operationService.getMonthSaleList(chulgo);
+
+		String[] headers = {"NO","마감월","출고일","거래처","품명","품번","LOT NO","수량","단가","공급가액","부가세","합계금액"};
+		int[] colWidths = {2000,3200,3200,5500,5500,4500,3500,3000,3500,4000,3500,4000};
+
+		try (XSSFWorkbook wb = new XSSFWorkbook()) {
+			Sheet sheet = wb.createSheet("월매출현황");
+
+			CellStyle headerStyle = wb.createCellStyle();
+			Font headerFont = wb.createFont();
+			headerFont.setBold(true);
+			headerStyle.setFont(headerFont);
+			headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+			headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			headerStyle.setBorderBottom(BorderStyle.THIN);
+			headerStyle.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER);
+
+			CellStyle bodyStyle = wb.createCellStyle();
+			bodyStyle.setBorderBottom(BorderStyle.THIN);
+
+			CellStyle numStyle = wb.createCellStyle();
+			numStyle.cloneStyleFrom(bodyStyle);
+			numStyle.setDataFormat(wb.createDataFormat().getFormat("#,##0"));
+
+			CellStyle subtotalStyle = wb.createCellStyle();
+			Font subtotalFont = wb.createFont();
+			subtotalFont.setBold(true);
+			subtotalStyle.setFont(subtotalFont);
+			subtotalStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+			subtotalStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			subtotalStyle.setBorderBottom(BorderStyle.THIN);
+
+			CellStyle subtotalNumStyle = wb.createCellStyle();
+			subtotalNumStyle.cloneStyleFrom(subtotalStyle);
+			subtotalNumStyle.setDataFormat(wb.createDataFormat().getFormat("#,##0"));
+
+			int rowIdx = 0;
+			Row headerRow = sheet.createRow(rowIdx++);
+			for (int c = 0; c < headers.length; c++) {
+				Cell cell = headerRow.createCell(c);
+				cell.setCellValue(headers[c]);
+				cell.setCellStyle(headerStyle);
+				sheet.setColumnWidth(c, colWidths[c]);
+			}
+
+			String curCorp = null;
+			float sumSu = 0; double sumMon = 0; double sumTax = 0; double sumTotal = 0;
+
+			for (int i = 0; i <= list.size(); i++) {
+				Chulgo c = (i < list.size()) ? list.get(i) : null;
+				String corpName = (c != null) ? c.getCorp_name() : null;
+
+				if (curCorp != null && !curCorp.equals(corpName)) {
+					Row subRow = sheet.createRow(rowIdx++);
+					for (int col = 0; col < headers.length; col++) {
+						subRow.createCell(col).setCellStyle(
+								(col == 7 || col == 9 || col == 10 || col == 11) ? subtotalNumStyle : subtotalStyle);
+					}
+					subRow.getCell(3).setCellValue("[ " + curCorp + " ] 소계");
+					subRow.getCell(7).setCellValue(sumSu);
+					subRow.getCell(9).setCellValue(sumMon);
+					subRow.getCell(10).setCellValue(sumTax);
+					subRow.getCell(11).setCellValue(sumTotal);
+
+					sumSu = 0; sumMon = 0; sumTax = 0; sumTotal = 0;
+				}
+
+				if (c == null) break;
+
+				double mon = parseNum(c.getOch_mon());
+
+				Row row = sheet.createRow(rowIdx++);
+				row.createCell(0).setCellValue(i + 1);
+				row.getCell(0).setCellStyle(numStyle);
+				row.createCell(1).setCellValue(c.getOch_ma()); row.getCell(1).setCellStyle(bodyStyle);
+				row.createCell(2).setCellValue(c.getOch_date()); row.getCell(2).setCellStyle(bodyStyle);
+				row.createCell(3).setCellValue(c.getCorp_name()); row.getCell(3).setCellStyle(bodyStyle);
+				row.createCell(4).setCellValue(c.getProd_name()); row.getCell(4).setCellStyle(bodyStyle);
+				row.createCell(5).setCellValue(c.getProd_no()); row.getCell(5).setCellStyle(bodyStyle);
+				row.createCell(6).setCellValue(c.getOch_lot()); row.getCell(6).setCellStyle(bodyStyle);
+
+				Cell suCell = row.createCell(7); suCell.setCellValue(c.getOch_su()); suCell.setCellStyle(numStyle);
+				Cell dangCell = row.createCell(8); dangCell.setCellValue(parseNum(c.getOch_dang())); dangCell.setCellStyle(numStyle);
+				Cell monCell = row.createCell(9); monCell.setCellValue(mon); monCell.setCellStyle(numStyle);
+				Cell taxCell = row.createCell(10); taxCell.setCellValue(c.getOch_mon_tax()); taxCell.setCellStyle(numStyle);
+				Cell totalCell = row.createCell(11); totalCell.setCellValue(c.getOch_mon_total()); totalCell.setCellStyle(numStyle);
+
+				sumSu += c.getOch_su();
+				sumMon += mon;
+				sumTax += c.getOch_mon_tax();
+				sumTotal += c.getOch_mon_total();
+
+				curCorp = corpName;
+			}
+
+			sheet.createFreezePane(0, 1);
+
+			String fileName = "월매출현황_" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xlsx";
+			String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+
+			response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"; filename*=UTF-8''" + encodedFileName);
+
+			wb.write(response.getOutputStream());
+			response.getOutputStream().flush();
+		}
+	}
+
+	//월매출현황(마감) - 보고서(PDF) 출력, 화면에 현재 조회된 조건 그대로 재사용
+	@RequestMapping(value = "/operation/monthSale/report", method = RequestMethod.GET)
+	public void monthSaleReport(
+			@RequestParam String sdate,
+			@RequestParam(required = false) String corp_name,
+			HttpServletRequest request,
+			HttpServletResponse response
+			) throws IOException, JRException {
+
+		Chulgo chulgo = new Chulgo();
+		chulgo.setSdate(sdate);
+		chulgo.setCorp_name(corp_name);
+
+		List<Chulgo> list = operationService.getMonthSaleList(chulgo);
+
+		String reportPath = request.getServletContext().getRealPath("/WEB-INF/resources/reports/MonthSaleReport.jrxml");
+		JasperReport report = JasperCompileManager.compileReport(reportPath);
+
+		//거래처 검색은 부분일치(like)라 입력한 검색어(예: "남경")와 실제 거래처명(예: "(주)남경정밀")이
+		//다를 수 있음 - 제목에는 검색어가 아니라 실제로 조회된 거래처명을 그대로 보여줌
+		String titleCorp;
+		if (corp_name == null || corp_name.trim().isEmpty()) {
+			titleCorp = "전체";
+		} else {
+			LinkedHashSet<String> distinctCorps = new LinkedHashSet<String>();
+			for (Chulgo c : list) {
+				distinctCorps.add(c.getCorp_name());
+			}
+			titleCorp = distinctCorps.isEmpty() ? corp_name : String.join(", ", distinctCorps);
+		}
+
+		Map<String, Object> reportMap = new HashMap<String, Object>();
+		reportMap.put("title_sdate", sdate);
+		reportMap.put("title_corp", titleCorp);
+
+		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
+		JasperPrint jasperPrint = JasperFillManager.fillReport(report, reportMap, dataSource);
+		byte[] pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
+
+		String fileName = "월매출현황_" + sdate + ".pdf";
+		String encodedFileName = URLEncoder.encode(fileName, "UTF-8").replace("+", "%20");
+
+		response.setContentType("application/pdf");
+		response.setHeader("Content-Disposition", "inline; filename=\"" + fileName + "\"; filename*=UTF-8''" + encodedFileName);
+		response.setContentLength(pdfBytes.length);
+		response.getOutputStream().write(pdfBytes);
+		response.getOutputStream().flush();
+	}
+
+	//문자열로 저장된 금액 컬럼(och_dang/och_mon)을 안전하게 숫자로 변환 - 공백/빈값이면 0
+	private double parseNum(String s) {
+		if (s == null || s.trim().isEmpty()) return 0;
+		try {
+			return Double.parseDouble(s.replace(",", "").trim());
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
+
 	//일일매출현황 조회
 	@RequestMapping(value = "/operation/daySale/getDaySaleList", method = RequestMethod.POST)
 	@ResponseBody

@@ -236,6 +236,7 @@
 		LEFT OUTER JOIN
 			v_monitoring_temp AS v_mon_temp
 		ON HOGI_STD.hogi_code = v_mon_temp.num
+		WHERE HOGI_STD.hogi_proc = 1
 		ORDER BY hogi_code, hogi_proc
 	</select>
 
@@ -281,6 +282,38 @@
     FROM tb_alarm_current
     WHERE id = 1
 </select>
-   
-   
+
+<!-- 트렌드 메모 -->
+<insert id="insertTrendMemo" parameterType="trendmemo" useGeneratedKeys="true" keyProperty="memo_code">
+    INSERT INTO TREND_MEMO (HOGI_CODE, MEMO_TIME, MEMO_TEXT, REG_USER, REG_DATE, MEMO_VALUE, YAXIS_INDEX, SERIES_NAME)
+    VALUES (#{hogi_code}, #{memo_time}, #{memo_text}, #{reg_user}, GETDATE(), #{memo_value,jdbcType=DOUBLE}, #{yaxis_index,jdbcType=INTEGER}, #{series_name})
+</insert>
+
+<select id="getTrendMemoList" parameterType="trendmemo" resultType="trendmemo">
+    SELECT
+        MEMO_CODE,
+        HOGI_CODE,
+        CONVERT(VARCHAR(19), MEMO_TIME, 120) AS MEMO_TIME,
+        MEMO_TEXT,
+        REG_USER,
+        CONVERT(VARCHAR(19), REG_DATE, 120) AS REG_DATE,
+        MEMO_VALUE,
+        YAXIS_INDEX,
+        SERIES_NAME
+    FROM TREND_MEMO
+    WHERE HOGI_CODE = #{hogi_code}
+      AND MEMO_TIME BETWEEN #{sdate} AND #{edate}
+    ORDER BY MEMO_TIME
+</select>
+
+<update id="updateTrendMemo" parameterType="trendmemo">
+    UPDATE TREND_MEMO
+       SET MEMO_TEXT = #{memo_text}
+     WHERE MEMO_CODE = #{memo_code}
+</update>
+
+<delete id="deleteTrendMemo" parameterType="int">
+    DELETE FROM TREND_MEMO WHERE MEMO_CODE = #{memo_code}
+</delete>
+
 </mapper>

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.tkheat.domain.Bega;
+import com.tkheat.domain.Corp;
+import com.tkheat.domain.Fac;
 import com.tkheat.domain.Jeomgeom;
 import com.tkheat.domain.Measure;
 import com.tkheat.domain.SparePart;
@@ -48,8 +50,6 @@ public interface PreservationDao {
 	
 	List<Bega> getBegaAnalyList(Bega bega);
 
-	List<Map<String, Object>> getBegaWorkStatusList(Bega bega);
-	
 	
 	
 	List<Suri> getSuriHistoryList(Suri srui);
@@ -126,5 +126,38 @@ public interface PreservationDao {
 	void sparePart2HisSave(SparePart2 sparePart2);
 
 	void sparePart2HisDelete(int sph2_idx);
+
+	//부품재고관리(신규, e10)
+	List<Corp> getVendorOptionList();
+
+	List<Fac> getFacilityOptionList();
+
+	List<SparePart2> getPartInvenList(SparePart2 sparePart2);
+
+	List<Integer> getPartFacilityCodes(String spp2_no);
+
+	int getVendorUsageCount(int vendor_code);
+
+	int getEquipUsageCount(int fac_code);
+
+	void partInvenInsertSave(SparePart2 sparePart2);
+
+	void partInvenUpdateSave(SparePart2 sparePart2);
+
+	void partInvenFacilityDeleteAll(String spp2_no);
+
+	void partInvenFacilityInsert(SparePart2 sparePart2);
+
+	void partInvenDelete(String spp2_no);
+
+	SparePart2 getPartStockSnapshot(String spp2_no);
+
+	void updatePartAvgPrice(SparePart2 sparePart2);
+
+	List<SparePart2> getPartInvenHisList(SparePart2 sparePart2);
+
+	void partInvenHisSave(SparePart2 sparePart2);
+
+	void partInvenHisDelete(int sph2_idx);
 
 }

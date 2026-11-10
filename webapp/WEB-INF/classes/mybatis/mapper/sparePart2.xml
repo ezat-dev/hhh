@@ -109,4 +109,200 @@
 		DELETE FROM SPAREHISTORY2 WHERE SPH2_IDX = #{sph2_idx}
 	</delete>
 
+
+	<!-- ========================================================
+	     부품재고관리(신규, 설비보존관리 e10) - SPAREPART2/SPAREHISTORY2를
+	     그대로 쓰되 매입처(CORP)/설비(FACILITY) 연동, 단가·평균구입단가,
+	     실사(ADJ) 이력 타입을 추가로 지원한다. 기존 SparePart관리(V2) 화면/
+	     쿼리는 전혀 건드리지 않는다(같은 테이블을 공유할 뿐).
+	     ======================================================== -->
+
+	<!-- 매입처 목록(CORP 중 CORP_GUBN='매입처'인 것만) -->
+	<select id="getVendorOptionList" resultType="corp">
+		SELECT CORP_CODE AS corp_code, CORP_NAME AS corp_name
+		FROM CORP WITH(NOLOCK)
+		WHERE CORP_GUBN = N'매입처'
+		ORDER BY CORP_NAME
+	</select>
+
+	<!-- 적용설비 선택용 설비 목록 -->
+	<select id="getFacilityOptionList" resultType="fac">
+		SELECT FAC_CODE AS fac_code, FAC_NAME AS fac_name
+		FROM FACILITY WITH(NOLOCK)
+		ORDER BY FAC_CODE
+	</select>
+
+	<!-- 부품재고관리 - 재고 목록(매입처명/적용설비명/재고금액 포함, 실사(ADJ) 반영) -->
+	<select id="getPartInvenList" parameterType="sparePart2" resultType="sparePart2">
+		SET LOCK_TIMEOUT 10000;
+
+		WITH INH AS (
+			SELECT SPP2_NO,
+				SUM(CASE WHEN SPH2_TYPE = 'IN'  THEN SPH2_QTY ELSE 0 END) AS TOTAL_IN,
+				SUM(CASE WHEN SPH2_TYPE = 'OUT' THEN SPH2_QTY ELSE 0 END) AS TOTAL_OUT,
+				SUM(CASE WHEN SPH2_TYPE = 'OUT' THEN -SPH2_QTY ELSE SPH2_QTY END) AS CUR_STOCK
+			FROM SPAREHISTORY2 WITH(NOLOCK)
+			GROUP BY SPP2_NO
+		)
+		SELECT
+			P.SPP2_IDX           AS spp2_idx,
+			P.SPP2_NO            AS spp2_no,
+			P.SPP2_NAME          AS spp2_name,
+			P.SPP2_CATEGORY      AS spp2_category,
+			P.SPP2_UNIT          AS spp2_unit,
+			P.SPP2_MIN_STOCK     AS spp2_min_stock,
+			P.SPP2_REPLACE_CYCLE AS spp2_replace_cycle,
+			P.SPP2_VENDOR_CODE   AS spp2_vendor_code,
+			ISNULL(V.CORP_NAME,'') AS vendor_name,
+			ISNULL(P.SPP2_UNITPRICE,0) AS spp2_unitprice,
+			ISNULL(P.SPP2_AVG_PRICE,0) AS spp2_avg_price,
+			ISNULL(STUFF((
+				SELECT ', ' + F2.FAC_NAME
+				FROM SPAREPART2_FACILITY SF2
+				INNER JOIN FACILITY F2 ON F2.FAC_CODE = SF2.FAC_CODE
+				WHERE SF2.SPP2_NO = P.SPP2_NO
+				ORDER BY F2.FAC_CODE
+				FOR XML PATH('')
+			), 1, 2, ''), '') AS equipment_names,
+			ISNULL(H.TOTAL_IN,0)  AS total_in,
+			ISNULL(H.TOTAL_OUT,0) AS total_out,
+			ISNULL(H.CUR_STOCK,0) AS current_stock,
+			CASE
+				WHEN ISNULL(H.CUR_STOCK,0) &lt;= 0 THEN N'재고없음'
+				WHEN ISNULL(H.CUR_STOCK,0) &lt; ISNULL(P.SPP2_MIN_STOCK,0) THEN N'부족'
+				ELSE N'정상'
+			END AS stock_status,
+			ISNULL(H.CUR_STOCK,0) * (CASE WHEN ISNULL(P.SPP2_AVG_PRICE,0) &gt; 0 THEN P.SPP2_AVG_PRICE ELSE ISNULL(P.SPP2_UNITPRICE,0) END) AS stock_amount
+		FROM SPAREPART2 P WITH(NOLOCK)
+		LEFT JOIN INH H ON H.SPP2_NO = P.SPP2_NO
+		LEFT JOIN CORP V WITH(NOLOCK) ON V.CORP_CODE = P.SPP2_VENDOR_CODE
+		<where>
+			<if test="category != null and category != ''">
+				AND P.SPP2_CATEGORY = #{category}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				AND (P.SPP2_NO LIKE '%'+#{keyword}+'%' OR P.SPP2_NAME LIKE '%'+#{keyword}+'%' OR V.CORP_NAME LIKE '%'+#{keyword}+'%')
+			</if>
+		</where>
+		ORDER BY P.SPP2_NO ASC
+	</select>
+
+	<!-- 부품 하나의 적용설비 코드 목록(수정 모달에서 체크박스 초기값 세팅용) -->
+	<select id="getPartFacilityCodes" parameterType="string" resultType="int">
+		SELECT FAC_CODE FROM SPAREPART2_FACILITY WHERE SPP2_NO = #{spp2_no}
+	</select>
+
+	<!-- 부품재고관리 - 업체/설비 삭제 가드용 사용건수 조회 -->
+	<select id="getVendorUsageCount" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM SPAREPART2 WHERE SPP2_VENDOR_CODE = #{vendor_code}
+	</select>
+
+	<select id="getEquipUsageCount" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM SPAREPART2_FACILITY WHERE FAC_CODE = #{fac_code}
+	</select>
+
+	<insert id="partInvenInsertSave" parameterType="sparePart2">
+		INSERT INTO SPAREPART2
+			(SPP2_NO, SPP2_NAME, SPP2_CATEGORY, SPP2_EQUIPMENT, SPP2_UNIT, SPP2_MIN_STOCK, SPP2_REPLACE_CYCLE, SPP2_VENDOR_CODE, SPP2_UNITPRICE, SPP2_AVG_PRICE)
+		VALUES
+			(#{spp2_no}, #{spp2_name}, #{spp2_category}, '', #{spp2_unit}, #{spp2_min_stock,jdbcType=INTEGER}, #{spp2_replace_cycle,jdbcType=INTEGER},
+			 #{spp2_vendor_code,jdbcType=INTEGER}, #{spp2_unitprice,jdbcType=DOUBLE}, 0)
+	</insert>
+
+	<update id="partInvenUpdateSave" parameterType="sparePart2">
+		UPDATE SPAREPART2 SET
+			SPP2_NAME          = #{spp2_name},
+			SPP2_CATEGORY      = #{spp2_category},
+			SPP2_UNIT          = #{spp2_unit},
+			SPP2_MIN_STOCK     = #{spp2_min_stock,jdbcType=INTEGER},
+			SPP2_REPLACE_CYCLE = #{spp2_replace_cycle,jdbcType=INTEGER},
+			SPP2_VENDOR_CODE   = #{spp2_vendor_code,jdbcType=INTEGER},
+			SPP2_UNITPRICE     = #{spp2_unitprice,jdbcType=DOUBLE}
+		WHERE SPP2_NO = #{spp2_no}
+	</update>
+
+	<delete id="partInvenFacilityDeleteAll" parameterType="string">
+		DELETE FROM SPAREPART2_FACILITY WHERE SPP2_NO = #{spp2_no}
+	</delete>
+
+	<insert id="partInvenFacilityInsert" parameterType="sparePart2">
+		INSERT INTO SPAREPART2_FACILITY (SPP2_NO, FAC_CODE)
+		VALUES
+		<foreach collection="fac_codes" item="fac_code" separator=",">
+			(#{spp2_no}, #{fac_code})
+		</foreach>
+	</insert>
+
+	<delete id="partInvenDelete" parameterType="string">
+		SET LOCK_TIMEOUT 10000;
+		DELETE FROM SPAREHISTORY2 WHERE SPP2_NO = #{spp2_no};
+		DELETE FROM SPAREPART2_FACILITY WHERE SPP2_NO = #{spp2_no};
+		DELETE FROM SPAREPART2 WHERE SPP2_NO = #{spp2_no};
+	</delete>
+
+	<!-- 입고시 가중평균 단가 계산을 위한 현재 재고/평균단가 스냅샷 -->
+	<select id="getPartStockSnapshot" parameterType="string" resultType="sparePart2">
+		SELECT
+			ISNULL(P.SPP2_AVG_PRICE,0) AS spp2_avg_price,
+			ISNULL((
+				SELECT SUM(CASE WHEN SPH2_TYPE = 'OUT' THEN -SPH2_QTY ELSE SPH2_QTY END)
+				FROM SPAREHISTORY2 WITH(NOLOCK)
+				WHERE SPP2_NO = P.SPP2_NO
+			), 0) AS current_stock
+		FROM SPAREPART2 P WITH(NOLOCK)
+		WHERE P.SPP2_NO = #{spp2_no}
+	</select>
+
+	<update id="updatePartAvgPrice" parameterType="sparePart2">
+		UPDATE SPAREPART2 SET SPP2_AVG_PRICE = #{spp2_avg_price,jdbcType=DOUBLE} WHERE SPP2_NO = #{spp2_no}
+	</update>
+
+	<!-- 부품재고관리 - 입출고 이력(단가/금액/사용설비 포함) -->
+	<select id="getPartInvenHisList" parameterType="sparePart2" resultType="sparePart2">
+		SELECT
+			H.SPH2_IDX      AS sph2_idx,
+			H.SPP2_NO       AS spp2_no,
+			P.SPP2_NAME     AS spp2_name,
+			P.SPP2_CATEGORY AS spp2_category,
+			H.SPH2_TYPE     AS sph2_type,
+			H.SPH2_QTY      AS sph2_qty,
+			ISNULL(H.SPH2_UNITPRICE,0) AS sph2_unitprice,
+			CASE WHEN H.SPH2_TYPE = 'IN' THEN ISNULL(H.SPH2_UNITPRICE,0) * H.SPH2_QTY ELSE 0 END AS sph2_amount,
+			H.SPH2_FAC_CODE AS sph2_fac_code,
+			ISNULL(F.FAC_NAME,'') AS fac_name,
+			H.SPH2_WORKDESC AS sph2_workdesc,
+			H.SPH2_USERNAME AS sph2_username,
+			CONVERT(VARCHAR(19), H.SPH2_REG_DATE, 120) AS sph2_reg_date
+		FROM SPAREHISTORY2 H WITH(NOLOCK)
+		LEFT JOIN SPAREPART2 P WITH(NOLOCK) ON P.SPP2_NO = H.SPP2_NO
+		LEFT JOIN FACILITY F WITH(NOLOCK) ON F.FAC_CODE = H.SPH2_FAC_CODE
+		<where>
+			<if test="type != null and type != ''">
+				AND H.SPH2_TYPE = #{type}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				AND (P.SPP2_NAME LIKE '%'+#{keyword}+'%' OR P.SPP2_NO LIKE '%'+#{keyword}+'%')
+			</if>
+			<if test="fromDt != null and fromDt != ''">
+				AND H.SPH2_REG_DATE &gt;= #{fromDt}
+			</if>
+			<if test="toDt != null and toDt != ''">
+				AND H.SPH2_REG_DATE &lt; DATEADD(DAY, 1, #{toDt})
+			</if>
+		</where>
+		ORDER BY H.SPH2_REG_DATE DESC
+	</select>
+
+	<insert id="partInvenHisSave" parameterType="sparePart2">
+		INSERT INTO SPAREHISTORY2
+			(SPP2_NO, SPH2_TYPE, SPH2_QTY, SPH2_EQUIPMENT, SPH2_UNITPRICE, SPH2_FAC_CODE, SPH2_WORKDESC, SPH2_USERNAME)
+		VALUES
+			(#{spp2_no}, #{sph2_type}, #{sph2_qty,jdbcType=INTEGER}, '', #{sph2_unitprice,jdbcType=DOUBLE},
+			 #{sph2_fac_code,jdbcType=INTEGER}, #{sph2_workdesc}, #{sph2_username})
+	</insert>
+
+	<delete id="partInvenHisDelete" parameterType="int">
+		DELETE FROM SPAREHISTORY2 WHERE SPH2_IDX = #{sph2_idx}
+	</delete>
+
 </mapper>

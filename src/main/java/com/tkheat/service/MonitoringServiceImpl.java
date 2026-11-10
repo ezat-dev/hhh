@@ -13,6 +13,7 @@ import com.tkheat.dao.MonitoringDao;
 import com.tkheat.domain.AlarmHistory;
 import com.tkheat.domain.AlarmRanking;
 import com.tkheat.domain.Monitoring;
+import com.tkheat.domain.TrendMemo;
 import com.tkheat.domain.WorkJisi;
 import com.tkheat.domain.WorkJisiTk;
 
@@ -73,6 +74,26 @@ public class MonitoringServiceImpl implements MonitoringService{
 		@Override
 		public String getCurrentProdCodeByFacility(int fac_code) {
 			return monitoringDao.getCurrentProdCodeByFacility(fac_code);
+		}
+
+		@Override
+		public void insertTrendMemo(TrendMemo trendMemo) {
+			monitoringDao.insertTrendMemo(trendMemo);
+		}
+
+		@Override
+		public List<TrendMemo> getTrendMemoList(TrendMemo trendMemo) {
+			return monitoringDao.getTrendMemoList(trendMemo);
+		}
+
+		@Override
+		public void updateTrendMemo(TrendMemo trendMemo) {
+			monitoringDao.updateTrendMemo(trendMemo);
+		}
+
+		@Override
+		public void deleteTrendMemo(int memo_code) {
+			monitoringDao.deleteTrendMemo(memo_code);
 		}
 
 }

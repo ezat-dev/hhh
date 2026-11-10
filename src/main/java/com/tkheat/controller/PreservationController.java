@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.tkheat.domain.Bega;
+import com.tkheat.domain.Corp;
+import com.tkheat.domain.Fac;
 import com.tkheat.domain.Jeomgeom;
 import com.tkheat.domain.Measure;
 import com.tkheat.domain.SparePart;
@@ -453,41 +455,15 @@ public class PreservationController {
 			rowMap.put("idle_total", begaAnalyList.get(i).getIdle_total());
 			rowMap.put("RunRate", begaAnalyList.get(i).getRunRate());
 			rowMap.put("idle_rate", begaAnalyList.get(i).getIdle_rate());
+			rowMap.put("work_cnt", begaAnalyList.get(i).getWork_cnt());
+			rowMap.put("work_jung", begaAnalyList.get(i).getWork_jung());
+			rowMap.put("work_time", begaAnalyList.get(i).getWork_time());
 
 			rtnList.add(rowMap);
 		}
 
 		rtnMap.put("last_page",1);
 		rtnMap.put("data",rtnList);
-
-		return rtnMap;
-	}
-
-
-	//설비별 작업현황 (작업수/작업중량/시작·종료시간/총작업시간)
-	@RequestMapping(value = "/preservation/begaAnaly/getBegaWorkStatusList", method = RequestMethod.POST)
-	@ResponseBody
-	public Map<String, Object> getBegaWorkStatusList(
-			@RequestParam String sdate,
-			@RequestParam String edate
-			) {
-		Map<String, Object> rtnMap = new HashMap<String, Object>();
-
-		Bega bega = new Bega();
-		bega.setSdate(sdate);
-		bega.setEdate(edate);
-
-		List<Map<String, Object>> workStatusList = preservationService.getBegaWorkStatusList(bega);
-
-		List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String, Object>>();
-		for (int i = 0; i < workStatusList.size(); i++) {
-			HashMap<String, Object> rowMap = new HashMap<String, Object>(workStatusList.get(i));
-			rowMap.put("idx", (i + 1));
-			rtnList.add(rowMap);
-		}
-
-		rtnMap.put("last_page", 1);
-		rtnMap.put("data", rtnList);
 
 		return rtnMap;
 	}
@@ -1335,6 +1311,199 @@ public class PreservationController {
 
 			try {
 				preservationService.sparePart2HisDelete(sph2_idx);
+				result.put("status", "success");
+				result.put("message", "삭제 완료");
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
+			}
+
+			return result;
+		}
+
+
+		//========================================================
+		// 부품재고관리(신규, e10) - SPAREPART2/SPAREHISTORY2 공유,
+		// 매입처(CORP)/설비(FACILITY) 연동 + 단가/평균구입단가/실사 지원
+		//========================================================
+
+		//부품재고관리 - 화면로드
+		@RequestMapping(value = "/preservation/partInven", method = RequestMethod.GET)
+		public String partInven() {
+			return "/preservation/partInven.jsp";
+		}
+
+		//매입처 선택 목록(CORP_GUBN='매입처')
+		@RequestMapping(value = "/preservation/partInven/getVendorOptionList", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> getVendorOptionList() {
+			Map<String, Object> result = new HashMap<>();
+			List<Corp> list = preservationService.getVendorOptionList();
+			result.put("status", "success");
+			result.put("data", list);
+			return result;
+		}
+
+		//적용설비 선택 목록(FACILITY 전체)
+		@RequestMapping(value = "/preservation/partInven/getFacilityOptionList", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> getFacilityOptionList() {
+			Map<String, Object> result = new HashMap<>();
+			List<Fac> list = preservationService.getFacilityOptionList();
+			result.put("status", "success");
+			result.put("data", list);
+			return result;
+		}
+
+		//부품재고관리 - 재고 목록 조회
+		@RequestMapping(value = "/preservation/partInven/getPartInvenList", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> getPartInvenList(
+				@RequestParam(value = "category", required = false) String category,
+				@RequestParam(value = "keyword", required = false) String keyword) {
+			Map<String, Object> result = new HashMap<>();
+
+			SparePart2 param = new SparePart2();
+			param.setCategory(category);
+			param.setKeyword(keyword);
+
+			List<SparePart2> list = preservationService.getPartInvenList(param);
+			result.put("status", "success");
+			result.put("data", list);
+			return result;
+		}
+
+		//부품재고관리 - 부품 하나의 적용설비 코드 목록(수정 모달 초기값)
+		@RequestMapping(value = "/preservation/partInven/getPartFacilityCodes", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> getPartFacilityCodes(@RequestParam("spp2_no") String spp2_no) {
+			Map<String, Object> result = new HashMap<>();
+			List<Integer> list = preservationService.getPartFacilityCodes(spp2_no);
+			result.put("status", "success");
+			result.put("data", list);
+			return result;
+		}
+
+		//부품재고관리 - 업체 삭제 가드(해당 업체를 사용중인 부품 수)
+		@RequestMapping(value = "/preservation/partInven/getVendorUsageCount", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> getVendorUsageCount(@RequestParam("vendor_code") int vendor_code) {
+			Map<String, Object> result = new HashMap<>();
+			int count = preservationService.getVendorUsageCount(vendor_code);
+			result.put("status", "success");
+			result.put("data", count);
+			return result;
+		}
+
+		//부품재고관리 - 설비 삭제 가드(해당 설비를 적용중인 부품 수)
+		@RequestMapping(value = "/preservation/partInven/getEquipUsageCount", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> getEquipUsageCount(@RequestParam("fac_code") int fac_code) {
+			Map<String, Object> result = new HashMap<>();
+			int count = preservationService.getEquipUsageCount(fac_code);
+			result.put("status", "success");
+			result.put("data", count);
+			return result;
+		}
+
+		//부품재고관리 - 부품 마스터 저장(추가/수정, 적용설비 다중선택 포함)
+		@RequestMapping(value = "/preservation/partInven/partInvenSave", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> partInvenSave(
+				@ModelAttribute SparePart2 sparePart2,
+				@RequestParam("mode") String mode) {
+			Map<String, Object> result = new HashMap<>();
+
+			try {
+				if ("insert".equalsIgnoreCase(mode)) {
+					preservationService.partInvenInsertSave(sparePart2);
+				} else if ("update".equalsIgnoreCase(mode)) {
+					preservationService.partInvenUpdateSave(sparePart2);
+				} else {
+					throw new IllegalArgumentException("Invalid mode: " + mode);
+				}
+				result.put("status", "success");
+				result.put("message", "OK");
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
+			}
+
+			return result;
+		}
+
+		//부품재고관리 - 부품 마스터 삭제(이력/적용설비 연결 포함)
+		@RequestMapping(value = "/preservation/partInven/partInvenDelete", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> partInvenDelete(@RequestParam("spp2_no") String spp2_no) {
+			Map<String, Object> result = new HashMap<>();
+
+			try {
+				preservationService.partInvenDelete(spp2_no);
+				result.put("status", "success");
+				result.put("message", "삭제 완료");
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
+			}
+
+			return result;
+		}
+
+		//부품재고관리 - 입출고 이력 조회
+		@RequestMapping(value = "/preservation/partInven/getPartInvenHisList", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> getPartInvenHisList(
+				@RequestParam(value = "type", required = false) String type,
+				@RequestParam(value = "keyword", required = false) String keyword,
+				@RequestParam(value = "fromDt", required = false) String fromDt,
+				@RequestParam(value = "toDt", required = false) String toDt) {
+			Map<String, Object> result = new HashMap<>();
+
+			SparePart2 param = new SparePart2();
+			param.setType(type);
+			param.setKeyword(keyword);
+			param.setFromDt(fromDt);
+			param.setToDt(toDt);
+
+			List<SparePart2> list = preservationService.getPartInvenHisList(param);
+			result.put("status", "success");
+			result.put("data", list);
+			return result;
+		}
+
+		//부품재고관리 - 입출고 이력 저장(입고/출고/실사)
+		@RequestMapping(value = "/preservation/partInven/partInvenHisSave", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> partInvenHisSave(@ModelAttribute SparePart2 sparePart2) {
+			Map<String, Object> result = new HashMap<>();
+
+			try {
+				if (sparePart2.getSph2_qty() == null) {
+					throw new IllegalArgumentException("수량을 입력해주세요.");
+				}
+				if (!"ADJ".equals(sparePart2.getSph2_type()) && sparePart2.getSph2_qty() < 1) {
+					throw new IllegalArgumentException("수량을 1 이상 입력해주세요.");
+				}
+				preservationService.partInvenHisSave(sparePart2);
+				result.put("status", "success");
+				result.put("message", "OK");
+			} catch (Exception e) {
+				result.put("status", "error");
+				result.put("message", e.getMessage());
+			}
+
+			return result;
+		}
+
+		//부품재고관리 - 입출고 이력 삭제
+		@RequestMapping(value = "/preservation/partInven/partInvenHisDelete", method = RequestMethod.POST)
+		@ResponseBody
+		public Map<String, Object> partInvenHisDelete(@RequestParam("sph2_idx") int sph2_idx) {
+			Map<String, Object> result = new HashMap<>();
+
+			try {
+				preservationService.partInvenHisDelete(sph2_idx);
 				result.put("status", "success");
 				result.put("message", "삭제 완료");
 			} catch (Exception e) {

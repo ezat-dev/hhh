@@ -849,16 +849,16 @@ body { display: flex; flex-direction: column; overflow: hidden; }
                         <div class="spare-row">
                             <div class="spare-col">
                                 <label>입력시간</label>
-                                <input type="text" id="sph_time" name="sph_time" readonly>
+                                <input type="date" id="sph_time" name="sph_time">
                             </div>
                             <div class="spare-col">
                                 <label>담당자</label>
-                                <input type="text" id="sph_user" name="sph_user" readonly>
+                                <input type="text" id="sph_user" name="sph_user">
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- 푸터 버튼 -->
                 <div class="spare-modal-footer">
                     <button type="button" class="save save2">저장</button>
@@ -1011,10 +1011,7 @@ function getSparePartList(){
             const now = new Date();
             const formatted = now.getFullYear() + '-' +
                 String(now.getMonth() + 1).padStart(2, '0') + '-' +
-                String(now.getDate()).padStart(2, '0') + ' ' +
-                String(now.getHours()).padStart(2, '0') + ':' +
-                String(now.getMinutes()).padStart(2, '0') + ':' +
-                String(now.getSeconds()).padStart(2, '0');
+                String(now.getDate()).padStart(2, '0');
             $("#sph_time").val(formatted);
             $("#sph_user").val($("#login_user").val() || "관리자");
 
@@ -1393,7 +1390,7 @@ function getSpareSubList(spp_idx) {
             $("#sph_suriout").val(rowData.sph_suriout || '0');
             $("#sph_jasanout").val(rowData.sph_jasanout || '0');
             $("#sph_bigo").val(rowData.sph_bigo || '');
-            $("#sph_time").val(rowData.sph_time || '');
+            $("#sph_time").val(rowData.sph_time ? rowData.sph_time.substring(0, 10) : '');
             $("#sph_user").val(rowData.sph_user || '');
             
             console.log("✅ 폼 데이터 설정 완료 (서브)");
@@ -1689,13 +1686,10 @@ insertButton2.addEventListener('click', function() {
     const now = new Date();
     const formatted = now.getFullYear() + '-' +
         String(now.getMonth() + 1).padStart(2, '0') + '-' +
-        String(now.getDate()).padStart(2, '0') + ' ' +
-        String(now.getHours()).padStart(2, '0') + ':' +
-        String(now.getMinutes()).padStart(2, '0') + ':' +
-        String(now.getSeconds()).padStart(2, '0');
+        String(now.getDate()).padStart(2, '0');
     $("#sph_time").val(formatted);
     $("#sph_user").val($("#login_user").val() || "관리자");
-    
+
     spareHisModal.classList.add('active');
     registerModalOpen('sparePart-his', closeSpareHisModal);
 });

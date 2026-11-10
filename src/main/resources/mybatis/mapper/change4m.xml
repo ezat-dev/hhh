@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="change4m">
+
+	<!-- 4M 변경관리 - 전체 목록(필터/지연계산은 화면에서 처리) -->
+	<select id="getChange4mList" resultType="change4m">
+		SELECT
+			C4M_IDX       AS c4m_idx,
+			C4M_NO        AS c4m_no,
+			C4M_RECV      AS c4m_recv,
+			C4M_SCOPE     AS c4m_scope,
+			C4M_M4        AS c4m_m4,
+			C4M_ORIGIN    AS c4m_origin,
+			C4M_DEPT      AS c4m_dept,
+			C4M_OWNER     AS c4m_owner,
+			C4M_PROD_CODE AS c4m_prod_code,
+			C4M_CUST      AS c4m_cust,
+			C4M_MODEL     AS c4m_model,
+			C4M_PN        AS c4m_pn,
+			C4M_PNAME     AS c4m_pname,
+			C4M_TARGET    AS c4m_target,
+			C4M_BEFORE    AS c4m_before,
+			C4M_AFTER     AS c4m_after,
+			C4M_WHY       AS c4m_why,
+			C4M_GRADE     AS c4m_grade,
+			C4M_REP       AS c4m_rep,
+			C4M_APPR      AS c4m_appr,
+			C4M_VITEM     AS c4m_vitem,
+			C4M_VRES      AS c4m_vres,
+			C4M_PLAN      AS c4m_plan,
+			C4M_START     AS c4m_start,
+			C4M_FLOW      AS c4m_flow,
+			C4M_STATUS    AS c4m_status,
+			C4M_END       AS c4m_end,
+			C4M_MEMO      AS c4m_memo,
+			CONVERT(VARCHAR(19), C4M_REG_DATE, 120) AS c4m_reg_date
+		FROM CHANGE4M WITH(NOLOCK)
+		ORDER BY C4M_RECV DESC, C4M_NO DESC
+	</select>
+
+	<insert id="change4mInsert" parameterType="change4m">
+		INSERT INTO CHANGE4M
+			(C4M_NO, C4M_RECV, C4M_SCOPE, C4M_M4, C4M_ORIGIN, C4M_DEPT, C4M_OWNER,
+			 C4M_PROD_CODE, C4M_CUST, C4M_MODEL, C4M_PN, C4M_PNAME, C4M_TARGET, C4M_BEFORE, C4M_AFTER, C4M_WHY,
+			 C4M_GRADE, C4M_REP, C4M_APPR, C4M_VITEM, C4M_VRES,
+			 C4M_PLAN, C4M_START, C4M_FLOW, C4M_STATUS, C4M_END, C4M_MEMO)
+		VALUES
+			(#{c4m_no}, #{c4m_recv}, #{c4m_scope}, #{c4m_m4}, #{c4m_origin}, #{c4m_dept}, #{c4m_owner},
+			 #{c4m_prod_code,jdbcType=INTEGER}, #{c4m_cust}, #{c4m_model}, #{c4m_pn}, #{c4m_pname}, #{c4m_target}, #{c4m_before}, #{c4m_after}, #{c4m_why},
+			 #{c4m_grade}, #{c4m_rep}, #{c4m_appr}, #{c4m_vitem}, #{c4m_vres},
+			 #{c4m_plan}, #{c4m_start}, #{c4m_flow,jdbcType=INTEGER}, #{c4m_status}, #{c4m_end}, #{c4m_memo})
+	</insert>
+
+	<update id="change4mUpdate" parameterType="change4m">
+		UPDATE CHANGE4M SET
+			C4M_NO     = #{c4m_no},
+			C4M_RECV   = #{c4m_recv},
+			C4M_SCOPE  = #{c4m_scope},
+			C4M_M4     = #{c4m_m4},
+			C4M_ORIGIN = #{c4m_origin},
+			C4M_DEPT   = #{c4m_dept},
+			C4M_OWNER  = #{c4m_owner},
+			C4M_PROD_CODE = #{c4m_prod_code,jdbcType=INTEGER},
+			C4M_CUST   = #{c4m_cust},
+			C4M_MODEL  = #{c4m_model},
+			C4M_PN     = #{c4m_pn},
+			C4M_PNAME  = #{c4m_pname},
+			C4M_TARGET = #{c4m_target},
+			C4M_BEFORE = #{c4m_before},
+			C4M_AFTER  = #{c4m_after},
+			C4M_WHY    = #{c4m_why},
+			C4M_GRADE  = #{c4m_grade},
+			C4M_REP    = #{c4m_rep},
+			C4M_APPR   = #{c4m_appr},
+			C4M_VITEM  = #{c4m_vitem},
+			C4M_VRES   = #{c4m_vres},
+			C4M_PLAN   = #{c4m_plan},
+			C4M_START  = #{c4m_start},
+			C4M_FLOW   = #{c4m_flow,jdbcType=INTEGER},
+			C4M_STATUS = #{c4m_status},
+			C4M_END    = #{c4m_end},
+			C4M_MEMO   = #{c4m_memo}
+		WHERE C4M_IDX = #{c4m_idx}
+	</update>
+
+	<delete id="change4mDelete" parameterType="int">
+		DELETE FROM CHANGE4M WHERE C4M_IDX = #{c4m_idx}
+	</delete>
+
+	<!-- 변경등록 폼의 품번 검색(기존 PRODUCT/CORP 마스터 재사용) -->
+	<select id="getProductOptionList" parameterType="string" resultType="change4m">
+		SELECT TOP 50
+			P.PROD_CODE  AS c4m_prod_code,
+			P.PROD_NO    AS c4m_pn,
+			P.PROD_NAME  AS c4m_pname,
+			ISNULL(C.CORP_NAME,'') AS c4m_cust
+		FROM PRODUCT P WITH(NOLOCK)
+		LEFT JOIN CORP C WITH(NOLOCK) ON C.CORP_CODE = P.CORP_CODE
+		<where>
+			<if test="value != null and value != ''">
+				AND (P.PROD_NO LIKE '%'+#{value}+'%' OR P.PROD_NAME LIKE '%'+#{value}+'%')
+			</if>
+		</where>
+		ORDER BY P.PROD_NO
+	</select>
+
+</mapper>

@@ -24,7 +24,8 @@
     <bean id="monitoringProcessorBcf3" class="com.tkheat.async.MonitoringProcessorBcf3" />
     <bean id="monitoringProcessorBcf4" class="com.tkheat.async.MonitoringProcessorBcf4" />
     <bean id="monitoringProcessorBcf5" class="com.tkheat.async.MonitoringProcessorBcf5" />
-    <bean id="trendSnapshotScheduler" class="com.tkheat.async.TrendSnapshotScheduler" />
+    <!-- 2026-10-08 잠시 중지 요청으로 비활성화(바탕화면 온도 폴더 엑셀/캡쳐 자동저장) - 다시 켤 땐 주석만 해제 -->
+    <!-- <bean id="trendSnapshotScheduler" class="com.tkheat.async.TrendSnapshotScheduler" /> -->
 
     <task:scheduler id="scheduler" pool-size="4" />
     <task:executor id="executor" keep-alive="10" pool-size="10-20"

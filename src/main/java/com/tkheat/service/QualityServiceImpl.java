@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tkheat.dao.QualityDao;
+import com.tkheat.domain.DeliveryRate;
 import com.tkheat.domain.Product;
 import com.tkheat.domain.Suip;
 import com.tkheat.domain.Work;
@@ -64,6 +65,31 @@ public class QualityServiceImpl implements QualityService {
 	@Override
 	public void deleteNon(Integer werr_code) {
 		qualityDao.deleteNon(werr_code);
+	}
+
+	@Override
+	public List<Work> getDefectStatusCorpList(Work work) {
+		return qualityDao.getDefectStatusCorpList(work);
+	}
+
+	@Override
+	public Work getDefectStatusSummary(Work work) {
+		return qualityDao.getDefectStatusSummary(work);
+	}
+
+	@Override
+	public List<Work> getDefectStatusGubnList(Work work) {
+		return qualityDao.getDefectStatusGubnList(work);
+	}
+
+	@Override
+	public DeliveryRate getDeliverySummary(DeliveryRate deliveryRate) {
+		return qualityDao.getDeliverySummary(deliveryRate);
+	}
+
+	@Override
+	public List<DeliveryRate> getDeliveryCorpList(DeliveryRate deliveryRate) {
+		return qualityDao.getDeliveryCorpList(deliveryRate);
 	}
 
 

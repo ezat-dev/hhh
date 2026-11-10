@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vehicle">
+
+	<!-- ===================== 차량등록 ===================== -->
+	<select id="getVehicleList" parameterType="vehicle" resultType="vehicle">
+		SELECT
+			V.V_IDX AS v_idx, V.V_NO AS v_no, V.V_TYPE AS v_type, V.V_MODEL AS v_model, V.V_YEAR AS v_year,
+			V.V_VIN AS v_vin, V.V_FUELTYPE AS v_fueltype,
+			V.V_REGDATE AS v_regdate,
+			V.V_INSP AS v_insp,
+			V.V_INS AS v_ins,
+			V.V_MEMO AS v_memo,
+			(SELECT MAX(VF_DATE) FROM VEHICLE_FUEL WHERE V_IDX = V.V_IDX) AS last_fuel_date,
+			(SELECT TOP 1 VR_DATE FROM VEHICLE_REPAIR WHERE V_IDX = V.V_IDX ORDER BY VR_DATE DESC) AS last_repair_date,
+			(SELECT TOP 1 VR_ITEM FROM VEHICLE_REPAIR WHERE V_IDX = V.V_IDX ORDER BY VR_DATE DESC) AS last_repair_item
+		FROM VEHICLE V WITH(NOLOCK)
+		<where>
+			<if test="keyword != null and keyword != ''">
+				AND (V.V_NO LIKE '%'+#{keyword}+'%' OR V.V_MODEL LIKE '%'+#{keyword}+'%')
+			</if>
+		</where>
+		ORDER BY V.V_TYPE, V.V_NO
+	</select>
+
+	<insert id="vehicleInsert" parameterType="vehicle">
+		INSERT INTO VEHICLE (V_NO, V_TYPE, V_MODEL, V_YEAR, V_VIN, V_FUELTYPE, V_REGDATE, V_INSP, V_INS, V_MEMO)
+		VALUES (#{v_no}, #{v_type}, #{v_model}, #{v_year}, #{v_vin}, #{v_fueltype},
+			#{v_regdate}, #{v_insp}, #{v_ins}, #{v_memo})
+	</insert>
+
+	<update id="vehicleUpdate" parameterType="vehicle">
+		UPDATE VEHICLE SET
+			V_NO = #{v_no}, V_TYPE = #{v_type}, V_MODEL = #{v_model}, V_YEAR = #{v_year}, V_VIN = #{v_vin},
+			V_FUELTYPE = #{v_fueltype}, V_REGDATE = #{v_regdate}, V_INSP = #{v_insp},
+			V_INS = #{v_ins}, V_MEMO = #{v_memo}
+		WHERE V_IDX = #{v_idx}
+	</update>
+
+	<delete id="vehicleDelete" parameterType="int">
+		SET LOCK_TIMEOUT 10000;
+		DELETE FROM VEHICLE_REPAIR WHERE V_IDX = #{v_idx};
+		DELETE FROM VEHICLE_FUEL WHERE V_IDX = #{v_idx};
+		DELETE FROM VEHICLE WHERE V_IDX = #{v_idx};
+	</delete>
+
+	<!-- ===================== 수리이력 ===================== -->
+	<select id="getVehicleRepairList" parameterType="vehicleRepair" resultType="vehicleRepair">
+		SELECT
+			R.VR_IDX AS vr_idx, R.V_IDX AS v_idx,
+			R.VR_DATE AS vr_date,
+			R.VR_ITEM AS vr_item, R.VR_SHOP AS vr_shop, R.VR_COST AS vr_cost, R.VR_ODO AS vr_odo, R.VR_MEMO AS vr_memo,
+			V.V_NO AS v_no, V.V_TYPE AS v_type
+		FROM VEHICLE_REPAIR R WITH(NOLOCK)
+		LEFT JOIN VEHICLE V WITH(NOLOCK) ON V.V_IDX = R.V_IDX
+		<where>
+			<if test="v_idx != null">AND R.V_IDX = #{v_idx}</if>
+			<if test="fromMonth != null and fromMonth != ''">AND R.VR_DATE &gt;= #{fromMonth}+'-01'</if>
+			<if test="toMonth != null and toMonth != ''">AND R.VR_DATE &lt; DATEADD(MONTH,1,#{toMonth}+'-01')</if>
+			<if test="keyword != null and keyword != ''">
+				AND (V.V_NO LIKE '%'+#{keyword}+'%' OR R.VR_ITEM LIKE '%'+#{keyword}+'%' OR R.VR_SHOP LIKE '%'+#{keyword}+'%' OR R.VR_MEMO LIKE '%'+#{keyword}+'%')
+			</if>
+		</where>
+		ORDER BY R.VR_DATE DESC, R.VR_IDX DESC
+	</select>
+
+	<insert id="vehicleRepairInsert" parameterType="vehicleRepair">
+		INSERT INTO VEHICLE_REPAIR (V_IDX, VR_DATE, VR_ITEM, VR_SHOP, VR_COST, VR_ODO, VR_MEMO)
+		VALUES (#{v_idx}, #{vr_date}, #{vr_item}, #{vr_shop}, #{vr_cost,jdbcType=DOUBLE}, #{vr_odo,jdbcType=DOUBLE}, #{vr_memo})
+	</insert>
+
+	<update id="vehicleRepairUpdate" parameterType="vehicleRepair">
+		UPDATE VEHICLE_REPAIR SET
+			V_IDX = #{v_idx}, VR_DATE = #{vr_date}, VR_ITEM = #{vr_item}, VR_SHOP = #{vr_shop},
+			VR_COST = #{vr_cost,jdbcType=DOUBLE}, VR_ODO = #{vr_odo,jdbcType=DOUBLE}, VR_MEMO = #{vr_memo}
+		WHERE VR_IDX = #{vr_idx}
+	</update>
+
+	<delete id="vehicleRepairDelete" parameterType="int">
+		DELETE FROM VEHICLE_REPAIR WHERE VR_IDX = #{vr_idx}
+	</delete>
+
+	<!-- ===================== 주유일지 ===================== -->
+	<select id="getVehicleFuelList" parameterType="vehicleFuel" resultType="vehicleFuel">
+		WITH ORDERED AS (
+			SELECT F.*, LAG(F.VF_DATE) OVER (PARTITION BY F.V_IDX ORDER BY F.VF_DATE, F.VF_IDX) AS PREV_DATE
+			FROM VEHICLE_FUEL F WITH(NOLOCK)
+		)
+		SELECT
+			O.VF_IDX AS vf_idx, O.V_IDX AS v_idx,
+			O.VF_DATE AS vf_date,
+			O.VF_LITER AS vf_liter, O.VF_COST AS vf_cost, O.VF_CARD AS vf_card, O.VF_ODO AS vf_odo, O.VF_STATION AS vf_station, O.VF_MEMO AS vf_memo,
+			V.V_NO AS v_no, V.V_TYPE AS v_type,
+			CASE WHEN O.PREV_DATE IS NOT NULL THEN DATEDIFF(DAY, O.PREV_DATE, O.VF_DATE) ELSE NULL END AS gap_days
+		FROM ORDERED O
+		LEFT JOIN VEHICLE V WITH(NOLOCK) ON V.V_IDX = O.V_IDX
+		<where>
+			<if test="v_idx != null">AND O.V_IDX = #{v_idx}</if>
+			<if test="card != null and card != ''">AND O.VF_CARD = #{card}</if>
+			<if test="fromMonth != null and fromMonth != ''">AND O.VF_DATE &gt;= #{fromMonth}+'-01'</if>
+			<if test="toMonth != null and toMonth != ''">AND O.VF_DATE &lt; DATEADD(MONTH,1,#{toMonth}+'-01')</if>
+			<if test="keyword != null and keyword != ''">
+				AND (V.V_NO LIKE '%'+#{keyword}+'%' OR O.VF_STATION LIKE '%'+#{keyword}+'%' OR O.VF_MEMO LIKE '%'+#{keyword}+'%' OR O.VF_CARD LIKE '%'+#{keyword}+'%')
+			</if>
+		</where>
+		ORDER BY O.VF_DATE DESC, O.VF_IDX DESC
+	</select>
+
+	<insert id="vehicleFuelInsert" parameterType="vehicleFuel">
+		INSERT INTO VEHICLE_FUEL (V_IDX, VF_DATE, VF_LITER, VF_COST, VF_CARD, VF_ODO, VF_STATION, VF_MEMO)
+		VALUES (#{v_idx}, #{vf_date}, #{vf_liter,jdbcType=DOUBLE}, #{vf_cost,jdbcType=DOUBLE}, #{vf_card}, #{vf_odo,jdbcType=DOUBLE}, #{vf_station}, #{vf_memo})
+	</insert>
+
+	<update id="vehicleFuelUpdate" parameterType="vehicleFuel">
+		UPDATE VEHICLE_FUEL SET
+			V_IDX = #{v_idx}, VF_DATE = #{vf_date}, VF_LITER = #{vf_liter,jdbcType=DOUBLE},
+			VF_COST = #{vf_cost,jdbcType=DOUBLE}, VF_CARD = #{vf_card}, VF_ODO = #{vf_odo,jdbcType=DOUBLE},
+			VF_STATION = #{vf_station}, VF_MEMO = #{vf_memo}
+		WHERE VF_IDX = #{vf_idx}
+	</update>
+
+	<delete id="vehicleFuelDelete" parameterType="int">
+		DELETE FROM VEHICLE_FUEL WHERE VF_IDX = #{vf_idx}
+	</delete>
+
+</mapper>

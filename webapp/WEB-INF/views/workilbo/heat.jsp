@@ -1937,7 +1937,7 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		        	hozAlign:"right", visible:false},
 		        {title:"공정", field:"tech_te", sorter:"string", width:50,
 		        	hozAlign:"center"},
-		        {title:"비고", field:"tech_in", sorter:"string", width:70,
+		        {title:"비고", field:"ilbo_bigo", sorter:"string", width:70,
 		        	hozAlign:"center"},
 		        {title:"최종검사", field:"ilbo_final_chk", sorter:"string", width:80,
 		        	hozAlign:"center",

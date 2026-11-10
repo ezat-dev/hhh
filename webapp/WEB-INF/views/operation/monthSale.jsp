@@ -562,11 +562,26 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		});
 	}
 
-	// ========== 엑셀 다운로드 ==========
+	// ========== 엑셀 다운로드(거래처별 소계 행 노란색 강조 - 서버에서 POI로 생성) ==========
 	$(".excel-button").click(function () {
-	    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-	    const filename = "월매출현황_" + today + ".xlsx";
-	    userTable.download("xlsx", filename, { sheetName: "월매출현황" });
+	    var url = "/tkheat/operation/monthSale/excelDownload"
+	        + "?sdate=" + encodeURIComponent($("#sdate").val())
+	        + "&corp_name=" + encodeURIComponent($("#corp_name").val() || "");
+	    window.location.href = url;
+	});
+
+	// ========== 보고서출력(PDF) - 현재 조회조건 그대로 재사용 ==========
+	$(".printer-button").click(function () {
+	    var reportWin = window.open('', '_blank');
+	    if (!reportWin) {
+	        alert("팝업이 차단되어 새 창을 열 수 없습니다. 브라우저 팝업 차단을 해제해주세요.");
+	        return;
+	    }
+	    var url = "/tkheat/operation/monthSale/report"
+	        + "?sdate=" + encodeURIComponent($("#sdate").val())
+	        + "&corp_name=" + encodeURIComponent($("#corp_name").val() || "")
+	        + "&_ts=" + Date.now();
+	    reportWin.location.href = url;
 	});
 
     </script>

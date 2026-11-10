@@ -622,6 +622,36 @@ body {
                             <option value="D">삭제</option>
                         </select>
                     </div>
+                    <div class="permission-control">
+                        <label>부품재고관리</label>
+                        <select id="e10" name="e10">
+                            <option value="N">없음</option>
+                            <option value="R">조회</option>
+                            <option value="I">저장</option>
+                            <option value="U">수정</option>
+                            <option value="D">삭제</option>
+                        </select>
+                    </div>
+                    <div class="permission-control">
+                        <label>4M 변경관리</label>
+                        <select id="e11" name="e11">
+                            <option value="N">없음</option>
+                            <option value="R">조회</option>
+                            <option value="I">저장</option>
+                            <option value="U">수정</option>
+                            <option value="D">삭제</option>
+                        </select>
+                    </div>
+                    <div class="permission-control">
+                        <label>차량 관리 일지</label>
+                        <select id="e12" name="e12">
+                            <option value="N">없음</option>
+                            <option value="R">조회</option>
+                            <option value="I">저장</option>
+                            <option value="U">수정</option>
+                            <option value="D">삭제</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- 품질관리 -->
@@ -681,6 +711,20 @@ body {
                             <option value="R">조회</option>
                             <option value="I">저장</option>
                             <option value="U">수정</option>
+                        </select>
+                    </div>
+                    <div class="permission-control">
+                        <label>불량현황</label>
+                        <select id="f08" name="f08">
+                            <option value="N">없음</option>
+                            <option value="R">조회</option>
+                        </select>
+                    </div>
+                    <div class="permission-control">
+                        <label>납기준수율</label>
+                        <select id="f09" name="f09">
+                            <option value="N">없음</option>
+                            <option value="R">조회</option>
                         </select>
                     </div>
                 </div>
@@ -833,6 +877,26 @@ body {
                             <option value="D">삭제</option>
                         </select>
                     </div>
+                    <div class="permission-control">
+                        <label>급여관리</label>
+                        <select id="h08" name="h08">
+                            <option value="N">없음</option>
+                            <option value="R">조회</option>
+                            <option value="I">저장</option>
+                            <option value="U">수정</option>
+                            <option value="D">삭제</option>
+                        </select>
+                    </div>
+                    <div class="permission-control">
+                        <label>포상관리제</label>
+                        <select id="h09" name="h09">
+                            <option value="N">없음</option>
+                            <option value="R">조회</option>
+                            <option value="I">저장</option>
+                            <option value="U">수정</option>
+                            <option value="D">삭제</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- 작업지시 -->
@@ -928,6 +992,21 @@ body {
                             <option value="D">삭제</option>
                         </select>
                     </div> -->
+                </div>
+
+                <!-- 파일관리 -->
+                <div class="category-section">
+                    <h3>파일관리</h3>
+                    <div class="permission-control">
+                        <label>파일관리</label>
+                        <select id="j01" name="j01">
+                            <option value="N">없음</option>
+                            <option value="R">조회</option>
+                            <option value="I">저장</option>
+                            <option value="U">수정</option>
+                            <option value="D">삭제</option>
+                        </select>
+                    </div>
                 </div>
 
             </form>

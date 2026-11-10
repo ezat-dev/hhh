@@ -42,6 +42,7 @@
                     <ul class="sub-menu-list" id="gMenu"></ul>
                     <ul class="sub-menu-list" id="hMenu"></ul>
                     <ul class="sub-menu-list" id="iMenu"></ul>
+                    <ul class="sub-menu-list" id="jMenu"></ul>
                 </div>
             </div>
         </div>
@@ -78,6 +79,9 @@
                 </button>
                 <button class="cat-btn" data-menu="iMenu" onclick="selectCategory('iMenu',this)">
                     <ion-icon name="people-outline"></ion-icon><span>작업지시</span>
+                </button>
+                <button class="cat-btn" data-menu="jMenu" onclick="selectCategory('jMenu',this)">
+                    <ion-icon name="folder-outline"></ion-icon><span>파일관리</span>
                 </button>
             </div>
 
@@ -209,13 +213,16 @@ function loginUserMenuSetting(){
                                 }else if(key.indexOf("i") != -1){
                                     _group = "작업지시";
                                     _groupID = "iMenu";
+                                }else if(key.indexOf("j") != -1){
+                                    _group = "파일관리";
+                                    _groupID = "jMenu";
                                 }
 
                                 _group_t = _group.replace(/\s/gi,"&nbsp;");
                                 _name_t = _name.replace(/\s/gi,"&nbsp;");
 
                                 var _menu = "<li>";
-                                _menu += "<a class='collapse__sublink' onClick=updateHeaderAndNavigate(event,'"+_link+"','"+_group+"-"+_name+"');>"+_name+"</a>"
+                                _menu += "<a class='collapse__sublink' onClick=\"updateHeaderAndNavigate(event,'"+_link+"','"+_group+"-"+_name+"')\">"+_name+"</a>"
                                 _menu += "</li>";
 
                                 $("#"+_groupID).append(_menu);
@@ -253,7 +260,7 @@ function loginUserMenuSetting(){
 
 
 function checkParentMenuVisibility() {
-    const menuIds = ["aMenu","bMenu","cMenu","dMenu","eMenu","fMenu","gMenu","hMenu","iMenu"];
+    const menuIds = ["aMenu","bMenu","cMenu","dMenu","eMenu","fMenu","gMenu","hMenu","iMenu","jMenu"];
 
     menuIds.forEach(function(menuId) {
         const $menu = $("#" + menuId);

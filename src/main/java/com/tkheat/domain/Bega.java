@@ -38,7 +38,11 @@ public class Bega {
 	private int idle_registered; //등록비가동시간(분, FACSTOP 특이사항)
 	private int idle_total; //총비가동시간(분) = 자연비가동 + 등록비가동
 	private double idle_rate; //비가동율(%)
-	
+
+	private int work_cnt; //작업수
+	private double work_jung; //작업중량
+	private int work_time; //총작업시간(분, LOT별 합산 기준 - 가동시간(run_time)과 달리 겹치는 LOT도 각각 더함)
+
 	
 	
 	
@@ -243,6 +247,24 @@ public class Bega {
 	}
 	public void setIdle_rate(double idle_rate) {
 		this.idle_rate = idle_rate;
+	}
+	public int getWork_cnt() {
+		return work_cnt;
+	}
+	public void setWork_cnt(int work_cnt) {
+		this.work_cnt = work_cnt;
+	}
+	public double getWork_jung() {
+		return work_jung;
+	}
+	public void setWork_jung(double work_jung) {
+		this.work_jung = work_jung;
+	}
+	public int getWork_time() {
+		return work_time;
+	}
+	public void setWork_time(int work_time) {
+		this.work_time = work_time;
 	}
 
 }

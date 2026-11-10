@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.tkheat.domain.AlarmHistory;
 import com.tkheat.domain.AlarmRanking;
 import com.tkheat.domain.Monitoring;
+import com.tkheat.domain.TrendMemo;
 import com.tkheat.domain.WorkJisi;
 import com.tkheat.domain.WorkJisiTk;
 
@@ -94,6 +95,26 @@ public class MonitoringDaoImpl implements MonitoringDao {
 	@Override
 	public String getCurrentProdCodeByFacility(int fac_code) {
 		return sqlSession.selectOne("monitoring.getCurrentProdCodeByFacility", fac_code);
+	}
+
+	@Override
+	public void insertTrendMemo(TrendMemo trendMemo) {
+		sqlSession.insert("monitoring.insertTrendMemo", trendMemo);
+	}
+
+	@Override
+	public List<TrendMemo> getTrendMemoList(TrendMemo trendMemo) {
+		return sqlSession.selectList("monitoring.getTrendMemoList", trendMemo);
+	}
+
+	@Override
+	public void updateTrendMemo(TrendMemo trendMemo) {
+		sqlSession.update("monitoring.updateTrendMemo", trendMemo);
+	}
+
+	@Override
+	public void deleteTrendMemo(int memo_code) {
+		sqlSession.delete("monitoring.deleteTrendMemo", memo_code);
 	}
 
 }

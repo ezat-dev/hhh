@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="monthSaleReport" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8f6f6d2a-1c2c-4a4e-9c4a-9d2c4f6a1b2e">
+	<parameter name="title_sdate" class="java.lang.String"/>
+	<parameter name="title_corp" class="java.lang.String"/>
+	<field name="och_ma" class="java.lang.String"/>
+	<field name="och_date" class="java.lang.String"/>
+	<field name="corp_name" class="java.lang.String"/>
+	<field name="prod_name" class="java.lang.String"/>
+	<field name="prod_no" class="java.lang.String"/>
+	<field name="och_lot" class="java.lang.String"/>
+	<field name="och_su" class="java.lang.Float"/>
+	<field name="och_dang" class="java.lang.String"/>
+	<field name="och_mon" class="java.lang.String"/>
+	<field name="och_mon_tax" class="java.lang.Integer"/>
+	<field name="och_mon_total" class="java.lang.Integer"/>
+
+	<variable name="suSumGroup" class="java.lang.Float" resetType="Group" resetGroup="corpGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{och_su}]]></variableExpression>
+	</variable>
+	<variable name="monSumGroup" class="java.lang.Float" resetType="Group" resetGroup="corpGroup" calculation="Sum">
+		<variableExpression><![CDATA[Float.valueOf($F{och_mon} == null || $F{och_mon}.trim().isEmpty() ? "0" : $F{och_mon}.replace(",","").trim())]]></variableExpression>
+	</variable>
+	<variable name="taxSumGroup" class="java.lang.Integer" resetType="Group" resetGroup="corpGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{och_mon_tax}]]></variableExpression>
+	</variable>
+	<variable name="totalSumGroup" class="java.lang.Integer" resetType="Group" resetGroup="corpGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{och_mon_total}]]></variableExpression>
+	</variable>
+
+	<variable name="suSumReport" class="java.lang.Float" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{och_su}]]></variableExpression>
+	</variable>
+	<variable name="monSumReport" class="java.lang.Float" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[Float.valueOf($F{och_mon} == null || $F{och_mon}.trim().isEmpty() ? "0" : $F{och_mon}.replace(",","").trim())]]></variableExpression>
+	</variable>
+	<variable name="taxSumReport" class="java.lang.Integer" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{och_mon_tax}]]></variableExpression>
+	</variable>
+	<variable name="totalSumReport" class="java.lang.Integer" resetType="Report" calculation="Sum">
+		<variableExpression><![CDATA[$F{och_mon_total}]]></variableExpression>
+	</variable>
+
+	<group name="corpGroup">
+		<groupExpression><![CDATA[$F{corp_name}]]></groupExpression>
+		<groupFooter>
+			<band height="20">
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="0" width="30" height="20" backcolor="#FFFF00" uuid="a1a1a1a1-0000-4001-8001-000000000000"/>
+					<box><pen lineWidth="0.5"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="30" y="0" width="55" height="20" backcolor="#FFFF00" uuid="a1a1a1a1-0001-4001-8001-000000000001"/>
+					<box><pen lineWidth="0.5"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="85" y="0" width="60" height="20" backcolor="#FFFF00" uuid="a1a1a1a1-0002-4001-8001-000000000002"/>
+					<box><pen lineWidth="0.5"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="145" y="0" width="100" height="20" backcolor="#FFFF00" uuid="a1a1a1a1-0003-4001-8001-000000000003"/>
+					<box><pen lineWidth="0.5"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+					<text><![CDATA[소계]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="245" y="0" width="100" height="20" backcolor="#FFFF00" uuid="a1a1a1a1-0004-4001-8001-000000000004"/>
+					<box><pen lineWidth="0.5"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="345" y="0" width="80" height="20" backcolor="#FFFF00" uuid="a1a1a1a1-0005-4001-8001-000000000005"/>
+					<box><pen lineWidth="0.5"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="425" y="0" width="60" height="20" backcolor="#FFFF00" uuid="a1a1a1a1-0006-4001-8001-000000000006"/>
+					<box><pen lineWidth="0.5"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField pattern="#,##0">
+					<reportElement mode="Opaque" x="485" y="0" width="55" height="20" backcolor="#FFFF00" uuid="a1a1a1a1-0007-4001-8001-000000000007"/>
+					<box><pen lineWidth="0.5"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+					<textFieldExpression><![CDATA[$V{suSumGroup}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="540" y="0" width="60" height="20" backcolor="#FFFF00" uuid="a1a1a1a1-0008-4001-8001-000000000008"/>
+					<box><pen lineWidth="0.5"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<textField pattern="#,##0">
+					<reportElement mode="Opaque" x="600" y="0" width="70" height="20" backcolor="#FFFF00" uuid="a1a1a1a1-0009-4001-8001-000000000009"/>
+					<box><pen lineWidth="0.5"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+					<textFieldExpression><![CDATA[$V{monSumGroup}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0">
+					<reportElement mode="Opaque" x="670" y="0" width="60" height="20" backcolor="#FFFF00" uuid="a1a1a1a1-0010-4001-8001-000000000010"/>
+					<box><pen lineWidth="0.5"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+					<textFieldExpression><![CDATA[$V{taxSumGroup}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0">
+					<reportElement mode="Opaque" x="730" y="0" width="72" height="20" backcolor="#FFFF00" uuid="a1a1a1a1-0011-4001-8001-000000000011"/>
+					<box><pen lineWidth="0.5"/></box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+					<textFieldExpression><![CDATA[$V{totalSumGroup}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="50" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="802" height="26" uuid="b1b1b1b1-0001-4001-8001-000000000001"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="16" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[월 매출 현황(마감)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="28" width="802" height="18" uuid="b1b1b1b1-0002-4001-8001-000000000002"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="10" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA["조회월 : " + $P{title_sdate} + "   /   거래처 : " + ($P{title_corp} == null || $P{title_corp}.trim().isEmpty() ? "전체" : $P{title_corp})]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="30" height="22" backcolor="#E2E8F0" uuid="c1c1c1c1-0001-4001-8001-000000000001"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[NO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="30" y="0" width="55" height="22" backcolor="#E2E8F0" uuid="c1c1c1c1-0002-4001-8001-000000000002"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[마감월]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="85" y="0" width="60" height="22" backcolor="#E2E8F0" uuid="c1c1c1c1-0003-4001-8001-000000000003"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[출고일]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="145" y="0" width="100" height="22" backcolor="#E2E8F0" uuid="c1c1c1c1-0004-4001-8001-000000000004"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[거래처]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="245" y="0" width="100" height="22" backcolor="#E2E8F0" uuid="c1c1c1c1-0005-4001-8001-000000000005"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[품명]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="345" y="0" width="80" height="22" backcolor="#E2E8F0" uuid="c1c1c1c1-0006-4001-8001-000000000006"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[품번]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="425" y="0" width="60" height="22" backcolor="#E2E8F0" uuid="c1c1c1c1-0007-4001-8001-000000000007"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[LOT NO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="485" y="0" width="55" height="22" backcolor="#E2E8F0" uuid="c1c1c1c1-0008-4001-8001-000000000008"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[수량]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="540" y="0" width="60" height="22" backcolor="#E2E8F0" uuid="c1c1c1c1-0009-4001-8001-000000000009"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[단가]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="600" y="0" width="70" height="22" backcolor="#E2E8F0" uuid="c1c1c1c1-0010-4001-8001-000000000010"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[공급가액]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="670" y="0" width="60" height="22" backcolor="#E2E8F0" uuid="c1c1c1c1-0011-4001-8001-000000000011"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[부가세]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="730" y="0" width="72" height="22" backcolor="#E2E8F0" uuid="c1c1c1c1-0012-4001-8001-000000000012"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[합계금액]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="30" height="16" uuid="d1d1d1d1-0001-4001-8001-000000000001"/>
+				<box><pen lineWidth="0.25"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="30" y="0" width="55" height="16" uuid="d1d1d1d1-0002-4001-8001-000000000002"/>
+				<box><pen lineWidth="0.25"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$F{och_ma}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="85" y="0" width="60" height="16" uuid="d1d1d1d1-0003-4001-8001-000000000003"/>
+				<box><pen lineWidth="0.25"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$F{och_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="145" y="0" width="100" height="16" uuid="d1d1d1d1-0004-4001-8001-000000000004"/>
+				<box><pen lineWidth="0.25"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$F{corp_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="245" y="0" width="100" height="16" uuid="d1d1d1d1-0005-4001-8001-000000000005"/>
+				<box><pen lineWidth="0.25"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$F{prod_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="345" y="0" width="80" height="16" uuid="d1d1d1d1-0006-4001-8001-000000000006"/>
+				<box><pen lineWidth="0.25"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$F{prod_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="425" y="0" width="60" height="16" uuid="d1d1d1d1-0007-4001-8001-000000000007"/>
+				<box><pen lineWidth="0.25"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$F{och_lot}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="485" y="0" width="55" height="16" uuid="d1d1d1d1-0008-4001-8001-000000000008"/>
+				<box><pen lineWidth="0.25"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$F{och_su}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="540" y="0" width="60" height="16" uuid="d1d1d1d1-0009-4001-8001-000000000009"/>
+				<box><pen lineWidth="0.25"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<!-- och_dang은 String 필드라 패턴 적용을 위해 숫자로 변환해서 표시(단가는 0.01처럼 작은 소수값도 있어 소수 둘째자리까지 유지) -->
+				<textFieldExpression><![CDATA[$F{och_dang} == null || $F{och_dang}.trim().isEmpty() ? null : Float.valueOf($F{och_dang}.replace(",","").trim())]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.0" isBlankWhenNull="true">
+				<reportElement x="600" y="0" width="70" height="16" uuid="d1d1d1d1-0010-4001-8001-000000000010"/>
+				<box><pen lineWidth="0.25"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<!-- och_mon도 String 필드라 패턴 적용을 위해 숫자로 변환(화면 Tabulator와 동일하게 소수 첫째자리까지) -->
+				<textFieldExpression><![CDATA[$F{och_mon} == null || $F{och_mon}.trim().isEmpty() ? null : Float.valueOf($F{och_mon}.replace(",","").trim())]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="670" y="0" width="60" height="16" uuid="d1d1d1d1-0011-4001-8001-000000000011"/>
+				<box><pen lineWidth="0.25"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$F{och_mon_tax}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="730" y="0" width="72" height="16" uuid="d1d1d1d1-0012-4001-8001-000000000012"/>
+				<box><pen lineWidth="0.25"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$F{och_mon_total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="18" splitType="Stretch">
+			<textField>
+				<reportElement x="702" y="0" width="100" height="18" uuid="e1e1e1e1-0001-4001-8001-000000000001"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="24" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="485" height="24" backcolor="#EDF2F7" uuid="f1f1f1f1-0001-4001-8001-000000000001"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="10" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<text><![CDATA[총 합계]]></text>
+			</staticText>
+			<textField pattern="#,##0">
+				<reportElement mode="Opaque" x="485" y="0" width="55" height="24" backcolor="#EDF2F7" uuid="f1f1f1f1-0002-4001-8001-000000000002"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$V{suSumReport}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="540" y="0" width="60" height="24" backcolor="#EDF2F7" uuid="f1f1f1f1-0003-4001-8001-000000000003"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField pattern="#,##0">
+				<reportElement mode="Opaque" x="600" y="0" width="70" height="24" backcolor="#EDF2F7" uuid="f1f1f1f1-0004-4001-8001-000000000004"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$V{monSumReport}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement mode="Opaque" x="670" y="0" width="60" height="24" backcolor="#EDF2F7" uuid="f1f1f1f1-0005-4001-8001-000000000005"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$V{taxSumReport}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement mode="Opaque" x="730" y="0" width="72" height="24" backcolor="#EDF2F7" uuid="f1f1f1f1-0006-4001-8001-000000000006"/>
+				<box><pen lineWidth="0.5"/></box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"><font size="9" isBold="true" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/></textElement>
+				<textFieldExpression><![CDATA[$V{totalSumReport}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

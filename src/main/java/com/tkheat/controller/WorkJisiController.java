@@ -1135,7 +1135,6 @@ public class WorkJisiController {
 				chulgo.setJaego_su(Integer.parseInt(jObj.get("jaego_su").toString()));
 				chulgo.setOch_su(Float.parseFloat(jObj.get("och_su").toString()));
 				chulgo.setOch_amnt(Float.parseFloat(jObj.get("och_amnt").toString()));
-				chulgo.setOch_bigo(jObj.get("och_bigo").toString());
 				chulgo.setOch_ma(jObj.get("och_ma").toString());
 				chulgo.setOrd_dang(Float.parseFloat(jObj.get("ord_dang").toString()));
 				chulgo.setOrd_danj(Float.parseFloat(jObj.get("ord_danj").toString()));
@@ -1254,10 +1253,14 @@ public class WorkJisiController {
 		
 		String openPath = "";			//파일경로
 		String mergePath = "";
-		String mergePathFileName = "";		
-		//PDF파일병합 추가
+		String mergePathFileName = "";
+		//여러 거래처/출고일을 한번에 선택해 출력해도 한 PDF로 이어붙여야 하므로
+		//병합 객체는 요청 전체에서 하나만 사용한다(그룹별로 따로 만들면 거래처별로 PDF가
+		//쪼개져서 나오던 문제가 있었음)
 		PDFMergerUtility merge = new PDFMergerUtility();
-		
+		String firstCorpName = null;
+		int groupCount = 0;
+
 		try {
 			JSONObject workObj = (JSONObject)jParser.parse(str);
 			
@@ -1314,7 +1317,7 @@ public class WorkJisiController {
 			//HashMap은 키(날짜;거래처코드) 순서를 보장 안 해서, 같은 거래처를 여러 날짜로 걸쳐
 			//한꺼번에 출력하면 출고일 순서와 무관하게 뒤섞여서 인쇄되던 원인이었음 - 날짜 문자열이
 			//ISO형식(yyyy-MM-dd)이라 TreeMap으로 바꾸면 키 자체가 자동으로 날짜순 정렬됨
-			Map<String, List<Integer>> ochMap = new TreeMap<String, List<Integer>>();
+			TreeMap<String, List<Integer>> ochMap = new TreeMap<String, List<Integer>>();
 			List<Integer> ochList = new ArrayList<Integer>();
 			
 
@@ -1361,10 +1364,16 @@ public class WorkJisiController {
 					//하단 리스트
 					List<WorkJisi> chulgoReportSubList = workJisiService.getChulgoReportSubNormal(cw);
 
-					String fileBaseName = fileNameGb+"_"+keyArr[0].replace("-","")+"_"+chulgoReportMainList.get(0).getCorp_name()+printIdx;
-					mergePathFileName = keyArr[0].replace("-","")+"_"+chulgoReportMainList.get(0).getCorp_name();
+					if(!chulgoReportMainList.isEmpty()){
+						if(firstCorpName == null){ firstCorpName = chulgoReportMainList.get(0).getCorp_name(); }
+						String fileBaseName = fileNameGb+"_"+keyArr[0].replace("-","")+"_"+chulgoReportMainList.get(0).getCorp_name()+printIdx;
+						//그룹(출고일+거래처)마다 생성된 페이지를 전부 같은 merge 객체에 쌓아서
+						//요청 전체가 끝난 뒤 한번에 하나의 PDF로 합친다(날짜순으로 정렬된 ochMap을
+						//그대로 순회하므로 날짜 순서대로, 같은 날짜 안에서는 거래처코드 순서대로 이어붙음)
+						generateChulgoPdfChunks(reportPath, subReportPath, chulgoReportMainList, chulgoReportSubList, chulgoReportList, fileBaseName, merge);
+						groupCount++;
+					}
 
-					generateChulgoPdfChunks(reportPath, subReportPath, chulgoReportMainList, chulgoReportSubList, chulgoReportList, fileBaseName, merge);
 					printIdx++;
 				}
 			}else if(chulgo_print_gb == 5) {
@@ -1409,25 +1418,40 @@ public class WorkJisiController {
 					//하단 리스트
 					List<WorkJisi> chulgoReportSubList = workJisiService.getChulgoReportSubProd(cw);
 
-					String fileBaseName = fileNameGb+"_"+keyArr[0].replace("-","")+"_"+printIdx;
-					mergePathFileName = keyArr[0].replace("-","")+"_";
+					if(!chulgoReportMainList.isEmpty()){
+						if(firstCorpName == null){ firstCorpName = chulgoReportMainList.get(0).getCorp_name(); }
+						String fileBaseName = fileNameGb+"_"+keyArr[0].replace("-","")+"_"+chulgoReportMainList.get(0).getCorp_name()+printIdx;
+						generateChulgoPdfChunks(reportPath, subReportPath, chulgoReportMainList, chulgoReportSubList, chulgoReportList, fileBaseName, merge);
+						groupCount++;
+					}
 
-					generateChulgoPdfChunks(reportPath, subReportPath, chulgoReportMainList, chulgoReportSubList, chulgoReportList, fileBaseName, merge);
 					printIdx++;
 				}
+			}
+
+			if(groupCount > 0){
+				//파일명은 날짜범위+거래처(여러 곳이면 "외N건")+타임스탬프로 구성해서
+				//같은 날짜/거래처로 다시 출력해도 이전 출력 파일을 덮어쓰지 않도록 한다
+				//(제품별 출력이 거래처명 없이 날짜만으로 파일명을 만들어서 서로 다른 거래처의
+				//PDF가 같은 파일명으로 덮어써지던 문제가 있었음)
+				String firstKey = ochMap.firstKey();
+				String lastKey = ochMap.lastKey();
+				String firstDate = firstKey.split(";")[0].replace("-","");
+				String lastDate = lastKey.split(";")[0].replace("-","");
+				String dateLabel = firstDate.equals(lastDate) ? firstDate : firstDate+"~"+lastDate;
+				String corpLabel = (groupCount == 1) ? firstCorpName : firstCorpName+"외"+(groupCount-1)+"건";
+				String timestamp = new java.text.SimpleDateFormat("HHmmssSSS").format(new java.util.Date());
+
+				mergePathFileName = dateLabel+"_"+corpLabel+"_"+timestamp;
+
+				merge.setDestinationFileName(mergePath+mergePathFileName+".pdf");
+				merge.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
+				rtnMap.put("fileName", openPath+mergePathFileName+".pdf");
 			}
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-		merge.setDestinationFileName(mergePath+mergePathFileName+".pdf");
-		try {
-			merge.mergeDocuments(MemoryUsageSetting.setupTempFileOnly());
-			rtnMap.put("fileName",openPath+mergePathFileName+".pdf");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
 		return rtnMap;
 	}

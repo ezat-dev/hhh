@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.tkheat.domain.DeliveryRate;
 import com.tkheat.domain.Product;
 import com.tkheat.domain.Suip;
 import com.tkheat.domain.Work;
@@ -65,7 +66,32 @@ public class QualityDaoImpl implements QualityDao{
 	 public void deleteNon(Integer werr_code) {
 		 sqlSession.delete("work.deleteNon", werr_code);
 	 }
-	
+
+	@Override
+	public List<Work> getDefectStatusCorpList(Work work) {
+		return sqlSession.selectList("work.getDefectStatusCorpList", work);
+	}
+
+	@Override
+	public Work getDefectStatusSummary(Work work) {
+		return sqlSession.selectOne("work.getDefectStatusSummary", work);
+	}
+
+	@Override
+	public List<Work> getDefectStatusGubnList(Work work) {
+		return sqlSession.selectList("work.getDefectStatusGubnList", work);
+	}
+
+	@Override
+	public DeliveryRate getDeliverySummary(DeliveryRate deliveryRate) {
+		return sqlSession.selectOne("deliveryRate.getDeliverySummary", deliveryRate);
+	}
+
+	@Override
+	public List<DeliveryRate> getDeliveryCorpList(DeliveryRate deliveryRate) {
+		return sqlSession.selectList("deliveryRate.getDeliveryCorpList", deliveryRate);
+	}
+
 	
 	
 	

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fileManage">
+
+	<!-- 전체 폴더 목록(플랫) - 화면에서 트리로 조립 -->
+	<select id="getFolderList" resultType="filefolder">
+		SELECT
+			FF.FOLDER_CODE,
+			FF.PARENT_CODE,
+			FF.FOLDER_NAME,
+			FF.SORT_ORDER,
+			FF.REG_USER,
+			CONVERT(VARCHAR(19), FF.REG_DATE, 120) AS REG_DATE,
+			(SELECT COUNT(*) FROM FILE_ATTACH FA WHERE FA.FOLDER_CODE = FF.FOLDER_CODE) AS FILE_COUNT,
+			(SELECT COUNT(*) FROM FILE_FOLDER SUB WHERE SUB.PARENT_CODE = FF.FOLDER_CODE) AS SUB_FOLDER_COUNT
+		FROM FILE_FOLDER FF
+		ORDER BY ISNULL(FF.PARENT_CODE, 0), FF.SORT_ORDER, FF.FOLDER_CODE
+	</select>
+
+	<!-- 폴더 생성 -->
+	<insert id="insertFolder" parameterType="filefolder" useGeneratedKeys="true" keyProperty="folder_code">
+		INSERT INTO FILE_FOLDER (PARENT_CODE, FOLDER_NAME, SORT_ORDER, REG_USER, REG_DATE)
+		VALUES (#{parent_code,jdbcType=INTEGER}, #{folder_name}, #{sort_order}, #{reg_user}, GETDATE())
+	</insert>
+
+	<!-- 폴더 이름변경 -->
+	<update id="renameFolder" parameterType="filefolder">
+		UPDATE FILE_FOLDER
+		   SET FOLDER_NAME = #{folder_name}
+		 WHERE FOLDER_CODE = #{folder_code}
+	</update>
+
+	<!-- 특정 폴더 + 모든 하위폴더(재귀) 코드 목록 -->
+	<select id="getFolderSubtreeCodes" parameterType="int" resultType="int">
+		;WITH FolderTree AS (
+			SELECT FOLDER_CODE FROM FILE_FOLDER WHERE FOLDER_CODE = #{folder_code}
+			UNION ALL
+			SELECT f.FOLDER_CODE
+			FROM FILE_FOLDER f
+			INNER JOIN FolderTree t ON f.PARENT_CODE = t.FOLDER_CODE
+		)
+		SELECT FOLDER_CODE FROM FolderTree
+	</select>
+
+	<!-- 특정 폴더 + 하위폴더 전체에 들어있는 파일 목록(실제 디스크 파일 삭제용) -->
+	<select id="getFilesInFolderSubtree" parameterType="int" resultType="fileattach">
+		;WITH FolderTree AS (
+			SELECT FOLDER_CODE FROM FILE_FOLDER WHERE FOLDER_CODE = #{folder_code}
+			UNION ALL
+			SELECT f.FOLDER_CODE
+			FROM FILE_FOLDER f
+			INNER JOIN FolderTree t ON f.PARENT_CODE = t.FOLDER_CODE
+		)
+		SELECT FA.FILE_CODE, FA.FOLDER_CODE, FA.ORIGINAL_NAME, FA.SAVED_NAME
+		FROM FILE_ATTACH FA
+		WHERE FA.FOLDER_CODE IN (SELECT FOLDER_CODE FROM FolderTree)
+	</select>
+
+	<!-- 폴더 + 하위폴더 전체의 파일 레코드 삭제 -->
+	<delete id="deleteFilesByFolderSubtree" parameterType="int">
+		;WITH FolderTree AS (
+			SELECT FOLDER_CODE FROM FILE_FOLDER WHERE FOLDER_CODE = #{folder_code}
+			UNION ALL
+			SELECT f.FOLDER_CODE
+			FROM FILE_FOLDER f
+			INNER JOIN FolderTree t ON f.PARENT_CODE = t.FOLDER_CODE
+		)
+		DELETE FROM FILE_ATTACH WHERE FOLDER_CODE IN (SELECT FOLDER_CODE FROM FolderTree)
+	</delete>
+
+	<!-- 폴더 + 하위폴더 전체 삭제 -->
+	<delete id="deleteFolderSubtree" parameterType="int">
+		;WITH FolderTree AS (
+			SELECT FOLDER_CODE FROM FILE_FOLDER WHERE FOLDER_CODE = #{folder_code}
+			UNION ALL
+			SELECT f.FOLDER_CODE
+			FROM FILE_FOLDER f
+			INNER JOIN FolderTree t ON f.PARENT_CODE = t.FOLDER_CODE
+		)
+		DELETE FROM FILE_FOLDER WHERE FOLDER_CODE IN (SELECT FOLDER_CODE FROM FolderTree)
+	</delete>
+
+	<!-- 특정 폴더의 파일 목록 -->
+	<select id="getFileList" parameterType="int" resultType="fileattach">
+		SELECT FILE_CODE, FOLDER_CODE, ORIGINAL_NAME, SAVED_NAME, FILE_SIZE, REG_USER,
+			   CONVERT(VARCHAR(19), REG_DATE, 120) AS REG_DATE
+		FROM FILE_ATTACH
+		WHERE FOLDER_CODE = #{folder_code}
+		ORDER BY REG_DATE DESC
+	</select>
+
+	<!-- 파일 등록 -->
+	<insert id="insertFile" parameterType="fileattach" useGeneratedKeys="true" keyProperty="file_code">
+		INSERT INTO FILE_ATTACH (FOLDER_CODE, ORIGINAL_NAME, SAVED_NAME, FILE_SIZE, REG_USER, REG_DATE)
+		VALUES (#{folder_code}, #{original_name}, #{saved_name}, #{file_size}, #{reg_user}, GETDATE())
+	</insert>
+
+	<!-- 파일 단건 조회(다운로드용) -->
+	<select id="getFileByCode" parameterType="int" resultType="fileattach">
+		SELECT FILE_CODE, FOLDER_CODE, ORIGINAL_NAME, SAVED_NAME, FILE_SIZE, REG_USER,
+			   CONVERT(VARCHAR(19), REG_DATE, 120) AS REG_DATE
+		FROM FILE_ATTACH
+		WHERE FILE_CODE = #{file_code}
+	</select>
+
+	<!-- 파일 삭제 -->
+	<delete id="deleteFile" parameterType="int">
+		DELETE FROM FILE_ATTACH WHERE FILE_CODE = #{file_code}
+	</delete>
+
+</mapper>

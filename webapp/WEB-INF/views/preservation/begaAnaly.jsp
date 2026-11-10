@@ -110,6 +110,62 @@ body { display: flex; flex-direction: column; overflow: hidden; }
     flex-direction: column;
     min-height: 0;
 }
+.lists-row .container.wide {
+    flex: 2;
+}
+.lists-row .container.narrow {
+    flex: 1;
+}
+
+/* ========== 선택 설비 평균 패널 ========== */
+.avg-summary {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.avg-empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #A0AEC0;
+    font-size: 13px;
+    text-align: center;
+    padding: 20px;
+}
+.avg-names {
+    font-size: 12px;
+    color: #4A5568;
+    background: #F7FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 8px 10px;
+    word-break: break-all;
+}
+.avg-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.avg-card {
+    background: #F7FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+.avg-label {
+    font-size: 12px;
+    color: #718096;
+    margin-bottom: 4px;
+}
+.avg-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2B6CB0;
+}
 .lists-row .container > .tabulator {
     flex: 1;
     min-height: 0;
@@ -324,13 +380,15 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			<div id="runRateChart"></div>
 		</div>
 		<div class="lists-row">
-			<div class="container">
+			<div class="container wide">
 				<div class="list-title">가동율 상세</div>
 				<div id="tab1" class="tabulator"></div>
 			</div>
-			<div class="container">
-				<div class="list-title">작업현황</div>
-				<div id="tab2" class="tabulator"></div>
+			<div class="container narrow">
+				<div class="list-title">선택 설비 평균</div>
+				<div id="begaAvgSummary" class="avg-summary">
+					<div class="avg-empty">가동율 상세에서 설비를 체크하면 선택한 설비들의 평균치가 표시됩니다.</div>
+				</div>
 			</div>
 		</div>
 	</main>
@@ -355,24 +413,19 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 	//함수
 	function searchBegaAnaly(){
 		getBegaAnalyList();
-		getBegaWorkStatusList();
 	}
 
-	//설비별 가동율 막대그래프 (낮은 순 정렬 + 구간별 색상)
+	//설비별 가동율 막대그래프 (침탄로1~5호기, 템퍼링1~2호기 고정 순서)
 	function renderRunRateChart(data){
 		if(!data){ data = []; }
 
-		var sorted = data.slice().sort(function(a, b){
-			return (parseFloat(b.RunRate) || 0) - (parseFloat(a.RunRate) || 0);
-		});
-
-		var categories = sorted.map(function(d){ return "[" + d.gubn + "] " + d.fac_name; });
-		var values = sorted.map(function(d){ return parseFloat(d.RunRate) || 0; });
+		var categories = data.map(function(d){ return "[" + d.gubn + "] " + d.fac_name; });
+		var values = data.map(function(d){ return parseFloat(d.RunRate) || 0; });
 
 		Highcharts.chart("runRateChart", {
 			chart:{ type:"bar" },
 			title:{ text:"설비별 가동율(%)", style:{ fontSize:"14px" } },
-			xAxis:{ categories:categories, labels:{ style:{ fontSize:"11px" } } },
+			xAxis:{ categories:categories, reversed:true, labels:{ style:{ fontSize:"11px" } } },
 			yAxis:{
 				min:0, max:100, tickInterval:10,
 				title:{ text:null },
@@ -421,39 +474,55 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 		    ajaxResponse:function(url, params, response){
 				$("#tab1 .tabulator-col.tabulator-sortable").css("height","29px");
 				renderRunRateChart(response.data ? response.data : response);
+				setTimeout(updateBegaAvgSummary, 0);
 		        return response.data ? response.data : response; //return the response data to tabulator
 		    },
 		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:70,
+		        {formatter:"rowSelection", titleFormatter:"rowSelection", hozAlign:"center",
+		        	headerSort:false, width:36, download:false, cellClick:function(e, cell){
+		        		cell.getRow().toggleSelect();
+		        	}},
+		        {title:"NO", field:"idx", sorter:"int", width:60,
 		        	hozAlign:"center"},
-		        {title:"구분", field:"gubn", sorter:"string", width:80,
+		        {title:"구분", field:"gubn", sorter:"string", width:70,
 			        hozAlign:"center"},
-		        {title:"설비", field:"fac_name", sorter:"string", width:110,
+		        {title:"설비", field:"fac_name", sorter:"string", width:100,
 			        hozAlign:"center"},
-			    {title:"전체시간", field:"total_time", sorter:"int", width:100,
+			    {title:"전체시간", field:"total_time", sorter:"int", width:90,
 				    hozAlign:"center", formatter:function(cell){
 						return formatWorkTime(cell.getValue());
 					}},
-			    {title:"가동시간", field:"run_time", sorter:"int", width:100,
+			    {title:"가동시간", field:"run_time", sorter:"int", width:90,
 				    hozAlign:"center", formatter:function(cell){
 						return formatWorkTime(cell.getValue());
 					}},
-				{title:"가동율(%)", field:"RunRate", sorter:"number", width:90,
+				{title:"가동율(%)", field:"RunRate", sorter:"number", width:80,
 				    hozAlign:"center"},
-				{title:"자연비가동", field:"idle_natural", sorter:"int", width:100,
+				{title:"자연비가동", field:"idle_natural", sorter:"int", width:90,
 				    hozAlign:"center", formatter:function(cell){
 						return formatWorkTime(cell.getValue());
 					}},
-				{title:"등록비가동", field:"idle_registered", sorter:"int", width:100,
+				{title:"등록비가동", field:"idle_registered", sorter:"int", width:90,
 				    hozAlign:"center", formatter:function(cell){
 						return formatWorkTime(cell.getValue());
 					}},
-				{title:"총비가동", field:"idle_total", sorter:"int", width:100,
+				{title:"총비가동", field:"idle_total", sorter:"int", width:90,
 				    hozAlign:"center", formatter:function(cell){
 						return formatWorkTime(cell.getValue());
 					}},
-				{title:"비가동율(%)", field:"idle_rate", sorter:"number", width:100,
+				{title:"비가동율(%)", field:"idle_rate", sorter:"number", width:90,
 				    hozAlign:"center"},
+				{title:"작업수", field:"work_cnt", sorter:"int", width:70,
+				    hozAlign:"center"},
+				{title:"작업중량", field:"work_jung", sorter:"number", width:90,
+				    hozAlign:"center", formatter:function(cell){
+						var v = parseFloat(cell.getValue());
+						return isNaN(v) ? "-" : Math.round(v);
+					}},
+				{title:"총작업시간", field:"work_time", sorter:"int", width:100,
+				    hozAlign:"center", formatter:function(cell){
+						return formatWorkTime(cell.getValue());
+					}},
 		    ],
 		    rowFormatter:function(row){
 			    var data = row.getData();
@@ -463,30 +532,62 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			rowClick:function(e, row){
 
 				$("#tab1 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-						
-					if($(this).hasClass("row_select")){							
+
+					if($(this).hasClass("row_select")){
 						$(this).removeClass('row_select');
 						row.getElement().className += " row_select";
 					}else{
 						$("#tab1 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";	
+						row.getElement().className += " row_select";
 					}
 				});
 
 				var rowData = row.getData();
 
 			},
+			rowSelectionChanged:function(data, rows){
+				updateBegaAvgSummary();
+			},
 		});
 	}
 
-	//시:분 형식으로 표시 (yyyy-MM-dd HH:mm:ss -> HH:mm)
-	function formatDateTimeShort(value){
-		if(!value){ return ""; }
-		var s = String(value).trim();
-		if(s.indexOf("1900-01-01") === 0){ return "-"; }
-		var parts = s.split(" ");
-		if(parts.length < 2){ return s; }
-		return parts[0] + " " + parts[1].substring(0,5);
+	//선택된 설비들의 평균치를 "선택 설비 평균" 패널에 표시
+	function updateBegaAvgSummary(){
+		var box = $("#begaAvgSummary");
+		var rows = (userTable && userTable.getSelectedData) ? userTable.getSelectedData() : [];
+
+		if(!rows || rows.length === 0){
+			box.html('<div class="avg-empty">가동율 상세에서 설비를 체크하면 선택한 설비들의 평균치가 표시됩니다.</div>');
+			return;
+		}
+
+		var n = rows.length;
+		var sum = { RunRate:0, idle_rate:0, work_cnt:0, work_jung:0, work_time:0 };
+		rows.forEach(function(r){
+			sum.RunRate    += parseFloat(r.RunRate)    || 0;
+			sum.idle_rate  += parseFloat(r.idle_rate)  || 0;
+			sum.work_cnt   += parseFloat(r.work_cnt)   || 0;
+			sum.work_jung  += parseFloat(r.work_jung)  || 0;
+			sum.work_time  += parseFloat(r.work_time)  || 0;
+		});
+
+		var names = rows.map(function(r){ return r.fac_name; }).join(", ");
+
+		var html = '';
+		html += '<div class="avg-names">선택 설비 (' + n + '개) : ' + names + '</div>';
+		html += '<div class="avg-grid">';
+		html += begaAvgCard('평균 가동율', (sum.RunRate / n).toFixed(2) + '%');
+		html += begaAvgCard('평균 비가동율', (sum.idle_rate / n).toFixed(2) + '%');
+		html += begaAvgCard('평균 작업수', Math.round(sum.work_cnt / n) + '건');
+		html += begaAvgCard('평균 작업중량', Math.round(sum.work_jung / n));
+		html += begaAvgCard('평균 총작업시간', formatWorkTime(Math.round(sum.work_time / n)));
+		html += '</div>';
+
+		box.html(html);
+	}
+
+	function begaAvgCard(label, value){
+		return '<div class="avg-card"><div class="avg-label">' + label + '</div><div class="avg-value">' + value + '</div></div>';
 	}
 
 	//분 -> N시간 M분 형식으로 표시
@@ -499,72 +600,6 @@ body { display: flex; flex-direction: column; overflow: hidden; }
 			return h + "시간 " + mm + "분";
 		}
 		return mm + "분";
-	}
-
-	function getBegaWorkStatusList(){
-		workStatusTable = new Tabulator("#tab2", {
-		    height:"100%",
-		    layout:"fitColumns",
-		    selectable:true,
-		    tooltips:true,
-		    headerSort:false,
-		    selectableRangeMode:"click",
-		    reactiveData:true,
-		    headerHozAlign:"center",
-		    ajaxConfig:"POST",
-		    ajaxLoader:false,
-		    ajaxURL:"/tkheat/preservation/begaAnaly/getBegaWorkStatusList",
-		    ajaxParams:{"sdate" : $("#sdate").val(),
-				"edate" : $("#edate").val()},
-		    placeholder:"조회된 데이터가 없습니다.",
-		    pagination:"local",
-		    paginationSize:20,
-		    paginationSizeSelector:[20,50,100,500,1000],
-		    paginationCounter:"rows",
-		    ajaxResponse:function(url, params, response){
-				$("#tab2 .tabulator-col.tabulator-sortable").css("height","29px");
-		        return response.data ? response.data : response;
-		    },
-		    columns:[
-		        {title:"NO", field:"idx", sorter:"int", width:70,
-		        	hozAlign:"center"},
-		        {title:"설비", field:"fac_name", sorter:"string", width:110,
-			        hozAlign:"center"},
-			    {title:"작업수", field:"work_cnt", sorter:"int", width:90,
-				    hozAlign:"center"},
-				{title:"작업중량", field:"work_jung", sorter:"number", width:100,
-				    hozAlign:"center", formatter:function(cell){
-						var v = parseFloat(cell.getValue());
-						return isNaN(v) ? "-" : Math.round(v);
-					}},
-				{title:"작업시작시간", field:"work_strt", sorter:"string", width:150,
-				    hozAlign:"center", visible:false, formatter:function(cell){
-						return formatDateTimeShort(cell.getValue());
-					}},
-				{title:"종료시간", field:"work_end", sorter:"string", width:150,
-				    hozAlign:"center", visible:false, formatter:function(cell){
-						return formatDateTimeShort(cell.getValue());
-					}},
-				{title:"총작업시간", field:"work_time", sorter:"int", width:130,
-				    hozAlign:"center", formatter:function(cell){
-						return formatWorkTime(cell.getValue());
-					}},
-		    ],
-		    rowFormatter:function(row){
-			    row.getElement().style.fontWeight = "600";
-			},
-			rowClick:function(e, row){
-				$("#tab2 .tabulator-tableHolder > .tabulator-table > .tabulator-row").each(function(index, item){
-					if($(this).hasClass("row_select")){
-						$(this).removeClass('row_select');
-						row.getElement().className += " row_select";
-					}else{
-						$("#tab2 div.row_select").removeClass("row_select");
-						row.getElement().className += " row_select";
-					}
-				});
-			},
-		});
 	}
 
 	// ========== 엑셀 다운로드 ==========

@@ -17,7 +17,7 @@
 .row_select { background-color: #9ABCEA !important; }
 .box1 {
     display: flex; justify-content: right; align-items: center;
-    width: 1500px; margin-left: -1030px; gap: 10px;
+    width: 1500px; margin-left: -890px; gap: 10px;
 }
 .box1 select { width: 5%; }
 .box1 input[type="date"] {
@@ -487,10 +487,16 @@ textarea {
          <p class="tabP" style="font-size: 20px; margin-left: 40px; color: white; font-weight: 800;"></p>
         
 		<label class="daylabel">기간 : </label>
-		<input type="date" class="sdate" id="sdate" style="font-size: 16px;" autocomplete="off"> ~ 
+		<input type="date" class="sdate" id="sdate" style="font-size: 16px;" autocomplete="off"> ~
 		<input type="date" class="edate" id="edate" style="font-size: 16px;" autocomplete="off">
-		
-			
+
+		<label class="daylabel">구분 : </label>
+		<select id="s_inoutgubn" style="font-size: 16px;" autocomplete="off">
+			<option value="">전체</option>
+			<option value="사내">사내</option>
+			<option value="사외">사외</option>
+		</select>
+
 	</div>
     
     <div class="button-container">
@@ -632,6 +638,7 @@ textarea {
                                     <option>크랙</option>
                                     <option>사양오적용(혼입)</option>
                                     <option>변형</option>
+                                    <option>기타</option>
                                 </select>
                                 <select id="werr_inoutgubn" name="werr_inoutgubn">
                                     <option selected>사내</option>
@@ -860,6 +867,7 @@ function getNonInsertList(){
         ajaxParams:{
             "sdate": $("#sdate").val(),
             "edate": $("#edate").val(),
+            "inoutgubn": $("#s_inoutgubn").val(),
         },
         placeholder:"조회된 데이터가 없습니다.",
         pagination:"local",
@@ -881,8 +889,19 @@ function getNonInsertList(){
             {title:"품번",      field:"prod_no",   sorter:"string", width:240, hozAlign:"center", headerFilter:"input"},
             {title:"열처리LOT", field:"ilbo_lot",  sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
             {title:"유형",      field:"werr_gubn", sorter:"string", width:200, hozAlign:"center", headerFilter:"input"},
-            {title:"수량",      field:"werr_amnt", sorter:"int",    width:140, hozAlign:"center", headerFilter:"input"},
-            {title:"금액",      field:"werr_mon",  sorter:"int",    width:100, hozAlign:"center", headerFilter:"input"},
+            {title:"구분",      field:"werr_inoutgubn", sorter:"string", width:90, hozAlign:"center", headerFilter:"input"},
+            {title:"수량",      field:"werr_amnt", sorter:"int",    width:140, hozAlign:"center", headerFilter:"input",
+                bottomCalc:"sum",
+                bottomCalcFormatter:"money",
+                bottomCalcFormatterParams:{decimal:".", thousand:",", precision:0}
+            },
+            {title:"금액",      field:"werr_mon",  sorter:"int",    width:120, hozAlign:"center", headerFilter:"input",
+                formatter:"money",
+                formatterParams:{decimal:".", thousand:",", precision:0},
+                bottomCalc:"sum",
+                bottomCalcFormatter:"money",
+                bottomCalcFormatterParams:{decimal:".", thousand:",", precision:0}
+            },
             {title:"코드",      field:"werr_code", width:200,       hozAlign:"center", visible:false},
         ],
         

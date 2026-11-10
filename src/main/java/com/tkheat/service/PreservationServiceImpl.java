@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.tkheat.dao.PreservationDao;
 import com.tkheat.domain.Bega;
+import com.tkheat.domain.Corp;
+import com.tkheat.domain.Fac;
 import com.tkheat.domain.Jeomgeom;
 import com.tkheat.domain.Measure;
 import com.tkheat.domain.SparePart;
@@ -107,11 +109,6 @@ public class PreservationServiceImpl implements PreservationService{
 		return preservationDao.getBegaAnalyList(bega);
 	}
 
-	@Override
-	public List<Map<String, Object>> getBegaWorkStatusList(Bega bega){
-		return preservationDao.getBegaWorkStatusList(bega);
-	}
-	
 	
 	
 	
@@ -287,6 +284,103 @@ public class PreservationServiceImpl implements PreservationService{
 	@Override
 	public void sparePart2HisDelete(int sph2_idx) {
 		preservationDao.sparePart2HisDelete(sph2_idx);
+	}
+
+	//부품재고관리(신규, e10)
+	@Override
+	public List<Corp> getVendorOptionList() {
+		return preservationDao.getVendorOptionList();
+	}
+
+	@Override
+	public List<Fac> getFacilityOptionList() {
+		return preservationDao.getFacilityOptionList();
+	}
+
+	@Override
+	public List<SparePart2> getPartInvenList(SparePart2 sparePart2) {
+		return preservationDao.getPartInvenList(sparePart2);
+	}
+
+	@Override
+	public List<Integer> getPartFacilityCodes(String spp2_no) {
+		return preservationDao.getPartFacilityCodes(spp2_no);
+	}
+
+	@Override
+	public int getVendorUsageCount(int vendor_code) {
+		return preservationDao.getVendorUsageCount(vendor_code);
+	}
+
+	@Override
+	public int getEquipUsageCount(int fac_code) {
+		return preservationDao.getEquipUsageCount(fac_code);
+	}
+
+	@Override
+	public void partInvenInsertSave(SparePart2 sparePart2) {
+		preservationDao.partInvenInsertSave(sparePart2);
+		saveFacilityLinks(sparePart2);
+	}
+
+	@Override
+	public void partInvenUpdateSave(SparePart2 sparePart2) {
+		preservationDao.partInvenUpdateSave(sparePart2);
+		saveFacilityLinks(sparePart2);
+	}
+
+	//적용설비 다중선택 저장 - 전체 삭제 후 선택된 것만 다시 넣는 방식(파일관리 폴더트리 저장과 동일 패턴)
+	private void saveFacilityLinks(SparePart2 sparePart2) {
+		preservationDao.partInvenFacilityDeleteAll(sparePart2.getSpp2_no());
+		if (sparePart2.getFac_codes() != null && !sparePart2.getFac_codes().isEmpty()) {
+			preservationDao.partInvenFacilityInsert(sparePart2);
+		}
+	}
+
+	@Override
+	public void partInvenDelete(String spp2_no) {
+		preservationDao.partInvenDelete(spp2_no);
+	}
+
+	@Override
+	public SparePart2 getPartStockSnapshot(String spp2_no) {
+		return preservationDao.getPartStockSnapshot(spp2_no);
+	}
+
+	@Override
+	public void updatePartAvgPrice(SparePart2 sparePart2) {
+		preservationDao.updatePartAvgPrice(sparePart2);
+	}
+
+	@Override
+	public List<SparePart2> getPartInvenHisList(SparePart2 sparePart2) {
+		return preservationDao.getPartInvenHisList(sparePart2);
+	}
+
+	//입고(IN) 등록 시 가중평균 구입단가를 계산해서 부품 마스터에 반영한 뒤 이력을 저장한다.
+	//평균단가 = (현재고×기존평균단가 + 입고수량×입고단가) / (현재고+입고수량)
+	@Override
+	public void partInvenHisSave(SparePart2 sparePart2) {
+		if ("IN".equals(sparePart2.getSph2_type())) {
+			SparePart2 snap = preservationDao.getPartStockSnapshot(sparePart2.getSpp2_no());
+			double curStock = (snap != null && snap.getCurrent_stock() != null) ? snap.getCurrent_stock() : 0;
+			double curAvg = (snap != null && snap.getSpp2_avg_price() != null) ? snap.getSpp2_avg_price() : 0;
+			double inQty = sparePart2.getSph2_qty() != null ? sparePart2.getSph2_qty() : 0;
+			double inPrice = sparePart2.getSph2_unitprice() != null ? sparePart2.getSph2_unitprice() : 0;
+			double newStock = curStock + inQty;
+			double newAvg = newStock > 0 ? ((curStock * curAvg) + (inQty * inPrice)) / newStock : inPrice;
+
+			SparePart2 avgParam = new SparePart2();
+			avgParam.setSpp2_no(sparePart2.getSpp2_no());
+			avgParam.setSpp2_avg_price(newAvg);
+			preservationDao.updatePartAvgPrice(avgParam);
+		}
+		preservationDao.partInvenHisSave(sparePart2);
+	}
+
+	@Override
+	public void partInvenHisDelete(int sph2_idx) {
+		preservationDao.partInvenHisDelete(sph2_idx);
 	}
 
 }

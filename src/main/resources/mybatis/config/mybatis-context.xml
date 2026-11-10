@@ -30,5 +30,11 @@
   	<mapper resource="mybatis/mapper/workjisi.xml"/>
   	<mapper resource="mybatis/mapper/workjisitk.xml"/>
   	<mapper resource="mybatis/mapper/workilbo.xml"/>
+  	<mapper resource="mybatis/mapper/fileManage.xml"/>
+  	<mapper resource="mybatis/mapper/deliveryRate.xml"/>
+  	<mapper resource="mybatis/mapper/change4m.xml"/>
+  	<mapper resource="mybatis/mapper/vehicle.xml"/>
+  	<mapper resource="mybatis/mapper/payroll.xml"/>
+  	<mapper resource="mybatis/mapper/reward.xml"/>
   </mappers>
 </configuration>

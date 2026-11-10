@@ -7,14 +7,13 @@
 	<property name="ireport.y" value="0"/>
 	<field name="prod_name" class="java.lang.String"/>
 	<field name="prod_no" class="java.lang.String"/>
+	<field name="prod_jai" class="java.lang.String"/>
 	<field name="tech_te" class="java.lang.String"/>
 	<field name="prod_danw" class="java.lang.String"/>
 	<field name="och_su_report" class="java.lang.Integer"/>
 	<field name="och_dang_report" class="java.lang.Double"/>
 	<field name="och_mon_report" class="java.lang.Double"/>
 	<field name="prod_gyu" class="java.lang.String"/>
-	<field name="och_lot" class="java.lang.String"/>
-	<field name="ord_lot" class="java.lang.String"/>
 	<field name="och_amnt" class="java.lang.Float"/>
 	<field name="och_bigo" class="java.lang.String"/>
 	<variable name="Tax" class="java.lang.String"/>
@@ -33,7 +32,7 @@
 	<detail>
 		<band height="29" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
-			<textField pattern="#,##0" isBlankWhenNull="true">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="377" y="0" width="39" height="29" uuid="0d0710bc-444f-4a83-b3d8-0583b871f1b3">
 					<property name="local_mesure_unitheight" value="pixel"/>
 				</reportElement>
@@ -44,7 +43,7 @@
 					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+					<font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 					<paragraph rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{och_dang_report}]]></textFieldExpression>
@@ -60,12 +59,12 @@
 					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+					<font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{prod_name}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0" isBlankWhenNull="true">
-				<reportElement x="342" y="0" width="36" height="29" uuid="0d0710bc-444f-4a83-b3d8-0583b871f1b3">
+			<textField textAdjust="StretchHeight" pattern="#,##0.0" isBlankWhenNull="true">
+				<reportElement x="341" y="0" width="36" height="29" uuid="0d0710bc-444f-4a83-b3d8-0583b871f1b3">
 					<property name="local_mesure_unitheight" value="pixel"/>
 				</reportElement>
 				<box>
@@ -75,12 +74,12 @@
 					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+					<font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 					<paragraph rightIndent="2"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{prod_danw}.equals("KG") ? $F{och_amnt} : $F{och_su_report})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{prod_danw}.equals("KG") ? $F{och_amnt} : $F{och_su_report}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement x="0" y="0" width="20" height="29" uuid="0d0710bc-444f-4a83-b3d8-0583b871f1b3">
 					<property name="local_mesure_unitheight" value="pixel"/>
 				</reportElement>
@@ -91,7 +90,7 @@
 					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+					<font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{COLUMN_COUNT}]]></textFieldExpression>
 			</textField>
@@ -105,12 +104,12 @@
 					<bottomPen lineWidth="0.0" lineColor="#0000FF"/>
 					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{prod_no}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{prod_no}+" / "+$F{prod_jai}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0" isBlankWhenNull="true">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="414" y="0" width="60" height="29" uuid="0d0710bc-444f-4a83-b3d8-0583b871f1b3">
 					<property name="local_mesure_unitheight" value="pixel"/>
 				</reportElement>
@@ -121,7 +120,7 @@
 					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="7" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+					<font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 					<paragraph rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{och_mon_report}]]></textFieldExpression>
@@ -137,13 +136,13 @@
 					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+					<font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 					<paragraph rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{prod_danw}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-				<reportElement x="187" y="0" width="130" height="29" uuid="294e4e27-d719-49c6-9fcf-83af43864a8a">
+				<reportElement x="187" y="0" width="130" height="29" isRemoveLineWhenBlank="true" uuid="294e4e27-d719-49c6-9fcf-83af43864a8a">
 					<property name="local_mesure_unitheight" value="pixel"/>
 				</reportElement>
 				<box>
@@ -152,12 +151,12 @@
 					<bottomPen lineWidth="0.0" lineColor="#0000FF"/>
 					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isUnderline="false" isStrikeThrough="false" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 				</textElement>
-				<textFieldExpression><![CDATA[(($F{tech_te} == null) ? "" : $F{tech_te}) + (($F{prod_gyu} == null || $F{prod_gyu}.equals("")) ? "" : " / " + $F{prod_gyu}) + (($F{och_lot} == null || $F{och_lot}.equals(""))  ? "" : " / " + $F{och_lot})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(($F{tech_te} == null) ? "" : $F{tech_te}) + (($F{prod_gyu} == null || $F{prod_gyu}.equals("")) ? "" : " / " + $F{prod_gyu})]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0" isBlankWhenNull="true">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="474" y="0" width="50" height="29" uuid="0d0710bc-444f-4a83-b3d8-0583b871f1b3">
 					<property name="local_mesure_unitheight" value="pixel"/>
 				</reportElement>
@@ -168,13 +167,13 @@
 					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="7" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+					<font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
 					<paragraph rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{och_mon_report}*0.10]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-				<reportElement x="524" y="0" width="41" height="29" uuid="7f6b0a8a-8c3e-4a8c-9a2f-1a2b3c4d5e6f">
+				<reportElement x="524" y="0" width="46" height="29" uuid="50c87161-b11f-47e7-833d-c626ded8cd85">
 					<property name="local_mesure_unitheight" value="pixel"/>
 				</reportElement>
 				<box>
@@ -184,7 +183,8 @@
 					<rightPen lineWidth="0.0" lineColor="#0000FF"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="7" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+					<font size="8" pdfFontName="fonts/gulim.ttf" pdfEncoding="Identity-H"/>
+					<paragraph rightIndent="2"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{och_bigo}]]></textFieldExpression>
 			</textField>

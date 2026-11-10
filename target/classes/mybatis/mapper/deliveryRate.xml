@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="deliveryRate">
+
+	<!-- 납기준수율: 입고일(ORDERT.ORD_DATE) 기준으로 대상 주문을 선정한다.
+	     "완료(COMPLETE_DATE)"는 OCHULGO 출고기록이 있다는 것만으로 판단하지 않고,
+	     누적 출고수량(SUM(OCH_SU))이 주문수량(ORD_SU) 이상일 때만 완료로 본다
+	     (부분출고만 된 건을 "출고완료"로 잘못 인정하던 문제 수정).
+	     완료되지 않은 건 중, 출고예정일(ORD_NAP)이 이미 지난 건은 "기한초과 미출고"로 보고
+	     지연(late_cnt)에 포함시킨다 - 아직 출고 자체가 안 됐으니 지연된 것보다 더 심각한
+	     상태인데, 예전엔 단순 "미출고"로만 잡혀 지연 집계에서 완전히 빠져 있었다.
+	     출고예정일이 아직 안 지난 미완료 건은 정상 진행중(not_shipped_cnt)으로 분리해서
+	     지연으로 치지 않는다. -->
+	<select id="getDeliverySummary" parameterType="deliveryRate" resultType="deliveryRate">
+		WITH orders_in_period AS (
+			SELECT ORDERT.ORD_CODE, ORDERT.ORD_NAP, ORDERT.ORD_SU, PRODUCT.CORP_CODE
+			FROM ORDERT
+			INNER JOIN PRODUCT ON PRODUCT.PROD_CODE = ORDERT.PROD_CODE
+			INNER JOIN CORP ON CORP.CORP_CODE = PRODUCT.CORP_CODE
+			WHERE ORDERT.ORD_DATE &gt;= #{sdate}
+			  AND ORDERT.ORD_DATE &lt; DATEADD(DAY, 1, #{edate})
+			  AND ORDERT.ORD_NAP IS NOT NULL AND ORDERT.ORD_NAP &lt;&gt; '1900-01-01'
+			<if test="corp_name != null and corp_name != ''">
+				AND CORP.CORP_NAME LIKE '%'+#{corp_name}+'%'
+			</if>
+		),
+		shipped AS (
+			SELECT ORD_CODE, MAX(OCH_DATE) AS OCH_DATE, SUM(ISNULL(OCH_SU, 0)) AS SHIPPED_SU
+			FROM OCHULGO
+			GROUP BY ORD_CODE
+		),
+		calc AS (
+			SELECT o.ORD_CODE,
+			       CASE WHEN s.SHIPPED_SU IS NOT NULL AND s.SHIPPED_SU &gt;= o.ORD_SU THEN s.OCH_DATE ELSE NULL END AS COMPLETE_DATE,
+			       o.ORD_NAP
+			FROM orders_in_period o
+			LEFT JOIN shipped s ON s.ORD_CODE = o.ORD_CODE
+		),
+		calc2 AS (
+			SELECT ORD_CODE, COMPLETE_DATE,
+			       CASE WHEN COMPLETE_DATE IS NOT NULL THEN DATEDIFF(HOUR, ORD_NAP, COMPLETE_DATE) ELSE NULL END AS gap_hours,
+			       CASE WHEN COMPLETE_DATE IS NULL AND ORD_NAP &lt; GETDATE() THEN 1 ELSE 0 END AS is_overdue_incomplete
+			FROM calc
+		)
+		SELECT
+			COUNT(*) AS total_cnt,
+			SUM(CASE WHEN COMPLETE_DATE IS NOT NULL THEN 1 ELSE 0 END) AS shipped_cnt,
+			SUM(CASE WHEN COMPLETE_DATE IS NULL AND is_overdue_incomplete = 0 THEN 1 ELSE 0 END) AS not_shipped_cnt,
+			SUM(CASE WHEN is_overdue_incomplete = 1 THEN 1 ELSE 0 END) AS overdue_unshipped_cnt,
+			SUM(CASE WHEN gap_hours &gt; 0 OR is_overdue_incomplete = 1 THEN 1 ELSE 0 END) AS late_cnt,
+			SUM(CASE WHEN COMPLETE_DATE IS NOT NULL AND gap_hours &lt;= 0 THEN 1 ELSE 0 END) AS ontime_cnt,
+			<!-- 지연율/납기준수율의 분모는 "판정 가능한 건"(완료됐거나 기한을 넘긴 건)만 쓴다.
+			     아직 출고예정일이 지나지 않은 미출고(진행중) 건은 분모에서 제외한다 - 이 건들이
+			     분모에 섞이면 정상 진행중인 주문이 많을수록 준수율이 혼자 낮아 보이는 왜곡이 생긴다. -->
+			ISNULL(ROUND(SUM(CASE WHEN gap_hours &gt; 0 OR is_overdue_incomplete = 1 THEN 1 ELSE 0 END) * 100.0
+				/ NULLIF(SUM(CASE WHEN COMPLETE_DATE IS NOT NULL OR is_overdue_incomplete = 1 THEN 1 ELSE 0 END), 0), 2), 0) AS late_rate,
+			ISNULL(ROUND(SUM(CASE WHEN COMPLETE_DATE IS NOT NULL AND gap_hours &lt;= 0 THEN 1 ELSE 0 END) * 100.0
+				/ NULLIF(SUM(CASE WHEN COMPLETE_DATE IS NOT NULL OR is_overdue_incomplete = 1 THEN 1 ELSE 0 END), 0), 2), 0) AS compliance_rate,
+			ISNULL(ROUND(AVG(CASE WHEN COMPLETE_DATE IS NOT NULL THEN CAST(gap_hours AS FLOAT) END), 2), 0) AS avg_gap_hours,
+			ISNULL(ROUND(AVG(CASE WHEN gap_hours &gt; 0 THEN CAST(gap_hours AS FLOAT) END), 2), 0) AS avg_late_hours
+		FROM calc2
+	</select>
+
+	<!-- 납기준수율 - 거래처별 집계 (완료/기한초과 판정 기준은 getDeliverySummary와 동일) -->
+	<select id="getDeliveryCorpList" parameterType="deliveryRate" resultType="deliveryRate">
+		WITH orders_in_period AS (
+			SELECT ORDERT.ORD_CODE, ORDERT.ORD_NAP, ORDERT.ORD_SU, PRODUCT.CORP_CODE
+			FROM ORDERT
+			INNER JOIN PRODUCT ON PRODUCT.PROD_CODE = ORDERT.PROD_CODE
+			WHERE ORDERT.ORD_DATE &gt;= #{sdate}
+			  AND ORDERT.ORD_DATE &lt; DATEADD(DAY, 1, #{edate})
+			  AND ORDERT.ORD_NAP IS NOT NULL AND ORDERT.ORD_NAP &lt;&gt; '1900-01-01'
+		),
+		shipped AS (
+			SELECT ORD_CODE, MAX(OCH_DATE) AS OCH_DATE, SUM(ISNULL(OCH_SU, 0)) AS SHIPPED_SU
+			FROM OCHULGO
+			GROUP BY ORD_CODE
+		),
+		calc AS (
+			SELECT o.ORD_CODE, o.CORP_CODE,
+			       CASE WHEN s.SHIPPED_SU IS NOT NULL AND s.SHIPPED_SU &gt;= o.ORD_SU THEN s.OCH_DATE ELSE NULL END AS COMPLETE_DATE,
+			       o.ORD_NAP
+			FROM orders_in_period o
+			LEFT JOIN shipped s ON s.ORD_CODE = o.ORD_CODE
+		),
+		calc2 AS (
+			SELECT ORD_CODE, CORP_CODE, COMPLETE_DATE,
+			       CASE WHEN COMPLETE_DATE IS NOT NULL THEN DATEDIFF(HOUR, ORD_NAP, COMPLETE_DATE) ELSE NULL END AS gap_hours,
+			       CASE WHEN COMPLETE_DATE IS NULL AND ORD_NAP &lt; GETDATE() THEN 1 ELSE 0 END AS is_overdue_incomplete
+			FROM calc
+		),
+		corp_agg AS (
+			SELECT CORP.CORP_NAME AS corp_name,
+			       COUNT(*) AS total_cnt,
+			       SUM(CASE WHEN c.COMPLETE_DATE IS NOT NULL THEN 1 ELSE 0 END) AS shipped_cnt,
+			       SUM(CASE WHEN c.COMPLETE_DATE IS NULL AND c.is_overdue_incomplete = 0 THEN 1 ELSE 0 END) AS not_shipped_cnt,
+			       SUM(CASE WHEN c.is_overdue_incomplete = 1 THEN 1 ELSE 0 END) AS overdue_unshipped_cnt,
+			       SUM(CASE WHEN c.gap_hours &gt; 0 OR c.is_overdue_incomplete = 1 THEN 1 ELSE 0 END) AS late_cnt,
+			       ISNULL(ROUND(SUM(CASE WHEN c.gap_hours &gt; 0 OR c.is_overdue_incomplete = 1 THEN 1 ELSE 0 END) * 100.0
+			           / NULLIF(SUM(CASE WHEN c.COMPLETE_DATE IS NOT NULL OR c.is_overdue_incomplete = 1 THEN 1 ELSE 0 END), 0), 2), 0) AS late_rate,
+			       ISNULL(ROUND(SUM(CASE WHEN c.COMPLETE_DATE IS NOT NULL AND c.gap_hours &lt;= 0 THEN 1 ELSE 0 END) * 100.0
+			           / NULLIF(SUM(CASE WHEN c.COMPLETE_DATE IS NOT NULL OR c.is_overdue_incomplete = 1 THEN 1 ELSE 0 END), 0), 2), 0) AS compliance_rate,
+			       ISNULL(ROUND(AVG(CASE WHEN c.COMPLETE_DATE IS NOT NULL THEN CAST(c.gap_hours AS FLOAT) END), 2), 0) AS avg_gap_hours
+			FROM calc2 c
+			INNER JOIN CORP ON CORP.CORP_CODE = c.CORP_CODE
+			<if test="corp_name != null and corp_name != ''">
+				WHERE CORP.CORP_NAME LIKE '%'+#{corp_name}+'%'
+			</if>
+			GROUP BY CORP.CORP_NAME
+		)
+		SELECT
+			ROW_NUMBER() OVER (ORDER BY late_rate DESC) AS row_num,
+			corp_name, total_cnt, shipped_cnt, not_shipped_cnt, overdue_unshipped_cnt, late_cnt, late_rate, compliance_rate, avg_gap_hours
+		FROM corp_agg
+		ORDER BY late_rate DESC
+	</select>
+
+</mapper>

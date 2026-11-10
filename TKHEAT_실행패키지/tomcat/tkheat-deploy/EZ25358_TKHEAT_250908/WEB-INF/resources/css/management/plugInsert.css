@@ -1,0 +1,514 @@
+/* styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif; /* 사용하고자 하는 폰트로 변경 */
+}
+
+.coil-main {
+  background: #ffffff;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px;
+  width: 732.85px;
+  height: 842px;
+  position: absolute;
+  left: 339px;
+  top: 0px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+}
+.coil-header {
+  background: #33363d;
+  width: 732.85px;
+  height: 55.66px;
+  position: absolute;
+  left: 339px;
+  top: 0px;
+  font-size: 25px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+._1 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 24.87px;
+  position: absolute;
+  left: 370.97px;
+  top: 73.42px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  font-size : 14px;
+}
+._2 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 24.87px;
+  position: absolute;
+  left: 370.97px;
+  top: 106.58px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._3 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 24.87px;
+  position: absolute;
+  left: 370.97px;
+  top: 133.82px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._4 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 24.87px;
+  position: absolute;
+  left: 370.97px;
+  top: 161.06px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._5 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 24.87px;
+  position: absolute;
+  left: 370.97px;
+  top: 188.3px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._6 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 24.87px;
+  position: absolute;
+  left: 370.97px;
+  top: 215.53px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._7 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 24.87px;
+  position: absolute;
+  left: 370.97px;
+  top: 242.77px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._8 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 24.87px;
+  position: absolute;
+  left: 370.97px;
+  top: 270.01px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._9 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 68.69px;
+  position: absolute;
+  left: 370.97px;
+  top: 297.25px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._10 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 68.69px;
+  position: absolute;
+  left: 370.97px;
+  top: 368.3px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._11 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 24.87px;
+  position: absolute;
+  left: 370.97px;
+  top: 444.09px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  font-size : 14px;
+}
+._12 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 24.87px;
+  position: absolute;
+  left: 370.97px;
+  top: 477.25px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._13 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 24.87px;
+  position: absolute;
+  left: 370.97px;
+  top: 509.23px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  font-size : 14px;
+}
+._14 {
+  background: #dddddd;
+  width: 75.77px;
+  height: 177.64px;
+  position: absolute;
+  left: 370.97px;
+  top: 542.39px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._15 {
+  background: #dddddd;
+  width: 108.92px;
+  height: 22.5px;
+  position: absolute;
+  left: 450.29px;
+  top: 542.39px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._16 {
+  background: #dddddd;
+  width: 362.28px;
+  height: 22.5px;
+  position: absolute;
+  left: 566.31px;
+  top: 542.39px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+.coil-ipgo {
+  background: #ffffff;
+  width: 127.86px;
+  height: 24.87px;
+  position: absolute;
+  left: 449.11px;
+  top: 73.42px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-gubn {
+  background: #ffffff;
+  width: 177.59px;
+  height: 24.87px;
+  position: absolute;
+  left: 449.11px;
+  top: 106.58px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-name {
+  background: #ffffff;
+  width: 307.82px;
+  height: 24.87px;
+  position: absolute;
+  left: 449.11px;
+  top: 133.82px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-no {
+  background: #ffffff;
+  width: 307.82px;
+  height: 24.87px;
+  position: absolute;
+  left: 449.11px;
+  top: 161.06px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-suritasu {
+  background: #ffffff;
+  width: 307.82px;
+  height: 24.87px;
+  position: absolute;
+  left: 449.11px;
+  top: 188.3px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-suridate {
+  background: #ffffff;
+  width: 127.86px;
+  height: 24.87px;
+  position: absolute;
+  left: 449.11px;
+  top: 215.53px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-chkman {
+  background: #ffffff;
+  width: 307.82px;
+  height: 24.87px;
+  position: absolute;
+  left: 449.11px;
+  top: 242.77px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-dis-date {
+  background: #ffffff;
+  width: 127.86px;
+  height: 24.87px;
+  position: absolute;
+  left: 449.11px;
+  top: 270.01px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-dislist {
+  background: #ffffff;
+  width: 477.12px;
+  height: 68.69px;
+  position: absolute;
+  left: 449.11px;
+  top: 297.25px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-warn {
+  background: #ffffff;
+  width: 477.12px;
+  height: 68.69px;
+  position: absolute;
+  left: 449.11px;
+  top: 368.3px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-gicho {
+  background: #ffffff;
+  width: 307.82px;
+  height: 24.87px;
+  position: absolute;
+  left: 449.11px;
+  top: 444.09px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-level {
+  background: #ffffff;
+  width: 177.59px;
+  height: 24.87px;
+  position: absolute;
+  left: 449.11px;
+  top: 477.25px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-sumyung {
+  background: #ffffff;
+  width: 307.82px;
+  height: 24.87px;
+  position: absolute;
+  left: 449.11px;
+  top: 509.23px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-recdate-1 {
+  background: #ffffff;
+  width: 108.92px;
+  height: 22.5px;
+  position: absolute;
+  left: 450.29px;
+  top: 570.81px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-record-1 {
+  background: #ffffff;
+  width: 362.28px;
+  height: 26.05px;
+  position: absolute;
+  left: 566.31px;
+  top: 569.62px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-recdate-2 {
+  background: #ffffff;
+  width: 108.92px;
+  height: 22.5px;
+  position: absolute;
+  left: 450.29px;
+  top: 602.78px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-record-2 {
+  background: #ffffff;
+  width: 362.28px;
+  height: 26.05px;
+  position: absolute;
+  left: 566.31px;
+  top: 601.6px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-recdate-3 {
+  background: #ffffff;
+  width: 108.92px;
+  height: 22.5px;
+  position: absolute;
+  left: 450.29px;
+  top: 633.57px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-record-3 {
+  background: #ffffff;
+  width: 362.28px;
+  height: 26.05px;
+  position: absolute;
+  left: 566.31px;
+  top: 632.39px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-recdate-4 {
+  background: #ffffff;
+  width: 108.92px;
+  height: 22.5px;
+  position: absolute;
+  left: 450.29px;
+  top: 664.36px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-record-4 {
+  background: #ffffff;
+  width: 362.28px;
+  height: 26.05px;
+  position: absolute;
+  left: 566.31px;
+  top: 663.18px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-recdate-5 {
+  background: #ffffff;
+  width: 108.92px;
+  height: 22.5px;
+  position: absolute;
+  left: 450.29px;
+  top: 695.15px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+.coil-record-5 {
+  background: #ffffff;
+  width: 362.28px;
+  height: 26.05px;
+  position: absolute;
+  left: 566.31px;
+  top: 693.97px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.save {
+    width: 100px;
+    height: 35px;
+    position: absolute;
+    background-color: #FFD700; /* 노란색 배경 */
+    color: black; /* 검은색 글자 */
+    border: 2px solid #FFC107; /* 테두리 색상 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    font-weight: bold; /* 글자 두께 */
+    text-align: center; /* 중앙 정렬 */
+    cursor: pointer; /* 마우스 커서 변경 */
+    transition: background-color 0.3s, transform 0.2s; /* 부드러운 효과 */
+    line-height: 35px; /* 텍스트 수직 중앙 정렬 */
+}
+
+.close {
+    width: 100px;
+    height: 35px;
+    position: absolute;
+    background-color: #A9A9A9; /* 회색 배경 */
+    color: black; /* 흰색 글자 */
+    border: 2px solid #808080; /* 어두운 회색 테두리 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    font-weight: bold; /* 글자 두께 */
+    text-align: center; /* 중앙 정렬 */
+    cursor: pointer; /* 마우스 커서 변경 */
+    transition: background-color 0.3s, transform 0.2s; /* 부드러운 효과 */
+    line-height: 35px; /* 텍스트 수직 중앙 정렬 */
+}
+
+.save { left: 560px;
+  top: 760.29px; }
+.close { left: 740px;
+  top: 760.29px; }
+
+
+
+.coilModal {
+    position: fixed; /* 화면에 고정 */
+    top: 10%; /* 수직 중앙 */
+    left: 15%; /* 수평 중앙 */
+    display: none;
+    transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+    z-index: 1000; /* 다른 요소 위에 표시 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* 그림자 효과 추가 */
+}
+
+
+	

@@ -26,6 +26,7 @@ import com.tkheat.domain.AlarmHistory;
 import com.tkheat.domain.AlarmRanking;
 import com.tkheat.domain.Monitoring;
 import com.tkheat.domain.Standard;
+import com.tkheat.domain.TrendMemo;
 import com.tkheat.domain.WorkJisiTk;
 import com.tkheat.service.ManagementService;
 import com.tkheat.service.MonitoringService;
@@ -156,12 +157,83 @@ public class MonitoringController {
 
 		 List<Monitoring> result = monitoringService.gettrend(monitoring);
 
-	        
-	        
+
+
 	        return result;
 	    }
-	 
-	 
+
+	 //트렌드 메모 - 목록 조회(설비+기간)
+	 @RequestMapping(value = "/monitoring/trend/getMemoList", method = RequestMethod.POST)
+	 @ResponseBody
+	 public List<TrendMemo> getTrendMemoList(
+			 @RequestParam String hogi_code,
+			 @RequestParam String sdate,
+			 @RequestParam String edate) {
+		 TrendMemo trendMemo = new TrendMemo();
+		 trendMemo.setHogi_code(hogi_code);
+		 trendMemo.setSdate(sdate);
+		 trendMemo.setEdate(edate);
+		 return monitoringService.getTrendMemoList(trendMemo);
+	 }
+
+	 //트렌드 메모 - 등록
+	 @RequestMapping(value = "/monitoring/trend/saveMemo", method = RequestMethod.POST)
+	 @ResponseBody
+	 public Map<String, Object> saveTrendMemo(
+			 @RequestParam String hogi_code,
+			 @RequestParam String memo_time,
+			 @RequestParam String memo_text,
+			 @RequestParam(required = false) String reg_user,
+			 @RequestParam(required = false) Double memo_value,
+			 @RequestParam(required = false) Integer yaxis_index,
+			 @RequestParam(required = false) String series_name) {
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		 TrendMemo trendMemo = new TrendMemo();
+		 trendMemo.setHogi_code(hogi_code);
+		 trendMemo.setMemo_time(memo_time);
+		 trendMemo.setMemo_text(memo_text);
+		 trendMemo.setReg_user(reg_user);
+		 trendMemo.setMemo_value(memo_value);
+		 trendMemo.setYaxis_index(yaxis_index);
+		 trendMemo.setSeries_name(series_name);
+
+		 monitoringService.insertTrendMemo(trendMemo);
+
+		 rtnMap.put("status", "OK");
+		 rtnMap.put("memo_code", trendMemo.getMemo_code());
+		 return rtnMap;
+	 }
+
+	 //트렌드 메모 - 수정
+	 @RequestMapping(value = "/monitoring/trend/updateMemo", method = RequestMethod.POST)
+	 @ResponseBody
+	 public Map<String, Object> updateTrendMemo(
+			 @RequestParam int memo_code,
+			 @RequestParam String memo_text) {
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		 TrendMemo trendMemo = new TrendMemo();
+		 trendMemo.setMemo_code(memo_code);
+		 trendMemo.setMemo_text(memo_text);
+
+		 monitoringService.updateTrendMemo(trendMemo);
+
+		 rtnMap.put("status", "OK");
+		 return rtnMap;
+	 }
+
+	 //트렌드 메모 - 삭제
+	 @RequestMapping(value = "/monitoring/trend/deleteMemo", method = RequestMethod.POST)
+	 @ResponseBody
+	 public Map<String, Object> deleteTrendMemo(@RequestParam int memo_code) {
+		 Map<String, Object> rtnMap = new HashMap<String, Object>();
+		 monitoringService.deleteTrendMemo(memo_code);
+		 rtnMap.put("status", "OK");
+		 return rtnMap;
+	 }
+
+
 
 	 
 	 //2025-08-18 추가

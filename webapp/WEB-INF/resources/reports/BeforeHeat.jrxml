@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.21.3.final using JasperReports Library version 6.21.3-4a3078d20785ebe464f18037d738d12fc98c13cf  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="beforeHeat" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="0" uuid="06efea20-9e58-477b-9652-71640e34de90">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="beforeHeat" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="06efea20-9e58-477b-9652-71640e34de90">
 	<property name="ireport.zoom" value="1.7715610000000022"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -72,7 +72,15 @@
 	<field name="ord_name" class="java.lang.String"/>
 	<field name="prod_img" class="java.lang.String"/>
 	<background>
-		<band splitType="Stretch"/>
+		<band height="842" splitType="Stretch">
+			<!-- 2개 출력시 정확히 A4 절반(842/2=421pt) 지점에 절취선 표시 -->
+			<line>
+				<reportElement x="0" y="421" width="595" height="1" uuid="3f8a2b1c-5d6e-4071-9a2b-1c3d4e5f6071"/>
+				<graphicElement>
+					<pen lineWidth="0.75" lineStyle="Dashed" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
 	</background>
 	<title>
 		<band splitType="Stretch"/>
@@ -84,8 +92,11 @@
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="380" splitType="Prevent">
+		<band height="421" splitType="Prevent">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<frame>
+				<reportElement x="0" y="20" width="555" height="390" uuid="2a9b1c3d-4e5f-4061-8a1b-9c2d3e4f5061"/>
+				<box></box>
 			<staticText>
 				<reportElement x="0" y="0" width="555" height="50" uuid="5eba9491-81a3-4187-8ddd-5998b6ea97e9">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
@@ -1007,6 +1018,7 @@
 					<jr:codeExpression><![CDATA[$F{ord_code}]]></jr:codeExpression>
 				</jr:barbecue>
 			</componentElement>
+			</frame>
 		</band>
 	</detail>
 	<columnFooter>

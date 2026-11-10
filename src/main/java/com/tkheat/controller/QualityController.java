@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.tkheat.domain.DeliveryRate;
 import com.tkheat.domain.Product;
 import com.tkheat.domain.Suip;
 import com.tkheat.domain.Work;
@@ -149,14 +150,16 @@ public class QualityController {
 	  RequestMethod.POST)
 	  @ResponseBody public Map<String, Object> getNonInsertList(
 	  @RequestParam String sdate,
-	  @RequestParam String edate) { Map<String, Object> rtnMap = new
+	  @RequestParam String edate,
+	  @RequestParam(required = false) String inoutgubn) { Map<String, Object> rtnMap = new
 	  HashMap<String, Object>();
-	  
+
 	  Work work = new Work();
-	  
-	  work.setSdate(sdate); 
+
+	  work.setSdate(sdate);
 	  work.setEdate(edate);
-	  
+	  work.setWerr_inoutgubn(inoutgubn);
+
 	  List<Work> nonInsertList = qualityService.getNonInsertList(work);
 	  
 	  List<HashMap<String, Object>> rtnList = new ArrayList<HashMap<String,
@@ -171,16 +174,153 @@ public class QualityController {
 	  nonInsertList.get(i).getWerr_gubn()); rowMap.put("werr_amnt",
 	  nonInsertList.get(i).getWerr_amnt()); rowMap.put("werr_mon",
 	  nonInsertList.get(i).getWerr_mon());
+	  rowMap.put("werr_inoutgubn", nonInsertList.get(i).getWerr_inoutgubn());
 	  rowMap.put("werr_code", nonInsertList.get(i).getWerr_code());
 	  rowMap.put("idx", i + 1);
 
 	  rtnList.add(rowMap); }
 	  
 	  rtnMap.put("last_page",1); rtnMap.put("data",rtnList);
-	  
-	  return rtnMap; 
+
+	  return rtnMap;
 	  }
-	  
+
+	//불량현황 - 화면로드
+	@RequestMapping(value = "/quality/defectStatus", method = RequestMethod.GET)
+	public String defectStatus() {
+		return "/quality/defectStatus.jsp";
+	}
+
+	//불량현황 - 거래처별 집계(PPM) 조회
+	@RequestMapping(value = "/quality/defectStatus/getDefectStatusCorpList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getDefectStatusCorpList(
+			@RequestParam String sdate,
+			@RequestParam String edate,
+			@RequestParam(required = false) String inoutgubn,
+			@RequestParam(required = false) String corp_name) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Work work = new Work();
+		work.setSdate(sdate);
+		work.setEdate(edate);
+		work.setWerr_inoutgubn(inoutgubn);
+		work.setCorp_name(corp_name);
+
+		List<Work> list = qualityService.getDefectStatusCorpList(work);
+
+		rtnMap.put("last_page", 1);
+		rtnMap.put("data", list);
+
+		return rtnMap;
+	}
+
+	//불량현황 - 전체(거래처 합산) 요약 PPM 조회
+	@RequestMapping(value = "/quality/defectStatus/getDefectStatusSummary", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getDefectStatusSummary(
+			@RequestParam String sdate,
+			@RequestParam String edate,
+			@RequestParam(required = false) String inoutgubn,
+			@RequestParam(required = false) String corp_name) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Work work = new Work();
+		work.setSdate(sdate);
+		work.setEdate(edate);
+		work.setWerr_inoutgubn(inoutgubn);
+		work.setCorp_name(corp_name);
+
+		Work summary = qualityService.getDefectStatusSummary(work);
+		List<Work> list = new ArrayList<Work>();
+		if (summary != null) {
+			list.add(summary);
+		}
+
+		rtnMap.put("last_page", 1);
+		rtnMap.put("data", list);
+
+		return rtnMap;
+	}
+
+	//불량현황 - 불량구분별 집계 조회
+	@RequestMapping(value = "/quality/defectStatus/getDefectStatusGubnList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getDefectStatusGubnList(
+			@RequestParam String sdate,
+			@RequestParam String edate,
+			@RequestParam(required = false) String inoutgubn,
+			@RequestParam(required = false) String corp_name) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		Work work = new Work();
+		work.setSdate(sdate);
+		work.setEdate(edate);
+		work.setWerr_inoutgubn(inoutgubn);
+		work.setCorp_name(corp_name);
+
+		List<Work> list = qualityService.getDefectStatusGubnList(work);
+
+		rtnMap.put("last_page", 1);
+		rtnMap.put("data", list);
+
+		return rtnMap;
+	}
+
+	//납기준수율 - 화면로드
+	@RequestMapping(value = "/quality/deliveryRate", method = RequestMethod.GET)
+	public String deliveryRate() {
+		return "/quality/deliveryRate.jsp";
+	}
+
+	//납기준수율 - 요약(전체 대상/출고완료/미출고/평균납기편차/지연율 등) 조회
+	@RequestMapping(value = "/quality/deliveryRate/getDeliverySummary", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getDeliverySummary(
+			@RequestParam String sdate,
+			@RequestParam String edate,
+			@RequestParam(required = false) String corp_name) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		DeliveryRate deliveryRate = new DeliveryRate();
+		deliveryRate.setSdate(sdate);
+		deliveryRate.setEdate(edate);
+		deliveryRate.setCorp_name(corp_name);
+
+		DeliveryRate summary = qualityService.getDeliverySummary(deliveryRate);
+		List<DeliveryRate> list = new ArrayList<DeliveryRate>();
+		if (summary != null) {
+			list.add(summary);
+		}
+
+		rtnMap.put("last_page", 1);
+		rtnMap.put("data", list);
+
+		return rtnMap;
+	}
+
+	//납기준수율 - 거래처별 집계 조회
+	@RequestMapping(value = "/quality/deliveryRate/getDeliveryCorpList", method = RequestMethod.POST)
+	@ResponseBody
+	public Map<String, Object> getDeliveryCorpList(
+			@RequestParam String sdate,
+			@RequestParam String edate,
+			@RequestParam(required = false) String corp_name) {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+
+		DeliveryRate deliveryRate = new DeliveryRate();
+		deliveryRate.setSdate(sdate);
+		deliveryRate.setEdate(edate);
+		deliveryRate.setCorp_name(corp_name);
+
+		List<DeliveryRate> list = qualityService.getDeliveryCorpList(deliveryRate);
+
+		rtnMap.put("last_page", 1);
+		rtnMap.put("data", list);
+
+		return rtnMap;
+	}
+
 	//부적합 설비목록 조회
 	  @RequestMapping(value = "/quality/nonInsert/getNonCorpList", method = RequestMethod.POST) 
 	  @ResponseBody 

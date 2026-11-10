@@ -215,8 +215,10 @@ public class Work {
 	private int werr_gubn10;
 	private int werr_su;
 	private int ppm;
+	private double ppm_total;				//불량현황 - 전체(거래처 합산) PPM, 소수점 포함
 	private float ppm_mon;
 	private int werr_gubn_amnt;
+	private String werr_detail;			//불량현황(거래처별) - 불량유형별 요약 텍스트
 	
 	private String check_date_a;
 	private String check_date_b;
@@ -2176,12 +2178,28 @@ public class Work {
 		this.ppm = ppm;
 	}
 
+	public double getPpm_total() {
+		return ppm_total;
+	}
+
+	public void setPpm_total(double ppm_total) {
+		this.ppm_total = ppm_total;
+	}
+
 	public float getPpm_mon() {
 		return ppm_mon;
 	}
 
 	public void setPpm_mon(float ppm_mon) {
 		this.ppm_mon = ppm_mon;
+	}
+
+	public String getWerr_detail() {
+		return werr_detail;
+	}
+
+	public void setWerr_detail(String werr_detail) {
+		this.werr_detail = werr_detail;
 	}
 
 	public int getWerr_su() {

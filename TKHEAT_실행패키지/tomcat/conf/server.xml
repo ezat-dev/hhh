@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Server port="8005" shutdown="SHUTDOWN">
+  <Listener className="org.apache.catalina.startup.VersionLoggerListener"/>
+  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener"/>
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener"/>
+  <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener"/>
+
+  <GlobalNamingResources>
+    <Resource auth="Container" description="User database that can be updated and saved" factory="org.apache.catalina.users.MemoryUserDatabaseFactory" name="UserDatabase" pathname="conf/tomcat-users.xml" type="org.apache.catalina.UserDatabase"/>
+  </GlobalNamingResources>
+
+  <Service name="Catalina">
+
+    <!-- TKHEAT MES 서비스 접속용 HTTP 포트 (브라우저에서 http://<이_PC의_IP>:8082/tkheat 로 접속) -->
+    <Connector connectionTimeout="20000" port="9082" protocol="HTTP/1.1" URIEncoding="UTF-8"/>
+
+    <Engine defaultHost="localhost" name="Catalina">
+
+      <Realm className="org.apache.catalina.realm.LockOutRealm">
+        <Realm className="org.apache.catalina.realm.UserDatabaseRealm" resourceName="UserDatabase"/>
+      </Realm>
+
+      <Host appBase="webapps" autoDeploy="true" name="localhost" unpackWARs="true">
+
+        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs" pattern="%h %l %u %t &quot;%r&quot; %s %b" prefix="localhost_access_log" suffix=".txt"/>
+
+        <!-- TKHEAT 본 애플리케이션: 반드시 /tkheat 경로로 접속되어야 함(코드에 경로가 고정돼 있음)
+             webapps 폴더 밖(tkheat-deploy)에 둬서 Host의 자동배치 스캔에 중복으로 잡히지 않도록 함 -->
+        <Context docBase="${catalina.base}/tkheat-deploy/EZ25358_TKHEAT_250908" path="/tkheat" reloadable="false"/>
+
+        <!-- 제품사진/도면/각종 출력물(PDF) 정적 제공 - 이 PC의 D:\태경출력파일 폴더를 그대로 사용 -->
+        <Context docBase="D:/태경출력파일" path="/tkPrint" reloadable="false"/>
+        <Context docBase="D:/태경출력파일/사진/제품등록" path="/tkPrint/productImg" reloadable="false"/>
+        <Context docBase="D:/태경출력파일/사진/침탄로작업표준" path="/tkPrint/workStdImg" reloadable="false"/>
+        <Context docBase="D:/태경출력파일/열처리수주서" path="/tkPrint/ipgoPdf" reloadable="false"/>
+        <Context docBase="D:/태경출력파일/공정이동표" path="/tkPrint/workProc" reloadable="false"/>
+        <Context docBase="D:/태경출력파일/작업지시서" path="/tkPrint/workJisi" reloadable="false"/>
+        <Context docBase="D:/태경출력파일/거래명세서-일반" path="/tkPrint/chulgoNormalPdf" reloadable="false"/>
+        <Context docBase="D:/태경출력파일/거래명세서-제품별" path="/tkPrint/chulgoProdPdf" reloadable="false"/>
+        <Context docBase="D:/태경출력파일/체크시트" path="/tkPrint/workilboCheckSheet" reloadable="false"/>
+        <Context docBase="D:/태경출력파일/공정이동표" path="/tkPrint/workilboProcessOrder" reloadable="false"/>
+
+      </Host>
+    </Engine>
+  </Service>
+</Server>

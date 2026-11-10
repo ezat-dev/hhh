@@ -1,0 +1,585 @@
+/* styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif; /* 사용하고자 하는 폰트로 변경 */
+}
+
+.cutum-main {
+  background: #ffffff;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px;
+  width: 1306px;
+  height: 560px;
+  position: absolute;
+  left: 71px;
+  top: 119px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+}
+.cutum-header {
+  background: #33363d;
+  width: 1306px;
+  height: 58px;
+  position: absolute;
+  left: 71px;
+  top: 120px;
+  font-size: 25px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+._1 {
+  background: #dddddd;
+  width: 139px;
+  height: 27px;
+  position: absolute;
+  left: 93px;
+  top: 198px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._2 {
+  background: #dddddd;
+  width: 111px;
+  height: 27px;
+  position: absolute;
+  left: 733px;
+  top: 198px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._3 {
+  background: #dddddd;
+  width: 139px;
+  height: 27px;
+  position: absolute;
+  left: 93px;
+  top: 227px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._4 {
+  background: #dddddd;
+  width: 111px;
+  height: 27px;
+  position: absolute;
+  left: 733px;
+  top: 227px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._5 {
+  background: #dddddd;
+  width: 139px;
+  height: 27px;
+  position: absolute;
+  left: 93px;
+  top: 257px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._6 {
+  background: #dddddd;
+  width: 111px;
+  height: 27px;
+  position: absolute;
+  left: 733px;
+  top: 257px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._7 {
+  background: #dddddd;
+  width: 139px;
+  height: 27px;
+  position: absolute;
+  left: 93px;
+  top: 286px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._8 {
+  background: #dddddd;
+  width: 111px;
+  height: 27px;
+  position: absolute;
+  left: 733px;
+  top: 286px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._9 {
+  background: #dddddd;
+  width: 139px;
+  height: 27px;
+  position: absolute;
+  left: 93px;
+  top: 315px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._10 {
+  background: #dddddd;
+  width: 111px;
+  height: 27px;
+  position: absolute;
+  left: 733px;
+  top: 315px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._11 {
+  background: #dddddd;
+  width: 139px;
+  height: 27px;
+  position: absolute;
+  left: 93px;
+  top: 345px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._12 {
+  background: #dddddd;
+  width: 111px;
+  height: 27px;
+  position: absolute;
+  left: 733px;
+  top: 345px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._13 {
+  background: #dddddd;
+  width: 139px;
+  height: 27px;
+  position: absolute;
+  left: 93px;
+  top: 374px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._14 {
+  background: #dddddd;
+  width: 111px;
+  height: 27px;
+  position: absolute;
+  left: 733px;
+  top: 374px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._15 {
+  background: #dddddd;
+  width: 139px;
+  height: 27px;
+  position: absolute;
+  left: 93px;
+  top: 403px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._16 {
+  background: #dddddd;
+  width: 111px;
+  height: 27px;
+  position: absolute;
+  left: 733px;
+  top: 403px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._17 {
+  background: #dddddd;
+  width: 139px;
+  height: 27px;
+  position: absolute;
+  left: 93px;
+  top: 433px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._18 {
+  background: #dddddd;
+  width: 111px;
+  height: 27px;
+  position: absolute;
+  left: 733px;
+  top: 433px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._19 {
+  background: #dddddd;
+  width: 139px;
+  height: 27px;
+  position: absolute;
+  left: 93px;
+  top: 462px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._20 {
+  background: #dddddd;
+  width: 111px;
+  height: 27px;
+  position: absolute;
+  left: 733px;
+  top: 462px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._21 {
+  background: #dddddd;
+  width: 139px;
+  height: 46px;
+  position: absolute;
+  left: 93px;
+  top: 491px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+._22 {
+  background: #dddddd;
+  width: 139px;
+  height: 27px;
+  position: absolute;
+  left: 93px;
+  top: 540px;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+}
+.corp-name {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 234px;
+  top: 198px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-no {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 847px;
+  top: 198px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-tel {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 234px;
+  top: 227px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-fax {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 847px;
+  top: 227px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-boss {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 234px;
+  top: 257px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-mast {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 847px;
+  top: 257px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-hp {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 234px;
+  top: 286px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-mail {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 847px;
+  top: 286px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-upte {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 234px;
+  top: 315px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-upjo {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 847px;
+  top: 315px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-add {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 234px;
+  top: 345px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-plc {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 847px;
+  top: 345px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-strt {
+  background: #ffffff;
+  width: 138px;
+  height: 27px;
+  position: absolute;
+  left: 234px;
+  top: 374px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-gyul-1 {
+  background: #ffffff;
+  width: 17px;
+  height: 17px;
+  position: absolute;
+  left: 377px;
+  top: 379px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-jan {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 847px;
+  top: 374px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-gyul-2 {
+  background: #ffffff;
+  width: 138px;
+  height: 27px;
+  position: absolute;
+  left: 234px;
+  top: 403px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-gubn {
+  background: #ffffff;
+  width: 108px;
+  height: 27px;
+  position: absolute;
+  left: 847px;
+  top: 403px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-cno {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 234px;
+  top: 433px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-pwd {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 847px;
+  top: 433px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-name-2 {
+  background: #ffffff;
+  width: 496px;
+  height: 27px;
+  position: absolute;
+  left: 847px;
+  top: 462px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-bigo {
+  background: #ffffff;
+  width: 1109px;
+  height: 46px;
+  position: absolute;
+  left: 234px;
+  top: 491px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.corp-business {
+  background: #ffffff;
+  width: 77px;
+  height: 27px;
+  position: absolute;
+  left: 234px;
+  top: 540px;
+  border-style: solid;
+  border-color: #949494;
+  border-width: 1px;
+}
+
+.save {
+    width: 100px;
+    height: 35px;
+    position: absolute;
+    background-color: #FFD700; /* 노란색 배경 */
+    color: black; /* 검은색 글자 */
+    border: 2px solid #FFC107; /* 테두리 색상 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    font-weight: bold; /* 글자 두께 */
+    text-align: center; /* 중앙 정렬 */
+    cursor: pointer; /* 마우스 커서 변경 */
+    transition: background-color 0.3s, transform 0.2s; /* 부드러운 효과 */
+    line-height: 35px; /* 텍스트 수직 중앙 정렬 */
+}
+
+.close {
+    width: 100px;
+    height: 35px;
+    position: absolute;
+    background-color: #A9A9A9; /* 회색 배경 */
+    color: black; /* 흰색 글자 */
+    border: 2px solid #808080; /* 어두운 회색 테두리 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    font-weight: bold; /* 글자 두께 */
+    text-align: center; /* 중앙 정렬 */
+    cursor: pointer; /* 마우스 커서 변경 */
+    transition: background-color 0.3s, transform 0.2s; /* 부드러운 효과 */
+    line-height: 35px; /* 텍스트 수직 중앙 정렬 */
+}
+
+.save { left: 568px; top: 606px; }
+.close { left: 733px; top: 606px; }
+
+
+
+.cutumModal {
+    position: fixed; /* 화면에 고정 */
+    top: 10%; /* 수직 중앙 */
+    left: 15%; /* 수평 중앙 */
+    display: none;
+    transform: translate(-50%, -50%); /* 정확한 중앙 정렬 */
+    z-index: 1000; /* 다른 요소 위에 표시 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* 그림자 효과 추가 */
+}
+
+
+	

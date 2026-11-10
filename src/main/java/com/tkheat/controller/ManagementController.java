@@ -60,6 +60,7 @@ public class ManagementController {
 				String savedFilename = originalFilename + "_" + timestamp + ext;
 				File destination = new File(uploadDir + "/" + savedFilename);
 				file.transferTo(destination);
+				com.tkheat.util.ImageOrientationUtil.normalizeOrientation(destination);
 
 				return savedFilename; //
 			}

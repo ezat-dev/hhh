@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="payroll">
+
+	<!-- 직원 목록(작업자등록 USERT 재사용 + 급여 기본값/이메일만 PAYROLL_EMP에서 보완) -->
+	<select id="getEmpList" resultType="payrollEmp">
+		SELECT
+			U.USER_NO   AS worker_no,
+			U.USER_NAME AS name,
+			U.USER_BUSO AS dept,
+			U.USER_JICK AS rank,
+			CONVERT(VARCHAR(10), U.USER_JDATE, 120) AS joinDate,
+			P.PE_EMAIL  AS email,
+			P.PE_BASE   AS base,
+			P.PE_MEAL   AS meal,
+			P.PE_POS    AS pos,
+			P.PE_CAR    AS car
+		FROM USERT U WITH(NOLOCK)
+		LEFT JOIN PAYROLL_EMP P WITH(NOLOCK) ON P.PE_WORKER_NO = U.USER_NO
+		WHERE U.USER_RET = 0
+		ORDER BY U.USER_NO
+	</select>
+
+	<update id="empUpdate" parameterType="payrollEmp">
+		UPDATE PAYROLL_EMP SET
+			PE_EMAIL = #{email}, PE_BASE = #{base,jdbcType=DOUBLE}, PE_MEAL = #{meal,jdbcType=DOUBLE},
+			PE_POS = #{pos,jdbcType=DOUBLE}, PE_CAR = #{car,jdbcType=DOUBLE}
+		WHERE PE_WORKER_NO = #{worker_no}
+	</update>
+
+	<insert id="empInsert" parameterType="payrollEmp">
+		INSERT INTO PAYROLL_EMP (PE_WORKER_NO, PE_EMAIL, PE_BASE, PE_MEAL, PE_POS, PE_CAR)
+		VALUES (#{worker_no}, #{email}, #{base,jdbcType=DOUBLE}, #{meal,jdbcType=DOUBLE}, #{pos,jdbcType=DOUBLE}, #{car,jdbcType=DOUBLE})
+	</insert>
+
+	<!-- 월별 급여 입력값 -->
+	<select id="getMonthList" parameterType="string" resultType="payrollMonth">
+		SELECT
+			PM_IDX AS pm_idx, PM_YM AS ym, PM_WORKER_NO AS worker_no,
+			PM_BASE AS base, PM_MEAL AS meal, PM_POS AS pos, PM_CAR AS car,
+			PM_OT AS ot, PM_NIGHT AS night, PM_SAT AS sat, PM_SPEC AS spec, PM_BONUS AS bonus,
+			PM_NPA AS npa, PM_HIA AS hia, PM_LTA AS lta, PM_EIA AS eia, PM_TAX AS tax, PM_LOCA AS loca,
+			PM_YJ AS yj, PM_HS AS hs, PM_DED AS ded
+		FROM PAYROLL_MONTH WITH(NOLOCK)
+		WHERE PM_YM = #{value}
+	</select>
+
+	<update id="monthUpdate" parameterType="payrollMonth">
+		UPDATE PAYROLL_MONTH SET
+			PM_BASE = #{base,jdbcType=DOUBLE}, PM_MEAL = #{meal,jdbcType=DOUBLE}, PM_POS = #{pos,jdbcType=DOUBLE}, PM_CAR = #{car,jdbcType=DOUBLE},
+			PM_OT = #{ot,jdbcType=DOUBLE}, PM_NIGHT = #{night,jdbcType=DOUBLE}, PM_SAT = #{sat,jdbcType=DOUBLE}, PM_SPEC = #{spec,jdbcType=DOUBLE}, PM_BONUS = #{bonus,jdbcType=DOUBLE},
+			PM_NPA = #{npa,jdbcType=DOUBLE}, PM_HIA = #{hia,jdbcType=DOUBLE}, PM_LTA = #{lta,jdbcType=DOUBLE}, PM_EIA = #{eia,jdbcType=DOUBLE},
+			PM_TAX = #{tax,jdbcType=DOUBLE}, PM_LOCA = #{loca,jdbcType=DOUBLE},
+			PM_YJ = #{yj,jdbcType=DOUBLE}, PM_HS = #{hs,jdbcType=DOUBLE}, PM_DED = #{ded,jdbcType=DOUBLE}
+		WHERE PM_YM = #{ym} AND PM_WORKER_NO = #{worker_no}
+	</update>
+
+	<insert id="monthInsert" parameterType="payrollMonth">
+		INSERT INTO PAYROLL_MONTH
+			(PM_YM, PM_WORKER_NO, PM_BASE, PM_MEAL, PM_POS, PM_CAR, PM_OT, PM_NIGHT, PM_SAT, PM_SPEC, PM_BONUS,
+			 PM_NPA, PM_HIA, PM_LTA, PM_EIA, PM_TAX, PM_LOCA, PM_YJ, PM_HS, PM_DED)
+		VALUES
+			(#{ym}, #{worker_no}, #{base,jdbcType=DOUBLE}, #{meal,jdbcType=DOUBLE}, #{pos,jdbcType=DOUBLE}, #{car,jdbcType=DOUBLE},
+			 #{ot,jdbcType=DOUBLE}, #{night,jdbcType=DOUBLE}, #{sat,jdbcType=DOUBLE}, #{spec,jdbcType=DOUBLE}, #{bonus,jdbcType=DOUBLE},
+			 #{npa,jdbcType=DOUBLE}, #{hia,jdbcType=DOUBLE}, #{lta,jdbcType=DOUBLE}, #{eia,jdbcType=DOUBLE}, #{tax,jdbcType=DOUBLE}, #{loca,jdbcType=DOUBLE},
+			 #{yj,jdbcType=DOUBLE}, #{hs,jdbcType=DOUBLE}, #{ded,jdbcType=DOUBLE})
+	</insert>
+
+	<delete id="monthDelete" parameterType="map">
+		DELETE FROM PAYROLL_MONTH WHERE PM_YM = #{ym} AND PM_WORKER_NO = #{worker_no}
+	</delete>
+
+	<!-- 명세서 발송 이력 -->
+	<select id="getSentList" parameterType="string" resultType="payrollSent">
+		SELECT PS_IDX AS ps_idx, PS_YM AS ym, PS_WORKER_NO AS worker_no, PS_SENT_DATE AS sentDate
+		FROM PAYROLL_SENT WITH(NOLOCK)
+		WHERE PS_YM = #{value}
+	</select>
+
+	<update id="sentUpdate" parameterType="payrollSent">
+		UPDATE PAYROLL_SENT SET PS_SENT_DATE = #{sentDate} WHERE PS_YM = #{ym} AND PS_WORKER_NO = #{worker_no}
+	</update>
+
+	<insert id="sentInsert" parameterType="payrollSent">
+		INSERT INTO PAYROLL_SENT (PS_YM, PS_WORKER_NO, PS_SENT_DATE) VALUES (#{ym}, #{worker_no}, #{sentDate})
+	</insert>
+
+	<!-- 설정(싱글톤 1행) -->
+	<select id="getSet" resultType="payrollSet">
+		SELECT TOP 1
+			PST_IDX AS pst_idx, PST_CO AS co, PST_FROM_EMAIL AS fromEmail, PST_FN AS fn, PST_MODE AS mode, PST_BCC AS bcc,
+			PST_NP AS np, PST_HI AS hi, PST_LT AS lt, PST_EI AS ei, PST_TX AS tx, PST_MEAL AS mealLimit,
+			PST_SMTP_HOST AS smtpHost, PST_SMTP_PORT AS smtpPort, PST_SMTP_USER AS smtpUser, PST_SMTP_PASS AS smtpPass
+		FROM PAYROLL_SET WITH(NOLOCK)
+		ORDER BY PST_IDX
+	</select>
+
+	<update id="setUpdate" parameterType="payrollSet">
+		UPDATE PAYROLL_SET SET
+			PST_CO = #{co}, PST_FROM_EMAIL = #{fromEmail}, PST_FN = #{fn}, PST_MODE = #{mode}, PST_BCC = #{bcc},
+			PST_NP = #{np,jdbcType=DOUBLE}, PST_HI = #{hi,jdbcType=DOUBLE}, PST_LT = #{lt,jdbcType=DOUBLE},
+			PST_EI = #{ei,jdbcType=DOUBLE}, PST_TX = #{tx,jdbcType=DOUBLE}, PST_MEAL = #{mealLimit,jdbcType=DOUBLE},
+			PST_SMTP_HOST = #{smtpHost}, PST_SMTP_PORT = #{smtpPort,jdbcType=INTEGER}, PST_SMTP_USER = #{smtpUser}, PST_SMTP_PASS = #{smtpPass}
+		WHERE PST_IDX = #{pst_idx}
+	</update>
+
+	<insert id="setInsert" parameterType="payrollSet">
+		INSERT INTO PAYROLL_SET
+			(PST_CO, PST_FROM_EMAIL, PST_FN, PST_MODE, PST_BCC, PST_NP, PST_HI, PST_LT, PST_EI, PST_TX, PST_MEAL,
+			 PST_SMTP_HOST, PST_SMTP_PORT, PST_SMTP_USER, PST_SMTP_PASS)
+		VALUES
+			(#{co}, #{fromEmail}, #{fn}, #{mode}, #{bcc}, #{np,jdbcType=DOUBLE}, #{hi,jdbcType=DOUBLE}, #{lt,jdbcType=DOUBLE}, #{ei,jdbcType=DOUBLE}, #{tx,jdbcType=DOUBLE}, #{mealLimit,jdbcType=DOUBLE},
+			 #{smtpHost}, #{smtpPort,jdbcType=INTEGER}, #{smtpUser}, #{smtpPass})
+	</insert>
+
+</mapper>

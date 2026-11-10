@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reward">
+
+	<!-- 사원 명부(작업자등록 USERT 재사용) -->
+	<select id="getRoster" resultType="rewardLedger">
+		SELECT USER_NO AS worker_no, USER_NAME AS name, USER_BUSO AS dept, USER_JICK AS title
+		FROM USERT WITH(NOLOCK)
+		WHERE USER_RET = 0
+		ORDER BY USER_NO
+	</select>
+
+	<!-- 포상 항목·기준 -->
+	<select id="getItemList" resultType="rewardItem">
+		SELECT RI_IDX AS ri_idx, RI_TYPE AS type, RI_NAME AS name, RI_C1 AS c1, RI_C2 AS c2, RI_C3 AS c3, RI_C4 AS c4,
+			RI_MIN AS min, RI_MAX AS max
+		FROM REWARD_ITEM WITH(NOLOCK)
+		ORDER BY RI_TYPE, RI_IDX
+	</select>
+
+	<insert id="itemInsert" parameterType="rewardItem">
+		INSERT INTO REWARD_ITEM (RI_TYPE, RI_NAME, RI_C1, RI_C2, RI_C3, RI_C4, RI_MIN, RI_MAX)
+		VALUES (#{type}, #{name}, #{c1}, #{c2}, #{c3}, #{c4}, #{min,jdbcType=DOUBLE}, #{max,jdbcType=DOUBLE})
+	</insert>
+
+	<update id="itemUpdate" parameterType="rewardItem">
+		UPDATE REWARD_ITEM SET
+			RI_TYPE = #{type}, RI_NAME = #{name}, RI_C1 = #{c1}, RI_C2 = #{c2}, RI_C3 = #{c3}, RI_C4 = #{c4},
+			RI_MIN = #{min,jdbcType=DOUBLE}, RI_MAX = #{max,jdbcType=DOUBLE}
+		WHERE RI_IDX = #{ri_idx}
+	</update>
+
+	<delete id="itemDelete" parameterType="int">
+		DELETE FROM REWARD_ITEM WHERE RI_IDX = #{ri_idx}
+	</delete>
+
+	<!-- 포상 관리대장 -->
+	<select id="getLedgerList" resultType="rewardLedger">
+		SELECT RL_IDX AS rl_idx, RL_DATE AS date, RL_WORKER_NO AS worker_no, RL_NAME AS name, RL_DEPT AS dept, RL_TITLE AS title,
+			RL_TYPE AS type, RL_ITEM AS item, RL_DETAIL AS detail, RL_AMOUNT AS amount, RL_POINTS AS points,
+			RL_APPROVER AS approver, RL_STATUS AS status
+		FROM REWARD_LEDGER WITH(NOLOCK)
+		ORDER BY RL_DATE DESC, RL_IDX DESC
+	</select>
+
+	<insert id="ledgerInsert" parameterType="rewardLedger">
+		INSERT INTO REWARD_LEDGER
+			(RL_DATE, RL_WORKER_NO, RL_NAME, RL_DEPT, RL_TITLE, RL_TYPE, RL_ITEM, RL_DETAIL, RL_AMOUNT, RL_POINTS, RL_APPROVER, RL_STATUS)
+		VALUES
+			(#{date}, #{worker_no}, #{name}, #{dept}, #{title}, #{type}, #{item}, #{detail}, #{amount,jdbcType=DOUBLE}, #{points,jdbcType=DOUBLE}, #{approver}, #{status})
+	</insert>
+
+	<update id="ledgerUpdate" parameterType="rewardLedger">
+		UPDATE REWARD_LEDGER SET
+			RL_DATE = #{date}, RL_WORKER_NO = #{worker_no}, RL_NAME = #{name}, RL_DEPT = #{dept}, RL_TITLE = #{title},
+			RL_TYPE = #{type}, RL_ITEM = #{item}, RL_DETAIL = #{detail}, RL_AMOUNT = #{amount,jdbcType=DOUBLE}, RL_POINTS = #{points,jdbcType=DOUBLE},
+			RL_APPROVER = #{approver}, RL_STATUS = #{status}
+		WHERE RL_IDX = #{rl_idx}
+	</update>
+
+	<delete id="ledgerDelete" parameterType="int">
+		DELETE FROM REWARD_LEDGER WHERE RL_IDX = #{rl_idx}
+	</delete>
+
+	<select id="getLedgerCountByWorker" parameterType="string" resultType="int">
+		SELECT COUNT(*) FROM REWARD_LEDGER WHERE RL_WORKER_NO = #{value}
+	</select>
+
+</mapper>
